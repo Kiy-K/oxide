@@ -1,0 +1,224 @@
+[
+ {
+  "task": "py-exact-retrypolicy",
+  "query_bytes": 11,
+  "clipped": false,
+  "holders": {
+   "symbol:oxidepy/retry.py#RetryPolicy": "within",
+   "symbol:oxidepy/retry.py#RetryPolicy.__init__": "absent",
+   "symbol:oxidepy/retry.py#RetryPolicy.exhausted": "absent",
+   "symbol:oxidepy/retry.py#RetryPolicy.should_retry": "absent",
+   "symbol:oxidepy/retry.py#RetryPolicy.backoff_ms": "absent",
+   "symbol:oxidepy/retry.py#RetryPolicy.wait": "absent"
+  },
+  "others": {
+   "within": 0,
+   "beyond": 0,
+   "absent": 26
+  }
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "query_bytes": 38,
+  "clipped": false,
+  "holders": {
+   "symbol:oxidepy/retry.py#RetryPolicy.should_retry": "absent",
+   "symbol:oxidepy/http_client.py#HttpClient.fetch": "absent"
+  },
+  "others": {
+   "within": 0,
+   "beyond": 0,
+   "absent": 39
+  }
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "query_bytes": 39,
+  "clipped": false,
+  "holders": {
+   "symbol:oxidepy/auth.py#AuthService.refresh_token": "within"
+  },
+  "others": {
+   "within": 10,
+   "beyond": 0,
+   "absent": 14
+  }
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "query_bytes": 45,
+  "clipped": false,
+  "holders": {
+   "symbol:tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts": "absent"
+  },
+  "others": {
+   "within": 9,
+   "beyond": 0,
+   "absent": 22
+  }
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "query_bytes": 8,
+  "clipped": false,
+  "holders": {
+   "symbol:oxidepy/cache.py#TTLCache": "within",
+   "symbol:oxidepy/cache.py#TTLCache.__init__": "absent",
+   "symbol:oxidepy/cache.py#TTLCache.get_or_set": "absent",
+   "symbol:oxidepy/cache.py#TTLCache.invalidate": "absent"
+  },
+  "others": {
+   "within": 0,
+   "beyond": 0,
+   "absent": 6
+  }
+ },
+ {
+  "task": "py-implementors-notifier",
+  "query_bytes": 68,
+  "clipped": false,
+  "holders": {
+   "symbol:oxidepy/notifiers.py#EmailNotifier": "absent",
+   "symbol:oxidepy/notifiers.py#EmailNotifier.__init__": "absent",
+   "symbol:oxidepy/notifiers.py#EmailNotifier.notify": "within",
+   "symbol:oxidepy/notifiers.py#SlackNotifier": "absent",
+   "symbol:oxidepy/notifiers.py#SlackNotifier.__init__": "absent",
+   "symbol:oxidepy/notifiers.py#SlackNotifier.notify": "within"
+  },
+  "others": {
+   "within": 1,
+   "beyond": 0,
+   "absent": 30
+  }
+ },
+ {
+  "task": "py-callers-should-retry",
+  "query_bytes": 60,
+  "clipped": false,
+  "holders": {
+   "symbol:oxidepy/notifiers.py#notify_after_final_attempt": "absent"
+  },
+  "others": {
+   "within": 0,
+   "beyond": 0,
+   "absent": 24
+  }
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "query_bytes": 1188,
+  "clipped": true,
+  "holders": {
+   "symbol:seaborn/_core/plot.py#Plotter": "within",
+   "symbol:seaborn/_core/plot.py#Plotter._finalize_figure": "within",
+   "symbol:seaborn/_core/scales.py#Nominal": "within",
+   "symbol:seaborn/distributions.py#_DistributionPlotter": "absent"
+  },
+  "others": {
+   "within": 12,
+   "beyond": 0,
+   "absent": 48
+  }
+ },
+ {
+  "task": "pallets__flask-5014",
+  "query_bytes": 195,
+  "clipped": false,
+  "holders": {
+   "symbol:src/flask/blueprints.py#Blueprint.__init__": "absent"
+  },
+  "others": {
+   "within": 1,
+   "beyond": 0,
+   "absent": 62
+  }
+ },
+ {
+  "task": "psf__requests-6028",
+  "query_bytes": 1268,
+  "clipped": true,
+  "holders": {
+   "symbol:requests/adapters.py#HTTPAdapter": "absent",
+   "symbol:requests/utils.py#prepend_scheme_if_needed": "absent",
+   "symbol:tests/test_utils.py#test_prepend_scheme_if_needed": "absent"
+  },
+  "others": {
+   "within": 2,
+   "beyond": 0,
+   "absent": 55
+  }
+ },
+ {
+  "task": "psf__requests-2317",
+  "query_bytes": 851,
+  "clipped": false,
+  "holders": {
+   "file:requests/sessions.py": "within",
+   "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects": "within",
+   "symbol:requests/sessions.py#Session": "within",
+   "symbol:requests/utils.py#to_native_string": "within"
+  },
+  "others": {
+   "within": 19,
+   "beyond": 0,
+   "absent": 40
+  }
+ },
+ {
+  "task": "psf__requests-1142",
+  "query_bytes": 381,
+  "clipped": false,
+  "holders": {
+   "symbol:requests/models.py#PreparedRequest.prepare_body": "absent",
+   "symbol:requests/models.py#PreparedRequest.prepare_content_length": "absent",
+   "symbol:requests/models.py#PreparedRequest.prepare_auth": "absent"
+  },
+  "others": {
+   "within": 4,
+   "beyond": 0,
+   "absent": 57
+  }
+ },
+ {
+  "task": "psf__requests-5414",
+  "query_bytes": 1428,
+  "clipped": true,
+  "holders": {
+   "symbol:requests/models.py#PreparedRequest.prepare_url": "within",
+   "symbol:tests/test_requests.py#TestRequests.test_invalid_url": "absent"
+  },
+  "others": {
+   "within": 13,
+   "beyond": 0,
+   "absent": 47
+  }
+ },
+ {
+  "task": "psf__requests-2931",
+  "query_bytes": 274,
+  "clipped": false,
+  "holders": {
+   "symbol:requests/models.py#RequestEncodingMixin._encode_params": "absent",
+   "symbol:requests/models.py#PreparedRequest.prepare_url": "absent",
+   "symbol:requests/utils.py#to_native_string": "within"
+  },
+  "others": {
+   "within": 5,
+   "beyond": 0,
+   "absent": 56
+  }
+ },
+ {
+  "task": "psf__requests-1766",
+  "query_bytes": 897,
+  "clipped": false,
+  "holders": {
+   "symbol:requests/auth.py#HTTPDigestAuth.build_digest_header": "within"
+  },
+  "others": {
+   "within": 17,
+   "beyond": 0,
+   "absent": 46
+  }
+ }
+]

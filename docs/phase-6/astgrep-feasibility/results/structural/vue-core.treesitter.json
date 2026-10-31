@@ -1,0 +1,48 @@
+{
+ "corpus": "vue-core",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/vuejs__core@0275dd329d24",
+ "lang": "typescript",
+ "arms": [
+  "treesitter"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "treesitter": 12
+  },
+  "ts-json-parse-unguarded": {
+   "treesitter": 1
+  },
+  "ts-as-any": {
+   "treesitter": 431
+  },
+  "ts-non-null-member": {
+   "treesitter": 460
+  },
+  "ts-await-in-loop": {
+   "treesitter": 12
+  },
+  "ts-async-promise-executor": {
+   "treesitter": 0
+  },
+  "ts-console-log": {
+   "treesitter": 9
+  },
+  "ts-useeffect-empty-deps": {
+   "treesitter": 0
+  }
+ },
+ "stats": {
+  "files": 464,
+  "bytes": 3425891,
+  "invalid_utf8": 0,
+  "error_trees": 2,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.014,
+  "decode": 0.001,
+  "treesitter_parse": 0.348,
+  "treesitter_query": 0.798
+ },
+ "peak_rss_mib": 55.1
+}

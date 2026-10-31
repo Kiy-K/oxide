@@ -1,0 +1,57 @@
+tasks with verified gold: 25
+
+1. macro line_recall (verified)
+cf                  1024      4096
+base               0.330     0.370
+inf_capped         0.380     0.380
+inf                0.429     0.429
+nofloor_inf        0.443     0.443
+oracle_order       0.370     0.423
+oracle_pick        0.372     0.428
+noitemcap          0.330     0.370
+routed lines                 0.443  (gold lines with a holder in the pool)
+
+2. candidate classes at 4096
+class                  n  gold   rate  packed  g.pack  mean u
+routed d1 symbol     484    12  0.025     116       6    1860
+lexical r11+         199     8  0.040     135       7     272
+routed file          188     7  0.037       0       0    1830
+routed d2 symbol     134     0  0.000       0       0     262
+lexical r1-5         117    17  0.145     113      17     223
+lexical r6-10        104    10  0.096     104      10     269
+container             50     0  0.000       0       0       0
+seed                   2     0  0.000       2       0      57
+
+units packed at 4096 by first entity's basis (units, units in items touching gold)
+  lexical                    67190    7597  0.11
+  prerequisite/header         8287     561  0.07
+  routed                       717       0  0.00
+  structural seed              122       0  0.00
+
+3. gold holders not fully packed at 4096
+  ts-related-test-button-click   file:src/ui/__tests__/Button.test.tsx                        g= 16 v=0.85 d=0 rank=1 u=285 pos=0 header ['calls:in', 'contains_logical:out', 'entry']
+  coder__code-server-4923        symbol:src/node/app.ts#handleArgsSocketCatchError            g=  5 v=0.50 d=0 rank=16 u=99 pos=15 packing: budget ['calls:in', 'calls:out', 'child', 'entry']
+  coder__code-server-4923        file:src/node/app.ts                                         g=  2 v=0.20 d=1 rank=None u=541 pos=20 selection: value 0.20 below floor ['imports:in', 'scope']
+  coder__code-server-4923        file:src/node/cli.ts                                         g=  4 v=0.20 d=1 rank=None u=2744 pos=21 selection: value 0.20 below floor ['imports:in', 'scope']
+  coder__code-server-6278        file:src/node/util.ts                                        g=  5 v=0.20 d=1 rank=None u=2700 pos=25 selection: value 0.20 below floor ['scope']
+  coder__code-server-6278        symbol:src/node/app.ts#createApp                             g= 10 v=0.45 d=1 rank=None u=365 pos=43 header ['calls:out', 'imports:out']
+  darkreader__darkreader-6747    file:src/generators/dynamic-theme.ts                         g= 12 v=0.20 d=1 rank=None u=254 pos=22 selection: value 0.20 below floor ['imports:in', 'scope']
+  darkreader__darkreader-6747    file:src/generators/utils/parse.ts                           g=  2 v=0.20 d=1 rank=None u=338 pos=25 selection: value 0.20 below floor ['imports:in', 'scope']
+  darkreader__darkreader-6747    mbol:src/generators/dynamic-theme.ts#formatDynamicThemeFixes g= 19 v=0.45 d=1 rank=None u=330 pos=38 packing: budget ['calls:in', 'child']
+  darkreader__darkreader-6747    mbol:src/generators/dynamic-theme.ts#getDynamicThemeFixesFor g= 31 v=0.45 d=1 rank=None u=718 pos=39 packing: budget ['calls:in', 'child']
+  darkreader__darkreader-6747    ymbol:src/generators/dynamic-theme.ts#parseDynamicThemeFixes g= 12 v=0.45 d=1 rank=None u=169 pos=40 packing: budget ['calls:in', 'child']
+  darkreader__darkreader-6747    symbol:src/utils/url.ts#isURLInList                          g=  3 v=0.45 d=1 rank=None u=94 pos=62 packing: budget ['calls:in', 'calls:out', 'imports:out']
+  microsoft__vscode-110094       file:src/vs/editor/common/controller/cursorCommon.ts         g=  7 v=0.20 d=1 rank=None u=1000 pos=22 selection: value 0.20 below floor ['imports:in', 'scope']
+  microsoft__vscode-110094       file:src/vs/editor/common/modes/languageConfiguration.ts     g=  3 v=0.20 d=1 rank=None u=1121 pos=26 selection: value 0.20 below floor ['scope']
+  microsoft__vscode-110094       tor/common/controller/cursorTypeOperations.ts#TypeOperations g= 21 v=0.45 d=1 rank=None u=12501 pos=39 header ['child', 'scope']
+  microsoft__vscode-135197       mbol:src/vs/editor/common/controller/cursorCommon.ts#isQuote g=  3 v=0.45 d=1 rank=None u=80 pos=40 packing: budget ['calls:out']
+  microsoft__vscode-136347       file:src/vs/editor/common/viewLayout/viewLineRenderer.ts     g=  3 v=0.57 d=0 rank=12 u=1138 pos=11 header ['contains_logical:out', 'entry', 'scope']
+  microsoft__vscode-136347       /vs/editor/common/viewLayout/viewLineRenderer.ts#_renderLine g= 48 v=0.45 d=1 rank=None u=2331 pos=57 packing: budget ['calls:in', 'calls:out', 'child']
+
+4. cap sweep (production policy), macro line_recall@4096; regions median
+  cap   16: 0.370 (+0.000), tasks changed 0, median regions 16
+  cap   32: 0.370 (+0.000), tasks changed 0, median regions 32
+  cap   48: 0.370 (+0.000), tasks changed 0, median regions 48
+  cap   96: 0.370 (+0.000), tasks changed 0, median regions 96
+  cap  128: 0.370 (+0.000), tasks changed 0, median regions 128
+  cap   64: 0.370 (production)

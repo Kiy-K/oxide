@@ -1,0 +1,31 @@
+{
+  "counts": {
+    "calls": {
+      "agree": 7830,
+      "precision": 1.0
+    },
+    "references": {
+      "agree": 5605,
+      "disagree": 1,
+      "precision": 0.9998216196931858
+    },
+    "imports": {
+      "agree": 1042,
+      "precision": 1.0
+    }
+  },
+  "overall": {
+    "agree": 14477,
+    "disagree": 1
+  },
+  "disagreements": 1,
+  "ambiguous": {
+    "calls_hit": 2031,
+    "calls_miss": 47
+  },
+  "no_oracle": {
+    "imports": 43,
+    "calls": 49,
+    "references": 104
+  }
+}

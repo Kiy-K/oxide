@@ -7,6 +7,12 @@
       "skillPath": "archify/SKILL.md",
       "computedHash": "ecfe0a991f5e7d0a4418125730ee7cc7ccbf45f853f8165aa38449c222c9d4f5"
     },
+    "security-audit": {
+      "source": "cloudflare/security-audit-skill",
+      "sourceType": "github",
+      "skillPath": "skills/security-audit/SKILL.md",
+      "computedHash": "98b97aad2873b3b9a8e064007c25e7827b493ba27fda8bfbdb41dab586767973"
+    },
     "typesafe-ai": {
       "source": "typesafe-ai/skills",
       "sourceType": "github",

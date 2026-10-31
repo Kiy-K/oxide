@@ -1,0 +1,62 @@
+[
+ {
+  "source": "compat/test/browser/suspense-hydration.test.jsx",
+  "expression": "getLog()",
+  "target": "symbol:test/_util/logCall.js#getLog",
+  "signature": "export function getLog()"
+ },
+ {
+  "source": "src/diff/index.js",
+  "expression": "setProperty(dom, i, checked, oldProps[i], namespace)",
+  "target": "symbol:src/diff/props.js#setProperty",
+  "signature": "export function setProperty(dom, name, value, oldValue, namespace)"
+ },
+ {
+  "source": "test/browser/fragments.test.jsx",
+  "expression": "li(2)",
+  "target": "symbol:test/_util/dom.js#li",
+  "signature": "export const li = contents =>"
+ },
+ {
+  "source": "compat/test/browser/useSyncExternalStore.test.jsx",
+  "expression": "teardown(scratch)",
+  "target": "symbol:test/_util/helpers.jsx#teardown",
+  "signature": "export function teardown(scratch)"
+ },
+ {
+  "source": "hooks/test/browser/useState.test.jsx",
+  "expression": "setupScratch()",
+  "target": "symbol:test/_util/helpers.jsx#setupScratch",
+  "signature": "export function setupScratch(id)"
+ },
+ {
+  "source": "test/browser/fragments.test.jsx",
+  "expression": "clearLog()",
+  "target": "symbol:test/_util/logCall.js#clearLog",
+  "signature": "export function clearLog()"
+ },
+ {
+  "source": "test/browser/hydrate.test.jsx",
+  "expression": "ul([li('1'), li('2'), li('3'), li('4')])",
+  "target": "symbol:test/_util/dom.js#ul",
+  "signature": "export const ul = contents =>"
+ },
+ {
+  "source": "test/browser/placeholders.test.jsx",
+  "expression": "teardown(scratch)",
+  "target": "symbol:test/_util/helpers.jsx#teardown",
+  "signature": "export function teardown(scratch)"
+ },
+ {
+  "source": "debug/src/debug.js",
+  "expression": "getDisplayName(vnode)",
+  "target": "symbol:debug/src/component-stack.js#getDisplayName",
+  "signature": "export function getDisplayName(vnode)"
+ },
+ {
+  "source": "test/browser/fragments.test.jsx",
+  "expression": "div(div('Error!'))",
+  "target": "symbol:test/_util/dom.js#div",
+  "signature": "export const div = contents =>"
+ }
+]

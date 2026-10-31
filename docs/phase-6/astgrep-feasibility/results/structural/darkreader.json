@@ -1,0 +1,202 @@
+{
+ "corpus": "darkreader",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/darkreader__darkreader@991883df4d59",
+ "lang": "typescript",
+ "arms": [
+  "astgrep",
+  "regex",
+  "treesitter"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-json-parse-unguarded": {
+   "treesitter": 2,
+   "astgrep": 2,
+   "regex": 6,
+   "agree": 2,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 6,
+   "regex_precision": 0.3333333333333333,
+   "regex_recall": 1.0,
+   "regex_false_count": 4,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "src/ui/popup/index.tsx",
+     "line": 74,
+     "text": "            const message: {type: string; id: number; data: string} = JSON.parse(e.data);"
+    },
+    {
+     "path": "src/background/extension.ts",
+     "line": 172,
+     "text": "                    const message: {type: string; data: Partial<UserSettings> | boolean | {[key: string]: string}; id: number} = JSON.parse(e.data);"
+    },
+    {
+     "path": "src/background/utils/extension-api.ts",
+     "line": 64,
+     "text": "                    sync[key] = JSON.parse(string);"
+    },
+    {
+     "path": "src/ui/popup/manage-settings-page/import-settings.tsx",
+     "line": 58,
+     "text": "                const content: UserSettings = JSON.parse(result);"
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-as-any": {
+   "treesitter": 26,
+   "astgrep": 26,
+   "regex": 23,
+   "agree": 26,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 23,
+   "regex_precision": 1.0,
+   "regex_recall": 1.0,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-non-null-member": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-await-in-loop": {
+   "treesitter": 3,
+   "astgrep": 3,
+   "agree": 3,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": []
+  },
+  "ts-async-promise-executor": {
+   "treesitter": 3,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 0.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 3,
+   "astgrep_only": [],
+   "treesitter_only": [
+    {
+     "path": "src/inject/dynamic-theme/image.ts",
+     "line": 23,
+     "text": "    return new Promise<ImageDetails>(async (resolve, reject) => {"
+    },
+    {
+     "path": "src/background/utils/extension-api.ts",
+     "line": 134,
+     "text": "    return new Promise<void>(async (resolve) => {"
+    },
+    {
+     "path": "src/background/utils/extension-api.ts",
+     "line": 118,
+     "text": "    return new Promise<void>(async (resolve, reject) => {"
+    }
+   ],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-console-log": {
+   "treesitter": 1,
+   "astgrep": 1,
+   "regex": 1,
+   "agree": 1,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 1,
+   "regex_precision": 1.0,
+   "regex_recall": 1.0,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-useeffect-empty-deps": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  }
+ },
+ "stats": {
+  "files": 210,
+  "bytes": 792701,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.018,
+  "decode": 0.0,
+  "treesitter_parse": 0.082,
+  "treesitter_query": 0.238,
+  "astgrep_parse": 0.089,
+  "astgrep_query": 0.109,
+  "regex": 0.05
+ },
+ "peak_rss_mib": 49.5
+}

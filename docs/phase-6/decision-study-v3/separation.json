@@ -1,0 +1,414 @@
+{
+ "rule": {
+  "split": "v3",
+  "per_repo": 8,
+  "max_py_files": 3000,
+  "seed": "ds3:"
+ },
+ "scan": {
+  "roots": [
+   "~/Projects/oxide-eval-data",
+   "docs",
+   "tests",
+   "scripts",
+   "eval-agent"
+  ],
+  "pruned": [
+   "wt",
+   "wt-parent",
+   "cb-wt",
+   "cb-repos",
+   "repos",
+   "corpora",
+   "git",
+   "stores",
+   ".oxide",
+   "oxide-decision-study-v3",
+   "decision-study-v3"
+  ],
+  "files": [
+   "*.json",
+   "*.jsonl",
+   "*.md",
+   "*.txt",
+   "*.csv",
+   "*.log",
+   "*.py"
+  ]
+ },
+ "python_rows": 512,
+ "excluded_baseline_repositories": [
+  "mwaskom/seaborn",
+  "pallets/flask",
+  "psf/requests",
+  "pydata/xarray",
+  "pytest-dev/pytest"
+ ],
+ "candidate_rows": 475,
+ "candidates_named_in_prior_artifacts": 303,
+ "fresh_by_repo": {
+  "Significant-Gravitas/AutoGPT": 1,
+  "ansible/ansible": 46,
+  "huggingface/transformers": 65,
+  "internetarchive/openlibrary": 20,
+  "keras-team/keras": 13,
+  "langchain-ai/langchain": 9,
+  "qutebrowser/qutebrowser": 15,
+  "yt-dlp/yt-dlp": 3
+ },
+ "walked": [
+  {
+   "id": "Significant-Gravitas__AutoGPT-4652",
+   "repo": "Significant-Gravitas/AutoGPT",
+   "py_files": 162,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_ansible__ansible-622a493ae03bd5e5cf517d336fc426e9d12208c7-v906c969b551b346ef54a2c0b41e04f632b7b73c2",
+   "repo": "ansible/ansible",
+   "py_files": 5924,
+   "outcome": "cost rule"
+  },
+  {
+   "id": "instance_ansible__ansible-984216f52e76b904e5b0fa0fb956ab4f1e0a7751-v1055803c3a812189a1133297f7f5468579283f86",
+   "repo": "ansible/ansible",
+   "py_files": 1368,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_ansible__ansible-39bd8b99ec8c6624207bf3556ac7f9626dad9173-v1055803c3a812189a1133297f7f5468579283f86",
+   "repo": "ansible/ansible",
+   "py_files": 1419,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_ansible__ansible-4c5ce5a1a9e79a845aff4978cfeb72a0d4ecf7d6-v1055803c3a812189a1133297f7f5468579283f86",
+   "repo": "ansible/ansible",
+   "py_files": 1385,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_ansible__ansible-42355d181a11b51ebfc56f6f4b3d9c74e01cb13b-v1055803c3a812189a1133297f7f5468579283f86",
+   "repo": "ansible/ansible",
+   "py_files": 1586,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_ansible__ansible-34db57a47f875d11c4068567b9ec7ace174ec4cf-v1055803c3a812189a1133297f7f5468579283f86",
+   "repo": "ansible/ansible",
+   "py_files": 1333,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_ansible__ansible-489156378c8e97374a75a544c7c9c2c0dd8146d1-v390e508d27db7a51eece36bb6d9698b63a5b638a",
+   "repo": "ansible/ansible",
+   "py_files": 6906,
+   "outcome": "cost rule"
+  },
+  {
+   "id": "instance_ansible__ansible-3b823d908e8a5d17674f8c26d337d3114b7493b1-v0f01c69f1e2528b935359cfe578530722bca2c59",
+   "repo": "ansible/ansible",
+   "py_files": 1558,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_ansible__ansible-395e5e20fab9cad517243372fa3c3c5d9e09ab2a-v7eee2454f617569fd6889f2211f75bc02a35f9f8",
+   "repo": "ansible/ansible",
+   "py_files": 1518,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_ansible__ansible-6cc97447aac5816745278f3735af128afb255c81-v0f01c69f1e2528b935359cfe578530722bca2c59",
+   "repo": "ansible/ansible",
+   "py_files": 1720,
+   "outcome": "accepted"
+  },
+  {
+   "id": "huggingface__transformers-7078",
+   "repo": "huggingface/transformers",
+   "py_files": 401,
+   "outcome": "accepted"
+  },
+  {
+   "id": "huggingface__transformers-30899",
+   "repo": "huggingface/transformers",
+   "py_files": 3002,
+   "outcome": "cost rule"
+  },
+  {
+   "id": "huggingface__transformers-24238",
+   "repo": "huggingface/transformers",
+   "py_files": 2480,
+   "outcome": "accepted"
+  },
+  {
+   "id": "huggingface__transformers-29449",
+   "repo": "huggingface/transformers",
+   "py_files": 2926,
+   "outcome": "accepted"
+  },
+  {
+   "id": "huggingface__transformers-28071",
+   "repo": "huggingface/transformers",
+   "py_files": 2983,
+   "outcome": "accepted"
+  },
+  {
+   "id": "huggingface__transformers-22458",
+   "repo": "huggingface/transformers",
+   "py_files": 2359,
+   "outcome": "accepted"
+  },
+  {
+   "id": "huggingface__transformers-17082",
+   "repo": "huggingface/transformers",
+   "py_files": 1588,
+   "outcome": "accepted"
+  },
+  {
+   "id": "huggingface__transformers-28115",
+   "repo": "huggingface/transformers",
+   "py_files": 2769,
+   "outcome": "accepted"
+  },
+  {
+   "id": "huggingface__transformers-5122",
+   "repo": "huggingface/transformers",
+   "py_files": 313,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_internetarchive__openlibrary-6fdbbeee4c0a7e976ff3e46fb1d36f4eb110c428-v08d8e8889ec945ab821fb156c04c7d2e2810debb",
+   "repo": "internetarchive/openlibrary",
+   "py_files": 370,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_internetarchive__openlibrary-5de7de19211e71b29b2f2ba3b1dff2fe065d660f-v08d8e8889ec945ab821fb156c04c7d2e2810debb",
+   "repo": "internetarchive/openlibrary",
+   "py_files": 368,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_internetarchive__openlibrary-25858f9f0c165df25742acf8309ce909773f0cdd-v13642507b4fc1f8d234172bf8129942da2c2ca26",
+   "repo": "internetarchive/openlibrary",
+   "py_files": 365,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_internetarchive__openlibrary-910b08570210509f3bcfebf35c093a48243fe754-v0f5aece3601a5b4419f7ccec1dbda2071be28ee4",
+   "repo": "internetarchive/openlibrary",
+   "py_files": 380,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_internetarchive__openlibrary-757fcf46c70530739c150c57b37d6375f155dc97-ve8c8d62a2b60610a3c4631f5f23ed866bada9818",
+   "repo": "internetarchive/openlibrary",
+   "py_files": 363,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_internetarchive__openlibrary-798a582540019363d14b2090755cc7b89a350788-v430f20c722405e462d9ef44dee7d34c41e76fe7a",
+   "repo": "internetarchive/openlibrary",
+   "py_files": 369,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_internetarchive__openlibrary-09865f5fb549694d969f0a8e49b9d204ef1853ca-ve8c8d62a2b60610a3c4631f5f23ed866bada9818",
+   "repo": "internetarchive/openlibrary",
+   "py_files": 382,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_internetarchive__openlibrary-7bf3238533070f2d24bafbb26eedf675d51941f6-v08d8e8889ec945ab821fb156c04c7d2e2810debb",
+   "repo": "internetarchive/openlibrary",
+   "py_files": 364,
+   "outcome": "accepted"
+  },
+  {
+   "id": "keras-team__keras-19915",
+   "repo": "keras-team/keras",
+   "py_files": 781,
+   "outcome": "accepted"
+  },
+  {
+   "id": "keras-team__keras-19973",
+   "repo": "keras-team/keras",
+   "py_files": 782,
+   "outcome": "accepted"
+  },
+  {
+   "id": "keras-team__keras-19924",
+   "repo": "keras-team/keras",
+   "py_files": 781,
+   "outcome": "accepted"
+  },
+  {
+   "id": "keras-team__keras-18975",
+   "repo": "keras-team/keras",
+   "py_files": 719,
+   "outcome": "accepted"
+  },
+  {
+   "id": "keras-team__keras-19641",
+   "repo": "keras-team/keras",
+   "py_files": 778,
+   "outcome": "accepted"
+  },
+  {
+   "id": "keras-team__keras-19937",
+   "repo": "keras-team/keras",
+   "py_files": 781,
+   "outcome": "accepted"
+  },
+  {
+   "id": "keras-team__keras-19636",
+   "repo": "keras-team/keras",
+   "py_files": 778,
+   "outcome": "accepted"
+  },
+  {
+   "id": "keras-team__keras-19775",
+   "repo": "keras-team/keras",
+   "py_files": 778,
+   "outcome": "accepted"
+  },
+  {
+   "id": "langchain-ai__langchain-5450",
+   "repo": "langchain-ai/langchain",
+   "py_files": 1075,
+   "outcome": "accepted"
+  },
+  {
+   "id": "langchain-ai__langchain-4009",
+   "repo": "langchain-ai/langchain",
+   "py_files": 836,
+   "outcome": "accepted"
+  },
+  {
+   "id": "langchain-ai__langchain-19331",
+   "repo": "langchain-ai/langchain",
+   "py_files": 4528,
+   "outcome": "cost rule"
+  },
+  {
+   "id": "langchain-ai__langchain-5584",
+   "repo": "langchain-ai/langchain",
+   "py_files": 1087,
+   "outcome": "accepted"
+  },
+  {
+   "id": "langchain-ai__langchain-4420",
+   "repo": "langchain-ai/langchain",
+   "py_files": 900,
+   "outcome": "accepted"
+  },
+  {
+   "id": "langchain-ai__langchain-3367",
+   "repo": "langchain-ai/langchain",
+   "py_files": 710,
+   "outcome": "accepted"
+  },
+  {
+   "id": "langchain-ai__langchain-4646",
+   "repo": "langchain-ai/langchain",
+   "py_files": 938,
+   "outcome": "accepted"
+  },
+  {
+   "id": "langchain-ai__langchain-4579",
+   "repo": "langchain-ai/langchain",
+   "py_files": 948,
+   "outcome": "accepted"
+  },
+  {
+   "id": "langchain-ai__langchain-6765",
+   "repo": "langchain-ai/langchain",
+   "py_files": 1214,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_qutebrowser__qutebrowser-ff1c025ad3210506fc76e1f604d8c8c27637d88e-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d",
+   "repo": "qutebrowser/qutebrowser",
+   "py_files": 386,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_qutebrowser__qutebrowser-0fc6d1109d041c69a68a896db87cf1b8c194cef7-v2ef375ac784985212b1805e1d0431dc8f1b3c171",
+   "repo": "qutebrowser/qutebrowser",
+   "py_files": 406,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_qutebrowser__qutebrowser-2e961080a85d660148937ee8f0f6b3445a8f2c01-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d",
+   "repo": "qutebrowser/qutebrowser",
+   "py_files": 446,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_qutebrowser__qutebrowser-52708364b5f91e198defb022d1a5b4b3ebd9b563-v2ef375ac784985212b1805e1d0431dc8f1b3c171",
+   "repo": "qutebrowser/qutebrowser",
+   "py_files": 419,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_qutebrowser__qutebrowser-473a15f7908f2bb6d670b0e908ab34a28d8cf7e2-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d",
+   "repo": "qutebrowser/qutebrowser",
+   "py_files": 412,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_qutebrowser__qutebrowser-bedc9f7fadf93f83d8dee95feeecb9922b6f063f-v2ef375ac784985212b1805e1d0431dc8f1b3c171",
+   "repo": "qutebrowser/qutebrowser",
+   "py_files": 397,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_qutebrowser__qutebrowser-46e6839e21d9ff72abb6c5d49d5abaa5a8da8a81-v2ef375ac784985212b1805e1d0431dc8f1b3c171",
+   "repo": "qutebrowser/qutebrowser",
+   "py_files": 397,
+   "outcome": "accepted"
+  },
+  {
+   "id": "instance_qutebrowser__qutebrowser-394bfaed6544c952c6b3463751abab3176ad4997-vafb3e8e01b31319c66c4e666b8a3b1d8ba55db24",
+   "repo": "qutebrowser/qutebrowser",
+   "py_files": 409,
+   "outcome": "accepted"
+  },
+  {
+   "id": "yt-dlp__yt-dlp-10390",
+   "repo": "yt-dlp/yt-dlp",
+   "py_files": 1141,
+   "outcome": "accepted"
+  },
+  {
+   "id": "yt-dlp__yt-dlp-4841",
+   "repo": "yt-dlp/yt-dlp",
+   "py_files": 1076,
+   "outcome": "accepted"
+  },
+  {
+   "id": "yt-dlp__yt-dlp-9862",
+   "repo": "yt-dlp/yt-dlp",
+   "py_files": 1141,
+   "outcome": "accepted"
+  }
+ ],
+ "accepted_by_repo": {
+  "Significant-Gravitas/AutoGPT": 1,
+  "ansible/ansible": 8,
+  "huggingface/transformers": 8,
+  "internetarchive/openlibrary": 8,
+  "keras-team/keras": 8,
+  "langchain-ai/langchain": 8,
+  "qutebrowser/qutebrowser": 8,
+  "yt-dlp/yt-dlp": 3
+ },
+ "checks": {
+  "repositories_disjoint_from_baseline": true,
+  "task_ids_disjoint_from_baseline": true,
+  "task_ids_absent_from_prior_artifacts": true,
+  "corpus_names_disjoint_from_baseline": true,
+  "identical_py_files_ge_512_bytes_shared_with_baseline_corpora": 0
+ }
+}

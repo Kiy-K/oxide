@@ -1,0 +1,7 @@
+dev      pallets__flask-5014                src/flask/blueprints.py                      selection: value N below floor
+dev      pallets__flask-5014                src/flask/blueprints.py                      selection: value N below floor
+heldout  pydata__xarray-4966                xarray/coding/variables.py                   budget: omitted, budget
+heldout  pydata__xarray-7233                xarray/core/dataset.py                       budget: omitted, budget
+heldout  pydata__xarray-7233                xarray/core/dataset.py                       budget: omitted, budget
+heldout  pytest-dev__pytest-5787            src/_pytest/reports.py                       selection: value N below floor
+{'dev selection': 2, 'heldout budget': 3, 'heldout selection': 1}

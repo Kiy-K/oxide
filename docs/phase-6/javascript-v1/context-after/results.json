@@ -1,0 +1,937 @@
+[
+ {
+  "task": "mui__material-ui-11858",
+  "split": "heldout",
+  "corpus": "mui__material-ui@4acfb8da9fb5",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 54,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.666667,
+    "entry_recall@5": 0.833333,
+    "entry_recall@20": 0.833333,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.5,
+    "routed_coverage": 0.833333,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.018519,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.855469,
+    "gold_unit_share@256": 0.219178,
+    "span_recall@1024": 0.666667,
+    "line_recall@1024": 0.703704,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.980469,
+    "gold_unit_share@1024": 0.464143,
+    "span_recall@4096": 0.833333,
+    "line_recall@4096": 0.87037,
+    "file_recall@4096": 0.5,
+    "utilization@4096": 0.995361,
+    "gold_unit_share@4096": 0.225901
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 16,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.855469,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.980469,
+    "gold_unit_share@1024": 0.464143,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.995361,
+    "gold_unit_share@4096": 0.1143
+   }
+  },
+  "gold": [
+   {
+    "file": ".size-limit.js",
+    "lines": [
+     27,
+     33
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     37,
+     76
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 38,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     42,
+     48
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     54,
+     59
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     69,
+     74
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     78,
+     93
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 16,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     123,
+     132
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 9,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 143,
+   "fanout_truncations": 7,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 219,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 17,
+     "packing: too large": 2,
+     "selection: container": 8,
+     "selection: value N below floor": 34
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: packages/material-ui/src/test-utils/createShallow.js",
+     "incomplete parse: packages/material-ui/src/test-utils/getClasses.js"
+    ]
+   },
+   "1024": {
+    "used": 1004,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 12,
+     "packing: too large": 2,
+     "selection: container": 8,
+     "selection: value N below floor": 34
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: packages/material-ui/src/test-utils/createShallow.js",
+     "incomplete parse: packages/material-ui/src/test-utils/getClasses.js"
+    ]
+   },
+   "4096": {
+    "used": 4077,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 16,
+     "selection: container": 8,
+     "selection: value N below floor": 34
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: packages/material-ui/src/test-utils/createShallow.js",
+     "incomplete parse: packages/material-ui/src/test-utils/getClasses.js"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c70e82a773a3515f2485f28b7f3ff7ff0f577534b077404f01ddea956af019",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "a7dd5e6dd0f4e8f49f6ec0d1b0cba066489fcc66d10e90511f6fc253b419b1e1",
+   "routed": "1b7c06f1141c06604afe9f7802347102031d540fe73450c1b94a6fb8219fd614",
+   "payload@256": "8659f31a818ed5cc6d54465f263ec9257856843b4ca19a1f8bed359dc4cf7470",
+   "payload@1024": "486b13109ee1316a049c04f27ab11b4f498fa3032f4d97cb6acff72f525f2047",
+   "payload@4096": "86926cdcdd80175fed02af1ce52168de366ff66e1ce5bee85a762a12c5fdc486"
+  }
+ },
+ {
+  "task": "mui__material-ui-11987",
+  "split": "heldout",
+  "corpus": "mui__material-ui@09896d42e620",
+  "verified": {
+   "counts": {
+    "spans": 10,
+    "lines": 69,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.984375,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.998047,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": ".size-limit.js",
+    "lines": [
+     27,
+     33
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "docs/src/pages/style/icons/SvgIcons.js",
+    "lines": [
+     2,
+     7
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 4,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "docs/src/pages/style/icons/SvgIcons.js",
+    "lines": [
+     39,
+     44
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     40,
+     75
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     43,
+     48
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     60,
+     66
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     68,
+     76
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     77,
+     81
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 5,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     93,
+     98
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     118,
+     125
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 79,
+   "fanout_truncations": 3,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 252,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 33,
+     "packing: too large": 1,
+     "selection: container": 7,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1022,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 29,
+     "selection: container": 7,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4095,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 29,
+    "header_entities": 10,
+    "omissions": {
+     "packing: budget": 16,
+     "selection: container": 7,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c70e82a773a3515f2485f28b7f3ff7ff0f577534b077404f01ddea956af019",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "8267a00a12de96745d03c7ca198e645d32bdfa42c88683485416198d49d7c3dc",
+   "routed": "96687ebc9a7ba879588d45b2d79be6ec05cd3dfb58ae510e55b5d4abebc0c757",
+   "payload@256": "e4135ec827ecfa52736a0ab3655be66242dd7e614e01ef14d7821532de8944ed",
+   "payload@1024": "143dce8e99196d53c3b99c6e3ed381b187c03bf353d4a09e8edc3a5a16f94686",
+   "payload@4096": "547738538b33e7a11017c128584be19af388b6938002abc85736e1492e5e4b13"
+  }
+ },
+ {
+  "task": "mui__material-ui-12236",
+  "split": "heldout",
+  "corpus": "mui__material-ui@18aa6293ad8b",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 28,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.333333,
+    "entry_recall@20": 0.333333,
+    "entry_mrr": 0.2,
+    "entry_file_recall": 0.5,
+    "routed_coverage": 0.5,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.972656,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.976562,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.333333,
+    "line_recall@4096": 0.392857,
+    "file_recall@4096": 0.5,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.219048
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 34,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.2,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.972656,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.976562,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.219048
+   }
+  },
+  "gold": [
+   {
+    "file": "packages/material-ui/src/styles/withTheme.js",
+    "lines": [
+     1,
+     4
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 4,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/styles/withTheme.js",
+    "lines": [
+     44,
+     53
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/styles/withTheme.js",
+    "lines": [
+     44,
+     53
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "lines": [
+     95,
+     135
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "lines": [
+     98,
+     104
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "lines": [
+     127,
+     133
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "lines": [
+     144,
+     149
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 135,
+   "fanout_truncations": 6,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 249,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 33,
+     "selection: container": 1,
+     "selection: value N below floor": 27
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: packages/material-ui/src/styles/MuiThemeProvider.test.js",
+     "incomplete parse: packages/material-ui/src/styles/withStyles.test.js"
+    ]
+   },
+   "1024": {
+    "used": 1000,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 0,
+    "omissions": {
+     "packing: budget": 33,
+     "selection: container": 1,
+     "selection: value N below floor": 27
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: packages/material-ui/src/styles/MuiThemeProvider.test.js",
+     "incomplete parse: packages/material-ui/src/styles/withStyles.test.js"
+    ]
+   },
+   "4096": {
+    "used": 4095,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 16,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 12,
+     "selection: container": 1,
+     "selection: value N below floor": 27
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: packages/material-ui/src/styles/MuiThemeProvider.test.js",
+     "incomplete parse: packages/material-ui/src/styles/withStyles.test.js"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c70e82a773a3515f2485f28b7f3ff7ff0f577534b077404f01ddea956af019",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "81e385ef5455ff153ee5134b69d20aeda751f1a22759373f045b6d87fe96fe8c",
+   "routed": "43110b970f3ba22b6bf38aa3b1339e465a24b904b128dd1a7d1277ffefe6b3c9",
+   "payload@256": "f3b1d831ae81b8a36e14932c5ebb91c317a8a653a533c8d0112f123d0704c055",
+   "payload@1024": "7c48671ccac0d61aec8262b40f44d5b6d6d9140c0a0049602eb65c9f2c9b4dec",
+   "payload@4096": "8fcd5ddf0acc10cf019744ef69cf7c63c3d4f4669d302333a904831d54183a7b"
+  }
+ }
+]

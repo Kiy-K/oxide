@@ -1,0 +1,90 @@
+{
+  "ablation/no-routing-lexical-top-N": {
+    "coverage_at_routed_size": 1.0,
+    "n": 33.2857
+  },
+  "retrieval/lexical+structural": {
+    "entries": 15.7143,
+    "entry_coverage": 1.0,
+    "gold_via_both": 0.0,
+    "gold_via_lexical_only": 1.2857,
+    "gold_via_seed_only": 0.0,
+    "mrr": 0.5159,
+    "recall@1": 0.2857,
+    "recall@10": 1.0,
+    "recall@20": 1.0,
+    "recall@5": 0.8571
+  },
+  "retrieval/lexical-only": {
+    "entries": 15.7143,
+    "entry_coverage": 1.0,
+    "gold_via_both": 0.0,
+    "gold_via_lexical_only": 1.2857,
+    "gold_via_seed_only": 0.0,
+    "mrr": 0.5397,
+    "recall@1": 0.2857,
+    "recall@10": 1.0,
+    "recall@20": 1.0,
+    "recall@5": 0.8571
+  },
+  "retrieval/structural-only": {
+    "entries": 0.2857,
+    "entry_coverage": 0.0,
+    "gold_via_both": 0.0,
+    "gold_via_lexical_only": 0.0,
+    "gold_via_seed_only": 0.0,
+    "mrr": 0.0,
+    "recall@1": 0.0,
+    "recall@10": 0.0,
+    "recall@20": 0.0,
+    "recall@5": 0.0
+  },
+  "routing/lexical+structural": {
+    "candidates": 33.2857,
+    "deferral_loss": 0.0,
+    "edges_examined": 162.4286,
+    "edges_followed": 17.5714,
+    "entity_coverage": 1.0,
+    "fanout_truncations": 0.0,
+    "judgments": 0.0,
+    "max_depth_reached": 2.0,
+    "max_fanout_seen": 15.0,
+    "pruning_loss": 0.0,
+    "region_coverage": 1.0,
+    "regions_loaded": 33.2857,
+    "revisits": 78.1429,
+    "unreached": 0.0
+  },
+  "routing/lexical-only": {
+    "candidates": 33.2857,
+    "deferral_loss": 0.0,
+    "edges_examined": 162.4286,
+    "edges_followed": 17.5714,
+    "entity_coverage": 1.0,
+    "fanout_truncations": 0.0,
+    "judgments": 0.0,
+    "max_depth_reached": 2.0,
+    "max_fanout_seen": 15.0,
+    "pruning_loss": 0.0,
+    "region_coverage": 1.0,
+    "regions_loaded": 33.2857,
+    "revisits": 78.1429,
+    "unreached": 0.0
+  },
+  "routing/structural-only": {
+    "candidates": 26.8571,
+    "deferral_loss": 0.5714,
+    "edges_examined": 147.8571,
+    "edges_followed": 25.8571,
+    "entity_coverage": 0.4286,
+    "fanout_truncations": 0.7143,
+    "judgments": 0.0,
+    "max_depth_reached": 2.0,
+    "max_fanout_seen": 15.7143,
+    "pruning_loss": 0.0,
+    "region_coverage": 1.0,
+    "regions_loaded": 26.8571,
+    "revisits": 58.2857,
+    "unreached": 0.0
+  }
+}

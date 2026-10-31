@@ -1,0 +1,55 @@
+{
+ "about": "Hand-audited expected outline, written from the language, not from either tool. Each entry: [role, names, line, required]; line is the line of the declaration's name token (an import statement's first line); names lists accepted spellings. Members are nested under their item. Optional entries are neither required nor counted as extra.",
+ "files": {
+  "shapes.py": [
+   ["import", ["os"], 2, true], ["import", ["system", "sys"], 3, true],
+   ["import", ["OrderedDict", "collections"], 4, true], ["import", ["alias", "sibling", "."], 8, true],
+   ["item", ["LIMIT"], 10, true], ["item", ["names"], 11, true],
+   ["item", ["fetch"], 16, true, [["member", ["inner"], 17, false]]],
+   ["item", ["Store"], 23, true, [
+     ["member", ["capacity"], 26, true], ["member", ["label"], 27, true],
+     ["member", ["__init__"], 29, true], ["member", ["size"], 33, true],
+     ["member", ["load"], 37, true], ["member", ["Error"], 40, true]]],
+   ["item", ["convert"], 45, true], ["item", ["convert"], 47, true], ["item", ["convert"], 48, true],
+   ["item", ["compat"], 53, true],
+   ["import", ["speedups", "fast"], 57, false], ["item", ["speedups"], 59, false],
+   ["item", ["emoji_ñame"], 62, true]
+  ],
+  "shapes.ts": [
+   ["import", ["a", "./a"], 2, true], ["import", ["T", "./types"], 3, true],
+   ["import", ["ns", "./ns"], 4, true], ["import", ["def", "./multi"], 5, true],
+   ["item", ["LIMIT"], 10, true], ["item", ["local"], 11, true],
+   ["item", ["parse"], 13, true], ["item", ["parse"], 14, true], ["item", ["parse"], 15, true],
+   ["item", ["Shape"], 19, true, [["member", ["area"], 20, true], ["member", ["name"], 21, true]]],
+   ["item", ["Id"], 24, true],
+   ["item", ["Color"], 26, true, [["member", ["Red"], 27, true], ["member", ["Green"], 28, true]]],
+   ["item", ["Base"], 31, true, [
+     ["member", ["count"], 32, true], ["member", ["name"], 33, true], ["member", ["#secret", "secret"], 34, false],
+     ["member", ["constructor"], 35, true], ["member", ["area"], 36, true],
+     ["member", ["label"], 37, true], ["member", ["refresh"], 40, true]]],
+   ["item", ["Geometry"], 43, true, [["member", ["unit"], 44, true]]],
+   ["item", ["external", "\"external\""], 49, false, [["member", ["ext"], 50, false]]],
+   ["item", ["Widget", "<default>", "default"], 53, true, [["member", ["area"], 54, true]]],
+   ["item", ["increment", "local"], 59, false], ["item", ["./reexport", "*"], 60, false]
+  ],
+  "view.tsx": [
+   ["import", ["React", "react"], 1, true], ["item", ["Props"], 3, true],
+   ["item", ["Panel"], 5, true], ["item", ["Badge"], 10, true],
+   ["item", ["Panel", "<default>", "default"], 12, false]
+  ],
+  "legacy.js": [
+   ["import", ["path"], 2, true], ["import", ["join", "path"], 3, true],
+   ["item", ["DEFAULTS"], 5, true], ["item", ["walk"], 7, true],
+   ["item", ["Walker"], 11, true, [
+     ["member", ["instances"], 12, true], ["member", ["#seen", "seen"], 13, false],
+     ["member", ["constructor"], 14, true], ["member", ["visit"], 17, true]]],
+   ["item", ["<export:default>", "module.exports", "walk"], 21, false],
+   ["item", ["<export:Walker>", "Walker", "module.exports.Walker"], 22, false],
+   ["item", ["helper", "<export:helper>", "exports.helper"], 23, true]
+  ],
+  "card.jsx": [
+   ["import", ["twice", "./math.mjs"], 1, true], ["item", ["Card"], 3, true],
+   ["item", ["List"], 7, true], ["item", ["App", "<default>", "default"], 11, true]
+  ]
+ }
+}

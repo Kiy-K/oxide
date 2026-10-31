@@ -1,0 +1,18 @@
+{
+ "baseline-v8": {
+  "successor": "baseline-v9",
+  "tasks": 44,
+  "results_identical_except_derivation": true,
+  "metrics_byte_identical": true,
+  "manifest_identity_only": true,
+  "metrics_sha256": "c600b26cc217e2420a2e762d5ad7c67e774b5c3af69f1978ad0f8cf0f4a7ff96"
+ },
+ "typescript-v5": {
+  "successor": "typescript-v6",
+  "tasks": 89,
+  "results_identical_except_derivation": true,
+  "metrics_byte_identical": true,
+  "manifest_identity_only": true,
+  "metrics_sha256": "468718a20cf60943203d87578776e0080ffdaf42c86b98879bfcc8495a9ad836"
+ }
+}

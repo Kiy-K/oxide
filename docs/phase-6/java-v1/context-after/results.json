@@ -1,0 +1,4103 @@
+[
+ {
+  "task": "alibaba__fastjson2-2559",
+  "split": "heldout",
+  "corpus": "alibaba__fastjson2@45cc6b34343b",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 5,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.9375,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.980469,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.937988,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java",
+    "lines": [
+     1522,
+     1527
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 247,
+   "fanout_truncations": 28,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 240,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 50,
+     "packing: too large": 10
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1004,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 52
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 3842,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 33,
+    "header_entities": 12,
+    "omissions": {
+     "selection: item cap N": 40
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "7e896cc7d7946f36e512cc0bba6052928c462671532c979fd29d0a94fcb8862d",
+   "routed": "50b51d850a85519e0d267fea3af04edc7acdecf7f3edada68957db517ddfd929",
+   "payload@256": "3f46d225bc28a34cbf55b0c47caf6399082efff691c7d58e4bad7c64270959b5",
+   "payload@1024": "2af4b2b219b7ec093d3424729c56d7bce1981d13c330242d62afc3a83eaa88cf",
+   "payload@4096": "175145f3b80c7be8f7b1e960d5d10a033c5710dc6854e18383cea7dfbf9f98c9"
+  }
+ },
+ {
+  "task": "alibaba__fastjson2-2775",
+  "split": "heldout",
+  "corpus": "alibaba__fastjson2@12b40c7ba3e7",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 57,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.333333,
+    "entry_mrr": 0.055556,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.886719,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.992432,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+    "lines": [
+     941,
+     978
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": 18,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+    "lines": [
+     978,
+     1001
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 21,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+    "lines": [
+     999,
+     1004
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 275,
+   "fanout_truncations": 63,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 227,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 60
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1024,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 58
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4065,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 18,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 48
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "87b9e67a0646f17c65c94a508df30fc2822c9e4ef18cea085cfd07b604db00bc",
+   "routed": "621af3911eb38805253481397d4895bc74f0ed02321c7c4c239b4156bb620c5f",
+   "payload@256": "0bd7e2d3f3727c020e07d23e23448df8d01598a479b42aee95e1df381c6626b6",
+   "payload@1024": "ca6a5c275789598bac9482c36a59fc40067ad51d3081ecd38b5642890638011d",
+   "payload@4096": "41b78c357adf783ea601ba7b4b49d3e5978c7431ef66a9055f0b21f6b8659d14"
+  }
+ },
+ {
+  "task": "alibaba__fastjson2-82",
+  "split": "heldout",
+  "corpus": "alibaba__fastjson2@3aed80608b36",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 508,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.25,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.5,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.027559,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.882812,
+    "gold_unit_share@256": 1.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.051181,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.972656,
+    "gold_unit_share@1024": 0.37751,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.13189,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.99707,
+    "gold_unit_share@4096": 0.192458
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+    "lines": [
+     1,
+     427
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 390,
+    "module_lines": 13,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+    "lines": [
+     598,
+     701
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 99,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+    "lines": [
+     350,
+     359
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+    "lines": [
+     358,
+     371
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 13,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 275,
+   "fanout_truncations": 28,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 226,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 60,
+     "selection: container": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 996,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 50,
+     "selection: container": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4084,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 29,
+    "header_entities": 11,
+    "omissions": {
+     "selection: container": 1,
+     "selection: item cap N": 39
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "7c8cbb97c12ac5499af3b8292e4f8c73163fc09d1df2d15d1760a9c638d28fca",
+   "routed": "7c7f97bc326392973efa2c7e6dfac9d2236e403794fe13150d8eefb17bec25ca",
+   "payload@256": "6347a44ab2e10e93456f9375def6757ec0680b21ff247d1c08cebf6094466e4c",
+   "payload@1024": "84fb03a96b284113db15d2c7944cfb5d32ca0df29193ce62ee9c1b41460e0ad8",
+   "payload@4096": "4b6ad76407f4d954d583770440a8064220aa98e91606eecebc7c06fe52c6efe9"
+  }
+ },
+ {
+  "task": "elastic__logstash-13825",
+  "split": "heldout",
+  "corpus": "elastic__logstash@d64248f62837",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 305,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.882812,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.065574,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.969727,
+    "gold_unit_share@1024": 0.507553,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.236066,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.347412
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 267,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.882812,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.969727,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/config/ir/compiler/ComputeStepSyntaxElement.java",
+    "lines": [
+     1,
+     267
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 267,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java",
+    "lines": [
+     1,
+     343
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 305,
+    "module_lines": 25,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 153,
+   "fanout_truncations": 10,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 226,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 61,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 993,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 52,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4096,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 28,
+    "header_entities": 12,
+    "omissions": {
+     "packing: budget": 24,
+     "selection: item cap N": 15,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "5c0be90cbfe65397cb5e7748c444820754f52bef074872e9a5615183e824fbaa",
+   "routed": "85bb68ed84701210a7016b4a9e8c847f1a12127d89636031a095bcb819ce6bbb",
+   "payload@256": "3029cd5251f58a4606e87d21e547cc58f10ae5b9d2691cdaa8b091b8f10f56b5",
+   "payload@1024": "04530faca961280103db98af597eb080f25a316bc4d58e4195794f90f6c0709f",
+   "payload@4096": "db188ff25f3bf19f4604412ad72a023f14ad0069817def34e76bcd14c267983e"
+  }
+ },
+ {
+  "task": "elastic__logstash-13902",
+  "split": "heldout",
+  "corpus": "elastic__logstash@32675c1a88bd",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 321,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.972656,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.998047,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 3,
+    "lines": 483,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.972656,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.998047,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+    "lines": [
+     1,
+     386
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 321,
+    "module_lines": 47,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java",
+    "lines": [
+     1,
+     67
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 67,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java",
+    "lines": [
+     1,
+     235
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 235,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+    "lines": [
+     1,
+     181
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 181,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 247,
+   "fanout_truncations": 15,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 253,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 61
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 996,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 58
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4088,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 24,
+    "header_entities": 14,
+    "omissions": {
+     "packing: budget": 42
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "8caae5c644593b5db11e9ea811eaa3b84a46696d818d70849729de5be290f6aa",
+   "routed": "ea0e5fc580c706fc290ccd0c3da82742bd8c9757f0c727132eea9085ac97175c",
+   "payload@256": "7274a7640e8cdf767d91bc7c689a760c4f9c124ed8a8179af80c7bb28ab9dd3c",
+   "payload@1024": "e56be2fcd6dcbe81d3c7c6020b295e883ecb33609441678f39e8d05154c42700",
+   "payload@4096": "4a6b5f9b3d9874d869ffe491630b99136342ca18b85e0bc3ed7d09c118bd61db"
+  }
+ },
+ {
+  "task": "elastic__logstash-13931",
+  "split": "heldout",
+  "corpus": "elastic__logstash@7df02cc828c8",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 248,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.972656,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.998047,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 3,
+    "lines": 483,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.972656,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.998047,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 85,
+    "module_lines": 47,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+    "lines": [
+     100,
+     201
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 88,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+    "lines": [
+     200,
+     301
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 78,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java",
+    "lines": [
+     1,
+     67
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 67,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java",
+    "lines": [
+     1,
+     235
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 235,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+    "lines": [
+     1,
+     181
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 181,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 247,
+   "fanout_truncations": 15,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 253,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 61
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 996,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 58
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4088,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 24,
+    "header_entities": 14,
+    "omissions": {
+     "packing: budget": 42
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "8caae5c644593b5db11e9ea811eaa3b84a46696d818d70849729de5be290f6aa",
+   "routed": "ea0e5fc580c706fc290ccd0c3da82742bd8c9757f0c727132eea9085ac97175c",
+   "payload@256": "7274a7640e8cdf767d91bc7c689a760c4f9c124ed8a8179af80c7bb28ab9dd3c",
+   "payload@1024": "e56be2fcd6dcbe81d3c7c6020b295e883ecb33609441678f39e8d05154c42700",
+   "payload@4096": "4a6b5f9b3d9874d869ffe491630b99136342ca18b85e0bc3ed7d09c118bd61db"
+  }
+ },
+ {
+  "task": "fasterxml__jackson-core-1016",
+  "split": "heldout",
+  "corpus": "fasterxml__jackson@315ac5ad2ad5",
+  "verified": {
+   "counts": {
+    "spans": 9,
+    "lines": 68,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.111111,
+    "entry_recall@20": 0.111111,
+    "entry_mrr": 0.25,
+    "entry_file_recall": 0.75,
+    "routed_coverage": 0.777778,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.96875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.982422,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.75,
+    "utilization@4096": 0.952881,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+    "lines": [
+     1295,
+     1306
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+    "lines": [
+     1299,
+     1305
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+    "lines": [
+     1326,
+     1332
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+    "lines": [
+     1849,
+     1855
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+    "lines": [
+     1933,
+     1938
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+    "lines": [
+     1934,
+     1942
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/json/async/NonBlockingJsonParserBase.java",
+    "lines": [
+     790,
+     795
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/json/async/NonBlockingJsonParserBase.java",
+    "lines": [
+     791,
+     799
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+    "lines": [
+     362,
+     391
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 28,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 230,
+   "fanout_truncations": 16,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 248,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 59,
+     "packing: too large": 1,
+     "selection: container": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1006,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 56,
+     "selection: container": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 3903,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 28,
+    "header_entities": 9,
+    "omissions": {
+     "selection: container": 1,
+     "selection: item cap N": 39
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "9c11a7d0f9c64899c8cbd230dba9f14f7328b3162f08c6ac8f82a46cf14e45c3",
+   "routed": "57d9f4b1daf06371ce9a5b345d42c459cfe9a33e2281794d5f3c3e86bf9b9d17",
+   "payload@256": "149908ee5bfe158749de887c36d1ea51bc5a200326422d7823d6561cfcedf026",
+   "payload@1024": "b91407b7c14361c17cc4c1c3031efef80a9633d520ad465f4c9b75655c35d12d",
+   "payload@4096": "7ba4a5feb07b78c207b7b1b564db39d7980ec0af5f0f10aaaae75d66ff4707e9"
+  }
+ },
+ {
+  "task": "fasterxml__jackson-core-1263",
+  "split": "heldout",
+  "corpus": "fasterxml__jackson@9ed17fc7e9df",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 920,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.001087,
+    "file_recall@256": 0.25,
+    "utilization@256": 0.976562,
+    "gold_unit_share@256": 0.268,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.036957,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.685547,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.331522,
+    "file_recall@4096": 0.25,
+    "utilization@4096": 0.998779,
+    "gold_unit_share@4096": 0.846981
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 167,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.976562,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.998779,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+    "lines": [
+     1,
+     274
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 238,
+    "module_lines": 17,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/util/JsonRecyclerPools.java",
+    "lines": [
+     1,
+     273
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 224,
+    "module_lines": 14,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java",
+    "lines": [
+     1,
+     401
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 343,
+    "module_lines": 38,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/test/java/com/fasterxml/jackson/core/io/BufferRecyclerPoolTest.java",
+    "lines": [
+     1,
+     140
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 115,
+    "module_lines": 13,
+    "entry_rank": 15,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "/workspace/fasterxml__jackson-core__0.1/src/test/java/com/fasterxml/jackson/core/util/JsonBufferRecyclersTest.java",
+    "lines": [
+     1,
+     167
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 167,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 160,
+   "fanout_truncations": 10,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 250,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 55,
+     "packing: too large": 1,
+     "selection: container": 1,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1024,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 12,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 47,
+     "selection: container": 1,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4091,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 51,
+     "selection: container": 1,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "7a22e92114df236223ed7c6c07a80134f9055628c73b3e7ead8cc45389d83e5d",
+   "routed": "f29d2fbef6addc47639f9b9e775102b5ee47f7eed67c30a97ac6799171f0485d",
+   "payload@256": "72a8a52eaab952803b032bf9760f9d7de307a35805203880ca7be3cc9981ea82",
+   "payload@1024": "f5d240e7c554c49e8cadcd96dcc7ce1d12429c31ebdac37a9866e8ce03fbbe11",
+   "payload@4096": "3e6c50ab9b28f593a5840119079cdc0dc7b403713970b229fdc7029b3ebccfe8"
+  }
+ },
+ {
+  "task": "fasterxml__jackson-core-183",
+  "split": "heldout",
+  "corpus": "fasterxml__jackson@ac6d8e22847c",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 15,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.914062,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998291,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+    "lines": [
+     295,
+     311
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 324,
+   "fanout_truncations": 22,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 234,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 62
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1021,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 60
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4089,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 29,
+    "header_entities": 13,
+    "omissions": {
+     "packing: budget": 40
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "b0af4b3f9a613c15b7791757d9f6c67a34ed866e8049c45b9246e4d70950f648",
+   "routed": "36aabede44616e0004c84f461880f9b4e722aeca18db2e15dae12835177ff879",
+   "payload@256": "f726649891d7f732d843c3411506b100578f56fb7908858e572433521b6e4870",
+   "payload@1024": "167d4a81d8e0aafeaa328668c3224cf4d6a03b27d5ba39e9be292d9a3001fe6f",
+   "payload@4096": "d3f48f73a23bccc4b992384d1840868d870a373d26997e243694a57fba63a8c6"
+  }
+ },
+ {
+  "task": "google__gson-1391",
+  "split": "heldout",
+  "corpus": "google__gson@3f4ac29f9112",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 483,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.012422,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.964844,
+    "gold_unit_share@256": 1.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.128364,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.993164,
+    "gold_unit_share@1024": 0.944936,
+    "span_recall@4096": 0.25,
+    "line_recall@4096": 0.364389,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.689377
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+    "lines": [
+     1,
+     428
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 371,
+    "module_lines": 34,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+    "lines": [
+     336,
+     357
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 20,
+    "module_lines": 0,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+    "lines": [
+     419,
+     451
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 28,
+    "module_lines": 0,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "gson/src/test/java/com/google/gson/internal/bind/RecursiveTypesResolveTest.java",
+    "lines": [
+     1,
+     115
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 92,
+    "module_lines": 30,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 196,
+   "fanout_truncations": 18,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 247,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 58,
+     "packing: too large": 1,
+     "selection: container": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1017,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 52,
+     "selection: container": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4095,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 17,
+    "header_entities": 9,
+    "omissions": {
+     "packing: budget": 35,
+     "selection: container": 1,
+     "selection: item cap N": 3,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "5a0f97aef4597fbbffab514aa27ca70a1306f8b5bafab5ea89ec30138ef3d4cb",
+   "routed": "442e5641da3509fe818a9c55b992a4b41c8c37322c4b6348ec9ca15b9afc787c",
+   "payload@256": "a813638ca8be9da6b91e3d2061368a5a76be92996c823fde9e49b90729668b16",
+   "payload@1024": "1b4c4e4cb67134568722ec85e9a3d49e6e36fbbbad7c3b888e6f36bb1031b0c4",
+   "payload@4096": "1aac043ff1d5dfa69197a28cc0d191735671c48605e069e5e498bcfce3e5ef77"
+  }
+ },
+ {
+  "task": "google__gson-1703",
+  "split": "heldout",
+  "corpus": "google__gson@6d2557d5d1a8",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 364,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.25,
+    "entry_mrr": 0.333333,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.984375,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.016484,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.12207,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.016484,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.987305,
+    "gold_unit_share@4096": 0.03091
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 121,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.984375,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.987305,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "gson/src/main/java/com/google/gson/Gson.java",
+    "lines": [
+     1,
+     350
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 328,
+    "module_lines": 128,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "gson/src/main/java/com/google/gson/Gson.java",
+    "lines": [
+     656,
+     667
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "gson/src/main/java/com/google/gson/Gson.java",
+    "lines": [
+     680,
+     691
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "gson/src/main/java/com/google/gson/Gson.java",
+    "lines": [
+     739,
+     750
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/internal/Streams.java",
+    "lines": [
+     1,
+     121
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 121,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 143,
+   "fanout_truncations": 14,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 252,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 61
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1024,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 12,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 51
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4044,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 48,
+    "header_entities": 28,
+    "omissions": {
+     "selection: item cap N": 40
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "0f322820f8f75fe0698a13e7aa3007858fac97a946c8e2cc5f1972ebcbb415fc",
+   "routed": "da108bf2d33591be8febe850c2aea6bd9d2a3c8aa68d4aabfde51769be99f21a",
+   "payload@256": "85dbdfb3f22679d2458389eb619f8f8df59570dc030bed3cc0caaf86d7dd1ba5",
+   "payload@1024": "7f966b1e34d938a9c89e0776caad10df3f486bf3f09a10d27bd78f4a73310988",
+   "payload@4096": "d2122b375a91d718e880c7ce74cec2241e47e06351efb9b7fc03980d436112e2"
+  }
+ },
+ {
+  "task": "googlecontainertools__jib-2542",
+  "split": "heldout",
+  "corpus": "googlecontainertools__jib@34a757b0d64f",
+  "verified": {
+   "counts": {
+    "spans": 7,
+    "lines": 804,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.142857,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.9375,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.990234,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "jib-core/src/main/java/com/google/cloud/tools/jib/http/ResponseException.java",
+    "lines": [
+     1,
+     57
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 47,
+    "module_lines": 20,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+    "lines": [
+     1,
+     192
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 171,
+    "module_lines": 50,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+    "lines": [
+     1,
+     224
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 198,
+    "module_lines": 42,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+    "lines": [
+     1,
+     423
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 355,
+    "module_lines": 56,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+    "lines": [
+     420,
+     431
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+    "lines": [
+     420,
+     455
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 32,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+    "lines": [
+     450,
+     461
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 185,
+   "fanout_truncations": 12,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 240,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 44,
+     "packing: too large": 5,
+     "selection: container": 2,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1014,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: container": 2,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4095,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 19,
+    "header_entities": 10,
+    "omissions": {
+     "packing: budget": 22,
+     "selection: container": 2,
+     "selection: item cap N": 7,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "f03180189d242a2e84fe6ad621001235089c7182d24a0956637391ce1c4cb897",
+   "routed": "ce411abd57d012fdd6ef5aadbed586105ebd3321ca3810bd4c24178da979a1b3",
+   "payload@256": "b7150b04752db43a8f741b4c3436f0acaf117b7accc263feaf957dd4d7e16371",
+   "payload@1024": "867ba94fcd62fd3b2ebf09ad1d1da44b312c7e87e2f584365441a3b9a0833696",
+   "payload@4096": "d7edfd7b6b9aed3e6043a3679b267f5cf7bf87f19fac2c909073eb43f189faea"
+  }
+ },
+ {
+  "task": "googlecontainertools__jib-2688",
+  "split": "heldout",
+  "corpus": "googlecontainertools__jib@7b36544eca5e",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 515,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.333333,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.005825,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.941406,
+    "gold_unit_share@256": 0.697095,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.064078,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.960938,
+    "gold_unit_share@1024": 0.913618,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.139806,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.456055
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+    "lines": [
+     1,
+     415
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 375,
+    "module_lines": 75,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+    "lines": [
+     490,
+     556
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 57,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+    "lines": [
+     500,
+     531
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+    "lines": [
+     520,
+     581
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 52,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+    "lines": [
+     560,
+     581
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 20,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenProjectPropertiesTest.java",
+    "lines": [
+     775,
+     841
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 60,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 112,
+   "fanout_truncations": 9,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 241,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 22,
+     "selection: container": 5,
+     "selection: value N below floor": 34
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-1/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-2/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/pom.xml"
+    ]
+   },
+   "1024": {
+    "used": 984,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 18,
+     "selection: container": 5,
+     "selection: value N below floor": 34
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-1/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-2/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/pom.xml"
+    ]
+   },
+   "4096": {
+    "used": 4096,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 17,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 8,
+     "selection: container": 5,
+     "selection: value N below floor": 34
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-1/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-2/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/pom.xml"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "f68a671058f9b11fc206f59ea9e2270e5f2f2a7ab28f568a30f9eb9824d0b672",
+   "routed": "985450148decee1bff6679e3e8a582a8f0e6781c85e54b7f4b7f680c0a256cac",
+   "payload@256": "4539216a0c35f9bd7b4a73cd852b2e0d6fb4cf6c845a08ebcf79c9762d77414a",
+   "payload@1024": "9b226b44f67776fa3d3480ec1281b986101ee9b9a4053e2e895f49278044fb5b",
+   "payload@4096": "9986c4cbaf161b87a1745d515690ff08fb3a09ad9be96125cf24f7edc77cbfc2"
+  }
+ },
+ {
+  "task": "mockito__mockito-3129",
+  "split": "heldout",
+  "corpus": "mockito__mockito@edc624371009",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 1019,
+    "files": 8
+   },
+   "metrics": {
+    "entry_recall@1": 0.125,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.25,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.25,
+    "routed_coverage": 0.5,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.002944,
+    "file_recall@256": 0.125,
+    "utilization@256": 0.898438,
+    "gold_unit_share@256": 0.486957,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.038273,
+    "file_recall@1024": 0.25,
+    "utilization@1024": 0.989258,
+    "gold_unit_share@1024": 0.632774,
+    "span_recall@4096": 0.125,
+    "line_recall@4096": 0.075564,
+    "file_recall@4096": 0.25,
+    "utilization@4096": 0.997314,
+    "gold_unit_share@4096": 0.289841
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/main/java/org/mockito/MockMakers.java",
+    "lines": [
+     1,
+     43
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 37,
+    "module_lines": 14,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java",
+    "lines": [
+     1,
+     118
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 106,
+    "module_lines": 19,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 83,
+    "module_lines": 13,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+    "lines": [
+     1,
+     309
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 294,
+    "module_lines": 97,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/util/MockUtil.java",
+    "lines": [
+     1,
+     221
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 188,
+    "module_lines": 24,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/plugins/InlineMockMaker.java",
+    "lines": [
+     1,
+     47
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 42,
+    "module_lines": 25,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/plugins/MockMaker.java",
+    "lines": [
+     1,
+     253
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 229,
+    "module_lines": 61,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/plugins/MockitoPlugins.java",
+    "lines": [
+     1,
+     45
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 17,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 286,
+   "fanout_truncations": 17,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 230,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 54,
+     "selection: value N below floor": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1013,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 47,
+     "selection: value N below floor": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4085,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 28,
+    "header_entities": 12,
+    "omissions": {
+     "packing: budget": 5,
+     "selection: item cap N": 29,
+     "selection: value N below floor": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "8bc0122655294368bd13d4dce608172b05d11a425419afddac260e63350c991a",
+   "routed": "86cecc9f0dd06c15ec1a9b15a3fee8ec3343b021ced3ae6012a009faa95df443",
+   "payload@256": "0dc27ad3dbfa7f5446ade27810564168d2deb041df4d29f6f6a859dc143e66a5",
+   "payload@1024": "c0bc3e61e2ffbc8ea07f9816d5aec378137b7dd65b35c9929263685934e3ea73",
+   "payload@4096": "7a73a9cf74d6dd3717b6e0cf70f07bf85965d0793662ea1a14a18d9f440a0be8"
+  }
+ },
+ {
+  "task": "mockito__mockito-3167",
+  "split": "heldout",
+  "corpus": "mockito__mockito@b6554b29ed6c",
+  "verified": {
+   "counts": {
+    "spans": 7,
+    "lines": 955,
+    "files": 6
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.142857,
+    "entry_mrr": 0.142857,
+    "entry_file_recall": 0.166667,
+    "routed_coverage": 0.142857,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.001047,
+    "file_recall@256": 0.166667,
+    "utilization@256": 0.867188,
+    "gold_unit_share@256": 0.301802,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.976562,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.081675,
+    "file_recall@4096": 0.166667,
+    "utilization@4096": 0.999268,
+    "gold_unit_share@4096": 0.350354
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 43,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.867188,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.976562,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.999268,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 83,
+    "module_lines": 13,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineBytecodeGenerator.java",
+    "lines": [
+     55,
+     71
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+    "lines": [
+     1,
+     302
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 285,
+    "module_lines": 97,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+    "lines": [
+     544,
+     571
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/SubclassByteBuddyMockMaker.java",
+    "lines": [
+     1,
+     193
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 172,
+    "module_lines": 23,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/TypeSupport.java",
+    "lines": [
+     1,
+     43
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 43,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+    "lines": [
+     1,
+     218
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 186,
+    "module_lines": 40,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/util/MockUtil.java",
+    "lines": [
+     1,
+     221
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 188,
+    "module_lines": 24,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 342,
+   "fanout_truncations": 26,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 222,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 58,
+     "packing: too large": 1,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1000,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 54,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4093,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 25,
+    "header_entities": 13,
+    "omissions": {
+     "packing: budget": 29,
+     "selection: item cap N": 9,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "a39f40b6b86a6d0eea76c08db5a307c52ab9dea713cef3e1ddeef1596872fa06",
+   "routed": "5ab4a9561b6b63d7b6932a79974fae41792163219a061986a3d8ed7419171704",
+   "payload@256": "c07ba7db17712f0912fcdaad3fe2f139b3216cc9bba9682325766083f7ca741f",
+   "payload@1024": "1bef9a9b8a8874efb765e3aaad1c78aa1e1ae2ae18b7d1053fab4f2796ef32a7",
+   "payload@4096": "7293720d0eac47fcea3315a86cef04555210934d1547c6cfeecf7f7e3ba5a435"
+  }
+ },
+ {
+  "task": "mockito__mockito-3220",
+  "split": "heldout",
+  "corpus": "mockito__mockito@a0214364c36c",
+  "verified": {
+   "counts": {
+    "spans": 24,
+    "lines": 197,
+    "files": 9
+   },
+   "metrics": {
+    "entry_recall@1": 0.041667,
+    "entry_recall@5": 0.083333,
+    "entry_recall@20": 0.125,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.333333,
+    "routed_coverage": 0.583333,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.06599,
+    "file_recall@256": 0.111111,
+    "utilization@256": 0.9375,
+    "gold_unit_share@256": 1.0,
+    "span_recall@1024": 0.041667,
+    "line_recall@1024": 0.111675,
+    "file_recall@1024": 0.222222,
+    "utilization@1024": 0.995117,
+    "gold_unit_share@1024": 0.468106,
+    "span_recall@4096": 0.041667,
+    "line_recall@4096": 0.126904,
+    "file_recall@4096": 0.333333,
+    "utilization@4096": 0.962646,
+    "gold_unit_share@4096": 0.13898
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+    "lines": [
+     26,
+     35
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 8,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+    "lines": [
+     59,
+     65
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+    "lines": [
+     70,
+     78
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+    "lines": [
+     84,
+     126
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 36,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+    "lines": [
+     131,
+     142
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java",
+    "lines": [
+     12,
+     18
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java",
+    "lines": [
+     62,
+     68
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/PluginRegistry.java",
+    "lines": [
+     5,
+     12
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/PluginRegistry.java",
+    "lines": [
+     46,
+     53
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/PluginRegistry.java",
+    "lines": [
+     119,
+     125
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/Plugins.java",
+    "lines": [
+     4,
+     13
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 9,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/Plugins.java",
+    "lines": [
+     16,
+     22
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 3,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/Plugins.java",
+    "lines": [
+     99,
+     107
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/MockSettingsImpl.java",
+    "lines": [
+     34,
+     39
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/MockSettingsImpl.java",
+    "lines": [
+     283,
+     291
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/MockSettingsImpl.java",
+    "lines": [
+     306,
+     314
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+    "lines": [
+     18,
+     23
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+    "lines": [
+     49,
+     54
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+    "lines": [
+     73,
+     78
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+    "lines": [
+     198,
+     201
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/util/MockNameImpl.java",
+    "lines": [
+     7,
+     12
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 3,
+    "module_lines": 2,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/util/MockNameImpl.java",
+    "lines": [
+     15,
+     23
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/mock/MockCreationSettings.java",
+    "lines": [
+     151,
+     154
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/plugins/DoNotMockEnforcer.java",
+    "lines": [
+     4,
+     23
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 18,
+    "module_lines": 5,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 269,
+   "fanout_truncations": 20,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 240,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 1,
+    "header_entities": 0,
+    "omissions": {
+     "packing: budget": 54,
+     "selection: container": 2,
+     "selection: value N below floor": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1019,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: container": 2,
+     "selection: value N below floor": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 3943,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 29,
+    "header_entities": 11,
+    "omissions": {
+     "selection: container": 2,
+     "selection: item cap N": 32,
+     "selection: value N below floor": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "2f5097cf6d717967757e334751f1f4c28b94a88307a8614193328ea965009987",
+   "routed": "ba66a6318750712bcb9b24a2898a472124fe95c76b53189c1c409e1fe590ed97",
+   "payload@256": "c56b1d86ac75569381516e4e2606447277a3a01fda5c423ed6c4e00d487d329f",
+   "payload@1024": "17dba2cfaff6d5e4abdb86eb442236c692bd04c18881e0b12a045e5ed70383d9",
+   "payload@4096": "f11282dd5032433888aae22c4c0de7846171dd23df0d5a19b73c2036666f8e38"
+  }
+ }
+]

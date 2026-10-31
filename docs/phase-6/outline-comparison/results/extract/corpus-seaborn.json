@@ -1,0 +1,132 @@
+{
+ "corpus": "seaborn",
+ "tool": "ast-grep 0.51.0",
+ "totals": {
+  "files": 150,
+  "compared": 150,
+  "partial": 0
+ },
+ "failures": {},
+ "classes": {
+  "matched, same bytes": 2179,
+  "B only: member field": 340,
+  "B only: item variable": 316,
+  "matched, start differs": 316,
+  "C only: member function": 42,
+  "B only: item constant": 16,
+  "C only: member class": 4
+ },
+ "examples": {
+  "B only: item variable": [
+   "ci/cache_datasets.py: path L11-11 in None",
+   "ci/cache_datasets.py: py_files L12-12 in None",
+   "ci/cache_datasets.py: ipynb_files L13-13 in None",
+   "ci/cache_datasets.py: datasets L15-15 in None",
+   "ci/check_gallery.py: fnames L7-7 in None",
+   "doc/conf.py: project L24-24 in None",
+   "doc/conf.py: copyright L25-25 in None",
+   "doc/conf.py: author L26-26 in None"
+  ],
+  "B only: item constant": [
+   "doc/sphinxext/gallery_generator.py: RST_TEMPLATE L27-42 in None",
+   "doc/sphinxext/gallery_generator.py: INDEX_TEMPLATE L45-125 in None",
+   "doc/sphinxext/tutorial_builder.py: TEMPLATE L13-46 in None",
+   "doc/tools/generate_logos.py: XY_CACHE L9-9 in None",
+   "doc/tools/generate_logos.py: STATIC_DIR L11-11 in None",
+   "seaborn/_core/properties.py: PROPERTY_CLASSES L772-801 in None",
+   "seaborn/_core/properties.py: PROPERTIES L803-803 in None",
+   "seaborn/_testing.py: USE_PROPS L7-21 in None"
+  ],
+  "matched, start differs": [
+   "doc/sphinxext/gallery_generator.py: dirname B L185 C L184",
+   "doc/sphinxext/gallery_generator.py: fname B L189 C L188",
+   "doc/sphinxext/gallery_generator.py: modulename B L193 C L192",
+   "doc/sphinxext/gallery_generator.py: pyfilename B L197 C L196",
+   "doc/sphinxext/gallery_generator.py: rstfilename B L201 C L200",
+   "doc/sphinxext/gallery_generator.py: htmlfilename B L205 C L204",
+   "doc/sphinxext/gallery_generator.py: pngfilename B L209 C L208",
+   "doc/sphinxext/gallery_generator.py: thumbfilename B L214 C L213"
+  ],
+  "C only: member class": [
+   "seaborn/_compat.py: ScaledNorm L38-62 in norm_from_scale",
+   "seaborn/_compat.py: Axis L91-92 in scale_factory",
+   "seaborn/utils.py: dummy_axis L690-692 in locator_to_legend_entries",
+   "tests/test_decorators.py: Thingie L7-16 in test_share_init_params_with_map"
+  ],
+  "B only: member field": [
+   "seaborn/_core/data.py: frame L42-42 in PlotData",
+   "seaborn/_core/data.py: frames L43-43 in PlotData",
+   "seaborn/_core/data.py: names L44-44 in PlotData",
+   "seaborn/_core/data.py: ids L45-45 in PlotData",
+   "seaborn/_core/data.py: source_data L46-46 in PlotData",
+   "seaborn/_core/data.py: source_vars L47-47 in PlotData",
+   "seaborn/_core/moves.py: group_by_orient L19-19 in Move",
+   "seaborn/_core/moves.py: width L48-48 in Jitter"
+  ],
+  "C only: member function": [
+   "seaborn/_core/rules.py: all_numeric L100-104 in variable_type",
+   "seaborn/_core/rules.py: all_datetime L111-115 in variable_type",
+   "seaborn/_core/scales.py: identity L888-889 in _make_identity_transforms",
+   "seaborn/_core/scales.py: logit L898-900 in _make_logit_transforms",
+   "seaborn/_core/scales.py: expit L902-904 in _make_logit_transforms",
+   "seaborn/_core/scales.py: forward L919-920 in _make_log_transforms",
+   "seaborn/_core/scales.py: log L923-925 in _make_log_transforms",
+   "seaborn/_core/scales.py: exp L927-929 in _make_log_transforms"
+  ]
+ },
+ "imports": {
+  "B lines": 806,
+  "C lines": 998,
+  "both": 806
+ },
+ "provenance": {
+  "B": {
+   "entries": 3973,
+   "inside": 3973,
+   "named": 3167,
+   "name in range": 3167
+  },
+  "C": {
+   "entries": 2913,
+   "inside": 2913,
+   "named": 2541,
+   "name in range": 2541
+  }
+ },
+ "nondeterministic": {
+  "B": [],
+  "C": []
+ },
+ "seconds": {
+  "B": {
+   "sum": 3.721,
+   "p50": 0.023322,
+   "p95": 0.037135
+  },
+  "C": {
+   "sum": 0.989,
+   "p50": 0.006331,
+   "p95": 0.012509
+  }
+ },
+ "units": {
+  "B": {
+   "sum": 56532,
+   "p50": 192.0
+  },
+  "C": {
+   "sum": 58575,
+   "p50": 117.5
+  },
+  "A": {
+   "sum": 82364,
+   "p50": 211.0
+  },
+  "file": {
+   "sum": 629446,
+   "p50": 769.5
+  }
+ },
+ "index_seconds": 1.078,
+ "astgrep_max_rss_mb": 168
+}

@@ -1,0 +1,366 @@
+{
+ "dev": {
+  "verified": {
+   "tasks": 25,
+   "spans": 115,
+   "lines": 1244,
+   "files": 44,
+   "entry_recall@1": 0.14,
+   "entry_recall@5": 0.313333,
+   "entry_recall@20": 0.392222,
+   "entry_mrr": 0.277744,
+   "entry_file_recall": 0.47,
+   "routed_coverage": 0.445556,
+   "span_recall@256": 0.193333,
+   "line_recall@256": 0.193167,
+   "file_recall@256": 0.316667,
+   "utilization@256": 0.944844,
+   "gold_unit_share@256": 0.148309,
+   "span_recall@1024": 0.32,
+   "line_recall@1024": 0.322647,
+   "file_recall@1024": 0.383333,
+   "utilization@1024": 0.954766,
+   "gold_unit_share@1024": 0.096787,
+   "span_recall@4096": 0.324444,
+   "line_recall@4096": 0.331663,
+   "file_recall@4096": 0.453333,
+   "utilization@4096": 0.770059,
+   "gold_unit_share@4096": 0.083147,
+   "classes": {
+    "ast": 11,
+    "contained": 14,
+    "exact": 81,
+    "path": 9
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 30,
+     "complete": 6,
+     "entry": 68,
+     "routing": 9,
+     "selection": 2
+    },
+    "1024": {
+     "budget": 25,
+     "complete": 11,
+     "entry": 68,
+     "routing": 9,
+     "selection": 2
+    },
+    "4096": {
+     "budget": 24,
+     "complete": 12,
+     "entry": 68,
+     "routing": 9,
+     "selection": 2
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 19,
+   "lines": 327,
+   "files": 11,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.02,
+   "entry_recall@20": 0.17,
+   "entry_mrr": 0.047549,
+   "entry_file_recall": 0.35,
+   "routed_coverage": 0.22,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.05,
+   "utilization@256": 0.942969,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.05,
+   "utilization@1024": 0.986816,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.15,
+   "utilization@4096": 0.9979,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "drift": 13,
+    "range": 5,
+    "unresolved": 1
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 3,
+     "entry": 14,
+     "routing": 2
+    },
+    "1024": {
+     "budget": 3,
+     "entry": 14,
+     "routing": 2
+    },
+    "4096": {
+     "budget": 3,
+     "entry": 14,
+     "routing": 2
+    }
+   }
+  },
+  "lost_before_packing": {
+   "partial-file": 0,
+   "router-bound": 63,
+   "unresolved-import": 0,
+   "no-path": 14
+  },
+  "outside": {
+   "spans": 2,
+   "tasks": 2,
+   "by_extension": {
+    ".css": 1,
+    ".json": 1
+   }
+  },
+  "by_repository": {
+   "coder__code-server": {
+    "tasks": 2,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.375,
+    "entry_mrr": 0.35,
+    "routed_coverage": 0.625,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.0,
+    "line_recall@4096": 0.0
+   },
+   "darkreader__darkreader": {
+    "tasks": 2,
+    "entry_recall@5": 0.166666,
+    "entry_recall@20": 0.222222,
+    "entry_mrr": 0.166666,
+    "routed_coverage": 0.333334,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.055556,
+    "line_recall@256": 0.002283,
+    "line_recall@1024": 0.02968,
+    "line_recall@4096": 0.098173
+   },
+   "fixture:ts_repo": {
+    "tasks": 8,
+    "entry_recall@5": 0.875,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.697115,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.604167,
+    "span_recall@1024": 1.0,
+    "span_recall@4096": 1.0,
+    "line_recall@256": 0.603077,
+    "line_recall@1024": 1.0,
+    "line_recall@4096": 1.0
+   },
+   "microsoft__vscode": {
+    "tasks": 14,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.047009,
+    "entry_mrr": 0.025641,
+    "routed_coverage": 0.094017,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.000523,
+    "line_recall@4096": 0.007326
+   }
+  }
+ },
+ "heldout": {
+  "lost_before_packing": {
+   "partial-file": 0,
+   "router-bound": 0,
+   "unresolved-import": 0,
+   "no-path": 0
+  },
+  "outside": {
+   "spans": 0,
+   "tasks": 0,
+   "by_extension": {}
+  },
+  "by_repository": {}
+ },
+ "all": {
+  "verified": {
+   "tasks": 25,
+   "spans": 115,
+   "lines": 1244,
+   "files": 44,
+   "entry_recall@1": 0.14,
+   "entry_recall@5": 0.313333,
+   "entry_recall@20": 0.392222,
+   "entry_mrr": 0.277744,
+   "entry_file_recall": 0.47,
+   "routed_coverage": 0.445556,
+   "span_recall@256": 0.193333,
+   "line_recall@256": 0.193167,
+   "file_recall@256": 0.316667,
+   "utilization@256": 0.944844,
+   "gold_unit_share@256": 0.148309,
+   "span_recall@1024": 0.32,
+   "line_recall@1024": 0.322647,
+   "file_recall@1024": 0.383333,
+   "utilization@1024": 0.954766,
+   "gold_unit_share@1024": 0.096787,
+   "span_recall@4096": 0.324444,
+   "line_recall@4096": 0.331663,
+   "file_recall@4096": 0.453333,
+   "utilization@4096": 0.770059,
+   "gold_unit_share@4096": 0.083147,
+   "classes": {
+    "ast": 11,
+    "contained": 14,
+    "exact": 81,
+    "path": 9
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 30,
+     "complete": 6,
+     "entry": 68,
+     "routing": 9,
+     "selection": 2
+    },
+    "1024": {
+     "budget": 25,
+     "complete": 11,
+     "entry": 68,
+     "routing": 9,
+     "selection": 2
+    },
+    "4096": {
+     "budget": 24,
+     "complete": 12,
+     "entry": 68,
+     "routing": 9,
+     "selection": 2
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 19,
+   "lines": 327,
+   "files": 11,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.02,
+   "entry_recall@20": 0.17,
+   "entry_mrr": 0.047549,
+   "entry_file_recall": 0.35,
+   "routed_coverage": 0.22,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.05,
+   "utilization@256": 0.942969,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.05,
+   "utilization@1024": 0.986816,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.15,
+   "utilization@4096": 0.9979,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "drift": 13,
+    "range": 5,
+    "unresolved": 1
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 3,
+     "entry": 14,
+     "routing": 2
+    },
+    "1024": {
+     "budget": 3,
+     "entry": 14,
+     "routing": 2
+    },
+    "4096": {
+     "budget": 3,
+     "entry": 14,
+     "routing": 2
+    }
+   }
+  },
+  "lost_before_packing": {
+   "partial-file": 0,
+   "router-bound": 63,
+   "unresolved-import": 0,
+   "no-path": 14
+  },
+  "outside": {
+   "spans": 2,
+   "tasks": 2,
+   "by_extension": {
+    ".css": 1,
+    ".json": 1
+   }
+  },
+  "by_repository": {
+   "coder__code-server": {
+    "tasks": 2,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.375,
+    "entry_mrr": 0.35,
+    "routed_coverage": 0.625,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.0,
+    "line_recall@4096": 0.0
+   },
+   "darkreader__darkreader": {
+    "tasks": 2,
+    "entry_recall@5": 0.166666,
+    "entry_recall@20": 0.222222,
+    "entry_mrr": 0.166666,
+    "routed_coverage": 0.333334,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.055556,
+    "line_recall@256": 0.002283,
+    "line_recall@1024": 0.02968,
+    "line_recall@4096": 0.098173
+   },
+   "fixture:ts_repo": {
+    "tasks": 8,
+    "entry_recall@5": 0.875,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.697115,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.604167,
+    "span_recall@1024": 1.0,
+    "span_recall@4096": 1.0,
+    "line_recall@256": 0.603077,
+    "line_recall@1024": 1.0,
+    "line_recall@4096": 1.0
+   },
+   "microsoft__vscode": {
+    "tasks": 14,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.047009,
+    "entry_mrr": 0.025641,
+    "routed_coverage": 0.094017,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.000523,
+    "line_recall@4096": 0.007326
+   }
+  }
+ }
+}

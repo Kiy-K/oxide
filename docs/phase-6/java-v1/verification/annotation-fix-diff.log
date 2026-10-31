@@ -1,0 +1,24 @@
+google__gson edges 48243 removed 1 added 1
+ - references symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A -> ['symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A.JsonAdapter'] resolved at gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:8531
+ + references symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A -> ['symbol:gson/src/main/java/com/google/gson/annotations/JsonAdapter.java#JsonAdapter'] resolved at gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:8531
+mockito__mockito edges 78231 removed 0 added 0
+alibaba__fastjson2@12b40c7ba3e7 edges 354348 removed 0 added 0
+alibaba__fastjson2@3aed80608b36 edges 145291 removed 0 added 0
+alibaba__fastjson2@45cc6b34343b edges 346132 removed 0 added 0
+elastic__logstash@32675c1a88bd edges 46047 removed 0 added 0
+elastic__logstash@7df02cc828c8 edges 45689 removed 0 added 0
+elastic__logstash@d64248f62837 edges 46047 removed 0 added 0
+fasterxml__jackson@315ac5ad2ad5 edges 43613 removed 0 added 0
+fasterxml__jackson@9ed17fc7e9df edges 53483 removed 0 added 0
+fasterxml__jackson@ac6d8e22847c edges 17808 removed 0 added 0
+googlecontainertools__jib@34a757b0d64f edges 52320 removed 0 added 0
+googlecontainertools__jib@7b36544eca5e edges 55810 removed 0 added 0
+google__gson@3f4ac29f9112 edges 29399 removed 1 added 1
+ - references symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A -> ['symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A.JsonAdapter'] resolved at gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:4993
+ + references symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A -> ['symbol:gson/src/main/java/com/google/gson/annotations/JsonAdapter.java#JsonAdapter'] resolved at gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:4993
+google__gson@6d2557d5d1a8 edges 30630 removed 1 added 1
+ - references symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A -> ['symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A.JsonAdapter'] resolved at gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:5013
+ + references symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A -> ['symbol:gson/src/main/java/com/google/gson/annotations/JsonAdapter.java#JsonAdapter'] resolved at gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:5013
+mockito__mockito@a0214364c36c edges 73925 removed 0 added 0
+mockito__mockito@b6554b29ed6c edges 73673 removed 0 added 0
+mockito__mockito@edc624371009 edges 73306 removed 0 added 0

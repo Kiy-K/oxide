@@ -1,0 +1,83 @@
+{
+ "corpus": "js-fixture",
+ "tool": "ast-grep 0.51.0",
+ "totals": {
+  "files": 7,
+  "compared": 7,
+  "partial": 0
+ },
+ "failures": {},
+ "classes": {
+  "matched, same bytes": 12,
+  "B only: item module": 2,
+  "C only: item function": 1,
+  "B only: item constant": 1
+ },
+ "examples": {
+  "C only: item function": [
+   "src/Card.jsx: <default> L5-5 in None"
+  ],
+  "B only: item module": [
+   "src/index.js: './Card.jsx' L1-1 in None",
+   "src/index.js: './math.mjs' L2-2 in None"
+  ],
+  "B only: item constant": [
+   "src/use.cjs: legacy L2-2 in None"
+  ]
+ },
+ "imports": {
+  "B lines": 3,
+  "C lines": 7,
+  "both": 3
+ },
+ "provenance": {
+  "B": {
+   "entries": 18,
+   "inside": 18,
+   "named": 13,
+   "name in range": 13
+  },
+  "C": {
+   "entries": 18,
+   "inside": 18,
+   "named": 12,
+   "name in range": 12
+  }
+ },
+ "nondeterministic": {
+  "B": [],
+  "C": []
+ },
+ "seconds": {
+  "B": {
+   "sum": 0.141,
+   "p50": 0.019692,
+   "p95": 0.025805
+  },
+  "C": {
+   "sum": 0.03,
+   "p50": 0.002859,
+   "p95": 0.018897
+  }
+ },
+ "units": {
+  "B": {
+   "sum": 503,
+   "p50": 70.0
+  },
+  "C": {
+   "sum": 365,
+   "p50": 47.0
+  },
+  "A": {
+   "sum": 263,
+   "p50": 37.0
+  },
+  "file": {
+   "sum": 455,
+   "p50": 74.0
+  }
+ },
+ "index_seconds": 0.192,
+ "astgrep_max_rss_mb": 133
+}

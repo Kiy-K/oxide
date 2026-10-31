@@ -1,0 +1,191 @@
+{
+ "dev": {},
+ "heldout": {
+  "verified": {
+   "tasks": 22,
+   "spans": 125,
+   "lines": 14229,
+   "files": 62,
+   "entry_recall@1": 0.013258,
+   "entry_recall@5": 0.114232,
+   "entry_recall@20": 0.292767,
+   "entry_mrr": 0.198009,
+   "entry_file_recall": 0.40303,
+   "routed_coverage": 0.304131,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.0,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.0,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.0,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "exact": 11,
+    "path": 114
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 84,
+     "routing": 32,
+     "unsupported": 9
+    },
+    "1024": {
+     "entry": 84,
+     "routing": 32,
+     "unsupported": 9
+    },
+    "4096": {
+     "entry": 84,
+     "routing": 32,
+     "unsupported": 9
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 13,
+   "lines": 2055,
+   "files": 13,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.1,
+   "entry_recall@20": 0.1,
+   "entry_mrr": 0.02,
+   "entry_file_recall": 0.1,
+   "routed_coverage": 0.1,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.0,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.0,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.0,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "unresolved": 13
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 12,
+     "unsupported": 1
+    },
+    "1024": {
+     "entry": 12,
+     "unsupported": 1
+    },
+    "4096": {
+     "entry": 12,
+     "unsupported": 1
+    }
+   }
+  }
+ },
+ "all": {
+  "verified": {
+   "tasks": 22,
+   "spans": 125,
+   "lines": 14229,
+   "files": 62,
+   "entry_recall@1": 0.013258,
+   "entry_recall@5": 0.114232,
+   "entry_recall@20": 0.292767,
+   "entry_mrr": 0.198009,
+   "entry_file_recall": 0.40303,
+   "routed_coverage": 0.304131,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.0,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.0,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.0,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "exact": 11,
+    "path": 114
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 84,
+     "routing": 32,
+     "unsupported": 9
+    },
+    "1024": {
+     "entry": 84,
+     "routing": 32,
+     "unsupported": 9
+    },
+    "4096": {
+     "entry": 84,
+     "routing": 32,
+     "unsupported": 9
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 13,
+   "lines": 2055,
+   "files": 13,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.1,
+   "entry_recall@20": 0.1,
+   "entry_mrr": 0.02,
+   "entry_file_recall": 0.1,
+   "routed_coverage": 0.1,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.0,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.0,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.0,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "unresolved": 13
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 12,
+     "unsupported": 1
+    },
+    "1024": {
+     "entry": 12,
+     "unsupported": 1
+    },
+    "4096": {
+     "entry": 12,
+     "unsupported": 1
+    }
+   }
+  }
+ }
+}

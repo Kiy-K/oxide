@@ -1,0 +1,97 @@
+{
+ "corpus": "express",
+ "tool": "ast-grep 0.51.0",
+ "totals": {
+  "files": 141,
+  "compared": 141,
+  "partial": 0
+ },
+ "failures": {},
+ "classes": {
+  "C only: item function": 92,
+  "matched, same bytes": 55,
+  "C only: member function": 9,
+  "B only: item constant": 2
+ },
+ "examples": {
+  "C only: item function": [
+   "examples/content-negotiation/users.js: <export:html> L5-9 in None",
+   "examples/content-negotiation/users.js: <export:text> L11-15 in None",
+   "examples/content-negotiation/users.js: <export:json> L17-19 in None",
+   "examples/mvc/controllers/main/index.js: <export:index> L3-5 in None",
+   "examples/mvc/controllers/pet/index.js: <export:before> L11-16 in None",
+   "examples/mvc/controllers/pet/index.js: <export:show> L18-20 in None",
+   "examples/mvc/controllers/pet/index.js: <export:edit> L22-24 in None",
+   "examples/mvc/controllers/pet/index.js: <export:update> L26-31 in None"
+  ],
+  "C only: member function": [
+   "lib/express.js: app L37-39 in createApplication",
+   "lib/response.js: onaborted L929-936 in sendfile",
+   "lib/response.js: ondirectory L939-946 in sendfile",
+   "lib/response.js: onerror L949-953 in sendfile",
+   "lib/response.js: onend L956-960 in sendfile",
+   "lib/response.js: onfile L963-965 in sendfile",
+   "lib/response.js: onfinish L968-983 in sendfile",
+   "lib/response.js: onstream L986-988 in sendfile"
+  ],
+  "B only: item constant": [
+   "test/res.status.js: express L2-2 in None",
+   "test/res.status.js: request L3-3 in None"
+  ]
+ },
+ "imports": {
+  "B lines": 0,
+  "C lines": 362,
+  "both": 0
+ },
+ "provenance": {
+  "B": {
+   "entries": 57,
+   "inside": 57,
+   "named": 57,
+   "name in range": 57
+  },
+  "C": {
+   "entries": 314,
+   "inside": 314,
+   "named": 127,
+   "name in range": 127
+  }
+ },
+ "nondeterministic": {
+  "B": [],
+  "C": []
+ },
+ "seconds": {
+  "B": {
+   "sum": 3.174,
+   "p50": 0.020809,
+   "p95": 0.031794
+  },
+  "C": {
+   "sum": 0.439,
+   "p50": 0.002711,
+   "p95": 0.00565
+  }
+ },
+ "units": {
+  "B": {
+   "sum": 3940,
+   "p50": 21.0
+  },
+  "C": {
+   "sum": 8451,
+   "p50": 44.0
+  },
+  "A": {
+   "sum": 150203,
+   "p50": 593.0
+  },
+  "file": {
+   "sum": 214327,
+   "p50": 704.0
+  }
+ },
+ "index_seconds": 0.578,
+ "astgrep_max_rss_mb": 147
+}

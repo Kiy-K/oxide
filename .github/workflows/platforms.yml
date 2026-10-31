@@ -1,0 +1,128 @@
+name: Platforms
+
+# Cross-platform verification of the Python engine (docs/platforms.md): on every
+# supported platform, the locked environment installs, `oxide prepare` fetches that
+# platform's pinned FTS build, mypy and the test suite run from the checkout, and the
+# built wheel and sdist pass scripts/smoke_dist.py from a fresh environment.
+# ContextBench quality gates stay in ci.yml (Linux) and `mise run contextbench-ts`.
+on:
+  pull_request:
+    branches: [main, rewrite/v2]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One run per change: PR runs cancel when superseded; main pushes (run_id) never do.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  platform:
+    name: ${{ matrix.label }}
+    # Intel macOS is the slowest runner (retired by GitHub in 2027): it runs on main
+    # pushes and manual runs, not on PRs. The label picks the runner, so exclude works.
+    runs-on: >-
+      ${{ fromJSON('{"windows-x86_64": "windows-2025", "macos-x86_64": "macos-15-intel",
+      "macos-arm64": "macos-15"}')[matrix.label] || 'ubuntu-24.04' }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        # ladybug 0.21.0's macOS wheels need macOS 15 or later.
+        label: [linux-x86_64, windows-x86_64, macos-x86_64, macos-arm64,
+                linux-x86_64-py3.12, linux-x86_64-py3.14]
+        # The ends of requires-python; the other rows use .python-version (3.13).
+        include:
+          - { label: linux-x86_64-py3.12, python: "3.12" }
+          - { label: linux-x86_64-py3.14, python: "3.14" }
+        exclude:
+          - label: ${{ github.event_name == 'pull_request' && 'macos-x86_64' || 'none' }}
+    env:
+      UV_PYTHON: ${{ matrix.python }}  # empty: .python-version
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # Fixtures and frozen spans are byte-exact: no CRLF conversion on Windows.
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@v7
+      - name: Install pinned uv
+        uses: jdx/mise-action@v5
+        with:
+          version: 2026.9.14
+          install_args: uv
+      # Windows prerequisite (docs/platforms.md): ladybug's wheel excludes OpenSSL 3.
+      - name: OpenSSL 3 DLLs in the system directory
+        if: runner.os == 'Windows'
+        run: |
+          dll=$(ls /c/Program\ Files/OpenSSL*/bin/libssl-3-x64.dll 2>/dev/null | head -n 1 || true)
+          if [ -z "$dll" ]; then
+            choco install -y --no-progress openssl
+            dll=$(ls /c/Program\ Files/OpenSSL*/bin/libssl-3-x64.dll | head -n 1)
+          fi
+          cp "$dll" "$(dirname "$dll")/libcrypto-3-x64.dll" /c/Windows/System32/
+      # Not cached: every run fetches the pinned FTS build cold, so a replaced or missing
+      # upstream build fails here instead of hiding behind a cache (docs/phase-6/release-blockers/).
+      - name: Install the locked environment and the FTS extension
+        run: |
+          uv sync --locked
+          uv run --locked oxide prepare
+          uv run --locked python scripts/smoke_dist.py --environment | tee environment.json
+      - name: mypy --strict (this platform's branches)
+        run: uv run --locked mypy
+      - name: pytest (without the ContextBench corpora gate)
+        run: >
+          uv run --locked pytest --ignore=tests/python/test_contextbench.py
+          --ignore=tests/python/test_contextbench_ts.py
+          --junitxml=pytest.xml
+        env:
+          PYTEST_ADDOPTS: -n auto --dist loadfile
+      - name: Build the wheel and sdist
+        run: uv build --out-dir dist
+      # A lock can hide what a user's pip picks from the wheel's own metadata:
+      # by default pip takes the newest release even when it has only an sdist.
+      - name: Install the wheel with pip from its own metadata
+        run: |
+          venv="$RUNNER_TEMP/pip-wheel"
+          uv venv -q --seed "$venv"
+          python="$venv/bin/python"; [ -x "$python" ] || python="$venv/Scripts/python.exe"
+          wheel=$(ls dist/*.whl)
+          "$python" -m pip install -q --dry-run --ignore-installed --report "$RUNNER_TEMP/pip.json" "$wheel"
+          "$python" -I -c "
+          import json, sys
+          report = json.load(open(sys.argv[1], encoding='utf-8'))['install']
+          built = [f\"{i['metadata']['name']} {i['metadata']['version']}\" for i in report
+                   if not i['download_info']['url'].endswith('.whl')]
+          sys.exit(f'pip would build from source: {built}' if built else 0)" "$RUNNER_TEMP/pip.json"
+          "$python" -m pip install -q --only-binary :all: "$wheel"
+          "$python" -m pip check
+          (cd "$RUNNER_TEMP" && "$python" -I "$GITHUB_WORKSPACE/scripts/smoke_dist.py" "$GITHUB_WORKSPACE/fixtures")
+      - name: Smoke-test each artifact in a fresh environment
+        run: |
+          uv export --locked --no-dev --no-emit-project --no-hashes -q -o "$RUNNER_TEMP/requirements.txt"
+          for artifact in dist/*.whl dist/*.tar.gz; do
+            venv="$RUNNER_TEMP/smoke-$(basename "$artifact")"
+            uv venv -q "$venv"
+            # Third-party dependencies must ship wheels; only OXIDE's sdist is built.
+            uv pip install -q --python "$venv" --only-binary :all: -r "$RUNNER_TEMP/requirements.txt"
+            uv pip install -q --python "$venv" --no-deps "$artifact"
+            uv pip check --python "$venv"
+            python="$venv/bin/python"; [ -x "$python" ] || python="$venv/Scripts/python.exe"
+            echo "== $artifact"
+            (cd "$RUNNER_TEMP" && "$python" -I "$GITHUB_WORKSPACE/scripts/smoke_dist.py" "$GITHUB_WORKSPACE/fixtures")
+          done
+      - name: Keep the platform record
+        # act (local runs) cannot copy this action into podman containers.
+        if: always() && !env.ACT
+        uses: actions/upload-artifact@v5
+        with:
+          name: platform-${{ matrix.label }}
+          path: |
+            environment.json
+            pytest.xml
+            dist/
+          if-no-files-found: ignore

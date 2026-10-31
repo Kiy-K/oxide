@@ -1,0 +1,77 @@
+{
+ "tasks": {
+  "cli__cli-10048": {
+   "index_s": 0.2715648200000942,
+   "score_s": 0.03247080399978586
+  },
+  "cli__cli-10363": {
+   "index_s": 0.22792871699948591,
+   "score_s": 0.054093056000056094
+  },
+  "cli__cli-1155": {
+   "index_s": 0.09881398800007446,
+   "score_s": 0.023451865000424732
+  },
+  "grpc__grpc-go-2371": {
+   "index_s": 0.1114681950002705,
+   "score_s": 0.030117753999547858
+  },
+  "grpc__grpc-go-2932": {
+   "index_s": 0.16572320999966905,
+   "score_s": 0.03170641399992746
+  },
+  "grpc__grpc-go-2951": {
+   "index_s": 0.1332718929998009,
+   "score_s": 0.02961052499995276
+  },
+  "instance_flipt-io__flipt-05d7234fa582df632f70a7cd10194d61bd7043b9": {
+   "index_s": 0.1395052299994859,
+   "score_s": 0.03957018799974321
+  },
+  "instance_flipt-io__flipt-3d5a345f94c2adc8a0eaa102c189c08ad4c0f8e8": {
+   "index_s": 0.12469052899996313,
+   "score_s": 0.03169168400017952
+  },
+  "instance_flipt-io__flipt-56a620b8fc9ef7a0819b47709aa541cdfdbba00b": {
+   "index_s": 0.1292433530006747,
+   "score_s": 0.02614636300040729
+  },
+  "instance_future-architect__vuls-1832b4ee3a20177ad313d806983127cb6e53f5cf": {
+   "index_s": 0.1238767969998662,
+   "score_s": 0.04380025899990869
+  },
+  "instance_future-architect__vuls-4c04acbd9ea5b073efe999e33381fa9f399d6f27": {
+   "index_s": 0.13038587900064158,
+   "score_s": 0.03846745400005602
+  },
+  "instance_future-architect__vuls-6eff6a9329a65cc412e79b8f82444dfa3d0f0b5a": {
+   "index_s": 0.08738900200023636,
+   "score_s": 0.04165582899986475
+  },
+  "instance_gravitational__teleport-8302d467d160f869b77184e262adbe2fbc95d9ba-vce94f93ad1030e3136852817f2423c1b3ac37bc4": {
+   "index_s": 0.33426266300011775,
+   "score_s": 0.0498307140005636
+  },
+  "instance_navidrome__navidrome-28389fb05e1523564dfc61fa43ed8eb8a10f938c": {
+   "index_s": 0.1223915090004084,
+   "score_s": 0.0344819700003427
+  },
+  "instance_navidrome__navidrome-31799662706fedddf5bcc1a76b50409d1f91d327": {
+   "index_s": 0.16198130600059812,
+   "score_s": 0.029398165000202425
+  },
+  "instance_navidrome__navidrome-5001518260732e36d9a42fb8d4c054b28afab310": {
+   "index_s": 0.12035089700020762,
+   "score_s": 0.03992608200042014
+  },
+  "zeromicro__go-zero-1969": {
+   "index_s": 0.21466383999995742,
+   "score_s": 0.034444078999513295
+  },
+  "zeromicro__go-zero-2463": {
+   "index_s": 0.21039539100002003,
+   "score_s": 0.030054838999603817
+  }
+ },
+ "peak_rss_mib": 162.64453125
+}

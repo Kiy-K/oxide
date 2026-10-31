@@ -1,0 +1,12 @@
+artifact: oxide-0.0.0-py3-none-any.whl sha256 61dd59486781a475686af52be5922faca2c2d57d41c6cad5ccc886dbb074f7cd
+Using Python 3.13.17 environment at: ~/Projects/oxide-eval-data/oxide-c-eval/venv-wheel
+Checked 80 packages in 0.92ms
+All installed packages are compatible
+~/.cache/oxide/ladybug-extensions-0.21.0/libfts.lbug_extension
+smoke: oxide at ~/Projects/oxide-eval-data/oxide-c-eval/venv-wheel/lib/python3.13/site-packages/oxide/__init__.py
+smoke: indexed 74 files, 359 entities
+smoke: search and context ok (381/400 units)
+smoke: mcp stdio ok
+smoke: store lock exclusive and released
+smoke: OK
+exit=0

@@ -1,0 +1,2113 @@
+{
+ "gcc_calls": 1651,
+ "tally": {
+  "ambiguous, no gcc call": 3,
+  "resolved to a macro, not judged": 533,
+  "resolved, agree": 975,
+  "resolved, no gcc call": 241,
+  "unresolved, gcc external": 185,
+  "unresolved, gcc resolved": 12,
+  "unresolved, no gcc call": 253
+ },
+ "disagreements": [],
+ "missed": [
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    329,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    330,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    331,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    332,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    333,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    334,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    335,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    336,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    337,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    338,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    339,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    340,
+    5
+   ],
+   "oxide": "unresolved",
+   "gcc": [
+    "hi_free",
+    [
+     "deps/hiredis/alloc.h"
+    ]
+   ]
+  }
+ ],
+ "unseen": [
+  {
+   "site": [
+    "deps/hiredis/hiredis.c",
+    345,
+    39
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/hiredis.c",
+    501,
+    27
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/hiredis.c",
+    518,
+    43
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/hiredis.c",
+    519,
+    35
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/hiredis.c",
+    627,
+    12
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/net.c",
+    87,
+    37
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/net.c",
+    163,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/net.c#__redisSetErrorFromErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/net.c",
+    164,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/net.c#redisNetClose"
+  },
+  {
+   "site": [
+    "deps/hiredis/net.c",
+    185,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#__redisSetError"
+  },
+  {
+   "site": [
+    "deps/hiredis/net.c",
+    212,
+    11
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#win32_redisKeepAlive"
+  },
+  {
+   "site": [
+    "deps/hiredis/net.c",
+    214,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#__redisSetError"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    154,
+    28
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    405,
+    31
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1126,
+    19
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1129,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1131,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1132,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnewlen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1134,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1136,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdscat"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1138,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1140,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdscpy"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1142,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1144,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdscpy"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1146,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1149,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1150,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdscatprintf"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1150,
+    29
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsempty"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1152,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1154,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1155,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1156,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdscatfmt"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1158,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1163,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1164,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1165,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdscatfmt"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1167,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1170,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1171,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1172,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdstrim"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1174,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1176,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1177,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1178,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdstrim"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1180,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1182,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1183,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1184,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdstrim"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1186,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1188,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsdup"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1189,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsrange"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1191,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1193,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1194,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsdup"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1195,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsrange"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1197,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1199,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1200,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsdup"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1201,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsrange"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1203,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1205,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1206,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsdup"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1207,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsrange"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1209,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1211,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1212,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsdup"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1213,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsrange"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1215,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1217,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1218,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsdup"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1219,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsrange"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1221,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1223,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1224,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1225,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1226,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1227,
+    41
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdscmp"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1229,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1230,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1231,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1232,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1233,
+    41
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdscmp"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1235,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1236,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1237,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1238,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1239,
+    41
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdscmp"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1241,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1242,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1243,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnewlen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1244,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdscatrepr"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1244,
+    27
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsempty"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1244,
+    43
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1253,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1254,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1255,
+    17
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsnew"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1256,
+    55
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1256,
+    76
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdsavail"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1261,
+    30
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1262,
+    21
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsMakeRoomFor"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1265,
+    51
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1267,
+    59
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdsavail"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1268,
+    31
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdsavail"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1274,
+    17
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsIncrLen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1278,
+    55
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1280,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsfree"
+  },
+  {
+   "site": [
+    "deps/hiredis/sds.c",
+    1290,
+    12
+   ],
+   "oxide": "symbol:deps/hiredis/sds.c#hi_sdsTest"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    98,
+    27
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_wsaErrorToErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    107,
+    21
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_wsaErrorToErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    117,
+    10
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_initWinsock"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    157,
+    10
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_initWinsock"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    161,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_updateErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    167,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_updateErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    173,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_updateErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    179,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_updateErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    219,
+    19
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_wsaErrorToErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    223,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_updateErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    236,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_updateErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    242,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_updateErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    248,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_updateErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    254,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_updateErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    260,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_updateErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/sockcompat.c",
+    277,
+    27
+   ],
+   "oxide": "symbol:deps/hiredis/sockcompat.c#_wsaErrorToErrno"
+  },
+  {
+   "site": [
+    "deps/hiredis/ssl.c",
+    156,
+    18
+   ],
+   "oxide": "symbol:deps/hiredis/alloc.h#hi_malloc"
+  },
+  {
+   "site": [
+    "deps/hiredis/ssl.c",
+    172,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/ssl.c#initOpensslLocks"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    206,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/ssl.c#redisInitiateSSLWithContext"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    209,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisFree"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    398,
+    15
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisAppendFormattedCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    400,
+    12
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisGetReply"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    414,
+    15
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisEnableKeepAlive"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    418,
+    15
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisSetTcpUserTimeout"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    421,
+    15
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisSetTcpUserTimeout"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    557,
+    14
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisReaderCreate"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    558,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/read.c#redisReaderFeed"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    559,
+    11
+   ],
+   "oxide": "symbol:deps/hiredis/read.c#redisReaderGetReply"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    562,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#freeReplyObject"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    563,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/read.c#redisReaderFree"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    566,
+    14
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisReaderCreate"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    567,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/read.c#redisReaderFeed"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    568,
+    11
+   ],
+   "oxide": "symbol:deps/hiredis/read.c#redisReaderGetReply"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    571,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#freeReplyObject"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    572,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/read.c#redisReaderFree"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    997,
+    21
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1023,
+    21
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1025,
+    21
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1036,
+    12
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisGetReply"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1063,
+    17
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1069,
+    18
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1076,
+    17
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1083,
+    17
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1090,
+    18
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1108,
+    17
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1166,
+    21
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1167,
+    21
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1178,
+    21
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1179,
+    21
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1180,
+    21
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1201,
+    12
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisAppendCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1202,
+    15
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisGetReply"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1256,
+    30
+   ],
+   "oxide": "symbol:deps/hiredis/sds.h#hi_sdslen"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1312,
+    13
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisGetReply"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1332,
+    12
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisSetTimeout"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1398,
+    25
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1441,
+    16
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisGetReply"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1454,
+    16
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisGetReply"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1468,
+    16
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisGetReply"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1593,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncDisconnect"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1613,
+    23
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1615,
+    25
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1617,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#freeReplyObject"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1618,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#disconnect"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1627,
+    28
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#async_disconnect"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1644,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#publish_msg"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1652,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1657,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1674,
+    28
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#async_disconnect"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1697,
+    28
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#get_redis_tcp_options"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1698,
+    29
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1700,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/adapters/libevent.h#redisLibeventAttach"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1704,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1707,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1737,
+    28
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#get_redis_tcp_options"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1738,
+    29
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1740,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/adapters/libevent.h#redisLibeventAttach"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1743,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncSetPushCallback"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1746,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1750,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1753,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1754,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1755,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1757,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1790,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#publish_msg"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1798,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1799,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1818,
+    28
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#get_redis_tcp_options"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1819,
+    29
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1821,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/adapters/libevent.h#redisLibeventAttach"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1825,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncSetTimeout"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1828,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncSetPushCallback"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1831,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1835,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1856,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#publish_msg"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1864,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1868,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1873,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1923,
+    28
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#get_redis_tcp_options"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1924,
+    29
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1926,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/adapters/libevent.h#redisLibeventAttach"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1929,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncSetPushCallback"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1933,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1934,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1961,
+    27
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1963,
+    29
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1965,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#freeReplyObject"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1966,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisFree"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1970,
+    27
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1972,
+    29
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1974,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#freeReplyObject"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1975,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/hiredis.c#redisFree"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    1980,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2000,
+    28
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#get_redis_tcp_options"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2001,
+    29
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncConnectWithOptions"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2003,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/adapters/libevent.h#redisLibeventAttach"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2006,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncSetPushCallback"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2010,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/async.c#redisAsyncCommand"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2367,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/ssl.c#redisInitOpenSSL"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2368,
+    20
+   ],
+   "oxide": "symbol:deps/hiredis/ssl.c#redisCreateSSLContext"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2374,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_blocking_connection"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2375,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_blocking_connection_timeouts"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2376,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_blocking_io_errors"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2377,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_invalid_timeout_errors"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2378,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_append_formatted_commands"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2379,
+    25
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_throughput"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2381,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/ssl.c#redisFreeSSLContext"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2392,
+    23
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#do_connect"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2393,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#get_redis_version"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2394,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#disconnect"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2396,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_pubsub_handling"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2397,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_pubsub_multiple_channels"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2398,
+    5
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_monitor"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2400,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_pubsub_handling_resp3"
+  },
+  {
+   "site": [
+    "deps/hiredis/test.c",
+    2401,
+    9
+   ],
+   "oxide": "symbol:deps/hiredis/test.c#test_command_timeout_during_pubsub"
+  }
+ ]
+}

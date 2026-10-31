@@ -1,0 +1,498 @@
+{
+ "corpus": "vscode",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/microsoft__vscode@1a599e2d1792",
+ "lang": "typescript",
+ "arms": [
+  "astgrep",
+  "regex",
+  "treesitter"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "treesitter": 355,
+   "astgrep": 355,
+   "regex": 81,
+   "agree": 355,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 81,
+   "regex_precision": 1.0,
+   "regex_recall": 0.22816901408450704,
+   "regex_false_count": 0,
+   "regex_missed_count": 274,
+   "regex_false": [],
+   "regex_missed": [
+    {
+     "path": "src/vs/workbench/services/extensions/electron-sandbox/extensionHostProfiler.ts",
+     "line": 71,
+     "text": "\t\t\t\t} catch {"
+    },
+    {
+     "path": "src/vs/workbench/services/dialogs/browser/fileDialogService.ts",
+     "line": 204,
+     "text": "\t\t} catch (error) {"
+    },
+    {
+     "path": "src/vs/workbench/contrib/terminal/browser/links/terminalLinkOpeners.ts",
+     "line": 204,
+     "text": "\t\t\t} catch {"
+    },
+    {
+     "path": "src/vs/workbench/contrib/search/browser/searchWidget.ts",
+     "line": 519,
+     "text": "\t\t\t\t} catch {"
+    },
+    {
+     "path": "src/vs/workbench/services/progress/browser/progressIndicator.ts",
+     "line": 92,
+     "text": "\t\t\t} catch (error) {"
+    },
+    {
+     "path": "src/vs/workbench/services/progress/browser/progressIndicator.ts",
+     "line": 105,
+     "text": "\t\t} catch (error) {"
+    },
+    {
+     "path": "src/vs/platform/windows/electron-main/window.ts",
+     "line": 954,
+     "text": "\t\t\t} catch (error) {"
+    },
+    {
+     "path": "src/vs/workbench/services/progress/browser/progressIndicator.ts",
+     "line": 313,
+     "text": "\t\t} catch (error) {"
+    },
+    {
+     "path": "src/vs/platform/extensionManagement/common/extensionsScannerService.ts",
+     "line": 493,
+     "text": "\t\t\t} catch (error) { /* ignore */ }"
+    },
+    {
+     "path": "extensions/typescript-language-features/src/utils/tsconfig.ts",
+     "line": 169,
+     "text": "\t} catch {"
+    }
+   ]
+  },
+  "ts-json-parse-unguarded": {
+   "treesitter": 248,
+   "astgrep": 248,
+   "regex": 413,
+   "agree": 248,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 413,
+   "regex_precision": 0.6004842615012107,
+   "regex_recall": 1.0,
+   "regex_false_count": 165,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "src/vs/workbench/services/workspaces/common/workspaceTrust.ts",
+     "line": 252,
+     "text": "\t\t\t\tresult = JSON.parse(infoAsString);"
+    },
+    {
+     "path": "src/vs/workbench/services/languageDetection/browser/languageDetectionWorkerServiceImpl.ts",
+     "line": 159,
+     "text": "\t\t\tconst workspaceLangHistroyData = JSON.parse(storageService.get(LanguageDetectionService.workspaceOpenedLanguagesStorageKey, StorageScope.WORKSPACE, '[]'));"
+    },
+    {
+     "path": "src/vs/platform/credentials/common/credentialsMainService.ts",
+     "line": 154,
+     "text": "\t\t\tlet { content, hasNextChunk }: ChunkedPassword = JSON.parse(password);"
+    },
+    {
+     "path": "src/vs/workbench/contrib/notebook/browser/notebookKernelServiceImpl.ts",
+     "line": 128,
+     "text": "\t\t\tconst data = JSON.parse(this._storageService.get(NotebookKernelService._storageNotebookBinding, StorageScope.WORKSPACE, '[]'));"
+    },
+    {
+     "path": "src/vs/workbench/contrib/typeHierarchy/browser/typeHierarchyPeek.ts",
+     "line": 55,
+     "text": "\t\t\treturn { ...defaultInfo, ...JSON.parse(value) };"
+    },
+    {
+     "path": "extensions/json-language-features/client/src/node/jsonClientMain.ts",
+     "line": 70,
+     "text": "\t\treturn JSON.parse((await fs.readFile(location)).toString());"
+    },
+    {
+     "path": "src/vs/platform/extensionManagement/common/extensionsProfileScannerService.ts",
+     "line": 75,
+     "text": "\t\t\t\tconst storedWebExtensions: IStoredProfileExtension[] = JSON.parse(content.value.toString());"
+    },
+    {
+     "path": "src/vs/workbench/services/themes/electron-sandbox/nativeHostColorSchemeService.ts",
+     "line": 50,
+     "text": "\t\t\t\tconst scheme = JSON.parse(stored);"
+    },
+    {
+     "path": "extensions/github-authentication/src/github.ts",
+     "line": 142,
+     "text": "\t\t\t\tsessionData = JSON.parse(storedSessions);"
+    },
+    {
+     "path": "src/vs/editor/contrib/codelens/browser/codeLensCache.ts",
+     "line": 114,
+     "text": "\t\t\tconst data: Record<string, ISerializedCacheData> = JSON.parse(raw);"
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-as-any": {
+   "treesitter": 351,
+   "astgrep": 351,
+   "regex": 349,
+   "agree": 351,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 349,
+   "regex_precision": 0.9656160458452722,
+   "regex_recall": 1.0,
+   "regex_false_count": 12,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "extensions/configuration-editing/build/inline-allOf.ts",
+     "line": 52,
+     "text": "\t\t\t\t\t\t\t\t\treturn ([] as any[]).concat(...leaves[0].map(leaf => {"
+    },
+    {
+     "path": "build/lib/i18n.ts",
+     "line": 888,
+     "text": "\tresourcesByProject[extensionsProject] = ([] as any[]).concat(externalExtensionsWithTranslations); // clone"
+    },
+    {
+     "path": "extensions/typescript-language-features/src/test/smoke/completions.test.ts",
+     "line": 166,
+     "text": "\t\t\t'const f: TFunction = (() => { }) as any;',"
+    },
+    {
+     "path": "src/vs/base/test/common/path.test.ts",
+     "line": 488,
+     "text": "\t\t// On unix a backslash is just treated as any other character."
+    },
+    {
+     "path": "extensions/vscode-api-tests/src/singlefolder-tests/terminal.test.ts",
+     "line": 624,
+     "text": "\t\t\t\t\t\t// Wait 500ms as any exits that occur within 500ms of terminal launch are"
+    },
+    {
+     "path": "src/vs/platform/log/common/log.ts",
+     "line": 181,
+     "text": "\t\t\t\tconst array = Array.prototype.slice.call(arguments) as any[];"
+    },
+    {
+     "path": "extensions/typescript-language-features/src/test/smoke/completions.test.ts",
+     "line": 178,
+     "text": "\t\t\t\t'const f: TFunction = (() => { }) as any;',"
+    },
+    {
+     "path": "src/vs/platform/log/common/fileLog.ts",
+     "line": 65,
+     "text": "\t\t\t\tconst array = Array.prototype.slice.call(arguments) as any[];"
+    },
+    {
+     "path": "extensions/configuration-editing/build/inline-allOf.ts",
+     "line": 39,
+     "text": "\t\t\t\t\t\t\t\t}, [] as any[]);"
+    },
+    {
+     "path": "src/vs/workbench/contrib/terminal/browser/terminalProcessManager.ts",
+     "line": 404,
+     "text": "\t\t\t// TODO: Avoid as any?"
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-non-null-member": {
+   "treesitter": 2821,
+   "astgrep": 2821,
+   "regex": 2572,
+   "agree": 2821,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 2572,
+   "regex_precision": 0.9941679626749611,
+   "regex_recall": 0.9989365473236441,
+   "regex_false_count": 15,
+   "regex_missed_count": 3,
+   "regex_false": [
+    {
+     "path": "src/vs/editor/contrib/snippet/test/browser/snippetController2.old.test.ts",
+     "line": 177,
+     "text": "\t// \t\teditor.getModel()!.applyEdits([{"
+    },
+    {
+     "path": "extensions/vscode-api-tests/src/singlefolder-tests/notebook.test.ts",
+     "line": 769,
+     "text": "\t\t// assert.strictEqual(vscode.window.activeNotebookEditor!.kernel, undefined);"
+    },
+    {
+     "path": "src/vs/editor/contrib/snippet/test/browser/snippetController2.old.test.ts",
+     "line": 160,
+     "text": "\t// \t\teditor.getModel()!.applyEdits([{"
+    },
+    {
+     "path": "src/vs/editor/contrib/snippet/test/browser/snippetController2.old.test.ts",
+     "line": 143,
+     "text": "\t// \t\teditor.getModel()!.applyEdits([{"
+    },
+    {
+     "path": "extensions/vscode-api-tests/src/singlefolder-tests/terminal.test.ts",
+     "line": 486,
+     "text": "\t\t\t// \t\t\tok(dimensions!.rows > 0);"
+    },
+    {
+     "path": "src/vs/editor/common/model/bracketPairsTextModelPart/bracketPairsTree/concat23Trees.ts",
+     "line": 127,
+     "text": "\t// assert nodeToAppendOfCorrectHeight!.listHeight === curNode.listHeight"
+    },
+    {
+     "path": "extensions/vscode-api-tests/src/singlefolder-tests/notebook.test.ts",
+     "line": 255,
+     "text": "\t\t// \tdocument: vscode.window.activeNotebookEditor!.document,"
+    },
+    {
+     "path": "src/vs/workbench/contrib/notebook/browser/contrib/find/findModel.ts",
+     "line": 103,
+     "text": "\t\t\t// const currIndex = this._findMatchesStarts!.getIndexOf(this._currentMatch);"
+    },
+    {
+     "path": "src/vs/editor/common/model/bracketPairsTextModelPart/bracketPairsTree/concat23Trees.ts",
+     "line": 172,
+     "text": "\t// assert nodeToAppendOfCorrectHeight!.listHeight === curNode.listHeight"
+    },
+    {
+     "path": "src/vs/workbench/api/test/browser/extHostTesting.test.ts",
+     "line": 362,
+     "text": "\t\t// \t\ttests.children!.splice(0, 1);"
+    }
+   ],
+   "regex_missed": [
+    {
+     "path": "src/vs/workbench/contrib/search/common/searchModel.ts",
+     "line": 540,
+     "text": "\t\t\t\trawFileMatch"
+    },
+    {
+     "path": "src/vs/workbench/contrib/mergeEditor/browser/model/mergeEditorModel.ts",
+     "line": 281,
+     "text": "\t\t\tthis.modifiedBaseRangeHandlingStateStores"
+    },
+    {
+     "path": "src/vs/workbench/contrib/search/common/searchModel.ts",
+     "line": 244,
+     "text": "\t\t\tthis.rawMatch.results!"
+    }
+   ]
+  },
+  "ts-await-in-loop": {
+   "treesitter": 592,
+   "astgrep": 592,
+   "agree": 592,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": []
+  },
+  "ts-async-promise-executor": {
+   "treesitter": 2,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 0.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 2,
+   "astgrep_only": [],
+   "treesitter_only": [
+    {
+     "path": "extensions/vscode-test-resolver/src/extension.ts",
+     "line": 37,
+     "text": "\t\tconst serverPromise = new Promise<vscode.ResolvedAuthority>(async (res, rej) => {"
+    },
+    {
+     "path": "src/vs/base/common/async.ts",
+     "line": 1469,
+     "text": "\t\treturn new Promise<T>(async (resolve, reject) => {"
+    }
+   ],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-console-log": {
+   "treesitter": 270,
+   "astgrep": 270,
+   "regex": 448,
+   "agree": 270,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 448,
+   "regex_precision": 0.6026785714285714,
+   "regex_recall": 1.0,
+   "regex_false_count": 178,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "src/vs/base/common/fuzzyScorer.ts",
+     "line": 219,
+     "text": "\t\t\t// \tconsole.log('Inside word upper case bonus: +2');"
+    },
+    {
+     "path": "src/vs/editor/test/browser/viewModel/modelLineProjection.test.ts",
+     "line": 648,
+     "text": "\t\t\t\t\tcontent: '\t\tconsole.log(\"Hello ',"
+    },
+    {
+     "path": "src/vs/workbench/api/common/extHostLanguageFeatures.ts",
+     "line": 1425,
+     "text": "\t\t\t// console.log('INVALID inlay hint, position outside range', range, hint);"
+    },
+    {
+     "path": "src/vs/editor/common/viewModel/viewModelLines.ts",
+     "line": 818,
+     "text": "\t\t// console.log('out -> in ' + viewLineNumber + ',' + viewColumn + ' ===> ' + (lineIndex+1) + ',' + inputColumn);"
+    },
+    {
+     "path": "src/vs/editor/test/common/model/textModelWithTokens.test.ts",
+     "line": 517,
+     "text": "\t\t\t\t'    console.log(`${100}`);',"
+    },
+    {
+     "path": "src/vs/editor/contrib/snippet/test/browser/snippetSession.test.ts",
+     "line": 310,
+     "text": "\t\tassert.strictEqual(model.getValue(), 'log(XXX);function foo() {\\n    log(XXX);console.log(a);\\n}');"
+    },
+    {
+     "path": "src/vs/editor/browser/controller/textAreaInput.ts",
+     "line": 737,
+     "text": "\t\t// console.log('reason: ' + reason + ', current value: ' + textArea.value + ' => new value: ' + value);"
+    },
+    {
+     "path": "src/vs/editor/test/common/model/editableTextModelAuto.test.ts",
+     "line": 276,
+     "text": "\t\t// console.log(testModel.print());"
+    },
+    {
+     "path": "src/vs/platform/userDataSync/test/common/snippetsMerge.test.ts",
+     "line": 19,
+     "text": "\t\t\t\"console.log('$1');\","
+    },
+    {
+     "path": "src/vs/base/common/fuzzyScorer.ts",
+     "line": 186,
+     "text": "\t\t// \tconsole.log('Same case bonus: +1');"
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-useeffect-empty-deps": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 35,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 35,
+   "regex_precision": 0.0,
+   "regex_recall": null,
+   "regex_false_count": 35,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "src/vs/platform/userDataSync/common/userDataSyncStoreService.ts",
+     "line": 96,
+     "text": "\t\t\t\t}, [])"
+    },
+    {
+     "path": "extensions/emmet/src/emmetCommon.ts",
+     "line": 149,
+     "text": "\t\tconst emmetMode = getEmmetMode(e.languageId, {}, []) ?? '';"
+    },
+    {
+     "path": "src/vs/workbench/contrib/extensions/browser/extensionsWorkbenchService.ts",
+     "line": 764,
+     "text": "\t\treturn byId.reduce((result, extensions) => { result.push(this.getPrimaryExtension(extensions)); return result; }, []);"
+    },
+    {
+     "path": "src/vs/workbench/api/test/browser/extHostConfiguration.test.ts",
+     "line": 291,
+     "text": "\t\t\t\tworkspace: new ConfigurationModel({}, []),"
+    },
+    {
+     "path": "src/vs/workbench/api/test/browser/extHostApiCommands.test.ts",
+     "line": 728,
+     "text": "\t\t}, []));"
+    },
+    {
+     "path": "src/vs/workbench/api/test/browser/extHostApiCommands.test.ts",
+     "line": 862,
+     "text": "\t\t}, []));"
+    },
+    {
+     "path": "src/vs/workbench/api/test/browser/extHostLanguageFeatures.test.ts",
+     "line": 953,
+     "text": "\t\t}, []));"
+    },
+    {
+     "path": "extensions/emmet/src/emmetCommon.ts",
+     "line": 141,
+     "text": "\t\tconst emmetMode = getEmmetMode(e.languageId, {}, []) ?? '';"
+    },
+    {
+     "path": "src/vs/workbench/api/test/browser/extHostLanguageFeatures.test.ts",
+     "line": 987,
+     "text": "\t\t}, []));"
+    },
+    {
+     "path": "src/vs/workbench/api/test/browser/extHostConfiguration.test.ts",
+     "line": 587,
+     "text": "\t\t\t\tworkspace: new ConfigurationModel({}, []),"
+    }
+   ],
+   "regex_missed": []
+  }
+ },
+ "stats": {
+  "files": 3902,
+  "bytes": 41469080,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.656,
+  "decode": 0.01,
+  "treesitter_parse": 3.666,
+  "treesitter_query": 8.222,
+  "astgrep_parse": 4.136,
+  "astgrep_query": 4.316,
+  "regex": 2.462
+ },
+ "peak_rss_mib": 208.4
+}

@@ -1,0 +1,841 @@
+{
+ "javac": "25.0.5",
+ "modules": {
+  "gson": {
+   "units": 208,
+   "errors": 5989
+  },
+  "extras": {
+   "units": 11,
+   "errors": 180
+  },
+  "metrics": {
+   "units": 6,
+   "errors": 192
+  },
+  "proto": {
+   "units": 10,
+   "errors": 673
+  },
+  "test-graal-native-image": {
+   "units": 2,
+   "errors": 136
+  },
+  "test-jpms": {
+   "units": 4,
+   "errors": 132
+  },
+  "test-shrinker": {
+   "units": 19,
+   "errors": 118
+  }
+ },
+ "counts": {
+  "calls": {
+   "ambiguous:in-candidates": 2078,
+   "resolved:agree": 7876,
+   "resolved:agree-strict": 7876,
+   "resolved:no-oracle": 3,
+   "unresolved:in-repo": 134,
+   "unresolved:no-oracle": 7790
+  },
+  "references": {
+   "resolved:agree": 5710,
+   "resolved:agree-strict": 5710,
+   "unresolved:in-repo": 945,
+   "unresolved:no-oracle": 10906
+  },
+  "imports": {
+   "resolved:agree": 1085,
+   "resolved:agree-strict": 1085,
+   "unresolved:no-oracle": 1589
+  },
+  "overall": {
+   "ambiguous:in-candidates": 2078,
+   "resolved:agree": 14671,
+   "resolved:agree-strict": 14671,
+   "resolved:no-oracle": 3,
+   "unresolved:in-repo": 1079,
+   "unresolved:no-oracle": 20285
+  }
+ },
+ "precision": {
+  "calls": 1.0,
+  "references": 1.0,
+  "imports": 1.0,
+  "overall": 1.0
+ },
+ "precision_strict": {
+  "calls": 1.0,
+  "references": 1.0,
+  "imports": 1.0,
+  "overall": 1.0
+ },
+ "no_oracle_reasons": {
+  "calls:error": 3
+ },
+ "disagreements": [],
+ "agree_but_not_strict": [],
+ "unresolved_sample": [
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/GsonTest.java#GsonTest.testGetAdapter_FutureAdapterConcurrency",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/GsonTest.java:278",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/GsonTest.java",
+      9877
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/functional/RuntimeTypeAdapterFactoryFunctionalTest.java#RuntimeTypeAdapterFactoryFunctionalTest.RuntimeTypeAdapterFactory.create",
+   "text": "R",
+   "at": "gson/src/test/java/com/google/gson/functional/RuntimeTypeAdapterFactoryFunctionalTest.java:179",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "R",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/functional/RuntimeTypeAdapterFactoryFunctionalTest.java",
+      5501
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/EnumTypeAdapter.java#EnumTypeAdapter",
+   "text": "T",
+   "at": "gson/src/main/java/com/google/gson/internal/bind/EnumTypeAdapter.java:60",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/bind/EnumTypeAdapter.java",
+      1246
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/functional/Java17RecordTest.java#Java17RecordTest.testThrowingAccessor",
+   "text": "LocalRecord",
+   "at": "gson/src/test/java/com/google/gson/functional/Java17RecordTest.java:199",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "LocalRecord",
+    "kind": "RECORD",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/functional/Java17RecordTest.java",
+      6298
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.removeInternalByKey",
+   "text": "V",
+   "at": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:294",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "V",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java",
+      1613
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:proto/src/main/java/com/google/gson/protobuf/LegacyProtoTypeAdapterFactory.java#LegacyProtoTypeAdapterFactory.Adapter.read",
+   "text": "T",
+   "at": "proto/src/main/java/com/google/gson/protobuf/LegacyProtoTypeAdapterFactory.java:209",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "proto/src/main/java/com/google/gson/protobuf/LegacyProtoTypeAdapterFactory.java",
+      4658
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java#InterceptorFactory.InterceptorAdapter.InterceptorAdapter",
+   "text": "T",
+   "at": "extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java:45",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+      1408
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java#ParameterizedTypeFixtures.MyParameterizedTypeAdapter.deserialize",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java:150",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java",
+      3424
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:proto/src/main/java/com/google/gson/protobuf/LegacyProtoTypeAdapterFactory.java#LegacyProtoTypeAdapterFactory.create",
+   "text": "T",
+   "at": "proto/src/main/java/com/google/gson/protobuf/LegacyProtoTypeAdapterFactory.java:91",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "proto/src/main/java/com/google/gson/protobuf/LegacyProtoTypeAdapterFactory.java",
+      3082
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/functional/RuntimeTypeAdapterFactoryFunctionalTest.java#RuntimeTypeAdapterFactoryFunctionalTest.RuntimeTypeAdapterFactory.create",
+   "text": "R",
+   "at": "gson/src/test/java/com/google/gson/functional/RuntimeTypeAdapterFactoryFunctionalTest.java:208",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "R",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/functional/RuntimeTypeAdapterFactoryFunctionalTest.java",
+      5501
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.WithNullReturningFactory.NullReturningFactory.create",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:189",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java",
+      7314
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.Node",
+   "text": "K",
+   "at": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:463",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "K",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java",
+      14078
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/Primitives.java#Primitives.unwrap",
+   "text": "T",
+   "at": "gson/src/main/java/com/google/gson/internal/Primitives.java:88",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/Primitives.java",
+      2914
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/MapTypeAdapterFactory.java#MapTypeAdapterFactory.Adapter",
+   "text": "K",
+   "at": "gson/src/main/java/com/google/gson/internal/bind/MapTypeAdapterFactory.java:164",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "K",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/bind/MapTypeAdapterFactory.java",
+      5863
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/internal/ConstructorConstructorTest.java#ConstructorConstructorTest.CustomSortedSet",
+   "text": "E",
+   "at": "gson/src/test/java/com/google/gson/internal/ConstructorConstructorTest.java:83",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "E",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/internal/ConstructorConstructorTest.java",
+      3066
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters",
+   "text": "T",
+   "at": "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java:396",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java",
+      14015
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.C.JsonAdapterFactory.create",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:253",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java",
+      9283
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnFieldsTest.java#JsonAdapterAnnotationOnFieldsTest.GetAdapterDelegation.Factory.create",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnFieldsTest.java:668",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnFieldsTest.java",
+      22749
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.C.JsonAdapterFactory.create",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:253",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java",
+      9283
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java#TypeTokenTest.testTypeTokenTypeVariable",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java:397",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java",
+      14625
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/PrimitiveTypeAdapter.java#PrimitiveTypeAdapter.adaptType",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/PrimitiveTypeAdapter.java:55",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/PrimitiveTypeAdapter.java",
+      1025
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/Primitives.java#Primitives.wrap",
+   "text": "T",
+   "at": "gson/src/main/java/com/google/gson/internal/Primitives.java:73",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/Primitives.java",
+      1933
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.Node",
+   "text": "V",
+   "at": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:462",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "V",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java",
+      14081
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.find",
+   "text": "V",
+   "at": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:164",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "V",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java",
+      1613
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.find",
+   "text": "K",
+   "at": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:179",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "K",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java",
+      1610
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java#Java17RecordReflectionTest.testLocalRecord",
+   "text": "LocalRecordDeserialization",
+   "at": "test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java:55",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "LocalRecordDeserialization",
+    "kind": "RECORD",
+    "status": "ok",
+    "decls": [
+     [
+      "test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java",
+      1609
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/NonNullElementWrapperList.java#NonNullElementWrapperList.toArray~1",
+   "text": "T",
+   "at": "gson/src/main/java/com/google/gson/internal/NonNullElementWrapperList.java:124",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/NonNullElementWrapperList.java",
+      3130
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap",
+   "text": "K",
+   "at": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:56",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "K",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java",
+      1610
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/CollectionTypeAdapterFactory.java#CollectionTypeAdapterFactory.create",
+   "text": "T",
+   "at": "gson/src/main/java/com/google/gson/internal/bind/CollectionTypeAdapterFactory.java:42",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/bind/CollectionTypeAdapterFactory.java",
+      1521
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java#ParameterizedTypeFixtures.MyParameterizedTypeAdapter.deserialize",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java:157",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java",
+      3424
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "calls",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters.zonedDateTime",
+   "text": "requireNonNullField",
+   "at": "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java:370",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "requireNonNullField",
+    "kind": "METHOD",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java",
+      16141
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/GsonTest.java#GsonTest.testGetAdapter_Concurrency",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/GsonTest.java:188",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/GsonTest.java",
+      6371
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java#ParameterizedTypeFixtures.MyParameterizedTypeAdapter.deserialize",
+   "text": "T",
+   "at": "gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java:152",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java",
+      3424
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.rotateLeft",
+   "text": "V",
+   "at": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:389",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "V",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java",
+      1613
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.findByObject",
+   "text": "K",
+   "at": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:204",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "K",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java",
+      1610
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.replaceInParent",
+   "text": "V",
+   "at": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:303",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "V",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java",
+      1613
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/JsonDeserializationContext.java#JsonDeserializationContext.deserialize",
+   "text": "T",
+   "at": "gson/src/main/java/com/google/gson/JsonDeserializationContext.java:43",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/JsonDeserializationContext.java",
+      1631
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/ConstructorConstructor.java#ConstructorConstructor.newUnsafeAllocator",
+   "text": "T",
+   "at": "gson/src/main/java/com/google/gson/internal/ConstructorConstructor.java:361",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "T",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/ConstructorConstructor.java",
+      14009
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "calls",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters",
+   "text": "localDateTime",
+   "at": "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java:413",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "localDateTime",
+    "kind": "METHOD",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java",
+      4079
+     ]
+    ]
+   }
+  },
+  {
+   "kind": "references",
+   "source": "symbol:gson/src/main/java/com/google/gson/internal/NonNullElementWrapperList.java#NonNullElementWrapperList.sort",
+   "text": "E",
+   "at": "gson/src/main/java/com/google/gson/internal/NonNullElementWrapperList.java:129",
+   "targets": [],
+   "resolution": "unresolved",
+   "javac": {
+    "name": "E",
+    "kind": "TYPE_PARAMETER",
+    "status": "ok",
+    "decls": [
+     [
+      "gson/src/main/java/com/google/gson/internal/NonNullElementWrapperList.java",
+      1192
+     ]
+    ]
+   }
+  }
+ ]
+}

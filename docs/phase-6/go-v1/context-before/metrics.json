@@ -1,0 +1,197 @@
+{
+ "dev": {},
+ "heldout": {
+  "verified": {
+   "tasks": 18,
+   "spans": 325,
+   "lines": 9077,
+   "files": 127,
+   "entry_recall@1": 0.005861,
+   "entry_recall@5": 0.04255,
+   "entry_recall@20": 0.187655,
+   "entry_mrr": 0.203682,
+   "entry_file_recall": 0.42323,
+   "routed_coverage": 0.187655,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.0,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.0,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.0,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "contained": 5,
+    "exact": 246,
+    "path": 74
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 208,
+     "routing": 113,
+     "unsupported": 4
+    },
+    "1024": {
+     "entry": 208,
+     "routing": 113,
+     "unsupported": 4
+    },
+    "4096": {
+     "entry": 208,
+     "routing": 113,
+     "unsupported": 4
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 28,
+   "lines": 1025,
+   "files": 23,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.1,
+   "entry_recall@20": 0.12,
+   "entry_mrr": 0.036667,
+   "entry_file_recall": 0.226667,
+   "routed_coverage": 0.12,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.0,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.0,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.0,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "drift": 7,
+    "range": 17,
+    "unresolved": 4
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 20,
+     "routing": 8
+    },
+    "1024": {
+     "entry": 20,
+     "routing": 8
+    },
+    "4096": {
+     "entry": 20,
+     "routing": 8
+    }
+   }
+  }
+ },
+ "all": {
+  "verified": {
+   "tasks": 18,
+   "spans": 325,
+   "lines": 9077,
+   "files": 127,
+   "entry_recall@1": 0.005861,
+   "entry_recall@5": 0.04255,
+   "entry_recall@20": 0.187655,
+   "entry_mrr": 0.203682,
+   "entry_file_recall": 0.42323,
+   "routed_coverage": 0.187655,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.0,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.0,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.0,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "contained": 5,
+    "exact": 246,
+    "path": 74
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 208,
+     "routing": 113,
+     "unsupported": 4
+    },
+    "1024": {
+     "entry": 208,
+     "routing": 113,
+     "unsupported": 4
+    },
+    "4096": {
+     "entry": 208,
+     "routing": 113,
+     "unsupported": 4
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 28,
+   "lines": 1025,
+   "files": 23,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.1,
+   "entry_recall@20": 0.12,
+   "entry_mrr": 0.036667,
+   "entry_file_recall": 0.226667,
+   "routed_coverage": 0.12,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.0,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.0,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.0,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "drift": 7,
+    "range": 17,
+    "unresolved": 4
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 20,
+     "routing": 8
+    },
+    "1024": {
+     "entry": 20,
+     "routing": 8
+    },
+    "4096": {
+     "entry": 20,
+     "routing": 8
+    }
+   }
+  }
+ }
+}

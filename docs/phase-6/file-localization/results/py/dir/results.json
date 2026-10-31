@@ -1,0 +1,2797 @@
+[
+ {
+  "task": "py-exact-retrypolicy",
+  "split": "dev",
+  "corpus": "fixture:py_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 25,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.04,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.941406,
+    "gold_unit_share@256": 0.120332,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.995117,
+    "gold_unit_share@1024": 0.460255,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.355469,
+    "gold_unit_share@4096": 0.322115
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "oxidepy/retry.py",
+    "lines": [
+     15,
+     45
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 25,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 37,
+   "candidates": 37,
+   "deferred": 23,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 241,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 13,
+     "selection: container": 5,
+     "selection: value N below floor": 15
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1019,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 2,
+     "selection: container": 5,
+     "selection: value N below floor": 15
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 1456,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 5,
+     "selection: value N below floor": 15
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "ba9e2c24984aadc775f79d039c5c1386a631808b44b0db53c2eca06516f61d7c",
+   "routed": "5e61decaf9c9449fab69944aa31685f2a7a412adb41503ea57df4a3a3a504b01",
+   "payload@256": "9bb2fe6d8b76a62449c5d1033af2276eb014a655bac3b54f10cb44ef4dba7b50",
+   "payload@1024": "b397a160378997843331aa037119561636035ff83c6bf1f088e2244d976424c2",
+   "payload@4096": "eeb15ba00d55bc10e051212bd13946628c5dc074a4a9b7372a42aa8781438292"
+  }
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "split": "dev",
+  "corpus": "fixture:py_repo",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 20,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.980469,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.783969,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.502197,
+    "gold_unit_share@4096": 0.40107
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "oxidepy/retry.py",
+    "lines": [
+     31,
+     37
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "oxidepy/http_client.py",
+    "lines": [
+     22,
+     34
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 13,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 48,
+   "candidates": 48,
+   "deferred": 12,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 251,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 19,
+     "selection: container": 7,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1023,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 12,
+     "selection: container": 7,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 2057,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 2,
+    "omissions": {
+     "selection: container": 7,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "81a0cc7b254019bbe5647dd9f229b2432bdc2be7c007a8b3f6cca682ae141fc5",
+   "routed": "48030338f054099231eb9c5ae23a0112328b7669d215f9ed3079a892ec9d425d",
+   "payload@256": "7c4b7ca801741cded36b7b2097243d791153d7c0bd9739286bd0edc12243e813",
+   "payload@1024": "27e4f2036121a5b1538b0f4403218fda657a31a0ec6b4b55b6340bf7d99674f7",
+   "payload@4096": "fe2fb6f9c09b7cd3f0e3648859def905fcad254beb632261c104ac05de9709b3"
+  }
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "split": "dev",
+  "corpus": "fixture:py_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 8,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 1.0,
+    "line_recall@256": 1.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.9375,
+    "gold_unit_share@256": 0.6375,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.939453,
+    "gold_unit_share@1024": 0.372141,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.309082,
+    "gold_unit_share@4096": 0.28278
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "oxidepy/auth.py",
+    "lines": [
+     40,
+     47
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 26,
+   "candidates": 26,
+   "deferred": 21,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 240,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 10,
+     "selection: container": 3,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 962,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 2,
+    "omissions": {
+     "selection: container": 3,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 1266,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 3,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "0cd70844e02f37c104b757505216a3bcb88f6392ead0e862233ecedc99d1addb",
+   "routed": "d6697167d7f5f8ada67a942db0af9d3e04720f4889527e19c6382cf1ede9694c",
+   "payload@256": "78b2378d9f95f1259d477549869659a535127c5abafdadd06f53f967838e2c1b",
+   "payload@1024": "6dfcf8d7a49470aa31f4e06620f505412dce7ea6d5bba6548052f93a052b3927",
+   "payload@4096": "fb86aca67f43b12aa5980807e39fddf024e9072cf80a7c6e883180413ceb2614"
+  }
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "split": "dev",
+  "corpus": "fixture:py_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 4,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 1.0,
+    "line_recall@256": 1.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.902344,
+    "gold_unit_share@256": 0.450216,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.941406,
+    "gold_unit_share@1024": 0.107884,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.235352,
+    "gold_unit_share@4096": 0.107884
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "tests/test_retry.py",
+    "lines": [
+     8,
+     11
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 13,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 231,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 4,
+     "selection: container": 1,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 964,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 1,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 964,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 1,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "f42b3fc92257ad3f39071f393dfadb5e5d34c2eadc239a86b4cfbbb1d21a49bf",
+   "routed": "78db0a44b80476a6eb662a01d214b821f6be5374155602a212742b36a7830fa9",
+   "payload@256": "aec36a1ef54a565b0c01ea834767958753c2c96a4e2fd15ae474e0b7820eabdb",
+   "payload@1024": "44b3cde7506a77df692962b45b89666a2bb3569fbd7d220d6a321502b6e21a15",
+   "payload@4096": "44b3cde7506a77df692962b45b89666a2bb3569fbd7d220d6a321502b6e21a15"
+  }
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "split": "dev",
+  "corpus": "fixture:py_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 17,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.470588,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.921875,
+    "gold_unit_share@256": 0.817797,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.3125,
+    "gold_unit_share@1024": 0.865625,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.078125,
+    "gold_unit_share@4096": 0.865625
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "oxidepy/cache.py",
+    "lines": [
+     6,
+     25
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 12,
+   "candidates": 12,
+   "deferred": 26,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 236,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 3,
+    "omissions": {
+     "selection: container": 2,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 320,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 2,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 320,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 2,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "41c809180db96e039e5ecabfe9b1760367d1a1d4adedb1827e48fe9e1da64bc2",
+   "routed": "ac2ca53314f2fdd756736a950ea5add109467b49c83f6e85a50446f4b358ce70",
+   "payload@256": "fd9f47a4c2e60e5eaa2c32b97e888d9255f41c447614b23dd8f7a7be5b5605de",
+   "payload@1024": "00fa7815c445752c55f2dea27a7a1051c250fb44d5572993c49dd65a88c5255c",
+   "payload@4096": "00fa7815c445752c55f2dea27a7a1051c250fb44d5572993c49dd65a88c5255c"
+  }
+ },
+ {
+  "task": "py-implementors-notifier",
+  "split": "dev",
+  "corpus": "fixture:py_repo",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 10,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.5,
+    "line_recall@256": 0.8,
+    "file_recall@256": 1.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.703125,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.211144,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.543457,
+    "gold_unit_share@4096": 0.097035
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "oxidepy/notifiers.py",
+    "lines": [
+     13,
+     18
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   },
+   {
+    "file": "oxidepy/notifiers.py",
+    "lines": [
+     21,
+     26
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 61,
+   "candidates": 61,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 36,
+     "selection: container": 8,
+     "selection: value N below floor": 12
+    },
+    "degradations": []
+   },
+   "1024": {
+    "used": 1023,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 25,
+     "selection: container": 8,
+     "selection: value N below floor": 12
+    },
+    "degradations": []
+   },
+   "4096": {
+    "used": 2226,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 2,
+    "omissions": {
+     "selection: container": 8,
+     "selection: item cap N": 17,
+     "selection: value N below floor": 12
+    },
+    "degradations": []
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "8bb1760ab5a69fb735d0e5caacf603658a33a36ee312f800af71fa44d94478e3",
+   "routed": "36d593afef3e3a9faf81dc2b30beec5052d34f5399520dad8c1c737e3cfa2a2f",
+   "payload@256": "60f27625b389e689c83c5b6c90b1ca1b022ffb05e602e210fe8b9af22744894e",
+   "payload@1024": "3026a6aa39c03f9f0b1196976ef1ce9b34f0f185133d2374cb767188a93ce962",
+   "payload@4096": "69cc4a9099293c0ddc08f59b3a2d408d440b5bbb185b33996ef192ed8c34d238"
+  }
+ },
+ {
+  "task": "py-callers-should-retry",
+  "split": "dev",
+  "corpus": "fixture:py_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 3,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.333333,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.878906,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.972656,
+    "gold_unit_share@1024": 0.106426,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.243164,
+    "gold_unit_share@4096": 0.106426
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "oxidepy/notifiers.py",
+    "lines": [
+     31,
+     33
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 3,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 29,
+   "candidates": 29,
+   "deferred": 13,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 225,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 7,
+     "selection: container": 4,
+     "selection: value N below floor": 15
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 996,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 4,
+     "selection: value N below floor": 15
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 996,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 4,
+     "selection: value N below floor": 15
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "3d68ec83efa62a8f390570f90072277485aa0197512431573bd20f5fba207b63",
+   "routed": "5f2eb84b5b39c7725f5a75917fb27baf3ac4de94e3a41f1af49d3994fec7809a",
+   "payload@256": "d72d54f6765b88f353fc9d640c23a425dce72925671702257c197cebda19508d",
+   "payload@1024": "7a5ce798c19dbda010bc3cdb08edb7970bbe1583c58f6d5d712dee231c6487d9",
+   "payload@4096": "7a5ce798c19dbda010bc3cdb08edb7970bbe1583c58f6d5d712dee231c6487d9"
+  }
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "split": "dev",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "verified": {
+   "counts": {
+    "spans": 12,
+    "lines": 322,
+    "files": 6
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.25,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.583333,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.003106,
+    "file_recall@256": 0.166667,
+    "utilization@256": 0.925781,
+    "gold_unit_share@256": 0.189873,
+    "span_recall@1024": 0.25,
+    "line_recall@1024": 0.059006,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.983398,
+    "gold_unit_share@1024": 0.294935,
+    "span_recall@4096": 0.25,
+    "line_recall@4096": 0.059006,
+    "file_recall@4096": 0.666667,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.07251
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     25,
+     31
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     1188,
+     1288
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 86,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     1238,
+     1244
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     1628,
+     1649
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     1631,
+     1636
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     1644,
+     1649
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "seaborn/_core/properties.py",
+    "lines": [
+     62,
+     76
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "seaborn/_core/properties.py",
+    "lines": [
+     143,
+     152
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 3,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "seaborn/_core/scales.py",
+    "lines": [
+     137,
+     228
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 73,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "seaborn/categorical.py",
+    "lines": [
+     195,
+     224
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 27,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "seaborn/distributions.py",
+    "lines": [
+     570,
+     663
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 74,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "tests/test_distributions.py",
+    "lines": [
+     288,
+     304
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 238,
+   "fanout_truncations": 13,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 237,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 56,
+     "selection: value N below floor": 4
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1007,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 12,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 48,
+     "selection: value N below floor": 4
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4096,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 21,
+    "header_entities": 9,
+    "omissions": {
+     "packing: budget": 37,
+     "selection: value N below floor": 4
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "732131e0ace447cdbe1aa97f0823d348481d8f4ae68cb97185249d1f7595b22a",
+   "routed": "16521d1a2e2a15ef17346fcc2a092fbf0c972a394bd844339561e1925d6591ea",
+   "payload@256": "3458743c90818c38f8b3604078e9332d7494ccb219fc5d89e5e9a3d0da3cf2be",
+   "payload@1024": "4635fd0110fb6b69a80f01895abd85fccb4f4b58c67baaf5d3186e7adfa40e23",
+   "payload@4096": "30c02926905a19abc5bb3cebd23753b0660a0aacb6e0729827faa48da69a69e8"
+  }
+ },
+ {
+  "task": "pallets__flask-5014",
+  "split": "dev",
+  "corpus": "pallets__flask@7ee9ceb71e86",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 13,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.071429,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.890625,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.988281,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.997559,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 20,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.071429,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.890625,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.988281,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.05,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.997559,
+    "gold_unit_share@4096": 0.008076
+   }
+  },
+  "gold": [
+   {
+    "file": "src/flask/blueprints.py",
+    "lines": [
+     169,
+     190
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 20,
+    "module_lines": 0,
+    "entry_rank": 14,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/flask/blueprints.py",
+    "lines": [
+     190,
+     195
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 14,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/flask/blueprints.py",
+    "lines": [
+     191,
+     207
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": 14,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 81,
+   "fanout_truncations": 5,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 228,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 48,
+     "packing: too large": 1,
+     "selection: container": 2,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1012,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 47,
+     "selection: container": 2,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4086,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 25,
+    "header_entities": 9,
+    "omissions": {
+     "packing: budget": 18,
+     "selection: container": 2,
+     "selection: item cap N": 11,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "bbefd27cf309580df28a281a9713f8bceaeb56e332284f8799f3b2959b5b468c",
+   "routed": "34af3f107e864b88b606b2b7d2eea488a7073a1007ac91a53fbb50c0d271eabc",
+   "payload@256": "b77f30a3acf28d9a16f861b86703a6c62c067261213146b7cf5712d82c933f7c",
+   "payload@1024": "a411b28b0c1461f00e4ac09265ab8984a2cb48f7de82f2390e52796f251012a3",
+   "payload@4096": "b8f135ee1590bf7cefce6037754b5eea90459b777bb12597a73d94cfdbeb58d2"
+  }
+ },
+ {
+  "task": "psf__requests-6028",
+  "split": "dev",
+  "corpus": "psf__requests@0192aac24123",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 78,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.166667,
+    "entry_mrr": 0.052632,
+    "entry_file_recall": 0.666667,
+    "routed_coverage": 0.833333,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.914062,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.998047,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.333333,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "requests/adapters.py",
+    "lines": [
+     293,
+     318
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 23,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "requests/adapters.py",
+    "lines": [
+     373,
+     393
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "requests/utils.py",
+    "lines": [
+     960,
+     983
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "requests/utils.py",
+    "lines": [
+     974,
+     979
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "requests/utils.py",
+    "lines": [
+     1027,
+     1041
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tests/test_utils.py",
+    "lines": [
+     600,
+     607
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 141,
+   "fanout_truncations": 10,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 234,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 43,
+     "packing: too large": 1,
+     "selection: container": 2,
+     "selection: value N below floor": 14
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1022,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 38,
+     "packing: too large": 1,
+     "selection: container": 2,
+     "selection: value N below floor": 14
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4096,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 23,
+    "header_entities": 9,
+    "omissions": {
+     "packing: budget": 26,
+     "selection: container": 2,
+     "selection: value N below floor": 14
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "0c36fa0507bf2bfc13f9ce214055757e6ca2683e6c1f201b543a5ca81fbefb44",
+   "routed": "dee9a3b17d402c53e15a3edf76935bbc7479d893a46612549505e252e5346e32",
+   "payload@256": "3ad98bc5799920e470b618fc2aa62bf58fd95adcadafc946920289ff66b836c0",
+   "payload@1024": "cb0e92822a4d61760d916ee68bc7b7b1cbbdd9b4cc925869e0d5102492f257b2",
+   "payload@4096": "5478106544b7340dfbacb226bde6bb2fada0a8285ebc414441242026b89c0d08"
+  }
+ },
+ {
+  "task": "psf__requests-2317",
+  "split": "dev",
+  "corpus": "psf__requests@091991be0da1",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 87,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.166667,
+    "entry_recall@5": 0.166667,
+    "entry_recall@20": 0.166667,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.666667,
+    "routed_coverage": 0.833333,
+    "span_recall@256": 0.166667,
+    "line_recall@256": 0.172414,
+    "file_recall@256": 0.333333,
+    "utilization@256": 0.957031,
+    "gold_unit_share@256": 0.689796,
+    "span_recall@1024": 0.166667,
+    "line_recall@1024": 0.172414,
+    "file_recall@1024": 0.666667,
+    "utilization@1024": 0.990234,
+    "gold_unit_share@1024": 0.166667,
+    "span_recall@4096": 0.166667,
+    "line_recall@4096": 0.172414,
+    "file_recall@4096": 0.666667,
+    "utilization@4096": 0.998535,
+    "gold_unit_share@4096": 0.04132
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "requests/compat.py",
+    "lines": [
+     87,
+     115
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 25,
+    "module_lines": 25,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "requests/sessions.py",
+    "lines": [
+     11,
+     23
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 12,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "requests/sessions.py",
+    "lines": [
+     13,
+     19
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "requests/sessions.py",
+    "lines": [
+     120,
+     156
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 30,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "requests/sessions.py",
+    "lines": [
+     425,
+     431
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "requests/utils.py",
+    "lines": [
+     655,
+     671
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 116,
+   "fanout_truncations": 8,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 245,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 42,
+     "selection: container": 1,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1014,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 38,
+     "selection: container": 1,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4090,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 23,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 22,
+     "selection: container": 1,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "9494a2f62da1f15ed30898a1a7055be9ee129be7fc8fdf4561a254d08c2b73e5",
+   "routed": "73e7d67ba3151884cc8ac17f33d90325afc0b5f9acb5db73fe3b8c1e9a7a8c80",
+   "payload@256": "ec96d21dad6cbcae76d929af1e2142ce10c06ddd19318bffb7667d91ab73fbd5",
+   "payload@1024": "f737f3b273add759e19ff56ff31498313a1b0f625740757d42f2c1b4a4c9e6bd",
+   "payload@4096": "05e65f2cd7929eb627b03d996e8d8680a11dda35f9a63fc3233174cd848370b5"
+  }
+ },
+ {
+  "task": "psf__requests-1142",
+  "split": "dev",
+  "corpus": "psf__requests@22623bd8c265",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 11,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.727273,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.890625,
+    "gold_unit_share@256": 0.657895,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.727273,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.146915,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.727273,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.984375,
+    "gold_unit_share@4096": 0.037202
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 44,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.890625,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.984375,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "requests/models.py",
+    "lines": [
+     332,
+     387
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 44,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "requests/models.py",
+    "lines": [
+     386,
+     398
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 107,
+   "fanout_truncations": 7,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 228,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 41,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1021,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 31,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4032,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 25,
+    "header_entities": 5,
+    "omissions": {
+     "selection: item cap N": 20,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "3b651445893e4da72b2deb01b2597dccc646cab1f16ee44e9aaf0674f2f873da",
+   "routed": "010a6f08ce94b131933457e139eafeaca2e4106dbbd69e2e993372aa40eda8a3",
+   "payload@256": "a894b5476bcf5d3ee69fc3824c41d90e666fc8511558611d8b7162796f6f2e9f",
+   "payload@1024": "77ebceb51a085820f118d4b62280cf126fab8dfc6e676edd80b543f1537d3e25",
+   "payload@4096": "1e9a7c69b3a0716bbd110c74ff04c50e21e0f2d4182055b41deaf5db10db8f2b"
+  }
+ },
+ {
+  "task": "psf__requests-5414",
+  "split": "dev",
+  "corpus": "psf__requests@39d0fdd9096f",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 49,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.333333,
+    "entry_mrr": 0.05,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.976562,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.995117,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.333333,
+    "line_recall@4096": 0.22449,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.731201,
+    "gold_unit_share@4096": 0.058097
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "requests/models.py",
+    "lines": [
+     375,
+     420
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 38,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "requests/models.py",
+    "lines": [
+     403,
+     409
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "tests/test_requests.py",
+    "lines": [
+     77,
+     87
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": 20,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 152,
+   "fanout_truncations": 12,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 250,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 32,
+     "selection: container": 2,
+     "selection: value N below floor": 25
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1019,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 30,
+     "selection: container": 2,
+     "selection: value N below floor": 25
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 2995,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 29,
+    "header_entities": 6,
+    "omissions": {
+     "selection: container": 2,
+     "selection: item cap N": 13,
+     "selection: value N below floor": 25
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "1fbe1bdc9199cfbea90f4652c494adfc5fa8df8d8b7a5519a88766774defda56",
+   "routed": "ea3db6b931c8d8206286998eb3d1af69f0f123333af617de798c07a453e2cd66",
+   "payload@256": "4e2f49aa9de1e8e40542a53ebe821afe4a1e180212947dd2572d3b0b90b7a5a1",
+   "payload@1024": "7eb58698d8d6d87a0edcf893f396f42aedd51b17f97683484f50f3613cb1d2a1",
+   "payload@4096": "674b83acff2e8922ea5161d21a3cd439bddfde982f4e6c1d25113a2cf781a143"
+  }
+ },
+ {
+  "task": "psf__requests-2931",
+  "split": "dev",
+  "corpus": "psf__requests@5f7a3a74aab1",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 56,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.2,
+    "entry_recall@5": 0.6,
+    "entry_recall@20": 0.6,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.2,
+    "line_recall@256": 0.267857,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.925781,
+    "gold_unit_share@256": 0.71308,
+    "span_recall@1024": 0.2,
+    "line_recall@1024": 0.267857,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.983398,
+    "gold_unit_share@1024": 0.167825,
+    "span_recall@4096": 0.6,
+    "line_recall@4096": 0.696429,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.95166,
+    "gold_unit_share@4096": 0.311698
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "requests/models.py",
+    "lines": [
+     74,
+     99
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 24,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "requests/models.py",
+    "lines": [
+     81,
+     87
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "requests/models.py",
+    "lines": [
+     372,
+     387
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "requests/models.py",
+    "lines": [
+     385,
+     390
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "requests/utils.py",
+    "lines": [
+     686,
+     704
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 132,
+   "fanout_truncations": 8,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 237,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 42,
+     "selection: container": 1,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1007,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 39,
+     "selection: container": 1,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 3898,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 24,
+    "header_entities": 7,
+    "omissions": {
+     "selection: container": 1,
+     "selection: item cap N": 21,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "df40f20faf8a4c3baecdaedf7fab27db5902655ef254b23345efcca0d7f28984",
+   "routed": "dcf83f679fb3ec5e9b2931c500ca27ca589d226f858cf578a84da7cbe6f83d76",
+   "payload@256": "2ac821f97f5c34b7d1eea693b8e8153774eafd7ff6c3abc3c2bb84988e61b92f",
+   "payload@1024": "f38cdf3bedaffcb33dd4f034c6a94a33c12c9d362604dfd9c4525ee33685cc26",
+   "payload@4096": "9f9bcf2a05fef704f9589385ad27512e1adf22dd1fb98a814ed12e96be18ac96"
+  }
+ },
+ {
+  "task": "psf__requests-1766",
+  "split": "dev",
+  "corpus": "psf__requests@847735553aed",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 28,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999023,
+    "gold_unit_share@4096": 0.386119
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 22,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.045455,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.043011,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999023,
+    "gold_unit_share@4096": 0.386119
+   }
+  },
+  "gold": [
+   {
+    "file": "requests/auth.py",
+    "lines": [
+     68,
+     91
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 22,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "requests/auth.py",
+    "lines": [
+     105,
+     111
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "requests/auth.py",
+    "lines": [
+     122,
+     149
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 24,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "requests/auth.py",
+    "lines": [
+     144,
+     150
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 144,
+   "fanout_truncations": 11,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 254,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 49,
+     "packing: too large": 1,
+     "selection: container": 2,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1023,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 38,
+     "packing: too large": 1,
+     "selection: container": 2,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4092,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 19,
+    "header_entities": 9,
+    "omissions": {
+     "packing: budget": 32,
+     "selection: container": 2,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "56161e0c161c7d48b11c07c1c00dc47397b999646dfa8cbbad1bd14107d8a402",
+   "routed": "419aa1b2fbf3e74cc40b2883274ada0fa9a4297aafd7be3a4754ae09f0296755",
+   "payload@256": "1951482a78b0297fab8c193a08ec14c3351162b1e7f6e1813874b030d64e7853",
+   "payload@1024": "0150226cb79eb2ed3eea990426abe17c5786e2ff570a4ff3332fcb98020e6f8b",
+   "payload@4096": "0b2867536a0727450e434c4dc056847abec2b76559c9a02a57efa109d7a87e1a"
+  }
+ }
+]

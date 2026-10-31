@@ -1,0 +1,195 @@
+{
+ "dev": {},
+ "heldout": {
+  "verified": {
+   "tasks": 16,
+   "spans": 87,
+   "lines": 6784,
+   "files": 48,
+   "entry_recall@1": 0.078125,
+   "entry_recall@5": 0.184028,
+   "entry_recall@20": 0.310144,
+   "entry_mrr": 0.455109,
+   "entry_file_recall": 0.5625,
+   "routed_coverage": 0.759177,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.007305,
+   "file_recall@256": 0.259549,
+   "utilization@256": 0.934814,
+   "gold_unit_share@256": 0.297116,
+   "span_recall@1024": 0.002604,
+   "line_recall@1024": 0.032037,
+   "file_recall@1024": 0.467014,
+   "utilization@1024": 0.984558,
+   "gold_unit_share@1024": 0.290757,
+   "span_recall@4096": 0.026042,
+   "line_recall@4096": 0.094019,
+   "file_recall@4096": 0.546875,
+   "utilization@4096": 0.988724,
+   "gold_unit_share@4096": 0.208898,
+   "classes": {
+    "exact": 37,
+    "path": 50
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 37,
+     "entry": 33,
+     "routing": 9,
+     "selection": 8
+    },
+    "1024": {
+     "budget": 36,
+     "complete": 1,
+     "entry": 33,
+     "routing": 9,
+     "selection": 8
+    },
+    "4096": {
+     "budget": 22,
+     "complete": 3,
+     "entry": 33,
+     "routing": 9,
+     "selection": 20
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 6,
+   "spans": 10,
+   "lines": 1564,
+   "files": 10,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.0,
+   "entry_recall@20": 0.0,
+   "entry_mrr": 0.0,
+   "entry_file_recall": 0.0,
+   "routed_coverage": 0.0,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.947916,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.981933,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.996908,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "unresolved": 10
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 10
+    },
+    "1024": {
+     "entry": 10
+    },
+    "4096": {
+     "entry": 10
+    }
+   }
+  }
+ },
+ "all": {
+  "verified": {
+   "tasks": 16,
+   "spans": 87,
+   "lines": 6784,
+   "files": 48,
+   "entry_recall@1": 0.078125,
+   "entry_recall@5": 0.184028,
+   "entry_recall@20": 0.310144,
+   "entry_mrr": 0.455109,
+   "entry_file_recall": 0.5625,
+   "routed_coverage": 0.759177,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.007305,
+   "file_recall@256": 0.259549,
+   "utilization@256": 0.934814,
+   "gold_unit_share@256": 0.297116,
+   "span_recall@1024": 0.002604,
+   "line_recall@1024": 0.032037,
+   "file_recall@1024": 0.467014,
+   "utilization@1024": 0.984558,
+   "gold_unit_share@1024": 0.290757,
+   "span_recall@4096": 0.026042,
+   "line_recall@4096": 0.094019,
+   "file_recall@4096": 0.546875,
+   "utilization@4096": 0.988724,
+   "gold_unit_share@4096": 0.208898,
+   "classes": {
+    "exact": 37,
+    "path": 50
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 37,
+     "entry": 33,
+     "routing": 9,
+     "selection": 8
+    },
+    "1024": {
+     "budget": 36,
+     "complete": 1,
+     "entry": 33,
+     "routing": 9,
+     "selection": 8
+    },
+    "4096": {
+     "budget": 22,
+     "complete": 3,
+     "entry": 33,
+     "routing": 9,
+     "selection": 20
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 6,
+   "spans": 10,
+   "lines": 1564,
+   "files": 10,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.0,
+   "entry_recall@20": 0.0,
+   "entry_mrr": 0.0,
+   "entry_file_recall": 0.0,
+   "routed_coverage": 0.0,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.947916,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.981933,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.996908,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "unresolved": 10
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 10
+    },
+    "1024": {
+     "entry": 10
+    },
+    "4096": {
+     "entry": 10
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,2983 @@
+{
+ "baseline": "contextbench-ts-v8",
+ "protocol": "docs/phase-6/typescript-v1/README.md, amended by typescript-v2, v3, v4, v5, v6, v7 and v8",
+ "scorer": "contextbench-ts-scorer-v1",
+ "tasks": "contextbench-ts-tasks-v1 sha256 5fc16fa6b0b68542caeb4a5a98a28dc404da1266bec08466c5a97e8e9f1589e2",
+ "audit": "contextbench-ts-gold-audit-v1 sha256 d480b2b8f1af3a649ade41fe1047cfe5004d37521127564512cdecc209a1ea8d",
+ "oxide_source": "3492b388eebf3c7b60973f8080bece664a7c2e1a +dirty",
+ "budgets": [
+  256,
+  1024,
+  4096
+ ],
+ "tolerance": 0.02,
+ "gated": [
+  "entry_recall@5",
+  "entry_recall@20",
+  "entry_mrr",
+  "routed_coverage",
+  "span_recall@256",
+  "span_recall@1024",
+  "span_recall@4096",
+  "line_recall@256",
+  "line_recall@1024",
+  "line_recall@4096"
+ ],
+ "corpora": {
+  "coder__code-server@5d3c9edce436": {
+   "url": "https://github.com/coder/code-server",
+   "commit": "5d3c9edce436d11d51aa1e586c11eaa49d626dc2",
+   "ts_files": 83,
+   "configs": 4,
+   "tree_sha256": "0187911d60642ead63ecf55312f96052191ad7af44bedd3cc61db48d61db04ed",
+   "snapshot": "sha256:0c7b060768573d00ac5807b5a4197b16a2ebd83ba2c5cb9a7c314af072047734",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 573,
+   "relations": 5278,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 377,
+     "unresolved": 227
+    },
+    "calls": {
+     "resolved": 720,
+     "unresolved": 2576
+    },
+    "references": {
+     "resolved": 12,
+     "unresolved": 4
+    }
+   },
+   "unresolved_imports": {
+    "external": 223,
+    "relative:found": 1,
+    "relative:none": 3
+   }
+  },
+  "coder__code-server@78658f1cf48a": {
+   "url": "https://github.com/coder/code-server",
+   "commit": "78658f1cf48a5e019a82cde937cfa8feed8b986b",
+   "ts_files": 72,
+   "configs": 4,
+   "tree_sha256": "88c2c5cdd8b4c0e1b29b324ab4d133c3b71746892b84748df6e1df02502bf815",
+   "snapshot": "sha256:2c5b725f4dc42b3ab21692e419479213a458d5f4bf5024e21a293282e46a6039",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 504,
+   "relations": 4414,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 311,
+     "unresolved": 208
+    },
+    "calls": {
+     "resolved": 563,
+     "unresolved": 2188
+    },
+    "references": {
+     "resolved": 10,
+     "unresolved": 4
+    }
+   },
+   "unresolved_imports": {
+    "external": 208
+   }
+  },
+  "darkreader__darkreader@991883df4d59": {
+   "url": "https://github.com/darkreader/darkreader",
+   "commit": "991883df4d5910851130e3dc0e21fcbce604ea7d",
+   "ts_files": 210,
+   "configs": 6,
+   "tree_sha256": "15e65fc03580587c8342118d68695476ce879701b1d26c58840dc891c6283b73",
+   "snapshot": "sha256:173e417c2f2590c66fa7df7b17e6ca15c5b2cb00ca6303a35cde10350380f415",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 1604,
+   "relations": 10760,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 962,
+     "unresolved": 176
+    },
+    "calls": {
+     "ambiguous": 50,
+     "resolved": 2202,
+     "unresolved": 4857
+    },
+    "references": {
+     "resolved": 9,
+     "unresolved": 4
+    }
+   },
+   "unresolved_imports": {
+    "external": 138,
+    "relative:found": 38
+   }
+  },
+  "darkreader__darkreader@a787eb511f45": {
+   "url": "https://github.com/darkreader/darkreader",
+   "commit": "a787eb511f45159c8869d30e5a6ba1f91cb67709",
+   "ts_files": 201,
+   "configs": 6,
+   "tree_sha256": "dac67c5c000d3e434bc099bffb23bd719541afa38214dcf678ea60fd18b5680f",
+   "snapshot": "sha256:404e7d9de392d01dbe9d2cb0c794942b546c98dd6af9a9ce27ec3e03d6a2412d",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 1534,
+   "relations": 10265,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 924,
+     "unresolved": 171
+    },
+    "calls": {
+     "ambiguous": 50,
+     "resolved": 2103,
+     "unresolved": 4615
+    },
+    "references": {
+     "resolved": 7,
+     "unresolved": 4
+    }
+   },
+   "unresolved_imports": {
+    "external": 133,
+    "relative:found": 38
+   }
+  },
+  "fixture:ts_repo": {
+   "ts_files": 8,
+   "configs": 1,
+   "tree_sha256": "aedff309da2b4cdabcb2e38cc126de8fff2623c44b60e765390d46cf836885ec",
+   "snapshot": "sha256:002e3790943a90a48dacd1b21e09b0053b344ebebd1f600ecf547263b17d1025",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 53,
+   "relations": 134,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 13,
+     "unresolved": 3
+    },
+    "calls": {
+     "resolved": 6,
+     "unresolved": 29
+    },
+    "references": {
+     "resolved": 3
+    }
+   },
+   "unresolved_imports": {
+    "external": 3
+   }
+  },
+  "microsoft__vscode@1a599e2d1792": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "1a599e2d1792630bc7c53232404d83214acb88f4",
+   "ts_files": 3903,
+   "configs": 58,
+   "tree_sha256": "e224d7599e9f13bc576b65fb30d9f12b1588330576cfda334879da81e3da64b8",
+   "snapshot": "sha256:c6e0875ec33d0e24f372d87d9424bb28e519644837204aa876b2fa09c2224840",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 80238,
+   "relations": 513827,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 11760,
+     "resolved": 48598,
+     "unresolved": 4062
+    },
+    "calls": {
+     "ambiguous": 14547,
+     "resolved": 69140,
+     "unresolved": 234100
+    },
+    "references": {
+     "ambiguous": 453,
+     "resolved": 5646,
+     "unresolved": 365
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 232,
+    "external": 3621,
+    "relative:found": 103,
+    "relative:none": 90,
+    "workspace:none": 16
+   }
+  },
+  "microsoft__vscode@2dff5deef71f": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "2dff5deef71fed71f039f8064e4e6deb818b1e3d",
+   "ts_files": 3812,
+   "configs": 59,
+   "tree_sha256": "75eb228ce0446ceaef8954d1f41c162efb80c85f6457db3461e4367350bd08cc",
+   "snapshot": "sha256:7dd3d158f8adefde40de13300d439d5b7504ad155bd2c867d65a23a9d54681b7",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 78480,
+   "relations": 501816,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 11365,
+     "resolved": 47199,
+     "unresolved": 3961
+    },
+    "calls": {
+     "ambiguous": 13930,
+     "resolved": 67491,
+     "unresolved": 229291
+    },
+    "references": {
+     "ambiguous": 437,
+     "resolved": 5518,
+     "unresolved": 351
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 237,
+    "external": 3518,
+    "relative:found": 103,
+    "relative:none": 88,
+    "workspace:none": 15
+   }
+  },
+  "microsoft__vscode@384b03f26310": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "384b03f26310fc3c4ea86156b7c6aefb431d594f",
+   "ts_files": 4242,
+   "configs": 59,
+   "tree_sha256": "417ada784798433cd454140a40c2e364ec6c5aabfdb339e5c6b5b882a353cb51",
+   "snapshot": "sha256:a53ca4cb6d832ec4e6939ab8a36d3bbc86d540bfd336d7bfc0fe99d5f666d785",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 86498,
+   "relations": 549789,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 12931,
+     "resolved": 52723,
+     "unresolved": 4284
+    },
+    "calls": {
+     "ambiguous": 15570,
+     "resolved": 73697,
+     "unresolved": 249570
+    },
+    "references": {
+     "ambiguous": 501,
+     "resolved": 6040,
+     "unresolved": 384
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 226,
+    "external": 3836,
+    "relative:found": 107,
+    "relative:none": 98,
+    "workspace:none": 17
+   }
+  },
+  "microsoft__vscode@440e61ffab2b": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "440e61ffab2ba257f30852940fdce18a48a168ea",
+   "ts_files": 3988,
+   "configs": 60,
+   "tree_sha256": "f7b72eba7588568527438369e8699d22e34f173c4707e31b70c67d1aa2e7532c",
+   "snapshot": "sha256:c36fb5dfbef4d84df5e9668790c504c229ba34e2fa30abc207b1ed016d48939f",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 81799,
+   "relations": 521725,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 12027,
+     "resolved": 49710,
+     "unresolved": 4157
+    },
+    "calls": {
+     "ambiguous": 14780,
+     "resolved": 69374,
+     "unresolved": 238174
+    },
+    "references": {
+     "ambiguous": 466,
+     "resolved": 5737,
+     "unresolved": 363
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 231,
+    "external": 3708,
+    "relative:found": 106,
+    "relative:none": 96,
+    "workspace:none": 16
+   }
+  },
+  "microsoft__vscode@4bbec283c36a": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "4bbec283c36a51cf80f9b77c7a81c140a76a363b",
+   "ts_files": 3505,
+   "configs": 56,
+   "tree_sha256": "9962128ca214dcd101eac3ae6945635ce140eca68ad53e441b613cfcb7638799",
+   "snapshot": "sha256:09e79e9e68da8fbcfd29dcce97f6bd403f7ebd47543acd153ba84831a18927a3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 73966,
+   "relations": 467381,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 10457,
+     "resolved": 43749,
+     "unresolved": 3524
+    },
+    "calls": {
+     "ambiguous": 13214,
+     "resolved": 62769,
+     "unresolved": 213112
+    },
+    "references": {
+     "ambiguous": 410,
+     "resolved": 5172,
+     "unresolved": 304
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 226,
+    "external": 3127,
+    "relative:found": 109,
+    "relative:none": 49,
+    "workspace:none": 13
+   }
+  },
+  "microsoft__vscode@5b8bd1c45ca3": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "5b8bd1c45ca3041a2a947e499d2db21c0a2df20d",
+   "ts_files": 3789,
+   "configs": 58,
+   "tree_sha256": "912084f56d3c1fb90034ddc129def05043bd9ed3ec68ae3d897d673c2d29335a",
+   "snapshot": "sha256:26314c0f669d49fe72b1c483f59f50593ac87064953423e97a1f4cca76bdca44",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 78031,
+   "relations": 499585,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 11357,
+     "resolved": 47040,
+     "unresolved": 3910
+    },
+    "calls": {
+     "ambiguous": 13930,
+     "resolved": 67180,
+     "unresolved": 228304
+    },
+    "references": {
+     "ambiguous": 437,
+     "resolved": 5499,
+     "unresolved": 341
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 234,
+    "external": 3479,
+    "relative:found": 103,
+    "relative:none": 81,
+    "workspace:none": 13
+   }
+  },
+  "microsoft__vscode@7d8f55ebb1b7": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "7d8f55ebb1b7ccb084f7e6969b6926519c5c80c3",
+   "ts_files": 3505,
+   "configs": 56,
+   "tree_sha256": "c1f608ef11371fd48b82b55b87d936ef11d4ab2af6e8d10d70bd42912e983137",
+   "snapshot": "sha256:a00c12b8c2442ba3d6c9bbaebd238e8451473076afa2ced0a42eb035150c6526",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 73959,
+   "relations": 467290,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 10456,
+     "resolved": 43747,
+     "unresolved": 3521
+    },
+    "calls": {
+     "ambiguous": 13211,
+     "resolved": 62749,
+     "unresolved": 213066
+    },
+    "references": {
+     "ambiguous": 410,
+     "resolved": 5171,
+     "unresolved": 304
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 226,
+    "external": 3124,
+    "relative:found": 109,
+    "relative:none": 49,
+    "workspace:none": 13
+   }
+  },
+  "microsoft__vscode@88ffbc7a7a81": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "88ffbc7a7a81a926c7969ad7428e2ffc54370f42",
+   "ts_files": 3909,
+   "configs": 58,
+   "tree_sha256": "1a1c54cbefa2be5d02684128e8afea33a1f74dcfeba23071e4affff4af17b35f",
+   "snapshot": "sha256:998519099d26861105ec3220f1ea1ffd5c98e1788362097561928a6edeb755bd",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 80446,
+   "relations": 515721,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 11805,
+     "resolved": 48741,
+     "unresolved": 4074
+    },
+    "calls": {
+     "ambiguous": 14582,
+     "resolved": 69507,
+     "unresolved": 234881
+    },
+    "references": {
+     "ambiguous": 458,
+     "resolved": 5657,
+     "unresolved": 369
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 234,
+    "external": 3631,
+    "relative:found": 103,
+    "relative:none": 90,
+    "workspace:none": 16
+   }
+  },
+  "microsoft__vscode@8c76afad6ccf": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "8c76afad6ccf861d1ea08df4bb9f83839e0e0cd0",
+   "ts_files": 2999,
+   "configs": 45,
+   "tree_sha256": "e28fa40b87000be45c75723c562b9d73eb6775675029796019ff7ff9209b2533",
+   "snapshot": "sha256:218204e20b340e73530edfa8e3aa73db827f14a4f4e57b5a3c5e89abf076164b",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 63445,
+   "relations": 391516,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 8153,
+     "resolved": 35598,
+     "unresolved": 3195
+    },
+    "calls": {
+     "ambiguous": 9648,
+     "resolved": 54851,
+     "unresolved": 177007
+    },
+    "references": {
+     "ambiguous": 368,
+     "resolved": 4387,
+     "unresolved": 265
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 191,
+    "external": 2843,
+    "relative:found": 105,
+    "relative:none": 42,
+    "workspace:none": 14
+   }
+  },
+  "microsoft__vscode@8ce35fa28ded": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "8ce35fa28dedbb1b0e78c1bff26ab53d1e702868",
+   "ts_files": 2944,
+   "configs": 45,
+   "tree_sha256": "a8d3c91797ef89531b9c93029f59bfdf8cfb3c5ef81459dd4c6ba05454925888",
+   "snapshot": "sha256:e1d118cba649baa65e683058b7debf3ea16bd511417a9e17e5a4ca5ef7bbe398",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 61816,
+   "relations": 382864,
+   "partial_files": 7,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 7893,
+     "resolved": 34844,
+     "unresolved": 3096
+    },
+    "calls": {
+     "ambiguous": 9762,
+     "resolved": 54954,
+     "unresolved": 171441
+    },
+    "references": {
+     "ambiguous": 364,
+     "resolved": 4298,
+     "unresolved": 258
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 179,
+    "external": 2758,
+    "relative:found": 105,
+    "relative:none": 40,
+    "workspace:none": 14
+   }
+  },
+  "microsoft__vscode@9a281018181d": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "9a281018181dca942cc46c03f9795be00912e38d",
+   "ts_files": 4414,
+   "configs": 59,
+   "tree_sha256": "2a2a3a329779def7f054dc3bd37286a3136e9a4a456f3d60713722ee48aacf3f",
+   "snapshot": "sha256:478b5c7336f222143aeab14adfeca9e023c31ad029ee6baea4f3ff6e48b528c8",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 89986,
+   "relations": 572846,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 13541,
+     "resolved": 55409,
+     "unresolved": 4418
+    },
+    "calls": {
+     "ambiguous": 16198,
+     "resolved": 76522,
+     "unresolved": 260124
+    },
+    "references": {
+     "ambiguous": 517,
+     "resolved": 6287,
+     "unresolved": 402
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 235,
+    "external": 3963,
+    "relative:found": 106,
+    "relative:none": 95,
+    "workspace:none": 19
+   }
+  },
+  "microsoft__vscode@a993ada9300a": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "a993ada9300a531c09dfa6a1be772b1abc1492ad",
+   "ts_files": 3505,
+   "configs": 56,
+   "tree_sha256": "dd45bc8f0581d4c72de3f37d06ac41e6c247daa115d8c85f134bc9d82512acb0",
+   "snapshot": "sha256:90858d70e0b66803c34fb0aa2512ed95301ce9b039e888cce40430ba464d6825",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 73959,
+   "relations": 467277,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 10456,
+     "resolved": 43747,
+     "unresolved": 3521
+    },
+    "calls": {
+     "ambiguous": 13211,
+     "resolved": 62743,
+     "unresolved": 213060
+    },
+    "references": {
+     "ambiguous": 410,
+     "resolved": 5171,
+     "unresolved": 304
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 226,
+    "external": 3124,
+    "relative:found": 109,
+    "relative:none": 49,
+    "workspace:none": 13
+   }
+  },
+  "microsoft__vscode@cf4b5a703f58": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "cf4b5a703f581944f308b9a6f1e8b386059caef1",
+   "ts_files": 2989,
+   "configs": 45,
+   "tree_sha256": "70dc584c49154cfc389eebc9f58492c0662df55d6e5366e694964e5779a22907",
+   "snapshot": "sha256:af77f601951959c8e86653602ddff0cac254c865af4868a0945328fb460aaecf",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 63064,
+   "relations": 388821,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 8073,
+     "resolved": 35264,
+     "unresolved": 3161
+    },
+    "calls": {
+     "ambiguous": 9565,
+     "resolved": 54544,
+     "unresolved": 175737
+    },
+    "references": {
+     "ambiguous": 374,
+     "resolved": 4366,
+     "unresolved": 265
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 184,
+    "external": 2817,
+    "relative:found": 105,
+    "relative:none": 41,
+    "workspace:none": 14
+   }
+  },
+  "microsoft__vscode@f5fdf679b8d2": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "f5fdf679b8d22a0dd0dcb6fd8e3bc96bbeb99f75",
+   "ts_files": 4031,
+   "configs": 59,
+   "tree_sha256": "fe585ef28dd0852b5a44772ab83ee2689347cb4517e9df4e48f9f49a08b29ed6",
+   "snapshot": "sha256:26f237176cf9337049cf22bed7f36677b84643a0d49350578778d0ba8f7d9778",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 82996,
+   "relations": 530342,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 12312,
+     "resolved": 50597,
+     "unresolved": 4194
+    },
+    "calls": {
+     "ambiguous": 14980,
+     "resolved": 70785,
+     "unresolved": 241690
+    },
+    "references": {
+     "ambiguous": 474,
+     "resolved": 5827,
+     "unresolved": 370
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 230,
+    "external": 3744,
+    "relative:found": 107,
+    "relative:none": 98,
+    "workspace:none": 15
+   }
+  },
+  "mui__material-ui@03b616a1e015": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "03b616a1e015ff6ccfb665c5156e1b5359d2a6f1",
+   "ts_files": 2905,
+   "configs": 39,
+   "tree_sha256": "835da922fb0c0670bc5ac2976963a3c34335736471e15107e0d8bf0823cd915d",
+   "snapshot": "sha256:7398a841f3b23a8aaf22adaa763dad18e5f7100a8168d9606193044427b99967",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 12760,
+   "relations": 73194,
+   "partial_files": 25,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 6,
+     "resolved": 7152,
+     "unresolved": 9454
+    },
+    "calls": {
+     "ambiguous": 72,
+     "resolved": 6736,
+     "unresolved": 26536
+    },
+    "references": {
+     "resolved": 293,
+     "unresolved": 108
+    }
+   },
+   "unresolved_imports": {
+    "external": 2729,
+    "relative:found": 1120,
+    "relative:none": 11,
+    "workspace:found": 4807,
+    "workspace:none": 787
+   }
+  },
+  "mui__material-ui@05917392afce": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "05917392afce8bcd80b290749e5ecd879768d6fe",
+   "ts_files": 3333,
+   "configs": 42,
+   "tree_sha256": "2d0292013192f192708c2daa3c0e38eccf89391ce7e00bbc513cc4047e5e4de4",
+   "snapshot": "sha256:da207e9c75e9ad2a7cdc68df3da7642ac450d051f35ac7ef9b4bbf221dcb9de4",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 14389,
+   "relations": 86616,
+   "partial_files": 42,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 7,
+     "resolved": 7966,
+     "unresolved": 11520
+    },
+    "calls": {
+     "ambiguous": 109,
+     "resolved": 7692,
+     "unresolved": 33136
+    },
+    "references": {
+     "resolved": 292,
+     "unresolved": 111
+    }
+   },
+   "unresolved_imports": {
+    "external": 3192,
+    "relative:found": 1180,
+    "relative:none": 13,
+    "workspace:found": 6185,
+    "workspace:none": 950
+   }
+  },
+  "mui__material-ui@09896d42e620": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "09896d42e6206984a54272cc2059c49a7aa9d54f",
+   "ts_files": 283,
+   "configs": 3,
+   "tree_sha256": "d3dd93a161b53b35718110d45ae0f44bfc3988db160b9685d2a4ff9f2dfbc811",
+   "snapshot": "sha256:a63b9cece39f99513439b7c3d566c3b68623d0e26cfc6ece984f288aa0fad5fc",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 1059,
+   "relations": 3405,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 624,
+     "unresolved": 474
+    },
+    "calls": {
+     "resolved": 69,
+     "unresolved": 290
+    },
+    "references": {
+     "resolved": 105,
+     "unresolved": 22
+    }
+   },
+   "unresolved_imports": {
+    "external": 136,
+    "relative:found": 313,
+    "workspace:found": 25
+   }
+  },
+  "mui__material-ui@0d94283959a3": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "0d94283959a3aa016881b9644767b937c34d2807",
+   "ts_files": 2031,
+   "configs": 34,
+   "tree_sha256": "ffe3385c6dfce2ef4d3d5beb537512bae919ab759936e349d82d56e25c6e5ca0",
+   "snapshot": "sha256:539162b4c483c0d30d3a0737a0b1dbbd08569c80eab2a3c94a8a5fb5e61b8e6c",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 8742,
+   "relations": 46367,
+   "partial_files": 18,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 5356,
+     "unresolved": 6007
+    },
+    "calls": {
+     "ambiguous": 35,
+     "resolved": 5193,
+     "unresolved": 14087
+    },
+    "references": {
+     "resolved": 282,
+     "unresolved": 95
+    }
+   },
+   "unresolved_imports": {
+    "external": 1852,
+    "relative:found": 542,
+    "relative:none": 23,
+    "workspace:found": 2832,
+    "workspace:none": 758
+   }
+  },
+  "mui__material-ui@13b3a0d31947": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "13b3a0d31947ccdb20108febb5432d4f46f5a677",
+   "ts_files": 819,
+   "configs": 12,
+   "tree_sha256": "df960889bfbe818a4e2ee75a8b3b7b6e5fddcc03234249e4116d93ed60f87ae4",
+   "snapshot": "sha256:0f7cfcbf0fc8bc968fc2966123e4e1ddb13aaafdb28d90f34587c015d01567d9",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 3519,
+   "relations": 18266,
+   "partial_files": 1,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 1929,
+     "unresolved": 2760
+    },
+    "calls": {
+     "ambiguous": 1,
+     "resolved": 1477,
+     "unresolved": 5964
+    },
+    "references": {
+     "resolved": 132,
+     "unresolved": 41
+    }
+   },
+   "unresolved_imports": {
+    "external": 731,
+    "relative:found": 253,
+    "relative:none": 2,
+    "workspace:found": 1457,
+    "workspace:none": 317
+   }
+  },
+  "mui__material-ui@182d4dc7726f": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "182d4dc7726f6d77f0ca3863ca6fcdf9eec23a23",
+   "ts_files": 1922,
+   "configs": 31,
+   "tree_sha256": "70b9c89eff015b2779664b4b7d43f58797650e7e85b0b245a1f88d3b842858b2",
+   "snapshot": "sha256:c883e39924873c26e3ff060922cac5d458552e7e0d5fa1e892601252619a2d18",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 8134,
+   "relations": 43198,
+   "partial_files": 17,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 5035,
+     "unresolved": 5748
+    },
+    "calls": {
+     "ambiguous": 21,
+     "resolved": 4850,
+     "unresolved": 12968
+    },
+    "references": {
+     "resolved": 268,
+     "unresolved": 91
+    }
+   },
+   "unresolved_imports": {
+    "external": 1776,
+    "relative:found": 494,
+    "relative:none": 23,
+    "workspace:found": 2730,
+    "workspace:none": 725
+   }
+  },
+  "mui__material-ui@18aa6293ad8b": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "18aa6293ad8b67dc8a323db19117c93efa966c7c",
+   "ts_files": 288,
+   "configs": 3,
+   "tree_sha256": "386fd917333f1f8db37f1b6b02c02b6ebdc4789abec1a2a9a598c52310000a66",
+   "snapshot": "sha256:df743fcd6467fc8ad05b4d24e3bc47bda465b3f62508288e8fb161d698078614",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 1077,
+   "relations": 3462,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 633,
+     "unresolved": 489
+    },
+    "calls": {
+     "resolved": 69,
+     "unresolved": 290
+    },
+    "references": {
+     "resolved": 105,
+     "unresolved": 24
+    }
+   },
+   "unresolved_imports": {
+    "external": 139,
+    "relative:found": 323,
+    "relative:none": 2,
+    "workspace:found": 25
+   }
+  },
+  "mui__material-ui@1a4263a50af0": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "1a4263a50af00eaffdca2e58b8ff16d62c4408a7",
+   "ts_files": 3077,
+   "configs": 39,
+   "tree_sha256": "d6b5891f184b9ab3a5b5e5252de2bd558dd3d8cb6be2da29edfad7cc47b08605",
+   "snapshot": "sha256:e13de6994a09ba9d5c4045e5bc323438b2c8923de63aeeb411883238bcc82078",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 13444,
+   "relations": 77849,
+   "partial_files": 26,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 7462,
+     "unresolved": 10292
+    },
+    "calls": {
+     "ambiguous": 98,
+     "resolved": 7127,
+     "unresolved": 28391
+    },
+    "references": {
+     "resolved": 295,
+     "unresolved": 111
+    }
+   },
+   "unresolved_imports": {
+    "external": 2882,
+    "relative:found": 1137,
+    "relative:none": 11,
+    "workspace:found": 5381,
+    "workspace:none": 881
+   }
+  },
+  "mui__material-ui@1dc2782ddd66": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "1dc2782ddd66e3642ffc2175015d0af6de494a52",
+   "ts_files": 2856,
+   "configs": 39,
+   "tree_sha256": "197a0bceb1ee63ac431c7e74c420b1e7eeac7c02cae512d65a6592666e84dc2e",
+   "snapshot": "sha256:bff37d1e8f9e17cbb4f5539cc98eb0c708f9151adb33d97b92e6658dc298be5e",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 12449,
+   "relations": 71260,
+   "partial_files": 25,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 6886,
+     "unresolved": 9445
+    },
+    "calls": {
+     "ambiguous": 68,
+     "resolved": 6340,
+     "unresolved": 26145
+    },
+    "references": {
+     "resolved": 280,
+     "unresolved": 106
+    }
+   },
+   "unresolved_imports": {
+    "external": 2671,
+    "relative:found": 1111,
+    "relative:none": 16,
+    "workspace:found": 4674,
+    "workspace:none": 973
+   }
+  },
+  "mui__material-ui@1e09429e1804": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "1e09429e1804ddd7505fe78f3d606e24e98aa16f",
+   "ts_files": 2624,
+   "configs": 36,
+   "tree_sha256": "ea60d939f901fd8a0c15b294539acd178ca86c6d980aaf51c8ef20207250cfc5",
+   "snapshot": "sha256:654ce7a7432395b1bf1239c6683b15dd8fc42e8fd8e005ab4750c22de494d1a6",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 11382,
+   "relations": 60931,
+   "partial_files": 27,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 6408,
+     "unresolved": 8327
+    },
+    "calls": {
+     "ambiguous": 54,
+     "resolved": 5467,
+     "unresolved": 20360
+    },
+    "references": {
+     "resolved": 266,
+     "unresolved": 94
+    }
+   },
+   "unresolved_imports": {
+    "external": 2371,
+    "relative:found": 921,
+    "relative:none": 29,
+    "workspace:found": 4130,
+    "workspace:none": 876
+   }
+  },
+  "mui__material-ui@1e4dd5f0837c": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "1e4dd5f0837c84a4f1a55590857f989d6c3198fc",
+   "ts_files": 2763,
+   "configs": 37,
+   "tree_sha256": "56e4307029dc8f7ca121b0a7a9adeb29434d5ce615fd08eaa377e6b44d47f295",
+   "snapshot": "sha256:ecfc3b3a573748089d1506285c9864bbcaf4a436c8320d69605669f832e59f51",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 11972,
+   "relations": 66900,
+   "partial_files": 25,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 6731,
+     "unresolved": 8847
+    },
+    "calls": {
+     "ambiguous": 57,
+     "resolved": 5995,
+     "unresolved": 23776
+    },
+    "references": {
+     "resolved": 275,
+     "unresolved": 106
+    }
+   },
+   "unresolved_imports": {
+    "external": 2524,
+    "relative:found": 1091,
+    "relative:none": 20,
+    "workspace:found": 4320,
+    "workspace:none": 892
+   }
+  },
+  "mui__material-ui@20cd3e33ae60": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "20cd3e33ae60e4970653716b7732212e93bab38c",
+   "ts_files": 306,
+   "configs": 2,
+   "tree_sha256": "b10945ff532dfbc61b3b3695d54e26268ea2b681c90be1b2459133213ead22f6",
+   "snapshot": "sha256:a29596293089c0e14865812a3f40586aa19355c4925584dbdd8a9433a1243356",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 1147,
+   "relations": 3677,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 679,
+     "unresolved": 478
+    },
+    "calls": {
+     "resolved": 89,
+     "unresolved": 296
+    },
+    "references": {
+     "resolved": 122,
+     "unresolved": 22
+    }
+   },
+   "unresolved_imports": {
+    "external": 149,
+    "relative:found": 238,
+    "workspace:found": 91
+   }
+  },
+  "mui__material-ui@21b4e266d576": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "21b4e266d576a450b36a406ffada2dfb1f3d0192",
+   "ts_files": 1400,
+   "configs": 22,
+   "tree_sha256": "e51131484b4dbe432d6a9d9fcc35e8b3f74eec3064743bad84d1bc993eb88dcd",
+   "snapshot": "sha256:ae55f46f6ad4cbda2eebebb5d9f1b1c3df465c457798ea5e5db7bf92178d1a01",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 6137,
+   "relations": 32375,
+   "partial_files": 12,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 6,
+     "resolved": 4432,
+     "unresolved": 3543
+    },
+    "calls": {
+     "ambiguous": 16,
+     "resolved": 4172,
+     "unresolved": 9068
+    },
+    "references": {
+     "resolved": 223,
+     "unresolved": 74
+    }
+   },
+   "unresolved_imports": {
+    "external": 1358,
+    "relative:found": 345,
+    "relative:none": 13,
+    "workspace:found": 1399,
+    "workspace:none": 428
+   }
+  },
+  "mui__material-ui@2694045ca3d1": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "2694045ca3d1273cfa1a3415c6ce4b971b298f7a",
+   "ts_files": 2850,
+   "configs": 39,
+   "tree_sha256": "84c0694d110df9c28e5a8377626ebdea1a05697af3015ada00a2aeeed0109830",
+   "snapshot": "sha256:00398e82defdbf53eb1b2e6b2ed1cebd7daa4e0ff8b8f0d922ebf6c14722a4eb",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 12400,
+   "relations": 70851,
+   "partial_files": 25,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 6869,
+     "unresolved": 9396
+    },
+    "calls": {
+     "ambiguous": 68,
+     "resolved": 6291,
+     "unresolved": 25945
+    },
+    "references": {
+     "resolved": 279,
+     "unresolved": 103
+    }
+   },
+   "unresolved_imports": {
+    "external": 2642,
+    "relative:found": 1110,
+    "relative:none": 20,
+    "workspace:found": 4657,
+    "workspace:none": 967
+   }
+  },
+  "mui__material-ui@375358b6f7d0": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "375358b6f7d00342ad2a282c34950ebfb4b2cdc8",
+   "ts_files": 3666,
+   "configs": 57,
+   "tree_sha256": "a703d81b52b1374d79daa802a804e9187c2001b153517778c089b1a323316703",
+   "snapshot": "sha256:a8e3fca13fe75c0caa68b13f6f6dc6c06b27f1a40f26077e4b87ef93702b2829",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 15996,
+   "relations": 97639,
+   "partial_files": 51,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 19,
+     "resolved": 9338,
+     "unresolved": 12615
+    },
+    "calls": {
+     "ambiguous": 168,
+     "resolved": 8917,
+     "unresolved": 37759
+    },
+    "references": {
+     "resolved": 316,
+     "unresolved": 121
+    }
+   },
+   "unresolved_imports": {
+    "external": 3678,
+    "relative:found": 1051,
+    "relative:none": 24,
+    "workspace:found": 6718,
+    "workspace:none": 1144
+   }
+  },
+  "mui__material-ui@38ac830eedf6": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "38ac830eedf60a2a40983d71cb4dd64e8f1abf4e",
+   "ts_files": 2031,
+   "configs": 34,
+   "tree_sha256": "b8ddc173a01af612db8811a18b45c0aab5a7425f70b8438213aa394db97be799",
+   "snapshot": "sha256:4bf89535a745f32858e66c61bd960b40c41a99f6dcd674aaecfd9e84ca78d5be",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 8750,
+   "relations": 46415,
+   "partial_files": 18,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 5356,
+     "unresolved": 6018
+    },
+    "calls": {
+     "ambiguous": 35,
+     "resolved": 5203,
+     "unresolved": 14098
+    },
+    "references": {
+     "resolved": 282,
+     "unresolved": 95
+    }
+   },
+   "unresolved_imports": {
+    "external": 1863,
+    "relative:found": 542,
+    "relative:none": 23,
+    "workspace:found": 2832,
+    "workspace:none": 758
+   }
+  },
+  "mui__material-ui@4acfb8da9fb5": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "4acfb8da9fb5fc258871aa5a55788fa37208babc",
+   "ts_files": 280,
+   "configs": 3,
+   "tree_sha256": "e6af17326ddeebc68c920a2ddaa1d87c03e1ca7016e997821ad597cfd463a3ce",
+   "snapshot": "sha256:4dff92e6b93c381484a9c6b992148e4573e8d4596e25e0533f8ebf724c2d72b9",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 1051,
+   "relations": 3381,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 620,
+     "unresolved": 468
+    },
+    "calls": {
+     "resolved": 69,
+     "unresolved": 290
+    },
+    "references": {
+     "resolved": 105,
+     "unresolved": 21
+    }
+   },
+   "unresolved_imports": {
+    "external": 134,
+    "relative:found": 312,
+    "workspace:found": 22
+   }
+  },
+  "mui__material-ui@553cf822f650": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "553cf822f6500075d374f3e89ad04b8308cd9f47",
+   "ts_files": 3864,
+   "configs": 59,
+   "tree_sha256": "91b5172f41e1e5f5310ac6618a8614bd15209c160589041239ed8bd965367861",
+   "snapshot": "sha256:44271c8eddbd152139d7d2bd4403e47368626bef5842d86a6c86188aad5c4d62",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 16916,
+   "relations": 105417,
+   "partial_files": 53,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 14,
+     "resolved": 9945,
+     "unresolved": 13484
+    },
+    "calls": {
+     "ambiguous": 174,
+     "resolved": 9467,
+     "unresolved": 41810
+    },
+    "references": {
+     "resolved": 340,
+     "unresolved": 127
+    }
+   },
+   "unresolved_imports": {
+    "external": 3887,
+    "relative:found": 1157,
+    "relative:none": 29,
+    "workspace:found": 7172,
+    "workspace:none": 1239
+   }
+  },
+  "mui__material-ui@56520e757e00": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "56520e757e0052e25f8dd5d78214458c4b7c634d",
+   "ts_files": 1212,
+   "configs": 20,
+   "tree_sha256": "7e6318b149968464736b1278979c2df14214310607c4c94367aca6ebab499682",
+   "snapshot": "sha256:8830facfb9b5440919f4017872947c68baf8d06e09e5c921b6ccace666698eb0",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5284,
+   "relations": 26456,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 368,
+     "resolved": 3292,
+     "unresolved": 2991
+    },
+    "calls": {
+     "ambiguous": 395,
+     "resolved": 3219,
+     "unresolved": 6784
+    },
+    "references": {
+     "resolved": 166,
+     "unresolved": 55
+    }
+   },
+   "unresolved_imports": {
+    "external": 1093,
+    "relative:found": 210,
+    "relative:none": 16,
+    "workspace:found": 1251,
+    "workspace:none": 421
+   }
+  },
+  "mui__material-ui@567e6cf97dce": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "567e6cf97dce71eba9370e8c13519d206a98ffd2",
+   "ts_files": 1725,
+   "configs": 27,
+   "tree_sha256": "a222595e438d676a6476fdf03cab3434eac8cf5335e40d86169482be59051265",
+   "snapshot": "sha256:80058d36cbd65e3b999832dcf801d2699a97f2c3212a20528399951981ada827",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 7388,
+   "relations": 37422,
+   "partial_files": 15,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 1,
+     "resolved": 4466,
+     "unresolved": 4806
+    },
+    "calls": {
+     "resolved": 4030,
+     "unresolved": 10828
+    },
+    "references": {
+     "resolved": 265,
+     "unresolved": 83
+    }
+   },
+   "unresolved_imports": {
+    "external": 1529,
+    "relative:found": 465,
+    "relative:none": 17,
+    "workspace:found": 2203,
+    "workspace:none": 592
+   }
+  },
+  "mui__material-ui@5b53f5efe691": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "5b53f5efe691a76630e479245e5be0f91371f691",
+   "ts_files": 2383,
+   "configs": 33,
+   "tree_sha256": "5cabd89e471abcdb57966f434abc05a0db39a94fb98086b1f7b500f07a19407f",
+   "snapshot": "sha256:ded2837309695255616a75bcd319e796474f79592450d755e55df90520a3786c",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 10272,
+   "relations": 56772,
+   "partial_files": 27,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 4,
+     "resolved": 5522,
+     "unresolved": 8202
+    },
+    "calls": {
+     "ambiguous": 40,
+     "resolved": 5150,
+     "unresolved": 19691
+    },
+    "references": {
+     "resolved": 208,
+     "unresolved": 89
+    }
+   },
+   "unresolved_imports": {
+    "external": 2260,
+    "relative:found": 751,
+    "relative:none": 30,
+    "workspace:found": 4090,
+    "workspace:none": 1071
+   }
+  },
+  "mui__material-ui@67073cc35a74": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "67073cc35a741e9f45aa0d54bc00918a9c05fdb4",
+   "ts_files": 2551,
+   "configs": 36,
+   "tree_sha256": "7c92457e201fe50a0cceb2ca375f52038dacb00f74974813586fbfdd89a5a26b",
+   "snapshot": "sha256:be4af51de3d69c0d687d4a090ede8ec978202c9ce885052a21a5e0a4e1ac6c28",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 11081,
+   "relations": 58392,
+   "partial_files": 27,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 6219,
+     "unresolved": 8011
+    },
+    "calls": {
+     "ambiguous": 50,
+     "resolved": 5351,
+     "unresolved": 18983
+    },
+    "references": {
+     "resolved": 259,
+     "unresolved": 92
+    }
+   },
+   "unresolved_imports": {
+    "external": 2285,
+    "relative:found": 862,
+    "relative:none": 29,
+    "workspace:found": 3988,
+    "workspace:none": 847
+   }
+  },
+  "mui__material-ui@72a477f3ca67": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "72a477f3ca678afd1c2d03cb05df4d20089c85cf",
+   "ts_files": 937,
+   "configs": 13,
+   "tree_sha256": "4e2e01e925115ad41ce46f668d00b1027ce5107566c73b8fdee0f120f794b4d3",
+   "snapshot": "sha256:d37f59397f03bd06f11ffea8c75bfaea9ac9c71ad7c40ac0f2dbf0d1176d6653",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 4019,
+   "relations": 20232,
+   "partial_files": 1,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 298,
+     "resolved": 2661,
+     "unresolved": 2335
+    },
+    "calls": {
+     "ambiguous": 314,
+     "resolved": 2469,
+     "unresolved": 5045
+    },
+    "references": {
+     "resolved": 128,
+     "unresolved": 40
+    }
+   },
+   "unresolved_imports": {
+    "external": 825,
+    "relative:found": 147,
+    "relative:none": 2,
+    "workspace:found": 975,
+    "workspace:none": 386
+   }
+  },
+  "mui__material-ui@75404f9ff099": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "75404f9ff09965be1bd7c9ed27154fd7536edde1",
+   "ts_files": 3673,
+   "configs": 57,
+   "tree_sha256": "bccddda3104fa41d629a5ccd78f75bbfcf6b4c51c16d25c1074a79cbade7fdb6",
+   "snapshot": "sha256:c09f994d46db74110f97dbc0ff4058463f0407617b107ed7d31f21e398ff1625",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 16019,
+   "relations": 98243,
+   "partial_files": 51,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 19,
+     "resolved": 9368,
+     "unresolved": 12646
+    },
+    "calls": {
+     "ambiguous": 168,
+     "resolved": 8954,
+     "unresolved": 38215
+    },
+    "references": {
+     "resolved": 318,
+     "unresolved": 121
+    }
+   },
+   "unresolved_imports": {
+    "external": 3691,
+    "relative:found": 1059,
+    "relative:none": 24,
+    "workspace:found": 6728,
+    "workspace:none": 1144
+   }
+  },
+  "mui__material-ui@7767fb8f46ab": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "7767fb8f46abbe56f652bc59ed9637a8a1af9634",
+   "ts_files": 2066,
+   "configs": 34,
+   "tree_sha256": "d26fd55eacb83285ee43a111526e0bba04c298c0c17658afa26b658149b31870",
+   "snapshot": "sha256:2cd63f389e42d885ef916de3f608093b19472e61e5977d3135528bf88f8bc521",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 8916,
+   "relations": 47469,
+   "partial_files": 18,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 5440,
+     "unresolved": 6106
+    },
+    "calls": {
+     "ambiguous": 35,
+     "resolved": 5189,
+     "unresolved": 14673
+    },
+    "references": {
+     "resolved": 281,
+     "unresolved": 97
+    }
+   },
+   "unresolved_imports": {
+    "external": 1917,
+    "relative:found": 549,
+    "relative:none": 23,
+    "workspace:found": 2855,
+    "workspace:none": 762
+   }
+  },
+  "mui__material-ui@7e7435ad08ba": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "7e7435ad08ba02a0e1d8d8676a519b8ded634149",
+   "ts_files": 2612,
+   "configs": 36,
+   "tree_sha256": "0934fa259bb6c1384476eb7f1b2241710f8fb69b2f321e88f204acbc9ac71333",
+   "snapshot": "sha256:27d07991f8a2dff21eac5e3aa560b58e187d08d14cb707113c05d2806fe7310d",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 11319,
+   "relations": 60443,
+   "partial_files": 27,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 6370,
+     "unresolved": 8286
+    },
+    "calls": {
+     "ambiguous": 54,
+     "resolved": 5431,
+     "unresolved": 20087
+    },
+    "references": {
+     "resolved": 265,
+     "unresolved": 93
+    }
+   },
+   "unresolved_imports": {
+    "external": 2358,
+    "relative:found": 915,
+    "relative:none": 29,
+    "workspace:found": 4117,
+    "workspace:none": 867
+   }
+  },
+  "mui__material-ui@85c3c776918e": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "85c3c776918e43c8034d0fbdb1a35ded54c6b92d",
+   "ts_files": 3522,
+   "configs": 44,
+   "tree_sha256": "1bb1ac212e12bbe6d59b311b28e7ddd3bc29e1968c255d966e1dab793646198f",
+   "snapshot": "sha256:722e6c0f16fd832485aeee5f7f0ad6f4cb72b4b9ff95458223184363a19ca35d",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 15228,
+   "relations": 92633,
+   "partial_files": 45,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 7,
+     "resolved": 8520,
+     "unresolved": 12265
+    },
+    "calls": {
+     "ambiguous": 130,
+     "resolved": 8214,
+     "unresolved": 35768
+    },
+    "references": {
+     "resolved": 298,
+     "unresolved": 110
+    }
+   },
+   "unresolved_imports": {
+    "external": 3413,
+    "relative:found": 1165,
+    "relative:none": 12,
+    "workspace:found": 6604,
+    "workspace:none": 1071
+   }
+  },
+  "mui__material-ui@9acf8be6d2fd": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "9acf8be6d2fd08210665c294830df3c85c014214",
+   "ts_files": 1716,
+   "configs": 27,
+   "tree_sha256": "e6385972bbf9879d5c374ebf9ee2f51aaa461423baaa40e60f7fdcb2c8d2e04d",
+   "snapshot": "sha256:6cc2799770604ffffc9035a83fb06d7418866ff2f45685849d4d6b4da0c53676",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 7368,
+   "relations": 37244,
+   "partial_files": 15,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 1,
+     "resolved": 4462,
+     "unresolved": 4770
+    },
+    "calls": {
+     "resolved": 4008,
+     "unresolved": 10737
+    },
+    "references": {
+     "resolved": 265,
+     "unresolved": 83
+    }
+   },
+   "unresolved_imports": {
+    "external": 1523,
+    "relative:found": 478,
+    "relative:none": 17,
+    "workspace:found": 2173,
+    "workspace:none": 579
+   }
+  },
+  "mui__material-ui@a4d8c4ffadca": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "a4d8c4ffadca14ebb941003082e607a96eacb409",
+   "ts_files": 1673,
+   "configs": 25,
+   "tree_sha256": "1cd097aece04eed58c9be2a83cb0840618d9a82359c3f8aced44d93efe4761c6",
+   "snapshot": "sha256:ffbbfd60e0b735d428bef255572fff7a8fd50595465e8db5f3ce6c534a06f8a1",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 7190,
+   "relations": 36610,
+   "partial_files": 14,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 4494,
+     "unresolved": 4610
+    },
+    "calls": {
+     "resolved": 3917,
+     "unresolved": 10557
+    },
+    "references": {
+     "resolved": 264,
+     "unresolved": 88
+    }
+   },
+   "unresolved_imports": {
+    "external": 1537,
+    "relative:found": 513,
+    "relative:none": 14,
+    "workspace:found": 1980,
+    "workspace:none": 566
+   }
+  },
+  "mui__material-ui@b00bdc767032": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "b00bdc767032fd008e5e3ec3133d6dc51264b1de",
+   "ts_files": 3310,
+   "configs": 39,
+   "tree_sha256": "f96e63f46058faae5d079e47ac86c37d7e374d2a208c2cc2610dd799ce2453f9",
+   "snapshot": "sha256:70be149baa70f0a1c5bb496378fab4202734a385d3e5d02d2b5a1a0b5cb927af",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 14264,
+   "relations": 85847,
+   "partial_files": 41,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 7928,
+     "unresolved": 11391
+    },
+    "calls": {
+     "ambiguous": 109,
+     "resolved": 7578,
+     "unresolved": 32861
+    },
+    "references": {
+     "resolved": 292,
+     "unresolved": 112
+    }
+   },
+   "unresolved_imports": {
+    "external": 3156,
+    "relative:found": 1179,
+    "relative:none": 12,
+    "workspace:found": 6104,
+    "workspace:none": 940
+   }
+  },
+  "mui__material-ui@b3548fabeab1": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "b3548fabeab1980d3c5e5b85945550df95ee6b82",
+   "ts_files": 2653,
+   "configs": 36,
+   "tree_sha256": "66aa11baee28b652cf7921ed5cad090fe2aa552168fc0c1b06ada02ddf764afa",
+   "snapshot": "sha256:b6a151ce11060d254be9a9d20de049acdd740fd34aa17148eedfa3fc52ee177a",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 11493,
+   "relations": 61753,
+   "partial_files": 27,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 6445,
+     "unresolved": 8446
+    },
+    "calls": {
+     "ambiguous": 54,
+     "resolved": 5465,
+     "unresolved": 20817
+    },
+    "references": {
+     "resolved": 268,
+     "unresolved": 95
+    }
+   },
+   "unresolved_imports": {
+    "external": 2401,
+    "relative:found": 1043,
+    "relative:none": 29,
+    "workspace:found": 4089,
+    "workspace:none": 884
+   }
+  },
+  "mui__material-ui@ba0529496c52": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "ba0529496c52152b65b951a0ff09433260fea917",
+   "ts_files": 2174,
+   "configs": 33,
+   "tree_sha256": "c2d5eb065d23154166e7fafcdb711bbd6bfdaf3fa1c7d5c2fd809701e875221a",
+   "snapshot": "sha256:56389ccec6bc14365a78b9a70b666ea5f905982b20c9812be8a9b46b085e7d94",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 9437,
+   "relations": 51619,
+   "partial_files": 21,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 4,
+     "resolved": 5825,
+     "unresolved": 6467
+    },
+    "calls": {
+     "ambiguous": 42,
+     "resolved": 5527,
+     "unresolved": 16773
+    },
+    "references": {
+     "resolved": 300,
+     "unresolved": 110
+    }
+   },
+   "unresolved_imports": {
+    "external": 2034,
+    "relative:found": 613,
+    "relative:none": 29,
+    "workspace:found": 2990,
+    "workspace:none": 801
+   }
+  },
+  "mui__material-ui@bbedbf79e07c": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "bbedbf79e07c32613ddcafee651ac3d501a82ff0",
+   "ts_files": 2108,
+   "configs": 34,
+   "tree_sha256": "b23875e109ef91f965c3360c6bb0d735083596bb9bf00f241f668e7f8d2b9ba1",
+   "snapshot": "sha256:bc24f5b08b704b1bfc2fc6c57ef718d47c8fc3290019a7b763d5e084019db586",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 9122,
+   "relations": 48864,
+   "partial_files": 18,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 5540,
+     "unresolved": 6231
+    },
+    "calls": {
+     "ambiguous": 35,
+     "resolved": 5334,
+     "unresolved": 15348
+    },
+    "references": {
+     "resolved": 282,
+     "unresolved": 97
+    }
+   },
+   "unresolved_imports": {
+    "external": 1960,
+    "relative:found": 560,
+    "relative:none": 25,
+    "workspace:found": 2905,
+    "workspace:none": 781
+   }
+  },
+  "mui__material-ui@be6b6e2bc479": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "be6b6e2bc479473853ea2ecd367cd1a46c728ad9",
+   "ts_files": 3313,
+   "configs": 39,
+   "tree_sha256": "71f7500a55ec025cfaad52fab19e10cda34497891a4c482fe3c7450e6dfbc2d6",
+   "snapshot": "sha256:57cfe6cd8926b09fddc9a18531ce0f0f9be38a7d6bad36638752e31ae92e6ba7",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 14276,
+   "relations": 85897,
+   "partial_files": 41,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 7930,
+     "unresolved": 11400
+    },
+    "calls": {
+     "ambiguous": 109,
+     "resolved": 7583,
+     "unresolved": 32874
+    },
+    "references": {
+     "resolved": 292,
+     "unresolved": 112
+    }
+   },
+   "unresolved_imports": {
+    "external": 3159,
+    "relative:found": 1179,
+    "relative:none": 12,
+    "workspace:found": 6110,
+    "workspace:none": 940
+   }
+  },
+  "mui__material-ui@c4c5a03e143f": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "c4c5a03e143f1d23007a32e5fa4bbf4531bbfa33",
+   "ts_files": 861,
+   "configs": 13,
+   "tree_sha256": "6129688989f04b48553b64e2b2ffb397b6618857c8550c025e219cf3b9a6d393",
+   "snapshot": "sha256:78a2512874b0f4779ff31820b02a0ebbf60cc030a2ceab7b1b6945396945c8cf",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 3653,
+   "relations": 18727,
+   "partial_files": 1,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 2090,
+     "unresolved": 2859
+    },
+    "calls": {
+     "ambiguous": 1,
+     "resolved": 1494,
+     "unresolved": 5912
+    },
+    "references": {
+     "resolved": 134,
+     "unresolved": 43
+    }
+   },
+   "unresolved_imports": {
+    "external": 751,
+    "relative:found": 253,
+    "relative:none": 2,
+    "workspace:found": 1486,
+    "workspace:none": 367
+   }
+  },
+  "mui__material-ui@d11ef0f82f1e": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "d11ef0f82f1ef6d62518f0879b674feb9f916d66",
+   "ts_files": 1939,
+   "configs": 33,
+   "tree_sha256": "eec15b59aa2b7c43f264287a35cb8a39435820d4299430d3c215cc07ffe6c040",
+   "snapshot": "sha256:1d93517ea9e611a2b7185120369fff6ae7939146c9a031a570c75446f6d703d3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 8249,
+   "relations": 43754,
+   "partial_files": 17,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 5091,
+     "unresolved": 5769
+    },
+    "calls": {
+     "ambiguous": 21,
+     "resolved": 5024,
+     "unresolved": 13049
+    },
+    "references": {
+     "resolved": 269,
+     "unresolved": 94
+    }
+   },
+   "unresolved_imports": {
+    "external": 1789,
+    "relative:found": 501,
+    "relative:none": 23,
+    "workspace:found": 2725,
+    "workspace:none": 731
+   }
+  },
+  "mui__material-ui@d2e00769d032": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "d2e00769d0322dc911dd6237e30ab592aa02cad9",
+   "ts_files": 1638,
+   "configs": 24,
+   "tree_sha256": "d40cad484981591193307594ae890673eea1d313788fbcfc0c200e047a7f9c34",
+   "snapshot": "sha256:729991ec2951b6f5766cfe3f2038db94d52decdf4c9e7c37d74656d85325359d",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 7097,
+   "relations": 36302,
+   "partial_files": 14,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 6,
+     "resolved": 4556,
+     "unresolved": 4415
+    },
+    "calls": {
+     "ambiguous": 15,
+     "resolved": 4005,
+     "unresolved": 10431
+    },
+    "references": {
+     "resolved": 267,
+     "unresolved": 88
+    }
+   },
+   "unresolved_imports": {
+    "external": 1509,
+    "relative:found": 477,
+    "relative:none": 12,
+    "workspace:found": 1850,
+    "workspace:none": 567
+   }
+  },
+  "mui__material-ui@d35d22994887": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "d35d22994887bd83517a99cc8125ad97c402223a",
+   "ts_files": 2653,
+   "configs": 36,
+   "tree_sha256": "66aa11baee28b652cf7921ed5cad090fe2aa552168fc0c1b06ada02ddf764afa",
+   "snapshot": "sha256:b6a151ce11060d254be9a9d20de049acdd740fd34aa17148eedfa3fc52ee177a",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 11493,
+   "relations": 61753,
+   "partial_files": 27,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 6445,
+     "unresolved": 8446
+    },
+    "calls": {
+     "ambiguous": 54,
+     "resolved": 5465,
+     "unresolved": 20817
+    },
+    "references": {
+     "resolved": 268,
+     "unresolved": 95
+    }
+   },
+   "unresolved_imports": {
+    "external": 2401,
+    "relative:found": 1043,
+    "relative:none": 29,
+    "workspace:found": 4089,
+    "workspace:none": 884
+   }
+  },
+  "mui__material-ui@d81caa37668a": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "d81caa37668ad2d573c4c1ae518e306c5cebe2cf",
+   "ts_files": 1692,
+   "configs": 26,
+   "tree_sha256": "eac2d6a7140acc6053512297f087f0b518dfbc063e7d2286024f5d949f3b5a00",
+   "snapshot": "sha256:2f3ccd4f94e209366e225a5f6f91e326ac3afa4fd58531680ac22a4ffd215a90",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 7299,
+   "relations": 37011,
+   "partial_files": 15,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 1,
+     "resolved": 4406,
+     "unresolved": 4723
+    },
+    "calls": {
+     "resolved": 4005,
+     "unresolved": 10723
+    },
+    "references": {
+     "resolved": 265,
+     "unresolved": 83
+    }
+   },
+   "unresolved_imports": {
+    "external": 1518,
+    "relative:found": 485,
+    "relative:none": 17,
+    "workspace:found": 2132,
+    "workspace:none": 571
+   }
+  },
+  "mui__material-ui@dbddc26ff0e4": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "dbddc26ff0e421603a196e68e4d80878d262c632",
+   "ts_files": 2990,
+   "configs": 39,
+   "tree_sha256": "570d462ee81c921f62ce601013fc33afa23eae8b4add38f779a38f5d267afd13",
+   "snapshot": "sha256:4101d7cf52eb053d2f5ebf6f8c4a1e75cda807933cba53454289a0a57f0b90e5",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 13009,
+   "relations": 74758,
+   "partial_files": 26,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 7146,
+     "unresolved": 9928
+    },
+    "calls": {
+     "ambiguous": 68,
+     "resolved": 6881,
+     "unresolved": 27117
+    },
+    "references": {
+     "resolved": 284,
+     "unresolved": 108
+    }
+   },
+   "unresolved_imports": {
+    "external": 2803,
+    "relative:found": 1115,
+    "relative:none": 11,
+    "workspace:found": 5148,
+    "workspace:none": 851
+   }
+  },
+  "mui__material-ui@e195455738a9": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "e195455738a9de164d1f9766de96213b83dd6623",
+   "ts_files": 2766,
+   "configs": 37,
+   "tree_sha256": "428b87b55193a7ad9288cbf57192b508d64f38f0fb3d82f9169fc7e447359713",
+   "snapshot": "sha256:10dcbc4e7baaaa5f1283ff1ccfb98f2847f9d429abf00fcab60ba67cf1e636a9",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 11997,
+   "relations": 67012,
+   "partial_files": 25,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 5,
+     "resolved": 6724,
+     "unresolved": 8853
+    },
+    "calls": {
+     "ambiguous": 59,
+     "resolved": 5995,
+     "unresolved": 23836
+    },
+    "references": {
+     "resolved": 275,
+     "unresolved": 106
+    }
+   },
+   "unresolved_imports": {
+    "external": 2527,
+    "relative:found": 1092,
+    "relative:none": 20,
+    "workspace:found": 4322,
+    "workspace:none": 892
+   }
+  },
+  "mui__material-ui@e24280973174": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "e242809731743f195b4ea6477cfe95e96ea00b8e",
+   "ts_files": 1563,
+   "configs": 24,
+   "tree_sha256": "cf0835175fbd2db7fb60f232479d36bf222be88aca0e857ee1f3314d22565e8c",
+   "snapshot": "sha256:f6386a625b029ff9633c13390150313ac0b6e945e6703abebd9a15ecb07b8dca",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 6787,
+   "relations": 35137,
+   "partial_files": 13,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 6,
+     "resolved": 4801,
+     "unresolved": 3908
+    },
+    "calls": {
+     "ambiguous": 15,
+     "resolved": 4296,
+     "unresolved": 9837
+    },
+    "references": {
+     "resolved": 211,
+     "unresolved": 87
+    }
+   },
+   "unresolved_imports": {
+    "external": 1424,
+    "relative:found": 428,
+    "relative:none": 13,
+    "workspace:found": 1506,
+    "workspace:none": 537
+   }
+  },
+  "mui__material-ui@ea2bd5aa822d": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "ea2bd5aa822dfd4e46a0cdf3d68f90f7f2e6d757",
+   "ts_files": 1615,
+   "configs": 24,
+   "tree_sha256": "c30aa10f221c39bd877bb7efe2c53d44a40582f72e32bbb2ba491fbffe03a670",
+   "snapshot": "sha256:5c2012ed40f52e12d0d024c14562edf19a9e4b00fc723acdf47b23a3a08c871c",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 7032,
+   "relations": 35886,
+   "partial_files": 14,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 6,
+     "resolved": 4600,
+     "unresolved": 4253
+    },
+    "calls": {
+     "ambiguous": 15,
+     "resolved": 4050,
+     "unresolved": 10226
+    },
+    "references": {
+     "resolved": 248,
+     "unresolved": 88
+    }
+   },
+   "unresolved_imports": {
+    "external": 1478,
+    "relative:found": 460,
+    "relative:none": 13,
+    "workspace:found": 1746,
+    "workspace:none": 556
+   }
+  },
+  "mui__material-ui@eb8e95bacf06": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "eb8e95bacf06f824f9e88e7cf1399be1fa23b48f",
+   "ts_files": 3411,
+   "configs": 42,
+   "tree_sha256": "0f7d2082c116d59cab242fede3039e9f4f5c34b675f778cb2439eba66b72d244",
+   "snapshot": "sha256:bc6c1b5c2ba0ca770798aaa34a0ac256bf19b675e1a8fe0cba8693e1f1b931a1",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 14716,
+   "relations": 89225,
+   "partial_files": 48,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 7,
+     "resolved": 8129,
+     "unresolved": 12001
+    },
+    "calls": {
+     "ambiguous": 109,
+     "resolved": 7924,
+     "unresolved": 34295
+    },
+    "references": {
+     "resolved": 297,
+     "unresolved": 111
+    }
+   },
+   "unresolved_imports": {
+    "external": 3279,
+    "relative:found": 1189,
+    "relative:none": 13,
+    "workspace:found": 6500,
+    "workspace:none": 1020
+   }
+  },
+  "mui__material-ui@f336e03acfad": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "f336e03acfadfe0171cee5a469be02953337d20f",
+   "ts_files": 1836,
+   "configs": 28,
+   "tree_sha256": "9360ace8705ba38a1f528e5205681084d1ea3d80bb2d621e4160c89b0bc5ac4b",
+   "snapshot": "sha256:185e3c895072b2b4cd8e5b13a2f1809498cf0d24a6d7deeba0be527db25a12c3",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 7811,
+   "relations": 40315,
+   "partial_files": 17,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 4702,
+     "unresolved": 5222
+    },
+    "calls": {
+     "ambiguous": 14,
+     "resolved": 4327,
+     "unresolved": 11974
+    },
+    "references": {
+     "resolved": 268,
+     "unresolved": 90
+    }
+   },
+   "unresolved_imports": {
+    "external": 1659,
+    "relative:found": 484,
+    "relative:none": 23,
+    "workspace:found": 2424,
+    "workspace:none": 632
+   }
+  },
+  "mui__material-ui@f432f8a73351": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "f432f8a733514b3fa83718102d78f1311cb19de0",
+   "ts_files": 288,
+   "configs": 3,
+   "tree_sha256": "764b4ca05c4be7f815da2f6b633baac11942ae7fd4319795f7731c54836fec3d",
+   "snapshot": "sha256:5792ccb2ed04381cb93d9bd196afb1f4573a56343ec5ed7346a1750619e4f038",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 1077,
+   "relations": 3467,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 634,
+     "unresolved": 491
+    },
+    "calls": {
+     "resolved": 69,
+     "unresolved": 292
+    },
+    "references": {
+     "resolved": 105,
+     "unresolved": 24
+    }
+   },
+   "unresolved_imports": {
+    "external": 139,
+    "relative:found": 325,
+    "relative:none": 2,
+    "workspace:found": 25
+   }
+  },
+  "mui__material-ui@f588d8fdf63b": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "f588d8fdf63b8558e26cfa288f20ff400140ed6c",
+   "ts_files": 1923,
+   "configs": 28,
+   "tree_sha256": "3bea49e6c5c7836bed14346f2916f2af347dfb96c9c595addf6031c0f5208f13",
+   "snapshot": "sha256:349a8f9af89c0349c4059b369bd908b46d85459ea04dc15fdeb2a173c8c73dad",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 8125,
+   "relations": 42918,
+   "partial_files": 17,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 4963,
+     "unresolved": 5690
+    },
+    "calls": {
+     "ambiguous": 21,
+     "resolved": 4858,
+     "unresolved": 12781
+    },
+    "references": {
+     "resolved": 269,
+     "unresolved": 91
+    }
+   },
+   "unresolved_imports": {
+    "external": 1766,
+    "relative:found": 490,
+    "relative:none": 23,
+    "workspace:found": 2696,
+    "workspace:none": 715
+   }
+  },
+  "mui__material-ui@fca2ddf44ce5": {
+   "url": "https://github.com/mui/material-ui",
+   "commit": "fca2ddf44ce5518b82a464cfa806e30f1f973e5c",
+   "ts_files": 1611,
+   "configs": 24,
+   "tree_sha256": "0b0063d27ab60bd9883852b51864a020aa278ea877d318e074261f534cfc69d2",
+   "snapshot": "sha256:705d670548c6687e14760abb83f6b94133ec0214eb238610a9358bdb97a1f4c6",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 7021,
+   "relations": 35880,
+   "partial_files": 14,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 6,
+     "resolved": 4603,
+     "unresolved": 4247
+    },
+    "calls": {
+     "ambiguous": 15,
+     "resolved": 4063,
+     "unresolved": 10229
+    },
+    "references": {
+     "resolved": 248,
+     "unresolved": 88
+    }
+   },
+   "unresolved_imports": {
+    "external": 1475,
+    "relative:found": 460,
+    "relative:none": 13,
+    "workspace:found": 1743,
+    "workspace:none": 556
+   }
+  },
+  "vuejs__core@0275dd329d24": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "0275dd329d241bdd84ce3ca0c7fc07211cb21751",
+   "ts_files": 464,
+   "configs": 3,
+   "tree_sha256": "59a8075a5ddab1512b6781c43fac0d31cda3f7b4179954fd33a04ed9a9b71f91",
+   "snapshot": "sha256:512fe0c962f5eaa4529ac9826526364ce862122f8cc267d41825027d59e8d547",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5165,
+   "relations": 52896,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 237,
+     "resolved": 4625,
+     "unresolved": 367
+    },
+    "calls": {
+     "ambiguous": 3281,
+     "resolved": 11192,
+     "unresolved": 19550
+    },
+    "references": {
+     "resolved": 139,
+     "unresolved": 25
+    }
+   },
+   "unresolved_imports": {
+    "external": 227,
+    "relative:found": 67,
+    "relative:none": 7,
+    "workspace:found": 65,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@0e63cbfaf579": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "0e63cbfaf57979e2c6fcfa986281c7521d82d893",
+   "ts_files": 455,
+   "configs": 3,
+   "tree_sha256": "e1dbabdc1d463c4710ca9905387bad90b30f3b6c039474733408d5bf0083d73d",
+   "snapshot": "sha256:2b1ab603335de9cee782fbde8310f5d85f73ac066d7c1b0569508203f12335e2",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 4906,
+   "relations": 50122,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 223,
+     "resolved": 4512,
+     "unresolved": 355
+    },
+    "calls": {
+     "ambiguous": 2953,
+     "resolved": 10729,
+     "unresolved": 18398
+    },
+    "references": {
+     "resolved": 136,
+     "unresolved": 22
+    }
+   },
+   "unresolved_imports": {
+    "external": 216,
+    "relative:found": 63,
+    "relative:none": 8,
+    "workspace:found": 68
+   }
+  },
+  "vuejs__core@314ce82e479d": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "314ce82e479dbb33a9281ba8c2ebe288536b32df",
+   "ts_files": 466,
+   "configs": 5,
+   "tree_sha256": "ac412d7d17993935c4376ec782303d16261fe8b5c50cc7d6aa68b183babfea58",
+   "snapshot": "sha256:255ff6faa94e025f9dbfd337e710cc27856a115840f30e716adc1d7e2845710a",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5273,
+   "relations": 55259,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 247,
+     "resolved": 4748,
+     "unresolved": 364
+    },
+    "calls": {
+     "ambiguous": 3524,
+     "resolved": 11735,
+     "unresolved": 20482
+    },
+    "references": {
+     "resolved": 141,
+     "unresolved": 25
+    }
+   },
+   "unresolved_imports": {
+    "external": 224,
+    "relative:found": 67,
+    "relative:none": 7,
+    "workspace:found": 65,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@582cd2e9bc21": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "582cd2e9bc21b8d9b695dc0ad28f96cc88d8f0cf",
+   "ts_files": 466,
+   "configs": 5,
+   "tree_sha256": "76b04560f47e46c44b3cd25a2d1cbe6776f282541d0e354dc06d2e42c3141228",
+   "snapshot": "sha256:482e5a1da3cd51c88dfd6b7264a31bf15c3bea30c4df1b6b266d0ed68fcb3088",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5257,
+   "relations": 55141,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 247,
+     "resolved": 4740,
+     "unresolved": 364
+    },
+    "calls": {
+     "ambiguous": 3525,
+     "resolved": 11707,
+     "unresolved": 20451
+    },
+    "references": {
+     "resolved": 139,
+     "unresolved": 25
+    }
+   },
+   "unresolved_imports": {
+    "external": 224,
+    "relative:found": 67,
+    "relative:none": 7,
+    "workspace:found": 65,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@6277cb994ace": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "6277cb994acecf56f5f0745f5e2dac9785a34957",
+   "ts_files": 455,
+   "configs": 3,
+   "tree_sha256": "e1dbabdc1d463c4710ca9905387bad90b30f3b6c039474733408d5bf0083d73d",
+   "snapshot": "sha256:2b1ab603335de9cee782fbde8310f5d85f73ac066d7c1b0569508203f12335e2",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 4906,
+   "relations": 50122,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 223,
+     "resolved": 4512,
+     "unresolved": 355
+    },
+    "calls": {
+     "ambiguous": 2953,
+     "resolved": 10729,
+     "unresolved": 18398
+    },
+    "references": {
+     "resolved": 136,
+     "unresolved": 22
+    }
+   },
+   "unresolved_imports": {
+    "external": 216,
+    "relative:found": 63,
+    "relative:none": 8,
+    "workspace:found": 68
+   }
+  },
+  "vuejs__core@68e5cc6ac8fc": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "68e5cc6ac8fc289372831c5fbdff09e63728fc00",
+   "ts_files": 464,
+   "configs": 3,
+   "tree_sha256": "2339848e241b947acba2d3e0e456d3622182c22e61cf9fd8f5ac56a58392fa7a",
+   "snapshot": "sha256:bf6b8b36f4f6eecd780ab7bb1f41bb6c211465a226ff3f2863ed0423ff738e74",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5165,
+   "relations": 52896,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 237,
+     "resolved": 4625,
+     "unresolved": 367
+    },
+    "calls": {
+     "ambiguous": 3281,
+     "resolved": 11192,
+     "unresolved": 19550
+    },
+    "references": {
+     "resolved": 139,
+     "unresolved": 25
+    }
+   },
+   "unresolved_imports": {
+    "external": 227,
+    "relative:found": 67,
+    "relative:none": 7,
+    "workspace:found": 65,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@75e02b5099a0": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "75e02b5099a08166bdf407127916734c48209ee9",
+   "ts_files": 465,
+   "configs": 3,
+   "tree_sha256": "98f7f9a79f843d1b8c1097c2c6b75bb08931b6b3cf0f53a4a2c2069fea3ede98",
+   "snapshot": "sha256:e939a3159eb202d2dcccd2f16c77e3753a5da47c12fbb3117ed82cb8d33756cb",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5165,
+   "relations": 53426,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 244,
+     "resolved": 4663,
+     "unresolved": 362
+    },
+    "calls": {
+     "ambiguous": 3352,
+     "resolved": 11322,
+     "unresolved": 19755
+    },
+    "references": {
+     "resolved": 139,
+     "unresolved": 25
+    }
+   },
+   "unresolved_imports": {
+    "external": 227,
+    "relative:found": 67,
+    "relative:none": 7,
+    "workspace:found": 60,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@b74687c0bbc0": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "b74687c0bbc0083513a1f5da3a2995cfb5f48246",
+   "ts_files": 479,
+   "configs": 5,
+   "tree_sha256": "10ab3795022df12405563e840c4566309bc00965c5362e4b3031c32f1827d9f5",
+   "snapshot": "sha256:8ab03f4d508a6af3db782565906f87fa9e27595b9345f504f72933b884ab12fd",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5541,
+   "relations": 57972,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 321,
+     "resolved": 4901,
+     "unresolved": 316
+    },
+    "calls": {
+     "ambiguous": 4272,
+     "resolved": 12202,
+     "unresolved": 21119
+    },
+    "references": {
+     "resolved": 146,
+     "unresolved": 26
+    }
+   },
+   "unresolved_imports": {
+    "external": 239,
+    "relative:found": 47,
+    "relative:none": 7,
+    "workspace:found": 22,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@c0c9432b6409": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "c0c9432b64091fa15fd8619cfb06828735356a42",
+   "ts_files": 466,
+   "configs": 5,
+   "tree_sha256": "2d85b9508b4655a5e9fc8a3f685b247124e53e15cce27a14256b7af3f4e75ffa",
+   "snapshot": "sha256:efd9894bac97636f87f7f218cbf6b4f7b473a13eb0677feb93f5ff0876d2a898",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5210,
+   "relations": 54194,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 244,
+     "resolved": 4706,
+     "unresolved": 359
+    },
+    "calls": {
+     "ambiguous": 3428,
+     "resolved": 11492,
+     "unresolved": 20074
+    },
+    "references": {
+     "resolved": 139,
+     "unresolved": 25
+    }
+   },
+   "unresolved_imports": {
+    "external": 223,
+    "relative:found": 67,
+    "relative:none": 7,
+    "workspace:found": 61,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@caeb8a68811a": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "caeb8a68811a1b0f799632582289fcf169fb673c",
+   "ts_files": 465,
+   "configs": 3,
+   "tree_sha256": "ef9529f75afaf3093ab631b5bf3875506fab947d1441328f0b68884169d3dad5",
+   "snapshot": "sha256:bc356734cb5b50cfa08cd06ccd7eb68b66e7ef3c00eb4da462963f5166845e8f",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5177,
+   "relations": 53676,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 245,
+     "resolved": 4678,
+     "unresolved": 362
+    },
+    "calls": {
+     "ambiguous": 3393,
+     "resolved": 11378,
+     "unresolved": 19836
+    },
+    "references": {
+     "resolved": 139,
+     "unresolved": 25
+    }
+   },
+   "unresolved_imports": {
+    "external": 227,
+    "relative:found": 67,
+    "relative:none": 7,
+    "workspace:found": 60,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@d0b513eb463f": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "d0b513eb463f580e29378e43d112ff6859aa366e",
+   "ts_files": 483,
+   "configs": 6,
+   "tree_sha256": "54b7df2e606e34a336e646c27370bb098ffc7e926a648e155ffd2b1b6ef2cdab",
+   "snapshot": "sha256:4e2987a1b17569888224a355140fdf72281d2855b4beedc51f48ce2ae2c6317e",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5707,
+   "relations": 59540,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 325,
+     "resolved": 4994,
+     "unresolved": 317
+    },
+    "calls": {
+     "ambiguous": 4464,
+     "resolved": 12505,
+     "unresolved": 21677
+    },
+    "references": {
+     "resolved": 150,
+     "unresolved": 27
+    }
+   },
+   "unresolved_imports": {
+    "external": 236,
+    "relative:found": 48,
+    "relative:none": 8,
+    "workspace:found": 24,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@d276a4f3e914": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "d276a4f3e914aaccc291f7b2513e5d978919d0f9",
+   "ts_files": 466,
+   "configs": 3,
+   "tree_sha256": "98affd19fcf2f9692027c27de56dbf727865f77963003fdffc981b6054f326b7",
+   "snapshot": "sha256:898d78804c388952f63bf1cf9bf31b507c5cd2e25aaeab682c9471131e7a0bbd",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5193,
+   "relations": 53388,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 243,
+     "resolved": 4660,
+     "unresolved": 369
+    },
+    "calls": {
+     "ambiguous": 3341,
+     "resolved": 11300,
+     "unresolved": 19707
+    },
+    "references": {
+     "resolved": 139,
+     "unresolved": 25
+    }
+   },
+   "unresolved_imports": {
+    "external": 227,
+    "relative:found": 67,
+    "relative:none": 7,
+    "workspace:found": 67,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@d298c431cc42": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "d298c431cc422b53cf4e9c69bf1daf926c33b6e0",
+   "ts_files": 485,
+   "configs": 6,
+   "tree_sha256": "2109111efc6195505b71c36bfa36444a96ef4e2a3896d781667b252ee8fb08ea",
+   "snapshot": "sha256:6bcfccadae6f4269ba9bdc34cf7b862566c07f940ce1484552096bac48c43e2d",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5669,
+   "relations": 59258,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 323,
+     "resolved": 4977,
+     "unresolved": 332
+    },
+    "calls": {
+     "ambiguous": 4417,
+     "resolved": 12469,
+     "unresolved": 21558
+    },
+    "references": {
+     "resolved": 151,
+     "unresolved": 26
+    }
+   },
+   "unresolved_imports": {
+    "external": 251,
+    "relative:found": 48,
+    "relative:none": 8,
+    "workspace:found": 24,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@dadb3632a0f8": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "dadb3632a0f824f6e6a1c246ed8788bea5cbcad6",
+   "ts_files": 466,
+   "configs": 5,
+   "tree_sha256": "bfea1d2513ff35f334a63832c7afeffbfdd090956e78a456370488c5a78cddde",
+   "snapshot": "sha256:190a03371092f42c42c0851aebcb0e49ade7dcbc2cc2cf5bc6fb773d90c15966",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5250,
+   "relations": 55024,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 247,
+     "resolved": 4735,
+     "unresolved": 364
+    },
+    "calls": {
+     "ambiguous": 3511,
+     "resolved": 11678,
+     "unresolved": 20417
+    },
+    "references": {
+     "resolved": 139,
+     "unresolved": 25
+    }
+   },
+   "unresolved_imports": {
+    "external": 224,
+    "relative:found": 67,
+    "relative:none": 7,
+    "workspace:found": 65,
+    "workspace:none": 1
+   }
+  },
+  "vuejs__core@f6babf323631": {
+   "url": "https://github.com/vuejs/core",
+   "commit": "f6babf32363185ff3ab3512d952a8a9aa9603762",
+   "ts_files": 478,
+   "configs": 5,
+   "tree_sha256": "d3057b7dd2271823a1ba40e94b11ffe5794aeeab75795a7c77179d43f9bc2dc1",
+   "snapshot": "sha256:1e25d7c7588510f5c097440b4744131188afd1421bb606b38a7d83a3b7347ec5",
+   "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+   "entities": 5514,
+   "relations": 57563,
+   "partial_files": 2,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 320,
+     "resolved": 4886,
+     "unresolved": 307
+    },
+    "calls": {
+     "ambiguous": 4235,
+     "resolved": 12134,
+     "unresolved": 20923
+    },
+    "references": {
+     "resolved": 145,
+     "unresolved": 27
+    }
+   },
+   "unresolved_imports": {
+    "external": 230,
+    "relative:found": 47,
+    "relative:none": 7,
+    "workspace:found": 22,
+    "workspace:none": 1
+   }
+  }
+ },
+ "versions": {
+  "retrieval": "oxide-retrieval-v2",
+  "router": "oxide-router-bfs-v2",
+  "selector": "oxide-select-greedy-v4",
+  "payload": "oxide-payload-v3",
+  "derivation": "sha256:04c247de3dee90ded12945ccc46fe05dc9b56cb9a27086c93329dc80828a27b4",
+  "units": "oxide-units-v1"
+ },
+ "config": {
+  "retrieval": {
+   "lexical_limit": 20,
+   "symbol_limit": 8
+  },
+  "routing": {
+   "max_regions": 64,
+   "max_depth": 2,
+   "max_fanout": 16,
+   "max_edges": 2048,
+   "follow": [
+    "calls",
+    "references",
+    "imports",
+    "tested_by",
+    "contains_logical"
+   ]
+  },
+  "packing": {
+   "graph_nodes": 64,
+   "max_items": 24,
+   "include_floor": 0.4,
+   "max_header_lines": 8
+  },
+  "decision_provider": "none (heuristic packing.value)"
+ },
+ "environment": {
+  "python": "3.13.17",
+  "platform": "linux-x86_64",
+  "packages": {
+   "ladybug": "0.21.0",
+   "tree-sitter": "0.26.0",
+   "tree-sitter-python": "0.25.0",
+   "tree-sitter-typescript": "0.23.2"
+  }
+ },
+ "commands": {
+  "fetch": "uv run python tests/python/contextbench_ts.py fetch",
+  "run": "uv run python tests/python/contextbench_ts.py run --out DIR",
+  "gate": "mise run contextbench-ts",
+  "tasks": "uv run --with pyarrow python tests/python/contextbench_ts.py tasks PARQUET",
+  "audit": "uv run --with pyarrow python tests/python/contextbench_ts.py audit PARQUET"
+ },
+ "max_ts_files": 5000
+}

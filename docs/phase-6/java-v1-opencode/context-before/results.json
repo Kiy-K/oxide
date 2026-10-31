@@ -1,0 +1,4867 @@
+[
+ {
+  "task": "alibaba__fastjson2-2559",
+  "split": "heldout",
+  "corpus": "alibaba__fastjson2@45cc6b34343b",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 5,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java",
+    "lines": [
+     1522,
+     1527
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/TypeReference.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/FieldReaderAtomicReference.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/schema/UnresolvedReference.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/util/ReferenceKey.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest2.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest3.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest4.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/atomic/AtomicReferenceTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/features/ReferenceDetectTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/jsonb/basic/ReferenceTest.java",
+     "incomplete parse: extension-spring5/src/main/java/com/alibaba/fastjson2/support/spring/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: extension-spring6/src/main/java/com/alibaba/fastjson2/support/spring6/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/TypeReference.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverter.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/TypeReferenceTest.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/TypeReferenceTest4.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/issue_1700/issue1763_2/TypeReferenceBug1763_2.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverterTest.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/json/bvtVO/AccessHttpConfigModel.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/TypeReference.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/FieldReaderAtomicReference.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/schema/UnresolvedReference.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/util/ReferenceKey.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest2.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest3.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest4.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/atomic/AtomicReferenceTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/features/ReferenceDetectTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/jsonb/basic/ReferenceTest.java",
+     "incomplete parse: extension-spring5/src/main/java/com/alibaba/fastjson2/support/spring/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: extension-spring6/src/main/java/com/alibaba/fastjson2/support/spring6/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/TypeReference.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverter.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/TypeReferenceTest.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/TypeReferenceTest4.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/issue_1700/issue1763_2/TypeReferenceBug1763_2.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverterTest.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/json/bvtVO/AccessHttpConfigModel.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/TypeReference.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/FieldReaderAtomicReference.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/schema/UnresolvedReference.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/util/ReferenceKey.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest2.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest3.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/TypeReferenceTest4.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/atomic/AtomicReferenceTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/features/ReferenceDetectTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/jsonb/basic/ReferenceTest.java",
+     "incomplete parse: extension-spring5/src/main/java/com/alibaba/fastjson2/support/spring/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: extension-spring6/src/main/java/com/alibaba/fastjson2/support/spring6/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/TypeReference.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverter.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/TypeReferenceTest.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/TypeReferenceTest4.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/issue_1700/issue1763_2/TypeReferenceBug1763_2.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverterTest.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/json/bvtVO/AccessHttpConfigModel.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c4f493cc9db5763b1b2bbdd61dd4b290653bf0315e34d4d443a0e14604baab44",
+   "routed": "07d40e333aa53396b5f2c159c10be238b154098297a0bb6bcbb424781e3c5a3c",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "alibaba__fastjson2-2775",
+  "split": "heldout",
+  "corpus": "alibaba__fastjson2@12b40c7ba3e7",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 57,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+    "lines": [
+     941,
+     978
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+    "lines": [
+     978,
+     1001
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 21,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+    "lines": [
+     999,
+     1004
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benchmark/src/main/java/com/alibaba/fastjson2/benchmark/JSONReaderNewAndClose.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/FieldReaderStringMethod.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplFromString.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplMethod.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplString.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplValueString.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/annotation/JSONTypeDisableRefDetect.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/jsonb/StringMessageTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/reader/FieldReaderStringMethodTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/support/orgjson/OrgJSONTest.java",
+     "incomplete parse: extension-spring5/src/main/java/com/alibaba/fastjson2/support/spring/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: extension-spring5/src/test/java/com/alibaba/fastjson2/spring/FastJsonHttpMessageConverterUnitTest.java",
+     "incomplete parse: extension-spring5/src/test/java/com/alibaba/fastjson2/spring/mock/FastJsonHttpMessageConverterMockTest.java",
+     "incomplete parse: extension-spring5/src/test/java/com/alibaba/fastjson2/springdoc/OpenApiJsonWriterTest.java",
+     "incomplete parse: extension-spring6/src/main/java/com/alibaba/fastjson2/support/spring6/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: extension-spring6/src/test/java/com/alibaba/fastjson2/support/spring6/FastJsonHttpMessageConverterUnitTest.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/JSONReader.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverter.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverterTest.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benchmark/src/main/java/com/alibaba/fastjson2/benchmark/JSONReaderNewAndClose.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/FieldReaderStringMethod.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplFromString.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplMethod.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplString.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplValueString.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/annotation/JSONTypeDisableRefDetect.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/jsonb/StringMessageTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/reader/FieldReaderStringMethodTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/support/orgjson/OrgJSONTest.java",
+     "incomplete parse: extension-spring5/src/main/java/com/alibaba/fastjson2/support/spring/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: extension-spring5/src/test/java/com/alibaba/fastjson2/spring/FastJsonHttpMessageConverterUnitTest.java",
+     "incomplete parse: extension-spring5/src/test/java/com/alibaba/fastjson2/spring/mock/FastJsonHttpMessageConverterMockTest.java",
+     "incomplete parse: extension-spring5/src/test/java/com/alibaba/fastjson2/springdoc/OpenApiJsonWriterTest.java",
+     "incomplete parse: extension-spring6/src/main/java/com/alibaba/fastjson2/support/spring6/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: extension-spring6/src/test/java/com/alibaba/fastjson2/support/spring6/FastJsonHttpMessageConverterUnitTest.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/JSONReader.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverter.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverterTest.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benchmark/src/main/java/com/alibaba/fastjson2/benchmark/JSONReaderNewAndClose.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/FieldReaderStringMethod.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplFromString.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplMethod.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplString.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplValueString.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/annotation/JSONTypeDisableRefDetect.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/jsonb/StringMessageTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/reader/FieldReaderStringMethodTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/support/orgjson/OrgJSONTest.java",
+     "incomplete parse: extension-spring5/src/main/java/com/alibaba/fastjson2/support/spring/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: extension-spring5/src/test/java/com/alibaba/fastjson2/spring/FastJsonHttpMessageConverterUnitTest.java",
+     "incomplete parse: extension-spring5/src/test/java/com/alibaba/fastjson2/spring/mock/FastJsonHttpMessageConverterMockTest.java",
+     "incomplete parse: extension-spring5/src/test/java/com/alibaba/fastjson2/springdoc/OpenApiJsonWriterTest.java",
+     "incomplete parse: extension-spring6/src/main/java/com/alibaba/fastjson2/support/spring6/http/converter/FastJsonHttpMessageConverter.java",
+     "incomplete parse: extension-spring6/src/test/java/com/alibaba/fastjson2/support/spring6/FastJsonHttpMessageConverterUnitTest.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/JSONReader.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverter.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/support/spring/FastJsonHttpMessageConverterTest.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "f50e78117be3f21f9a45283a3391744de39a6207a72753d529155315b6ebafa8",
+   "routed": "22cc14e5d5ddb6c240f678dd8b09bfbd53cc37b6ec2a4a5ea7f6abe62c9904a4",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "alibaba__fastjson2-82",
+  "split": "heldout",
+  "corpus": "alibaba__fastjson2@3aed80608b36",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 508,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.25,
+    "entry_mrr": 0.125,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.25,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+    "lines": [
+     1,
+     427
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 390,
+    "module_lines": 13,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+    "lines": [
+     598,
+     701
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 99,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+    "lines": [
+     350,
+     359
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+    "lines": [
+     358,
+     371
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 13,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSON.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONArray.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONException.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONFactory.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONObject.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONPath.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONWriter.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/annotation/JSONBuilder.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/annotation/JSONCreator.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/JSONTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/JSONValidatorTest.java",
+     "incomplete parse: extension/src/main/java/com/alibaba/fastjson2/support/spring/web/view/FastJsonJsonView.java",
+     "incomplete parse: extension/src/test/java/com/alibaba/fastjson2/spring/FastJsonJsonViewMockTest.java",
+     "incomplete parse: extension/src/test/java/com/alibaba/fastjson2/spring/FastJsonJsonViewUnitTest.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/JSON.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/support/spring/FastJsonJsonView.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/issue_1700/issue1763_2/TypeReferenceBug1763_2.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/suppert/spring/FastJsonJsonViewTest.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/json/bvt/issue_1700/Issue1780_JSONObject.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSON.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONArray.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONException.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONFactory.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONObject.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONPath.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONWriter.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/annotation/JSONBuilder.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/annotation/JSONCreator.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/JSONTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/JSONValidatorTest.java",
+     "incomplete parse: extension/src/main/java/com/alibaba/fastjson2/support/spring/web/view/FastJsonJsonView.java",
+     "incomplete parse: extension/src/test/java/com/alibaba/fastjson2/spring/FastJsonJsonViewMockTest.java",
+     "incomplete parse: extension/src/test/java/com/alibaba/fastjson2/spring/FastJsonJsonViewUnitTest.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/JSON.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/support/spring/FastJsonJsonView.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/issue_1700/issue1763_2/TypeReferenceBug1763_2.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/suppert/spring/FastJsonJsonViewTest.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/json/bvt/issue_1700/Issue1780_JSONObject.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSON.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONArray.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONException.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONFactory.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONObject.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONPath.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/JSONWriter.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/annotation/JSONBuilder.java",
+     "incomplete parse: core/src/main/java/com/alibaba/fastjson2/annotation/JSONCreator.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/JSONTest.java",
+     "incomplete parse: core/src/test/java/com/alibaba/fastjson2/JSONValidatorTest.java",
+     "incomplete parse: extension/src/main/java/com/alibaba/fastjson2/support/spring/web/view/FastJsonJsonView.java",
+     "incomplete parse: extension/src/test/java/com/alibaba/fastjson2/spring/FastJsonJsonViewMockTest.java",
+     "incomplete parse: extension/src/test/java/com/alibaba/fastjson2/spring/FastJsonJsonViewUnitTest.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/JSON.java",
+     "incomplete parse: fastjson1-compatible/src/main/java/com/alibaba/fastjson/support/spring/FastJsonJsonView.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/issue_1700/issue1763_2/TypeReferenceBug1763_2.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/fastjson/suppert/spring/FastJsonJsonViewTest.java",
+     "incomplete parse: fastjson1-compatible/src/test/java/com/alibaba/json/bvt/issue_1700/Issue1780_JSONObject.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c2aa9f9b6e6ad3d82e5a8da3af1d938e07bc0e7ded0a93112df73b8ab51f7d08",
+   "routed": "597d06dab6b2bfa62596a15b336e0d52feb8aac7d9d95bf5291fb8985c5422d4",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "elastic__logstash-13825",
+  "split": "heldout",
+  "corpus": "elastic__logstash@d64248f62837",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 305,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 267,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/config/ir/compiler/ComputeStepSyntaxElement.java",
+    "lines": [
+     1,
+     267
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 267,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java",
+    "lines": [
+     1,
+     343
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 305,
+    "module_lines": 25,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: logstash-core/settings.gradle",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/Configuration.java",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/Filter.java",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/FilterMatchListener.java",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/PluginConfigSpec.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/CompiledPipelineTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/PipelineTestUtil.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/RubyEnvTestCase.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/launchers/JvmOptionsParserTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/log/PipelineRoutingFilterTest.java",
+     "incomplete parse: qa/integration/build.gradle",
+     "incomplete parse: qa/integration/settings.gradle",
+     "incomplete parse: settings.gradle",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/LsBenchSettings.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/util/LsBenchCompressUtil.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/util/LsBenchFileUtil.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/util/LsBenchJsonUtil.java",
+     "incomplete parse: tools/dependencies-report/build.gradle",
+     "incomplete parse: x-pack/settings.gradle"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: logstash-core/settings.gradle",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/Configuration.java",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/Filter.java",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/FilterMatchListener.java",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/PluginConfigSpec.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/CompiledPipelineTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/PipelineTestUtil.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/RubyEnvTestCase.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/launchers/JvmOptionsParserTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/log/PipelineRoutingFilterTest.java",
+     "incomplete parse: qa/integration/build.gradle",
+     "incomplete parse: qa/integration/settings.gradle",
+     "incomplete parse: settings.gradle",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/LsBenchSettings.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/util/LsBenchCompressUtil.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/util/LsBenchFileUtil.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/util/LsBenchJsonUtil.java",
+     "incomplete parse: tools/dependencies-report/build.gradle",
+     "incomplete parse: x-pack/settings.gradle"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: logstash-core/settings.gradle",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/Configuration.java",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/Filter.java",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/FilterMatchListener.java",
+     "incomplete parse: logstash-core/src/main/java/co/elastic/logstash/api/PluginConfigSpec.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/CompiledPipelineTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/PipelineTestUtil.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/RubyEnvTestCase.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/launchers/JvmOptionsParserTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/log/PipelineRoutingFilterTest.java",
+     "incomplete parse: qa/integration/build.gradle",
+     "incomplete parse: qa/integration/settings.gradle",
+     "incomplete parse: settings.gradle",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/LsBenchSettings.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/util/LsBenchCompressUtil.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/util/LsBenchFileUtil.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/util/LsBenchJsonUtil.java",
+     "incomplete parse: tools/dependencies-report/build.gradle",
+     "incomplete parse: x-pack/settings.gradle"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "1a4ad48c4b033503a479e12baae6ee2451071cd10cfd5353c07fecfb56ea937e",
+   "routed": "89ff7eb10f626f17c84af7e3e41b71cf87026d0fe34b00ba95d3383bac9c6b62",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "elastic__logstash-13902",
+  "split": "heldout",
+  "corpus": "elastic__logstash@32675c1a88bd",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 321,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 3,
+    "lines": 483,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+    "lines": [
+     1,
+     386
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 321,
+    "module_lines": 47,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java",
+    "lines": [
+     1,
+     67
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 67,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java",
+    "lines": [
+     1,
+     235
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 235,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+    "lines": [
+     1,
+     181
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 181,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/common/EnvironmentVariableProvider.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/monitors/ProcessMonitor.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/reports/ProcessReport.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/log/DefaultDeprecationLogger.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileCheckpointIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileMmapIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/MmapPageIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/RubyEnvTestCase.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/instruments/monitors/ProcessMonitorTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/log/DefaultDeprecationLoggerTest.java",
+     "incomplete parse: qa/integration/settings.gradle",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/LsVersionType.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/UserOutput.java",
+     "incomplete parse: tools/dependencies-report/build.gradle",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Dependency.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Main.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/ReportGenerator.java",
+     "incomplete parse: tools/dependencies-report/src/test/java/org/logstash/dependencies/ReportGeneratorTest.java",
+     "incomplete parse: x-pack/src/test/java/org/logstash/xpack/test/RSpecIntegrationTests.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/common/EnvironmentVariableProvider.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/monitors/ProcessMonitor.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/reports/ProcessReport.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/log/DefaultDeprecationLogger.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileCheckpointIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileMmapIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/MmapPageIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/RubyEnvTestCase.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/instruments/monitors/ProcessMonitorTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/log/DefaultDeprecationLoggerTest.java",
+     "incomplete parse: qa/integration/settings.gradle",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/LsVersionType.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/UserOutput.java",
+     "incomplete parse: tools/dependencies-report/build.gradle",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Dependency.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Main.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/ReportGenerator.java",
+     "incomplete parse: tools/dependencies-report/src/test/java/org/logstash/dependencies/ReportGeneratorTest.java",
+     "incomplete parse: x-pack/src/test/java/org/logstash/xpack/test/RSpecIntegrationTests.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/common/EnvironmentVariableProvider.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/monitors/ProcessMonitor.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/reports/ProcessReport.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/log/DefaultDeprecationLogger.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileCheckpointIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileMmapIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/MmapPageIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/RubyEnvTestCase.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/instruments/monitors/ProcessMonitorTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/log/DefaultDeprecationLoggerTest.java",
+     "incomplete parse: qa/integration/settings.gradle",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/LsVersionType.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/UserOutput.java",
+     "incomplete parse: tools/dependencies-report/build.gradle",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Dependency.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Main.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/ReportGenerator.java",
+     "incomplete parse: tools/dependencies-report/src/test/java/org/logstash/dependencies/ReportGeneratorTest.java",
+     "incomplete parse: x-pack/src/test/java/org/logstash/xpack/test/RSpecIntegrationTests.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "f3622f2f4273a186b75081a28423409f116ea60d78b7db8d0492994c46754084",
+   "routed": "c70ee3e5d7b4332b19eb519e1d901c6b965d07b28ff45eb279f48600a04e5ff9",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "elastic__logstash-13931",
+  "split": "heldout",
+  "corpus": "elastic__logstash@7df02cc828c8",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 248,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 3,
+    "lines": 483,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 85,
+    "module_lines": 47,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+    "lines": [
+     100,
+     201
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 88,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+    "lines": [
+     200,
+     301
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 78,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java",
+    "lines": [
+     1,
+     67
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 67,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java",
+    "lines": [
+     1,
+     235
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 235,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+    "lines": [
+     1,
+     181
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 181,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/common/EnvironmentVariableProvider.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/monitors/ProcessMonitor.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/reports/ProcessReport.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/log/DefaultDeprecationLogger.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileCheckpointIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileMmapIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/MmapPageIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/RubyEnvTestCase.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/instruments/monitors/ProcessMonitorTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/log/DefaultDeprecationLoggerTest.java",
+     "incomplete parse: qa/integration/settings.gradle",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/LsVersionType.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/UserOutput.java",
+     "incomplete parse: tools/dependencies-report/build.gradle",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Dependency.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Main.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/ReportGenerator.java",
+     "incomplete parse: tools/dependencies-report/src/test/java/org/logstash/dependencies/ReportGeneratorTest.java",
+     "incomplete parse: x-pack/src/test/java/org/logstash/xpack/test/RSpecIntegrationTests.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/common/EnvironmentVariableProvider.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/monitors/ProcessMonitor.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/reports/ProcessReport.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/log/DefaultDeprecationLogger.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileCheckpointIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileMmapIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/MmapPageIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/RubyEnvTestCase.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/instruments/monitors/ProcessMonitorTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/log/DefaultDeprecationLoggerTest.java",
+     "incomplete parse: qa/integration/settings.gradle",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/LsVersionType.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/UserOutput.java",
+     "incomplete parse: tools/dependencies-report/build.gradle",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Dependency.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Main.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/ReportGenerator.java",
+     "incomplete parse: tools/dependencies-report/src/test/java/org/logstash/dependencies/ReportGeneratorTest.java",
+     "incomplete parse: x-pack/src/test/java/org/logstash/xpack/test/RSpecIntegrationTests.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/common/EnvironmentVariableProvider.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/monitors/ProcessMonitor.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/instrument/reports/ProcessReport.java",
+     "incomplete parse: logstash-core/src/main/java/org/logstash/log/DefaultDeprecationLogger.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileCheckpointIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/FileMmapIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/ackedqueue/io/MmapPageIOTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/config/ir/RubyEnvTestCase.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/instruments/monitors/ProcessMonitorTest.java",
+     "incomplete parse: logstash-core/src/test/java/org/logstash/log/DefaultDeprecationLoggerTest.java",
+     "incomplete parse: qa/integration/settings.gradle",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/LsVersionType.java",
+     "incomplete parse: tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/ui/UserOutput.java",
+     "incomplete parse: tools/dependencies-report/build.gradle",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Dependency.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/Main.java",
+     "incomplete parse: tools/dependencies-report/src/main/java/org/logstash/dependencies/ReportGenerator.java",
+     "incomplete parse: tools/dependencies-report/src/test/java/org/logstash/dependencies/ReportGeneratorTest.java",
+     "incomplete parse: x-pack/src/test/java/org/logstash/xpack/test/RSpecIntegrationTests.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "ceac10439814e98df1cb43ace292a36f51973acb34a5639152bd05f89d5f9152",
+   "routed": "c70ee3e5d7b4332b19eb519e1d901c6b965d07b28ff45eb279f48600a04e5ff9",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "fasterxml__jackson-core-1016",
+  "split": "heldout",
+  "corpus": "fasterxml__jackson@315ac5ad2ad5",
+  "verified": {
+   "counts": {
+    "spans": 9,
+    "lines": 68,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.75,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+    "lines": [
+     1295,
+     1306
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+    "lines": [
+     1299,
+     1305
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+    "lines": [
+     1326,
+     1332
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+    "lines": [
+     1849,
+     1855
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+    "lines": [
+     1933,
+     1938
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+    "lines": [
+     1934,
+     1942
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/json/async/NonBlockingJsonParserBase.java",
+    "lines": [
+     790,
+     795
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/json/async/NonBlockingJsonParserBase.java",
+    "lines": [
+     791,
+     799
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+    "lines": [
+     362,
+     391
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 28,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/StreamReadFeature.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/StreamWriteFeature.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/TokenStreamFactory.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/io/UTF32Reader.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/async/NonBlockingUtf8JsonParserBase.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/BoundsChecksWithJsonFactoryTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/GeneratorFailFromReaderTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/InputStreamInitTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/async/AsyncFieldNamesTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/async/AsyncParserNamesTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/read/UTF8NamesParseTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/testsupport/AsyncReaderWrapperForByteArray.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/testsupport/AsyncReaderWrapperForByteBuffer.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/testsupport/ThrottledInputStream.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/StreamReadFeature.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/StreamWriteFeature.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/TokenStreamFactory.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/io/UTF32Reader.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/async/NonBlockingUtf8JsonParserBase.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/BoundsChecksWithJsonFactoryTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/GeneratorFailFromReaderTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/InputStreamInitTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/async/AsyncFieldNamesTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/async/AsyncParserNamesTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/read/UTF8NamesParseTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/testsupport/AsyncReaderWrapperForByteArray.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/testsupport/AsyncReaderWrapperForByteBuffer.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/testsupport/ThrottledInputStream.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/StreamReadFeature.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/StreamWriteFeature.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/TokenStreamFactory.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/io/UTF32Reader.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/json/async/NonBlockingUtf8JsonParserBase.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/BoundsChecksWithJsonFactoryTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/GeneratorFailFromReaderTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/InputStreamInitTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/async/AsyncFieldNamesTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/json/async/AsyncParserNamesTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/read/UTF8NamesParseTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/testsupport/AsyncReaderWrapperForByteArray.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/testsupport/AsyncReaderWrapperForByteBuffer.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/testsupport/ThrottledInputStream.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "95e3bf21d25a7876f8340b4931599eb1b6a76f161c140e49785e37fa40833d48",
+   "routed": "8390ba98ee6eb5afa646b2f74a9bfcff705e306c78536abf0738df5137e22f9c",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "fasterxml__jackson-core-1263",
+  "split": "heldout",
+  "corpus": "fasterxml__jackson@9ed17fc7e9df",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 920,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 167,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+    "lines": [
+     1,
+     274
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 238,
+    "module_lines": 17,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/util/JsonRecyclerPools.java",
+    "lines": [
+     1,
+     273
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 224,
+    "module_lines": 14,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java",
+    "lines": [
+     1,
+     401
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 343,
+    "module_lines": 38,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/test/java/com/fasterxml/jackson/core/io/BufferRecyclerPoolTest.java",
+    "lines": [
+     1,
+     140
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 115,
+    "module_lines": 13,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "/workspace/fasterxml__jackson-core__0.1/src/test/java/com/fasterxml/jackson/core/util/JsonBufferRecyclersTest.java",
+    "lines": [
+     1,
+     167
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 167,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 6,
+   "candidates": 6,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 6
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/BufferRecyclers.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/JsonRecyclerPools.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/io/BufferRecyclerPoolTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/util/JsonBufferRecyclersTest.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 6
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/BufferRecyclers.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/JsonRecyclerPools.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/io/BufferRecyclerPoolTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/util/JsonBufferRecyclersTest.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 6
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/BufferRecyclers.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/JsonRecyclerPools.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/io/BufferRecyclerPoolTest.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/util/JsonBufferRecyclersTest.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "b6ebba9819ae71166e378edae20e90c5356187647fd9f6e93bdd2642cfa0c1a6",
+   "routed": "fbc05fb627b0efa674ce0533c8a96cf40792ede916ccfc64dbd3ee3c3f8908b0",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "fasterxml__jackson-core-183",
+  "split": "heldout",
+  "corpus": "fasterxml__jackson@ac6d8e22847c",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 15,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+    "lines": [
+     295,
+     311
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 6,
+   "candidates": 6,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 6
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/main/TestArrayParsing.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/main/TestGeneratorArray.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/util/TestTextBuffer.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 6
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/main/TestArrayParsing.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/main/TestGeneratorArray.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/util/TestTextBuffer.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 6
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/ByteArrayBuilder.java",
+     "incomplete parse: src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/main/TestArrayParsing.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/main/TestGeneratorArray.java",
+     "incomplete parse: src/test/java/com/fasterxml/jackson/core/util/TestTextBuffer.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "db273104eac611847dca41c736312110be9df0687141bb05a99a6292937b0a42",
+   "routed": "42ec5bc569445c43fb285ec6ca148ec8e61756b77930d8dea563c681b67151f9",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "google__gson-1391",
+  "split": "heldout",
+  "corpus": "google__gson@3f4ac29f9112",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 483,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.5,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+    "lines": [
+     1,
+     428
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 371,
+    "module_lines": 34,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+    "lines": [
+     336,
+     357
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 20,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+    "lines": [
+     419,
+     451
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 28,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "gson/src/test/java/com/google/gson/internal/bind/RecursiveTypesResolveTest.java",
+    "lines": [
+     1,
+     115
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 92,
+    "module_lines": 30,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: codegen/src/main/java/com/google/gson/codegen/CodeGen.java",
+     "incomplete parse: codegen/src/main/java/com/google/gson/codegen/GeneratedTypeAdapter.java",
+     "incomplete parse: codegen/src/test/java/com/google/gson/codegen/functional/CodeGenFunctionalTest.java",
+     "incomplete parse: codegen/src/test/java/com/google/gson/codegen/functional/Order.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/TypeAdapter.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/TypeAdapterFactory.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/bind/TimeTypeAdapter.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/reflect/TypeToken.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/ParameterizedTypeTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/PrimitiveTypeAdapter.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/common/TestTypes.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/functional/ParameterizedTypesTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/functional/TypeVariableTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/internal/GsonTypesTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/internal/bind/RecursiveTypesResolveTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: codegen/src/main/java/com/google/gson/codegen/CodeGen.java",
+     "incomplete parse: codegen/src/main/java/com/google/gson/codegen/GeneratedTypeAdapter.java",
+     "incomplete parse: codegen/src/test/java/com/google/gson/codegen/functional/CodeGenFunctionalTest.java",
+     "incomplete parse: codegen/src/test/java/com/google/gson/codegen/functional/Order.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/TypeAdapter.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/TypeAdapterFactory.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/bind/TimeTypeAdapter.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/reflect/TypeToken.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/ParameterizedTypeTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/PrimitiveTypeAdapter.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/common/TestTypes.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/functional/ParameterizedTypesTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/functional/TypeVariableTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/internal/GsonTypesTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/internal/bind/RecursiveTypesResolveTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: codegen/src/main/java/com/google/gson/codegen/CodeGen.java",
+     "incomplete parse: codegen/src/main/java/com/google/gson/codegen/GeneratedTypeAdapter.java",
+     "incomplete parse: codegen/src/test/java/com/google/gson/codegen/functional/CodeGenFunctionalTest.java",
+     "incomplete parse: codegen/src/test/java/com/google/gson/codegen/functional/Order.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/TypeAdapter.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/TypeAdapterFactory.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/bind/TimeTypeAdapter.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/reflect/TypeToken.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/ParameterizedTypeTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/PrimitiveTypeAdapter.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/common/TestTypes.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/functional/ParameterizedTypesTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/functional/TypeVariableTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/internal/GsonTypesTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/internal/bind/RecursiveTypesResolveTest.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "ea55f5c884119ed8ad8988e886159d987d9e9d4b3c5d27f7eb6f020864927532",
+   "routed": "6a41f486fc94bc83beff3300b15ca35ea26f77aa4837f32f0199d95ac26dbea0",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "google__gson-1703",
+  "split": "heldout",
+  "corpus": "google__gson@6d2557d5d1a8",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 364,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 121,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "gson/src/main/java/com/google/gson/Gson.java",
+    "lines": [
+     1,
+     350
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 328,
+    "module_lines": 128,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "gson/src/main/java/com/google/gson/Gson.java",
+    "lines": [
+     656,
+     667
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "gson/src/main/java/com/google/gson/Gson.java",
+    "lines": [
+     680,
+     691
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "gson/src/main/java/com/google/gson/Gson.java",
+    "lines": [
+     739,
+     750
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/internal/Streams.java",
+    "lines": [
+     1,
+     121
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 121,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonArray.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonDeserializationContext.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonDeserializer.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonElement.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonIOException.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonNull.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonObject.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonParseException.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonParser.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonPrimitive.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonSerializationContext.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonSerializer.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonStreamParser.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonSyntaxException.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/annotations/JsonAdapter.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonReader.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonScope.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonToken.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/functional/StringTest.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonArray.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonDeserializationContext.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonDeserializer.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonElement.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonIOException.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonNull.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonObject.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonParseException.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonParser.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonPrimitive.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonSerializationContext.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonSerializer.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonStreamParser.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonSyntaxException.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/annotations/JsonAdapter.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonReader.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonScope.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonToken.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/functional/StringTest.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonArray.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonDeserializationContext.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonDeserializer.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonElement.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonIOException.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonNull.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonObject.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonParseException.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonParser.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonPrimitive.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonSerializationContext.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonSerializer.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonStreamParser.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/JsonSyntaxException.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/annotations/JsonAdapter.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonReader.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonScope.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonToken.java",
+     "incomplete parse: gson/src/main/java/com/google/gson/stream/JsonWriter.java",
+     "incomplete parse: gson/src/test/java/com/google/gson/functional/StringTest.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "2dc9850459a638d8803b70b9fe2a2d4a783fe3ec9b29e7e2b0ce03aa53246912",
+   "routed": "78251e03606230686d964735e598e7cf31ca0135259c3d95349e8e639178a2ff",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "googlecontainertools__jib-2542",
+  "split": "heldout",
+  "corpus": "googlecontainertools__jib@34a757b0d64f",
+  "verified": {
+   "counts": {
+    "spans": 7,
+    "lines": 804,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "jib-core/src/main/java/com/google/cloud/tools/jib/http/ResponseException.java",
+    "lines": [
+     1,
+     57
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 47,
+    "module_lines": 20,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+    "lines": [
+     1,
+     192
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 171,
+    "module_lines": 50,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+    "lines": [
+     1,
+     224
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 198,
+    "module_lines": 42,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+    "lines": [
+     1,
+     423
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 355,
+    "module_lines": 56,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+    "lines": [
+     420,
+     431
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+    "lines": [
+     420,
+     455
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 32,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+    "lines": [
+     450,
+     461
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: jib-cli/src/main/java/com/google/cloud/tools/jib/cli/FixedPermissionsProvider.java",
+     "incomplete parse: jib-cli/src/main/java/com/google/cloud/tools/jib/cli/FixedTimestampProvider.java",
+     "incomplete parse: jib-cli/src/test/java/com/google/cloud/tools/jib/cli/FixedPermissionsProviderTest.java",
+     "incomplete parse: jib-cli/src/test/java/com/google/cloud/tools/jib/cli/FixedTimestampsProviderTest.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/blob/WritableContentsBlob.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/hash/WritableContents.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/http/BlobHttpContent.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/http/FailoverHttpClient.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/ErrorCodes.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/ErrorResponseUtil.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryErrorException.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryErrorExceptionBuilder.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/credentials/CredentialHelperUnhandledServerUrlException.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/json/ErrorEntryTemplate.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/json/ErrorResponseTemplate.java",
+     "incomplete parse: jib-core/src/test/java/com/google/cloud/tools/jib/http/TestWebServer.java",
+     "incomplete parse: jib-core/src/test/java/com/google/cloud/tools/jib/http/WithServerFailoverHttpClientTest.java",
+     "incomplete parse: jib-core/src/test/java/com/google/cloud/tools/jib/registry/ErrorResponseUtilTest.java",
+     "incomplete parse: jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenSettingsServerCredentials.java",
+     "incomplete parse: jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenSettingsServerCredentialsTest.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: jib-cli/src/main/java/com/google/cloud/tools/jib/cli/FixedPermissionsProvider.java",
+     "incomplete parse: jib-cli/src/main/java/com/google/cloud/tools/jib/cli/FixedTimestampProvider.java",
+     "incomplete parse: jib-cli/src/test/java/com/google/cloud/tools/jib/cli/FixedPermissionsProviderTest.java",
+     "incomplete parse: jib-cli/src/test/java/com/google/cloud/tools/jib/cli/FixedTimestampsProviderTest.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/blob/WritableContentsBlob.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/hash/WritableContents.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/http/BlobHttpContent.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/http/FailoverHttpClient.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/ErrorCodes.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/ErrorResponseUtil.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryErrorException.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryErrorExceptionBuilder.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/credentials/CredentialHelperUnhandledServerUrlException.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/json/ErrorEntryTemplate.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/json/ErrorResponseTemplate.java",
+     "incomplete parse: jib-core/src/test/java/com/google/cloud/tools/jib/http/TestWebServer.java",
+     "incomplete parse: jib-core/src/test/java/com/google/cloud/tools/jib/http/WithServerFailoverHttpClientTest.java",
+     "incomplete parse: jib-core/src/test/java/com/google/cloud/tools/jib/registry/ErrorResponseUtilTest.java",
+     "incomplete parse: jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenSettingsServerCredentials.java",
+     "incomplete parse: jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenSettingsServerCredentialsTest.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: jib-cli/src/main/java/com/google/cloud/tools/jib/cli/FixedPermissionsProvider.java",
+     "incomplete parse: jib-cli/src/main/java/com/google/cloud/tools/jib/cli/FixedTimestampProvider.java",
+     "incomplete parse: jib-cli/src/test/java/com/google/cloud/tools/jib/cli/FixedPermissionsProviderTest.java",
+     "incomplete parse: jib-cli/src/test/java/com/google/cloud/tools/jib/cli/FixedTimestampsProviderTest.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/blob/WritableContentsBlob.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/hash/WritableContents.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/http/BlobHttpContent.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/http/FailoverHttpClient.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/ErrorCodes.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/ErrorResponseUtil.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryErrorException.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryErrorExceptionBuilder.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/credentials/CredentialHelperUnhandledServerUrlException.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/json/ErrorEntryTemplate.java",
+     "incomplete parse: jib-core/src/main/java/com/google/cloud/tools/jib/registry/json/ErrorResponseTemplate.java",
+     "incomplete parse: jib-core/src/test/java/com/google/cloud/tools/jib/http/TestWebServer.java",
+     "incomplete parse: jib-core/src/test/java/com/google/cloud/tools/jib/http/WithServerFailoverHttpClientTest.java",
+     "incomplete parse: jib-core/src/test/java/com/google/cloud/tools/jib/registry/ErrorResponseUtilTest.java",
+     "incomplete parse: jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenSettingsServerCredentials.java",
+     "incomplete parse: jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenSettingsServerCredentialsTest.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "2c44f1a5f08ef8feae236b223c3b7fb8972503d178d9ae55f2b66264f285ed8a",
+   "routed": "3831557179cbcfdf61ca5640ec3ad1a84ef6351130f822adf229e88ca0c196a7",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "googlecontainertools__jib-2688",
+  "split": "heldout",
+  "corpus": "googlecontainertools__jib@7b36544eca5e",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 515,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+    "lines": [
+     1,
+     415
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 375,
+    "module_lines": 75,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+    "lines": [
+     490,
+     556
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 57,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+    "lines": [
+     500,
+     531
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+    "lines": [
+     520,
+     581
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 52,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+    "lines": [
+     560,
+     581
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 20,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenProjectPropertiesTest.java",
+    "lines": [
+     775,
+     841
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 60,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/spring-boot/.mvn/wrapper/MavenWrapperDownloader.java",
+     "incomplete parse: examples/spring-boot/build.gradle",
+     "incomplete parse: examples/spring-boot/pom.xml",
+     "incomplete parse: examples/spring-boot/settings.gradle",
+     "incomplete parse: examples/spring-boot/src/main/java/hello/Application.java",
+     "incomplete parse: jib-gradle-plugin/src/integration-test/java/com/google/cloud/tools/jib/gradle/SpringBootProjectIntegrationTest.java",
+     "incomplete parse: jib-gradle-plugin/src/integration-test/resources/gradle/projects/spring-boot/build.gradle",
+     "incomplete parse: jib-gradle-plugin/src/integration-test/resources/gradle/projects/spring-boot/settings.gradle",
+     "incomplete parse: jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/JibPluginConfiguration.java",
+     "incomplete parse: jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenRawConfiguration.java",
+     "incomplete parse: jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/JibPluginConfigurationTest.java",
+     "incomplete parse: jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenRawConfigurationTest.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-1/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-1/src/main/java/com/test/HelloWorld.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-2/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-2/src/main/java/com/test/HelloWorld.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/src/main/java/hello/Application.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/src/main/java/hello/HelloController.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/spring-boot/.mvn/wrapper/MavenWrapperDownloader.java",
+     "incomplete parse: examples/spring-boot/build.gradle",
+     "incomplete parse: examples/spring-boot/pom.xml",
+     "incomplete parse: examples/spring-boot/settings.gradle",
+     "incomplete parse: examples/spring-boot/src/main/java/hello/Application.java",
+     "incomplete parse: jib-gradle-plugin/src/integration-test/java/com/google/cloud/tools/jib/gradle/SpringBootProjectIntegrationTest.java",
+     "incomplete parse: jib-gradle-plugin/src/integration-test/resources/gradle/projects/spring-boot/build.gradle",
+     "incomplete parse: jib-gradle-plugin/src/integration-test/resources/gradle/projects/spring-boot/settings.gradle",
+     "incomplete parse: jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/JibPluginConfiguration.java",
+     "incomplete parse: jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenRawConfiguration.java",
+     "incomplete parse: jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/JibPluginConfigurationTest.java",
+     "incomplete parse: jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenRawConfigurationTest.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-1/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-1/src/main/java/com/test/HelloWorld.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-2/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-2/src/main/java/com/test/HelloWorld.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/src/main/java/hello/Application.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/src/main/java/hello/HelloController.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/spring-boot/.mvn/wrapper/MavenWrapperDownloader.java",
+     "incomplete parse: examples/spring-boot/build.gradle",
+     "incomplete parse: examples/spring-boot/pom.xml",
+     "incomplete parse: examples/spring-boot/settings.gradle",
+     "incomplete parse: examples/spring-boot/src/main/java/hello/Application.java",
+     "incomplete parse: jib-gradle-plugin/src/integration-test/java/com/google/cloud/tools/jib/gradle/SpringBootProjectIntegrationTest.java",
+     "incomplete parse: jib-gradle-plugin/src/integration-test/resources/gradle/projects/spring-boot/build.gradle",
+     "incomplete parse: jib-gradle-plugin/src/integration-test/resources/gradle/projects/spring-boot/settings.gradle",
+     "incomplete parse: jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/JibPluginConfiguration.java",
+     "incomplete parse: jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenRawConfiguration.java",
+     "incomplete parse: jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/JibPluginConfigurationTest.java",
+     "incomplete parse: jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenRawConfigurationTest.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-1/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-1/src/main/java/com/test/HelloWorld.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-2/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot-multi/service-2/src/main/java/com/test/HelloWorld.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/pom.xml",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/src/main/java/hello/Application.java",
+     "incomplete parse: jib-maven-plugin/src/test/resources/maven/projects/spring-boot/src/main/java/hello/HelloController.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "00567c188dce57faf33df0813e24131d0d4d3db7fd2422cc5ebffa88bbaf68a6",
+   "routed": "41b7ae53798c1f675fd8db2859bdb54ae4f2ffcad6063aefa390a4d4aa1a01aa",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "mockito__mockito-3129",
+  "split": "heldout",
+  "corpus": "mockito__mockito@edc624371009",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 1019,
+    "files": 8
+   },
+   "metrics": {
+    "entry_recall@1": 0.125,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.5,
+    "routed_coverage": 0.5,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/main/java/org/mockito/MockMakers.java",
+    "lines": [
+     1,
+     43
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 37,
+    "module_lines": 14,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java",
+    "lines": [
+     1,
+     118
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 106,
+    "module_lines": 19,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 83,
+    "module_lines": 13,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+    "lines": [
+     1,
+     309
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 294,
+    "module_lines": 97,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/util/MockUtil.java",
+    "lines": [
+     1,
+     221
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 188,
+    "module_lines": 24,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/plugins/InlineMockMaker.java",
+    "lines": [
+     1,
+     47
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 42,
+    "module_lines": 25,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/plugins/MockMaker.java",
+    "lines": [
+     1,
+     253
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 229,
+    "module_lines": 61,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/plugins/MockitoPlugins.java",
+    "lines": [
+     1,
+     45
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 17,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/org/mockito/internal/configuration/plugins/PluginFileReader.java",
+     "incomplete parse: src/main/java/org/mockito/internal/creation/bytebuddy/MockAccess.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/MockUtil.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/collections/HashCodeAndEqualsMockWrapper.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/FieldReader.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/InstrumentationMemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/ModuleMemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/ReflectionMemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/InlineMockMaker.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/InstantiatorProvider2.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/MemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/MockMaker.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/MockitoPlugins.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/StackTraceCleanerProvider.java",
+     "incomplete parse: src/test/java/org/mockito/internal/configuration/plugins/PluginFileReaderTest.java",
+     "incomplete parse: src/test/java/org/mockitointegration/NoByteCodeDependenciesTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/EnabledMockingInterfaceCloneMethodTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/creation/PublicMethodInParentWithNonPublicTypeInSignatureTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/creation/api/PublicClass.java",
+     "incomplete parse: subprojects/extTest/src/test/java/org/mockitousage/plugins/switcher/MyMockMaker.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/org/mockito/internal/configuration/plugins/PluginFileReader.java",
+     "incomplete parse: src/main/java/org/mockito/internal/creation/bytebuddy/MockAccess.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/MockUtil.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/collections/HashCodeAndEqualsMockWrapper.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/FieldReader.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/InstrumentationMemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/ModuleMemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/ReflectionMemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/InlineMockMaker.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/InstantiatorProvider2.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/MemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/MockMaker.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/MockitoPlugins.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/StackTraceCleanerProvider.java",
+     "incomplete parse: src/test/java/org/mockito/internal/configuration/plugins/PluginFileReaderTest.java",
+     "incomplete parse: src/test/java/org/mockitointegration/NoByteCodeDependenciesTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/EnabledMockingInterfaceCloneMethodTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/creation/PublicMethodInParentWithNonPublicTypeInSignatureTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/creation/api/PublicClass.java",
+     "incomplete parse: subprojects/extTest/src/test/java/org/mockitousage/plugins/switcher/MyMockMaker.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/org/mockito/internal/configuration/plugins/PluginFileReader.java",
+     "incomplete parse: src/main/java/org/mockito/internal/creation/bytebuddy/MockAccess.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/MockUtil.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/collections/HashCodeAndEqualsMockWrapper.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/FieldReader.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/InstrumentationMemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/ModuleMemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/reflection/ReflectionMemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/InlineMockMaker.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/InstantiatorProvider2.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/MemberAccessor.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/MockMaker.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/MockitoPlugins.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/StackTraceCleanerProvider.java",
+     "incomplete parse: src/test/java/org/mockito/internal/configuration/plugins/PluginFileReaderTest.java",
+     "incomplete parse: src/test/java/org/mockitointegration/NoByteCodeDependenciesTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/EnabledMockingInterfaceCloneMethodTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/creation/PublicMethodInParentWithNonPublicTypeInSignatureTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/creation/api/PublicClass.java",
+     "incomplete parse: subprojects/extTest/src/test/java/org/mockitousage/plugins/switcher/MyMockMaker.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "fe571a6bbbc3133846736ea55d7f32d4185b9ba44ead6cc5b2f3fdbc89f0c1b2",
+   "routed": "498525afd3eb3a10b5ef5504764d842d576cf6c548d5019ef5ae78dde02e5807",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "mockito__mockito-3167",
+  "split": "heldout",
+  "corpus": "mockito__mockito@b6554b29ed6c",
+  "verified": {
+   "counts": {
+    "spans": 7,
+    "lines": 955,
+    "files": 6
+   },
+   "metrics": {
+    "entry_recall@1": 0.142857,
+    "entry_recall@5": 0.142857,
+    "entry_recall@20": 0.142857,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.166667,
+    "routed_coverage": 0.142857,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 43,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 83,
+    "module_lines": 13,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineBytecodeGenerator.java",
+    "lines": [
+     55,
+     71
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+    "lines": [
+     1,
+     302
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 285,
+    "module_lines": 97,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+    "lines": [
+     544,
+     571
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/bytebuddy/SubclassByteBuddyMockMaker.java",
+    "lines": [
+     1,
+     193
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 172,
+    "module_lines": 23,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/TypeSupport.java",
+    "lines": [
+     1,
+     43
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 43,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+    "lines": [
+     1,
+     218
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 186,
+    "module_lines": 40,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/util/MockUtil.java",
+    "lines": [
+     1,
+     221
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 188,
+    "module_lines": 24,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/org/mockito/internal/junit/UnnecessaryStubbingsReporter.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/UnusedStubbingReporting.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/answers/AbstractThrowsException.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsMocks.java",
+     "incomplete parse: src/test/java/org/mockito/internal/creation/AbstractMockMakerTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubsConcurrentTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsGenericDeepStubsTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsMocksTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsOptionalMocksTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/AtLeastMarksAllInvocationsVerified.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/StubbingMocksThatAreConfiguredToReturnMocksTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/deepstubs/DeepStubsWronglyReportsSerializationProblemsTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/varargs/VarargsErrorWhenCallingRealMethodTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/junitrunner/DeepStubbingWithJUnitRunnerTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/junitrunner/UnusedStubsExceptionMessageTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/serialization/DeepStubsSerializableTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/stubbing/DeepStubbingTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/verification/DescriptiveMessagesOnVerificationInOrderErrorsTest.java",
+     "incomplete parse: subprojects/inlineTest/src/test/java/org/mockitoinline/EnumMockingTest.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/org/mockito/internal/junit/UnnecessaryStubbingsReporter.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/UnusedStubbingReporting.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/answers/AbstractThrowsException.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsMocks.java",
+     "incomplete parse: src/test/java/org/mockito/internal/creation/AbstractMockMakerTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubsConcurrentTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsGenericDeepStubsTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsMocksTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsOptionalMocksTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/AtLeastMarksAllInvocationsVerified.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/StubbingMocksThatAreConfiguredToReturnMocksTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/deepstubs/DeepStubsWronglyReportsSerializationProblemsTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/varargs/VarargsErrorWhenCallingRealMethodTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/junitrunner/DeepStubbingWithJUnitRunnerTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/junitrunner/UnusedStubsExceptionMessageTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/serialization/DeepStubsSerializableTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/stubbing/DeepStubbingTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/verification/DescriptiveMessagesOnVerificationInOrderErrorsTest.java",
+     "incomplete parse: subprojects/inlineTest/src/test/java/org/mockitoinline/EnumMockingTest.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/org/mockito/internal/junit/UnnecessaryStubbingsReporter.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/UnusedStubbingReporting.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/answers/AbstractThrowsException.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsMocks.java",
+     "incomplete parse: src/test/java/org/mockito/internal/creation/AbstractMockMakerTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubsConcurrentTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsGenericDeepStubsTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsMocksTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsOptionalMocksTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/AtLeastMarksAllInvocationsVerified.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/StubbingMocksThatAreConfiguredToReturnMocksTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/deepstubs/DeepStubsWronglyReportsSerializationProblemsTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/bugs/varargs/VarargsErrorWhenCallingRealMethodTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/junitrunner/DeepStubbingWithJUnitRunnerTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/junitrunner/UnusedStubsExceptionMessageTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/serialization/DeepStubsSerializableTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/stubbing/DeepStubbingTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/verification/DescriptiveMessagesOnVerificationInOrderErrorsTest.java",
+     "incomplete parse: subprojects/inlineTest/src/test/java/org/mockitoinline/EnumMockingTest.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "05607a20ec44d470eb18d3f2220df187f5dbac35628b5f2778851e14623c8f6b",
+   "routed": "c6bdf67b0827dcccba9e8fd90a0df01a782598f8a7d778169fc9bae4bcf3dac0",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "mockito__mockito-3220",
+  "split": "heldout",
+  "corpus": "mockito__mockito@a0214364c36c",
+  "verified": {
+   "counts": {
+    "spans": 24,
+    "lines": 197,
+    "files": 9
+   },
+   "metrics": {
+    "entry_recall@1": 0.041667,
+    "entry_recall@5": 0.041667,
+    "entry_recall@20": 0.041667,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.111111,
+    "routed_coverage": 0.041667,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+    "lines": [
+     26,
+     35
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 8,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+    "lines": [
+     59,
+     65
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+    "lines": [
+     70,
+     78
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+    "lines": [
+     84,
+     126
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 36,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+    "lines": [
+     131,
+     142
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java",
+    "lines": [
+     12,
+     18
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java",
+    "lines": [
+     62,
+     68
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/PluginRegistry.java",
+    "lines": [
+     5,
+     12
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/PluginRegistry.java",
+    "lines": [
+     46,
+     53
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/PluginRegistry.java",
+    "lines": [
+     119,
+     125
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/Plugins.java",
+    "lines": [
+     4,
+     13
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 9,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/Plugins.java",
+    "lines": [
+     16,
+     22
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 3,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/configuration/plugins/Plugins.java",
+    "lines": [
+     99,
+     107
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/MockSettingsImpl.java",
+    "lines": [
+     34,
+     39
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/MockSettingsImpl.java",
+    "lines": [
+     283,
+     291
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/MockSettingsImpl.java",
+    "lines": [
+     306,
+     314
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+    "lines": [
+     18,
+     23
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+    "lines": [
+     49,
+     54
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+    "lines": [
+     73,
+     78
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+    "lines": [
+     198,
+     201
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/util/MockNameImpl.java",
+    "lines": [
+     7,
+     12
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 3,
+    "module_lines": 2,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/internal/util/MockNameImpl.java",
+    "lines": [
+     15,
+     23
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/mock/MockCreationSettings.java",
+    "lines": [
+     151,
+     154
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main/java/org/mockito/plugins/DoNotMockEnforcer.java",
+    "lines": [
+     4,
+     23
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 18,
+    "module_lines": 5,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/org/mockito/MockedStatic.java",
+     "incomplete parse: src/main/java/org/mockito/exceptions/verification/NeverWantedButInvoked.java",
+     "incomplete parse: src/main/java/org/mockito/exceptions/verification/NoInteractionsWanted.java",
+     "incomplete parse: src/main/java/org/mockito/exceptions/verification/WantedButNotInvoked.java",
+     "incomplete parse: src/main/java/org/mockito/internal/MockedStaticImpl.java",
+     "incomplete parse: src/main/java/org/mockito/internal/configuration/DefaultDoNotMockEnforcer.java",
+     "incomplete parse: src/main/java/org/mockito/internal/configuration/plugins/PluginFileReader.java",
+     "incomplete parse: src/main/java/org/mockito/internal/creation/bytebuddy/MockFeatures.java",
+     "incomplete parse: src/main/java/org/mockito/internal/exceptions/ExceptionIncludingMockitoWarnings.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/DoAnswerStyleStubbing.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/collections/HashCodeAndEqualsMockWrapper.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/DoNotMockEnforcer.java",
+     "incomplete parse: src/test/java/org/mockito/StaticMockingExperimentTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/configuration/plugins/PluginFileReaderTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsOptionalMocksTest.java",
+     "incomplete parse: src/test/java/org/mockitointegration/NoByteCodeDependenciesTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/annotation/MockInjectionUsingConstructorIssue421Test.java",
+     "incomplete parse: subprojects/extTest/src/test/java/org/mockitousage/plugins/donotmockenforcer/DoNotmockEnforcerTest.java",
+     "incomplete parse: subprojects/extTest/src/test/java/org/mockitousage/plugins/donotmockenforcer/MyDoNotMockEnforcer.java",
+     "incomplete parse: subprojects/inlineTest/src/test/java/org/mockitoinline/StaticMockTest.java"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/org/mockito/MockedStatic.java",
+     "incomplete parse: src/main/java/org/mockito/exceptions/verification/NeverWantedButInvoked.java",
+     "incomplete parse: src/main/java/org/mockito/exceptions/verification/NoInteractionsWanted.java",
+     "incomplete parse: src/main/java/org/mockito/exceptions/verification/WantedButNotInvoked.java",
+     "incomplete parse: src/main/java/org/mockito/internal/MockedStaticImpl.java",
+     "incomplete parse: src/main/java/org/mockito/internal/configuration/DefaultDoNotMockEnforcer.java",
+     "incomplete parse: src/main/java/org/mockito/internal/configuration/plugins/PluginFileReader.java",
+     "incomplete parse: src/main/java/org/mockito/internal/creation/bytebuddy/MockFeatures.java",
+     "incomplete parse: src/main/java/org/mockito/internal/exceptions/ExceptionIncludingMockitoWarnings.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/DoAnswerStyleStubbing.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/collections/HashCodeAndEqualsMockWrapper.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/DoNotMockEnforcer.java",
+     "incomplete parse: src/test/java/org/mockito/StaticMockingExperimentTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/configuration/plugins/PluginFileReaderTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsOptionalMocksTest.java",
+     "incomplete parse: src/test/java/org/mockitointegration/NoByteCodeDependenciesTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/annotation/MockInjectionUsingConstructorIssue421Test.java",
+     "incomplete parse: subprojects/extTest/src/test/java/org/mockitousage/plugins/donotmockenforcer/DoNotmockEnforcerTest.java",
+     "incomplete parse: subprojects/extTest/src/test/java/org/mockitousage/plugins/donotmockenforcer/MyDoNotMockEnforcer.java",
+     "incomplete parse: subprojects/inlineTest/src/test/java/org/mockitoinline/StaticMockTest.java"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: src/main/java/org/mockito/MockedStatic.java",
+     "incomplete parse: src/main/java/org/mockito/exceptions/verification/NeverWantedButInvoked.java",
+     "incomplete parse: src/main/java/org/mockito/exceptions/verification/NoInteractionsWanted.java",
+     "incomplete parse: src/main/java/org/mockito/exceptions/verification/WantedButNotInvoked.java",
+     "incomplete parse: src/main/java/org/mockito/internal/MockedStaticImpl.java",
+     "incomplete parse: src/main/java/org/mockito/internal/configuration/DefaultDoNotMockEnforcer.java",
+     "incomplete parse: src/main/java/org/mockito/internal/configuration/plugins/PluginFileReader.java",
+     "incomplete parse: src/main/java/org/mockito/internal/creation/bytebuddy/MockFeatures.java",
+     "incomplete parse: src/main/java/org/mockito/internal/exceptions/ExceptionIncludingMockitoWarnings.java",
+     "incomplete parse: src/main/java/org/mockito/internal/stubbing/DoAnswerStyleStubbing.java",
+     "incomplete parse: src/main/java/org/mockito/internal/util/collections/HashCodeAndEqualsMockWrapper.java",
+     "incomplete parse: src/main/java/org/mockito/plugins/DoNotMockEnforcer.java",
+     "incomplete parse: src/test/java/org/mockito/StaticMockingExperimentTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/configuration/plugins/PluginFileReaderTest.java",
+     "incomplete parse: src/test/java/org/mockito/internal/stubbing/defaultanswers/ReturnsOptionalMocksTest.java",
+     "incomplete parse: src/test/java/org/mockitointegration/NoByteCodeDependenciesTest.java",
+     "incomplete parse: src/test/java/org/mockitousage/annotation/MockInjectionUsingConstructorIssue421Test.java",
+     "incomplete parse: subprojects/extTest/src/test/java/org/mockitousage/plugins/donotmockenforcer/DoNotmockEnforcerTest.java",
+     "incomplete parse: subprojects/extTest/src/test/java/org/mockitousage/plugins/donotmockenforcer/MyDoNotMockEnforcer.java",
+     "incomplete parse: subprojects/inlineTest/src/test/java/org/mockitoinline/StaticMockTest.java"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "8d57559178dae7cd2698eca18db4ffbc0ca9614e43a6815eaaf31f6f12f120bb",
+   "routed": "355e6edc5c85d166dca7259c282acde77eeeb56bb57205c511af4f5efd576388",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ }
+]

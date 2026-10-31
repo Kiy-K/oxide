@@ -1,0 +1,6021 @@
+[
+ {
+  "task": "coder__code-server-6278",
+  "split": "dev",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 108,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.898438,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.75,
+    "utilization@1024": 0.998047,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.5,
+    "line_recall@4096": 0.472222,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998779,
+    "gold_unit_share@4096": 0.429724
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     85,
+     98
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/node/main.ts",
+    "lines": [
+     121,
+     132
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/node/main.ts",
+    "lines": [
+     126,
+     132
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/node/util.ts",
+    "lines": [
+     53,
+     88
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 35,
+    "module_lines": 5,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "lines": [
+     1,
+     12
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 9,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "lines": [
+     1,
+     14
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 9,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "lines": [
+     38,
+     83
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 41,
+    "module_lines": 0,
+    "entry_rank": 10,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "lines": [
+     78,
+     84
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 10,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 107,
+   "fanout_truncations": 7,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 230,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 34,
+     "selection: container": 2,
+     "selection: value N below floor": 23
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1022,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 33,
+     "selection: container": 2,
+     "selection: value N below floor": 23
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4091,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 18,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 21,
+     "selection: container": 2,
+     "selection: value N below floor": 23
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "738fc6c073be2974b334ce6de1cbbfc5dfd8ac9e9fdb065a233f2d26826ab962",
+   "routed": "c1b4ad2c8036c3ab2256c944462892f497dff0287f5150f3d044ff7538bd7e85",
+   "payload@256": "52e5173c74540fc0b75fb34486d4740b26f67dfa751556105f20dd356d9b7cfd",
+   "payload@1024": "917e639070c3d9c3654e4dab270c264d18130d48ba0d1f19a2def75c3ffdaa6a",
+   "payload@4096": "03cde7a29bfb7304739e4d5143593a536a2ac43024e62262a9313eec5335c2dc"
+  }
+ },
+ {
+  "task": "coder__code-server-4923",
+  "split": "dev",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 36,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.125,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 0.75,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.125,
+    "line_recall@256": 0.166667,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.949219,
+    "gold_unit_share@256": 0.625514,
+    "span_recall@1024": 0.25,
+    "line_recall@1024": 0.361111,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.989258,
+    "gold_unit_share@1024": 0.399803,
+    "span_recall@4096": 0.5,
+    "line_recall@4096": 0.722222,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.489133
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 21,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.047619,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.949219,
+    "gold_unit_share@256": 0.218107,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.989258,
+    "gold_unit_share@1024": 0.302073,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.07326
+   }
+  },
+  "gold": [
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     11,
+     17
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 2,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     22,
+     28
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     25,
+     49
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 21,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     31,
+     37
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     130,
+     134
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   },
+   {
+    "file": "src/node/cli.ts",
+    "lines": [
+     56,
+     61
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 11,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/node/cli.ts",
+    "lines": [
+     175,
+     177
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 2,
+    "module_lines": 2,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/node/cli.ts",
+    "lines": [
+     175,
+     180
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 4,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/node/cli.ts",
+    "lines": [
+     513,
+     518
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 83,
+   "fanout_truncations": 6,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 243,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 34,
+     "selection: container": 2,
+     "selection: value N below floor": 24
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1013,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 29,
+     "selection: container": 2,
+     "selection: value N below floor": 24
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4095,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 22,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 16,
+     "selection: container": 2,
+     "selection: value N below floor": 24
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "9455084840e403899bcb53207a174b23d363df7cc0d5c1a88365dad7e0b5b151",
+   "routed": "26e1da39202d939e89d69407c0bc3ee8eb60e703da50c537033d70d80cda640f",
+   "payload@256": "85b4aa520c3c552bfef27eba8c098b15d3bc9a3638e92e80ffbd7902bddde493",
+   "payload@1024": "8f85eb695d3858727f497e4617fddf86ee1cef0b3fb3f6e7ecbc9945ae93c2a4",
+   "payload@4096": "f51008e6f28f85da01658a1ba15bfb8942082e2ec256ad66390a74c955fb31ad"
+  }
+ },
+ {
+  "task": "darkreader__darkreader-7241",
+  "split": "dev",
+  "corpus": "darkreader__darkreader@991883df4d59",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 15,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.2,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.977539,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998047,
+    "gold_unit_share@4096": 0.247309
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/generators/utils/parse.ts",
+    "lines": [
+     143,
+     149
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/generators/utils/parse.ts",
+    "lines": [
+     144,
+     162
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 66,
+   "fanout_truncations": 4,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 254,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 17,
+     "selection: container": 4,
+     "selection: value N below floor": 40
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1001,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 13,
+     "selection: container": 4,
+     "selection: value N below floor": 40
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4088,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 14,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 7,
+     "selection: container": 4,
+     "selection: value N below floor": 40
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c86449df5b63d7f8661016990b3fcb8e36c0dd317b12d4e7b477f3385a5bcb4d",
+   "routed": "a68e10235fc204f4e7b2c56eb373b1c1486195f95561f431f65a18970985c372",
+   "payload@256": "35ca2055789b6b0ee9d516aab87f4d6985570fc2be55030b67367d0c5388317b",
+   "payload@1024": "e5b1177cbf6dd81a32ead921e3816bf9296960573adc8e86ac8f974e8cc6123a",
+   "payload@4096": "e00688d11ce2caea1a261cf018aa7774e80efab724212370547d0b554e9154bc"
+  }
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "split": "dev",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "verified": {
+   "counts": {
+    "spans": 9,
+    "lines": 219,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.222222,
+    "entry_recall@20": 0.777778,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.888889,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.027397,
+    "file_recall@256": 0.333333,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.661417,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.100457,
+    "file_recall@1024": 0.333333,
+    "utilization@1024": 0.982422,
+    "gold_unit_share@1024": 0.589463,
+    "span_recall@4096": 0.333333,
+    "line_recall@4096": 0.561644,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998291,
+    "gold_unit_share@4096": 0.793103
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/generators/dynamic-theme.ts",
+    "lines": [
+     1,
+     26
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 24,
+    "module_lines": 12,
+    "entry_rank": 10,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/generators/dynamic-theme.ts",
+    "lines": [
+     1,
+     81
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 74,
+    "module_lines": 12,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/generators/dynamic-theme.ts",
+    "lines": [
+     50,
+     71
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 20,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/generators/utils/parse.ts",
+    "lines": [
+     1,
+     41
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 33,
+    "module_lines": 2,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/generators/utils/parse.ts",
+    "lines": [
+     140,
+     161
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 18,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/utils/url.ts",
+    "lines": [
+     1,
+     21
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 4,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/utils/url.ts",
+    "lines": [
+     32,
+     61
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 5,
+    "entry_rank": 11,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/utils/url.ts",
+    "lines": [
+     90,
+     151
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 51,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/utils/url.ts",
+    "lines": [
+     120,
+     141
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 139,
+   "fanout_truncations": 6,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 254,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 39,
+     "selection: container": 2,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1006,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 38,
+     "selection: container": 2,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4089,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 17,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 26,
+     "selection: container": 2,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "2de33d149eef39cd638d1261c5695127dba80934ab2319b78a35b65537ee7e9b",
+   "routed": "fad3f47f1b4e2021f0c02daa17390df7b35efae7587c977839f2b0c2a6fa4c6e",
+   "payload@256": "d59c804bccd53f90b40ebfc6335750213fd2b587c8d8cf77c44e817c98f04804",
+   "payload@1024": "7b64cfce433108e0c1537d2b35a9ff716b9d729bfce59c1df0685d0d5568a953",
+   "payload@4096": "7240d42178d7a8153639450b768a5084abe84040ee93e42bf0ae442b6b6b7f33"
+  }
+ },
+ {
+  "task": "ts-exact-versionedstore",
+  "split": "dev",
+  "corpus": "fixture:ts_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 16,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 1.0,
+    "line_recall@256": 1.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 1.0,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.3125,
+    "gold_unit_share@1024": 0.84375,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.078125,
+    "gold_unit_share@4096": 0.84375
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/cache/versioned_store.ts",
+    "lines": [
+     6,
+     25
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 16,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 9,
+   "candidates": 9,
+   "deferred": 6,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 1,
+    "header_entities": 0,
+    "omissions": {
+     "packing: budget": 3,
+     "selection: container": 1,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 320,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 1,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 320,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 1,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "5f2d170a714006f6b64012d86136853e4830f8a0b66094a62882797e3378bcdf",
+   "routed": "160a5315241ce00a512de0079cf3bf9aac4cee473d45bca4eefe43e4537f5245",
+   "payload@256": "7390ffdb1d9439b12cb5162e81433ea702433a042423932321dabc365ac1905d",
+   "payload@1024": "9e295175c2384edb0565518a409a007ccd069a0a5a9bf3d827286f44853cb5d9",
+   "payload@4096": "9e295175c2384edb0565518a409a007ccd069a0a5a9bf3d827286f44853cb5d9"
+  }
+ },
+ {
+  "task": "ts-semantic-backoff",
+  "split": "dev",
+  "corpus": "fixture:ts_repo",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 26,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.5,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.5,
+    "line_recall@256": 0.423077,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.735178,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.978516,
+    "gold_unit_share@1024": 0.427146,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.244629,
+    "gold_unit_share@4096": 0.427146
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/net/retry.ts",
+    "lines": [
+     11,
+     22
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   },
+   {
+    "file": "src/net/client.ts",
+    "lines": [
+     12,
+     27
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 16,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 33,
+   "candidates": 33,
+   "deferred": 4,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 253,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 12,
+     "selection: container": 6,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1002,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 6,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 1002,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 6,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "9f856c95b6fb7a7b9a47235916647c1c7333f066a3cc5d6949d147977fbb0132",
+   "routed": "afb9675b1fd701b5bb09edff6eeb187479c3ea7d9ca58f59acb5f5e2369835ac",
+   "payload@256": "37bab519c525c2f0c94967ffbade68153b6fb2cd8ee7c8c652f5be5f18cfed6a",
+   "payload@1024": "835af31c6b676a0a83a709d69b9033c0d1952bea0d0da93c21b9faa7d5f69a2b",
+   "payload@4096": "835af31c6b676a0a83a709d69b9033c0d1952bea0d0da93c21b9faa7d5f69a2b"
+  }
+ },
+ {
+  "task": "ts-crossfile-decode-jwt",
+  "split": "dev",
+  "corpus": "fixture:ts_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 5,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 1.0,
+    "line_recall@256": 1.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.890625,
+    "gold_unit_share@256": 0.504386,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.332031,
+    "gold_unit_share@1024": 0.338235,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.083008,
+    "gold_unit_share@4096": 0.338235
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/auth/service.ts",
+    "lines": [
+     9,
+     13
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 9,
+   "candidates": 9,
+   "deferred": 4,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 228,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 1,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 340,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 1,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 340,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 1,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c16735b91e2b8fb67bdbf3193a814a2067d8de5ef231d7188b32f37973072496",
+   "routed": "e7b6bc823ff4408172f0685ab57002279f3b4b66111ab327387979b900770b67",
+   "payload@256": "76b77b0dc38912dbaa90fc27227d7736ccde5c42ccb2fe1359e5d73e15344759",
+   "payload@1024": "bd6544fe5755df374a90f9a3215c0bb72b39bb38f73bb33a7421dd86f58f2179",
+   "payload@4096": "bd6544fe5755df374a90f9a3215c0bb72b39bb38f73bb33a7421dd86f58f2179"
+  }
+ },
+ {
+  "task": "tsx-button-component",
+  "split": "dev",
+  "corpus": "fixture:ts_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 7,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 1.0,
+    "line_recall@256": 1.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.5625,
+    "gold_unit_share@256": 0.604167,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.140625,
+    "gold_unit_share@1024": 0.604167,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.035156,
+    "gold_unit_share@4096": 0.604167
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/ui/Button.tsx",
+    "lines": [
+     7,
+     13
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 6,
+   "candidates": 6,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 144,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 2,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": []
+   },
+   "1024": {
+    "used": 144,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 2,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": []
+   },
+   "4096": {
+    "used": 144,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 2,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": []
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "081e55f160eabd501b48af4fd04c7f161c8cc70624a899d31be739f5c1464b1e",
+   "routed": "6393f19305ee4f36816476ee1d991c83d0ac0d72655c06ba56326bfee01dbe18",
+   "payload@256": "521c18e1eeb5daa54eabed53f3448432c82fd1cff21575d8e7a5c0a596888344",
+   "payload@1024": "521c18e1eeb5daa54eabed53f3448432c82fd1cff21575d8e7a5c0a596888344",
+   "payload@4096": "521c18e1eeb5daa54eabed53f3448432c82fd1cff21575d8e7a5c0a596888344"
+  }
+ },
+ {
+  "task": "ts-related-test-button-click",
+  "split": "dev",
+  "corpus": "fixture:ts_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 16,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.339844,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.363281,
+    "gold_unit_share@1024": 0.766129,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.09082,
+    "gold_unit_share@4096": 0.766129
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/ui/__tests__/Button.test.tsx",
+    "lines": [
+     1,
+     18
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 16,
+    "module_lines": 16,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, too large"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 4,
+   "candidates": 4,
+   "deferred": 2,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 87,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 1,
+    "header_entities": 0,
+    "omissions": {
+     "packing: too large": 1,
+     "selection: container": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 372,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 372,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "selection: container": 1,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "11cb2ff317e5858bca0cd2114c925eb9fa81d1c59d360bc7451f1dae5d932777",
+   "routed": "c8df1df169cfb2f5711cabcf6f0a0dd97f39a0accb98a3f0057d33ee7e5d3263",
+   "payload@256": "2053fc44ff124a5e7a849d8ca68bb8cc66cb36e6b7b08c492ec4bcd84caca8da",
+   "payload@1024": "51e2737c6dfd9514c2c736ac22f745df4e6bb294d223d4738ca3ec84b16df480",
+   "payload@4096": "51e2737c6dfd9514c2c736ac22f745df4e6bb294d223d4738ca3ec84b16df480"
+  }
+ },
+ {
+  "task": "ts-default-policy-const",
+  "split": "dev",
+  "corpus": "fixture:ts_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 1,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 1.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 1.0,
+    "line_recall@256": 1.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.188235,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.838867,
+    "gold_unit_share@1024": 0.055879,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.209717,
+    "gold_unit_share@4096": 0.055879
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/net/retry.ts",
+    "lines": [
+     24,
+     24
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 1,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 28,
+   "candidates": 28,
+   "deferred": 3,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 255,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 6,
+     "selection: container": 6,
+     "selection: value N below floor": 10
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 859,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 2,
+    "omissions": {
+     "selection: container": 6,
+     "selection: value N below floor": 10
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 859,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 2,
+    "omissions": {
+     "selection: container": 6,
+     "selection: value N below floor": 10
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "817c18b3847f2ee95615bd5112732915547130f4076e5ddfc1dc731f8ba6b47f",
+   "routed": "01d9b4e9926c1fa4f0f1bca6fd45206fef5beaa8a374e3131237ad55b4ccbbc9",
+   "payload@256": "7d3a2d204f4f5145acf2005306e2afe79f0723813a0022af782d7fdcda1867eb",
+   "payload@1024": "89947198f35a353c5eb72336b3220b984de065964816992e871af7dae040e7a7",
+   "payload@4096": "89947198f35a353c5eb72336b3220b984de065964816992e871af7dae040e7a7"
+  }
+ },
+ {
+  "task": "ts-implementors-retrypolicy",
+  "split": "dev",
+  "corpus": "fixture:ts_repo",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 25,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.333333,
+    "line_recall@256": 0.44,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.788235,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.871094,
+    "gold_unit_share@1024": 0.401345,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.258789,
+    "gold_unit_share@4096": 0.337736
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/net/retry.ts",
+    "lines": [
+     11,
+     22
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/net/policies.ts",
+    "lines": [
+     3,
+     13
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   },
+   {
+    "file": "src/net/policies.ts",
+    "lines": [
+     15,
+     21
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 28,
+   "candidates": 28,
+   "deferred": 3,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 255,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 12,
+     "selection: container": 6,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 892,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 4,
+    "omissions": {
+     "selection: container": 6,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 1060,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 3,
+    "omissions": {
+     "selection: container": 6,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "2b5d6be70b53e4c9deb5ad345454bfd00a7bc61ccf143964e653cb853e503c21",
+   "routed": "7aad5a0bc66ac3cfa7ff03ec72b820451bd1f717bf283d5c03b738b3dd493d2d",
+   "payload@256": "349f44d8d80b86f0b9e52bf3abe10c23bea10c663d6832d560e3399ffbb664ef",
+   "payload@1024": "b99e5dd9585850c844317168860cbed7f49cc2745c6d330bc9d5a8ee8e8acb28",
+   "payload@4096": "ed51a8989f545dc6aac92fe19b2394945de72151da97bd15dabdf4526cb0105f"
+  }
+ },
+ {
+  "task": "ts-callers-shouldretry",
+  "split": "dev",
+  "corpus": "fixture:ts_repo",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 3,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.142857,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.786133,
+    "gold_unit_share@1024": 0.080745,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.196533,
+    "gold_unit_share@4096": 0.080745
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/net/policies.ts",
+    "lines": [
+     29,
+     31
+    ],
+    "class": "ast",
+    "verified": true,
+    "code_lines": 3,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 23,
+   "candidates": 23,
+   "deferred": 7,
+   "fanout_truncations": 0,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 253,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 0,
+    "omissions": {
+     "packing: budget": 6,
+     "selection: container": 3,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 805,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 2,
+    "omissions": {
+     "selection: container": 3,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 805,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 2,
+    "omissions": {
+     "selection: container": 3,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "554d2b18e0139fb3104a5da0dc44949c5ed09b94e88336584f15694caa602786",
+   "routed": "bdc7ed5e1f27ecaef99908d83210d632b2065d21f6f7203bbd858b33c10d19ac",
+   "payload@256": "f30b6b4000e662f2d7cac7a4b0eb8172397e2da2c1bdbf2c9b049d775054481e",
+   "payload@1024": "3d9173394b0a473fc7b82cd784ccd72264394782580982b88c57c5e73fed7554",
+   "payload@4096": "3d9173394b0a473fc7b82cd784ccd72264394782580982b88c57c5e73fed7554"
+  }
+ },
+ {
+  "task": "microsoft__vscode-153121",
+  "split": "dev",
+  "corpus": "microsoft__vscode@1a599e2d1792",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 43,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.4,
+    "entry_recall@5": 0.6,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.878906,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.023256,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.998047,
+    "gold_unit_share@1024": 0.064579,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.992432,
+    "gold_unit_share@4096": 0.553506
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 14,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.111111,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.878906,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.998047,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.785714,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.992432,
+    "gold_unit_share@4096": 0.054613
+   }
+  },
+  "gold": [
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     59,
+     64
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 13,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     66,
+     78
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     411,
+     417
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     411,
+     430
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 18,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     485,
+     498
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 14,
+    "module_lines": 3,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     489,
+     497
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 207,
+   "fanout_truncations": 12,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 225,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 26,
+     "packing: too large": 1,
+     "selection: container": 2,
+     "selection: value N below floor": 33
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1022,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 22,
+     "selection: container": 2,
+     "selection: value N below floor": 33
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4065,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 13,
+     "selection: container": 2,
+     "selection: value N below floor": 33
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "7a8e29bb17a6d97cfb4db0ba9d9d3a053c9e793b00f6b34e27b0a346e1a16b12",
+   "routed": "35107e37c16c96732b7f1a79dc442b3bbb5ec1b4f1a919b43a6371adcbb24659",
+   "payload@256": "de8cd8e0316895aaa2d110967d754cdd9856ae8faa910f1c9d293e34afaf33af",
+   "payload@1024": "66937171a09fbb3d177b19983d063da224c4b9f6c9d4775a5a93baa4983a1046",
+   "payload@4096": "cff568c9b93e23ffba1348866810336b454659ed6d32fe5b11176f32b381627d"
+  }
+ },
+ {
+  "task": "microsoft__vscode-148971",
+  "split": "dev",
+  "corpus": "microsoft__vscode@2dff5deef71f",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 46,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.166667,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.976562,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.984375,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999023,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "lines": [
+     120,
+     160
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 39,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "lines": [
+     130,
+     159
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 29,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "lines": [
+     265,
+     275
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "lines": [
+     267,
+     272
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 388,
+   "fanout_truncations": 32,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 250,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 27,
+     "packing: too large": 1,
+     "selection: container": 4,
+     "selection: value N below floor": 28
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1008,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 23,
+     "selection: container": 4,
+     "selection: value N below floor": 28
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4092,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 15,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 20,
+     "selection: container": 4,
+     "selection: value N below floor": 28
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "004dd045cb7ab5ce92342cca98a1e6399ed93859c1f2e0f01b96d42b1b5da669",
+   "routed": "043e8867e16f53b59c83982dbea5a831592159ab6023cf347eb482bc54de7899",
+   "payload@256": "09faffbfbcc951905c0767891f3dfdca77105f526d5c48df960b4942c4b7272a",
+   "payload@1024": "f16f830439c379dc4cc2f602324cca59bdbb20c15bdd499a7323c3f982027aea",
+   "payload@4096": "0b0cd904419da1aea0daad22c19c94499bd0d36b748a20e481a2ef8ca220245d"
+  }
+ },
+ {
+  "task": "microsoft__vscode-177084",
+  "split": "dev",
+  "corpus": "microsoft__vscode@384b03f26310",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 12,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.166667,
+    "file_recall@256": 0.5,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.648438,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.166667,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.998047,
+    "gold_unit_share@1024": 0.162427,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.25,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.98584,
+    "gold_unit_share@4096": 0.098564
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 2,
+    "lines": 36,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.222222,
+    "file_recall@256": 1.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.648438,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.222222,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.998047,
+    "gold_unit_share@1024": 0.162427,
+    "span_recall@4096": 0.5,
+    "line_recall@4096": 0.944444,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.98584,
+    "gold_unit_share@4096": 0.253591
+   }
+  },
+  "gold": [
+   {
+    "file": "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts",
+    "lines": [
+     451,
+     457
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, too large",
+     "1024": "budget: omitted, too large",
+     "4096": "budget: omitted, too large"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+    "lines": [
+     1,
+     30
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 25,
+    "module_lines": 11,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+    "lines": [
+     205,
+     211
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 2,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+    "lines": [
+     205,
+     220
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 11,
+    "module_lines": 2,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 302,
+   "fanout_truncations": 29,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 31,
+     "packing: too large": 2,
+     "selection: container": 3,
+     "selection: value N below floor": 25
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1022,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 31,
+     "packing: too large": 1,
+     "selection: container": 3,
+     "selection: value N below floor": 25
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4038,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 24,
+    "header_entities": 2,
+    "omissions": {
+     "packing: too large": 1,
+     "selection: container": 3,
+     "selection: item cap N": 11,
+     "selection: value N below floor": 25
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "27131e03adee0da2b28048c1518e7ae2d7ea53c9509cf549a6946901a296b301",
+   "routed": "d172ccd942681f7eaaa15badc8840db65e05ed1faff9ffde43e0a67258ba4e54",
+   "payload@256": "b133201e36e95f3e5af476db4e72bfcf9a7b3e667a49f0c67069fdf1708065f6",
+   "payload@1024": "a6f5b1261130f681c83daef0d23561bb101c2e7ccac8a5126d707347f6bade7c",
+   "payload@4096": "13adc4873781edad5ec39b2437cc8bc57a9de7916e9768014184c5a079e10b0f"
+  }
+ },
+ {
+  "task": "microsoft__vscode-160342",
+  "split": "dev",
+  "corpus": "microsoft__vscode@440e61ffab2b",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 37,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.333333,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.333333,
+    "line_recall@256": 0.108108,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.941406,
+    "gold_unit_share@256": 0.751037,
+    "span_recall@1024": 1.0,
+    "line_recall@1024": 1.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.959961,
+    "gold_unit_share@1024": 0.651068,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.986084,
+    "gold_unit_share@4096": 0.154989
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+    "lines": [
+     105,
+     145
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+    "lines": [
+     108,
+     113
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+    "lines": [
+     334,
+     336
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 3,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 108,
+   "fanout_truncations": 12,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 241,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 25,
+     "selection: container": 2,
+     "selection: value N below floor": 34
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 983,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 21,
+     "selection: container": 2,
+     "selection: value N below floor": 34
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4039,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 12,
+     "selection: container": 2,
+     "selection: value N below floor": 34
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "f83ce5591e5bcf658a2a510e2cfd3c20d620860abcfdd49ef7edda4f891fb0fa",
+   "routed": "cbc852fee7e8a8fbf7f61927e4e0307fe1dc4669593a8a59e809bb55e0af6897",
+   "payload@256": "872dd0ffb072a69f5c5f22f051cb6827e23d8b382bf3ce1e2d8c53b8fd4285d3",
+   "payload@1024": "a6f8b245782a271d3a79a4a258f33b904900eb84b8561c28bcdfae44be822cf7",
+   "payload@4096": "62443762d8b5cc00d156e8fac056e27a623a299b96e3854887284735efca30f9"
+  }
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "split": "dev",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "verified": {
+   "counts": {
+    "spans": 9,
+    "lines": 108,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.111111,
+    "entry_recall@20": 0.444444,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 0.25,
+    "routed_coverage": 0.555556,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.25,
+    "utilization@256": 0.914062,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.25,
+    "utilization@1024": 0.978516,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.027778,
+    "file_recall@4096": 0.25,
+    "utilization@4096": 0.999268,
+    "gold_unit_share@4096": 0.041779
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 2,
+    "lines": 40,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.914062,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.978516,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.125,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999268,
+    "gold_unit_share@4096": 0.041779
+   }
+  },
+  "gold": [
+   {
+    "file": "src/vs/base/common/charCode.ts",
+    "lines": [
+     1,
+     30
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 28,
+    "module_lines": 9,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/config/editorOptions.ts",
+    "lines": [
+     575,
+     581
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/config/editorOptions.ts",
+    "lines": [
+     4637,
+     4644
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     500,
+     505
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     621,
+     626
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 3,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     621,
+     650
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 26,
+    "module_lines": 5,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     950,
+     998
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     998,
+     1012
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     1005,
+     1010
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     1049,
+     1051
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 2,
+    "module_lines": 0,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/monaco.d.ts",
+    "lines": [
+     3226,
+     3232
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 148,
+   "fanout_truncations": 10,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 234,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 47,
+     "packing: too large": 1,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1002,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 45,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4093,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 20,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 31,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "10ad11f7d0518c0cb36e3ecd0a9ae463039f69289903de6ee51d886bcd3ff369",
+   "routed": "0433068385723518fd45a71e1cccd34f18cd7920359c5928ddcdad2eb49113ce",
+   "payload@256": "901d80684b92d8330cf247767832ea84d447e93c5465f8c42df5849c4cee470f",
+   "payload@1024": "b058350198b42f6ac57ecfcc778cb07f673199457ae436506ebfe67d63efd3e2",
+   "payload@4096": "9e9fa865f1c3ce38c566523ce416ff879faacaa2daf3be7002910a2aef24ea25"
+  }
+ },
+ {
+  "task": "microsoft__vscode-149380",
+  "split": "dev",
+  "corpus": "microsoft__vscode@5b8bd1c45ca3",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 4,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.333333,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.93457,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.770264,
+    "gold_unit_share@4096": 0.496355
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 3,
+    "lines": 22,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.333333,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.93457,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.770264,
+    "gold_unit_share@4096": 0.496355
+   }
+  },
+  "gold": [
+   {
+    "file": "src/vs/workbench/contrib/debug/node/terminals.ts",
+    "lines": [
+     110,
+     127
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 16,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/debug/node/terminals.ts",
+    "lines": [
+     120,
+     125
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/debug/node/terminals.ts",
+    "lines": [
+     148,
+     151
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/debug/node/terminals.ts",
+    "lines": [
+     155,
+     162
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 51,
+   "candidates": 51,
+   "deferred": 317,
+   "fanout_truncations": 20,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 253,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 4,
+     "packing: too large": 1,
+     "selection: container": 4,
+     "selection: value N below floor": 38
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 957,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 2,
+     "selection: container": 4,
+     "selection: value N below floor": 38
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 3155,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 4,
+    "omissions": {
+     "selection: container": 4,
+     "selection: value N below floor": 38
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "1075274d4ef3b7a60fb9e92113d6caeb2f31f668e7c1e48234b9998042677cea",
+   "routed": "2b70d976f436ff181abf79f2fb9c2776c569ae7cda910aa523012fe19ed148bb",
+   "payload@256": "7ea205ff1230f14d6e561958c08003d7d5e7b142b7bf42fc0da43106b61e7f79",
+   "payload@1024": "401defc07d6827a0a6ded56eac4a8ee6c265a9c62fe91e534eb971ea123edd81",
+   "payload@4096": "7e8d41e0cde77a9ad719e30dcb2f659c8df6e9b42a6359ea36e2401a9bdbd34c"
+  }
+ },
+ {
+  "task": "microsoft__vscode-135805",
+  "split": "dev",
+  "corpus": "microsoft__vscode@7d8f55ebb1b7",
+  "verified": null,
+  "unverified": {
+   "counts": {
+    "spans": 5,
+    "lines": 47,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/vs/editor/common/config/editorOptions.ts",
+    "lines": [
+     263,
+     271
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/multicursor/multicursor.ts",
+    "lines": [
+     68,
+     89
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/multicursor/multicursor.ts",
+    "lines": [
+     70,
+     76
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/multicursor/multicursor.ts",
+    "lines": [
+     118,
+     139
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/multicursor/multicursor.ts",
+    "lines": [
+     120,
+     126
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": true,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 15,
+   "fanout_truncations": 1,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 15,
+     "selection: value N below floor": 49
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 15,
+     "selection: value N below floor": 49
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 15,
+     "selection: value N below floor": 49
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+   "routed": "95691b3d5e78dda15cbf26320bf329dcd9c923066820afa0f163b24edb334fb4",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "microsoft__vscode-153857",
+  "split": "dev",
+  "corpus": "microsoft__vscode@88ffbc7a7a81",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 46,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.833333,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.957031,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.992188,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.995605,
+    "gold_unit_share@4096": 0.503923
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     146,
+     150
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 13,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     221,
+     228
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     258,
+     272
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     271,
+     278
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     287,
+     291
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     318,
+     325
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 288,
+   "fanout_truncations": 18,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 245,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 24,
+     "packing: too large": 1,
+     "selection: container": 5,
+     "selection: value N below floor": 30
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1016,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 21,
+     "selection: container": 5,
+     "selection: value N below floor": 30
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4078,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 14,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 9,
+     "selection: container": 5,
+     "selection: value N below floor": 30
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "fd97d3ed02d35b0fae372062d460716ece07c2ea9cb965f31106ffd5ab058427",
+   "routed": "ece566e8f05e96af1b1967e09a44fcdac41d2062f51cbae40600cf3aaf848851",
+   "payload@256": "32e2b22ace45083279af9698f1bae57b025a8fc1abaa218680f88865af228091",
+   "payload@1024": "f8228b47cc2a5688e6b651175b411d0f41c3345d43882a55d7bce74c4095bfd2",
+   "payload@4096": "84affc8b46e76ad5028cc1b7b53a7abc7907bd8045a16cedb5f858ab20f878e7"
+  }
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "split": "dev",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "verified": {
+   "counts": {
+    "spans": 18,
+    "lines": 147,
+    "files": 6
+   },
+   "metrics": {
+    "entry_recall@1": 0.111111,
+    "entry_recall@5": 0.166667,
+    "entry_recall@20": 0.611111,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.833333,
+    "routed_coverage": 0.944444,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.020408,
+    "file_recall@256": 0.333333,
+    "utilization@256": 0.964844,
+    "gold_unit_share@256": 0.809717,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.231293,
+    "file_recall@1024": 0.333333,
+    "utilization@1024": 0.990234,
+    "gold_unit_share@1024": 0.783037,
+    "span_recall@4096": 0.333333,
+    "line_recall@4096": 0.585034,
+    "file_recall@4096": 0.666667,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.550049
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 53,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.111111,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.964844,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.990234,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.22583
+   }
+  },
+  "gold": [
+   {
+    "file": "src/vs/editor/common/controller/cursor.ts",
+    "lines": [
+     531,
+     537
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "lines": [
+     14,
+     20
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "lines": [
+     75,
+     82
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "lines": [
+     136,
+     144
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorDeleteOperations.ts",
+    "lines": [
+     122,
+     128
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     439,
+     445
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 15,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     498,
+     528
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     524,
+     549
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 24,
+    "module_lines": 0,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     548,
+     554
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     551,
+     615
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 53,
+    "module_lines": 0,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     560,
+     565
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     570,
+     580
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     612,
+     625
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     617,
+     626
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     794,
+     802
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     838,
+     846
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorWordOperations.ts",
+    "lines": [
+     384,
+     390
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/modes/languageConfiguration.ts",
+    "lines": [
+     293,
+     311
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 3,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/modes/languageConfiguration.ts",
+    "lines": [
+     294,
+     310
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 2,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 241,
+   "fanout_truncations": 17,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 247,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 32,
+     "selection: value N below floor": 28
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1014,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 27,
+     "selection: value N below floor": 28
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4096,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 18,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 16,
+     "selection: value N below floor": 28
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "879a696bce21aed322d63f493d0f893fa8e6501c3c3d15db053a3b0423274d74",
+   "routed": "b358a595960cb32541a05ff18815c406e5a1e3c9fb111ece26c34ecdebe6a293",
+   "payload@256": "0cc6b348beeee4e0786de93ef36c81b03449651e4fd23e54ed54c74eb967849c",
+   "payload@1024": "b6506d2b4b03f994bffed52eaa91f9125aaec8686fc3589c35de3a4eae0a4c99",
+   "payload@4096": "b105b62472bf8547a9b2e66c732d2459dc79929873c5b1560362d4a655fb5be2"
+  }
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "split": "dev",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "verified": {
+   "counts": {
+    "spans": 9,
+    "lines": 59,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.444444,
+    "entry_recall@20": 0.555556,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.888889,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.033898,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.996094,
+    "gold_unit_share@1024": 0.327451,
+    "span_recall@4096": 0.333333,
+    "line_recall@4096": 0.40678,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998779,
+    "gold_unit_share@4096": 0.667807
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 35,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.25,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.028571,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.996094,
+    "gold_unit_share@1024": 0.052941,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998779,
+    "gold_unit_share@4096": 0.367392
+   }
+  },
+  "gold": [
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "lines": [
+     56,
+     61
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "lines": [
+     99,
+     104
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 10,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "lines": [
+     136,
+     141
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "lines": [
+     136,
+     180
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 35,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "lines": [
+     164,
+     169
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "lines": [
+     44,
+     49
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "lines": [
+     393,
+     408
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "lines": [
+     550,
+     575
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 21,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "lines": [
+     558,
+     564
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "lines": [
+     566,
+     572
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 166,
+   "fanout_truncations": 21,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 47,
+     "packing: too large": 1,
+     "selection: container": 1,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1020,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 8,
+    "omissions": {
+     "packing: budget": 41,
+     "selection: container": 1,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4091,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 42,
+     "selection: container": 1,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "6ae9312c543c525448ebed260820e272388187822c67b8ece0842d16fad603ae",
+   "routed": "3619f8e40ab791cbadfadc85e77c8b2b6057db208ac6d68dcda60ea45cb777ca",
+   "payload@256": "617b26a9a535fa7ee8102dbf841e6083e7cd8093c77e779024fa6a56808f4a1e",
+   "payload@1024": "e0339ef44a9e932965dfe633713cc230eba14e5047f4a066f0d4371ecea6ec1d",
+   "payload@4096": "9912361990b8c5d12ea3c072c37daa280b9da92f2e9aa661490b4cf79b29a7ae"
+  }
+ },
+ {
+  "task": "microsoft__vscode-189223",
+  "split": "dev",
+  "corpus": "microsoft__vscode@9a281018181d",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 104,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.2,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.019231,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.890625,
+    "gold_unit_share@256": 0.701754,
+    "span_recall@1024": 0.4,
+    "line_recall@1024": 0.634615,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.969727,
+    "gold_unit_share@1024": 0.84995,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.986572,
+    "gold_unit_share@4096": 0.428359
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "lines": [
+     1,
+     16
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 15,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, too large",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "lines": [
+     31,
+     53
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "lines": [
+     55,
+     111
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 51,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "lines": [
+     113,
+     126
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "lines": [
+     127,
+     132
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 464,
+   "fanout_truncations": 39,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 228,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 18,
+     "packing: too large": 1,
+     "selection: container": 3,
+     "selection: value N below floor": 39
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 993,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 17,
+     "selection: container": 3,
+     "selection: value N below floor": 39
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4041,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 17,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 1,
+     "selection: container": 3,
+     "selection: value N below floor": 39
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "27307d86ad84861dfc7a37ccea00e58a7dfefe2abf980abe092639573399d4a8",
+   "routed": "2592cc5d7bc443e62fd96fe757f4b2703258ffb469c3c711344617f40ade976f",
+   "payload@256": "0e4e2ccc675c601f6120149f64c01f31718c2d92e1c62336c11aba2ebf23dc8d",
+   "payload@1024": "f5fab055089d5566a830ed0c934d7983f5d797ea57ba5a9f9bc9697a5009f036",
+   "payload@4096": "be4f622b639eba0b43083b40e6efa9f8c675893392434535444f4a302f229a3a"
+  }
+ },
+ {
+  "task": "microsoft__vscode-135197",
+  "split": "dev",
+  "corpus": "microsoft__vscode@a993ada9300a",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 9,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.917969,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.5,
+    "line_recall@4096": 0.666667,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.995117,
+    "gold_unit_share@4096": 0.264475
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 46,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.021739,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.917969,
+    "gold_unit_share@256": 0.434043,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.021739,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.099707,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.995117,
+    "gold_unit_share@4096": 0.264475
+   }
+  },
+  "gold": [
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "lines": [
+     423,
+     425
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 3,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     554,
+     609
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 46,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     598,
+     604
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 321,
+   "fanout_truncations": 25,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 235,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 31,
+     "selection: value N below floor": 30
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1023,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 29,
+     "selection: value N below floor": 30
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4076,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 15,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 17,
+     "selection: value N below floor": 30
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "cdcc5ad2161423fdb2183faa9c4b3b4d12f83e97512aa4ceeeeb72ae834481bc",
+   "routed": "abfc1dfd479889f323b4d4b2bf952b21ea3873cedc2b26fb9d06fd2fe11707bb",
+   "payload@256": "397adf94ec7fbb2057e95a2c29560e4bcab5ea92eabf517e08c2b1fe644964cf",
+   "payload@1024": "33c23185d20181547c327dc6a3a71d8bf984594dcd2f520d78536da072a04a20",
+   "payload@4096": "848d31725bef2540ce2745537274aec654192e2db50e2700ea794df70ff51eca"
+  }
+ },
+ {
+  "task": "microsoft__vscode-109750",
+  "split": "dev",
+  "corpus": "microsoft__vscode@cf4b5a703f58",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 26,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.142857,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.839844,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.995117,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.97876,
+    "gold_unit_share@4096": 0.118234
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 2,
+    "lines": 13,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.839844,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.076923,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.995117,
+    "gold_unit_share@1024": 0.058881,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.076923,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.97876,
+    "gold_unit_share@4096": 0.014966
+   }
+  },
+  "gold": [
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "lines": [
+     144,
+     150
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 4,
+    "module_lines": 1,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "lines": [
+     166,
+     175
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "lines": [
+     223,
+     250
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "lines": [
+     227,
+     235
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "lines": [
+     240,
+     245
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 373,
+   "fanout_truncations": 35,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 215,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 1,
+    "header_entities": 0,
+    "omissions": {
+     "packing: budget": 31,
+     "selection: value N below floor": 32
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1019,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 23,
+     "selection: value N below floor": 32
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4009,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 25,
+    "header_entities": 2,
+    "omissions": {
+     "selection: item cap N": 8,
+     "selection: value N below floor": 32
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "b3d8d47573c2f15e3e0aa208fa2e924b2a359a996ba11d3b93cb22f6a39a4808",
+   "routed": "b3a3c6822399be827e341acd80b468d00183005ff79436f69db9f0c652fde730",
+   "payload@256": "98fe59ed02fbb42c821d30c4dc08b4a09b992abe8c60a5eb05d4650cbf75ba98",
+   "payload@1024": "5e17248a881e36f25f4a56a9711174dd71f5a421b815f145c58c756fad6656f3",
+   "payload@4096": "7bacf99f9fdb8f4b5ab6a33081aa7ccb1a6cfa2092d32964882c92cf0ba89703"
+  }
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "split": "dev",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "verified": {
+   "counts": {
+    "spans": 10,
+    "lines": 126,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.2,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 0.7,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.015873,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.902344,
+    "gold_unit_share@256": 0.770563,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.015873,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.975586,
+    "gold_unit_share@1024": 0.178178,
+    "span_recall@4096": 0.5,
+    "line_recall@4096": 0.650794,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.995361,
+    "gold_unit_share@4096": 0.531028
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     765,
+     797
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 30,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     770,
+     775
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     789,
+     794
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     812,
+     825
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": 15,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     814,
+     820
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 15,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     851,
+     908
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 51,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     868,
+     873
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     898,
+     904
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     918,
+     924
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     918,
+     950
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 31,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 216,
+   "fanout_truncations": 20,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 231,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 47,
+     "selection: value N below floor": 14
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 999,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 8,
+    "omissions": {
+     "packing: budget": 35,
+     "selection: value N below floor": 14
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4077,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 14,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 33,
+     "selection: value N below floor": 14
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "e93ceba705d3a5b8af953543528dadd402f48ccfce3ab64ca708d7b260bf2a88",
+   "routed": "b5ca5e4632ae053089fa4e689b6ab4d0fc36d943337c6135f66a60affcc06b4a",
+   "payload@256": "994cf6175fad41f2d5520cbd932a2a323208465ee5bd5526dbf7afaa00159172",
+   "payload@1024": "b5e076eb9b8a0603a8cf889d25cf7968614694f3c4d7c4bbe34a3b5afd1787cb",
+   "payload@4096": "a992c7504f2be8fc809502937128095f06f7b29116674e29e2997b57415ad8c3"
+  }
+ }
+]

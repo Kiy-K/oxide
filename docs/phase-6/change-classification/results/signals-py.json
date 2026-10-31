@@ -1,0 +1,491 @@
+[
+ {
+  "task": "py-exact-retrypolicy",
+  "corpus": "fixture:py_repo",
+  "gold": [
+   "oxidepy/retry.py"
+  ],
+  "rank": {
+   "P0": {
+    "oxidepy/retry.py": 1
+   },
+   "P1": {
+    "oxidepy/retry.py": 1
+   },
+   "P2": {
+    "oxidepy/retry.py": 1
+   },
+   "P3": {
+    "oxidepy/retry.py": 1
+   },
+   "P4": {
+    "oxidepy/retry.py": 1
+   },
+   "P5": {
+    "oxidepy/retry.py": 3
+   }
+  }
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "corpus": "fixture:py_repo",
+  "gold": [
+   "oxidepy/http_client.py",
+   "oxidepy/retry.py"
+  ],
+  "rank": {
+   "P0": {
+    "oxidepy/http_client.py": 1,
+    "oxidepy/retry.py": 2
+   },
+   "P1": {
+    "oxidepy/http_client.py": 1,
+    "oxidepy/retry.py": 2
+   },
+   "P2": {
+    "oxidepy/http_client.py": 1,
+    "oxidepy/retry.py": null
+   },
+   "P3": {
+    "oxidepy/http_client.py": 1,
+    "oxidepy/retry.py": 2
+   },
+   "P4": {
+    "oxidepy/http_client.py": 1,
+    "oxidepy/retry.py": 2
+   },
+   "P5": {
+    "oxidepy/http_client.py": 1,
+    "oxidepy/retry.py": 6
+   }
+  }
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "corpus": "fixture:py_repo",
+  "gold": [
+   "oxidepy/auth.py"
+  ],
+  "rank": {
+   "P0": {
+    "oxidepy/auth.py": 2
+   },
+   "P1": {
+    "oxidepy/auth.py": 1
+   },
+   "P2": {
+    "oxidepy/auth.py": 1
+   },
+   "P3": {
+    "oxidepy/auth.py": 1
+   },
+   "P4": {
+    "oxidepy/auth.py": 1
+   },
+   "P5": {
+    "oxidepy/auth.py": 3
+   }
+  }
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "corpus": "fixture:py_repo",
+  "gold": [
+   "tests/test_retry.py"
+  ],
+  "rank": {
+   "P0": {
+    "tests/test_retry.py": 2
+   },
+   "P1": {
+    "tests/test_retry.py": 2
+   },
+   "P2": {
+    "tests/test_retry.py": 2
+   },
+   "P3": {
+    "tests/test_retry.py": 2
+   },
+   "P4": {
+    "tests/test_retry.py": 4
+   },
+   "P5": {
+    "tests/test_retry.py": 1
+   }
+  }
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "corpus": "fixture:py_repo",
+  "gold": [
+   "oxidepy/cache.py"
+  ],
+  "rank": {
+   "P0": {
+    "oxidepy/cache.py": 1
+   },
+   "P1": {
+    "oxidepy/cache.py": 1
+   },
+   "P2": {
+    "oxidepy/cache.py": 1
+   },
+   "P3": {
+    "oxidepy/cache.py": 1
+   },
+   "P4": {
+    "oxidepy/cache.py": 1
+   },
+   "P5": {
+    "oxidepy/cache.py": 1
+   }
+  }
+ },
+ {
+  "task": "py-implementors-notifier",
+  "corpus": "fixture:py_repo",
+  "gold": [
+   "oxidepy/notifiers.py"
+  ],
+  "rank": {
+   "P0": {
+    "oxidepy/notifiers.py": 1
+   },
+   "P1": {
+    "oxidepy/notifiers.py": 1
+   },
+   "P2": {
+    "oxidepy/notifiers.py": null
+   },
+   "P3": {
+    "oxidepy/notifiers.py": 1
+   },
+   "P4": {
+    "oxidepy/notifiers.py": 1
+   },
+   "P5": {
+    "oxidepy/notifiers.py": null
+   }
+  }
+ },
+ {
+  "task": "py-callers-should-retry",
+  "corpus": "fixture:py_repo",
+  "gold": [
+   "oxidepy/notifiers.py"
+  ],
+  "rank": {
+   "P0": {
+    "oxidepy/notifiers.py": 2
+   },
+   "P1": {
+    "oxidepy/notifiers.py": 3
+   },
+   "P2": {
+    "oxidepy/notifiers.py": null
+   },
+   "P3": {
+    "oxidepy/notifiers.py": 3
+   },
+   "P4": {
+    "oxidepy/notifiers.py": 2
+   },
+   "P5": {
+    "oxidepy/notifiers.py": null
+   }
+  }
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "gold": [
+   "seaborn/_core/plot.py",
+   "seaborn/_core/properties.py",
+   "seaborn/_core/scales.py",
+   "seaborn/categorical.py",
+   "seaborn/distributions.py",
+   "tests/test_distributions.py"
+  ],
+  "rank": {
+   "P0": {
+    "seaborn/_core/plot.py": 1,
+    "seaborn/_core/properties.py": 10,
+    "seaborn/_core/scales.py": 13,
+    "seaborn/categorical.py": 5,
+    "seaborn/distributions.py": 11,
+    "tests/test_distributions.py": 6
+   },
+   "P1": {
+    "seaborn/_core/plot.py": 6,
+    "seaborn/_core/properties.py": 9,
+    "seaborn/_core/scales.py": 4,
+    "seaborn/categorical.py": 3,
+    "seaborn/distributions.py": 15,
+    "tests/test_distributions.py": 11
+   },
+   "P2": {
+    "seaborn/_core/plot.py": 34,
+    "seaborn/_core/properties.py": 35,
+    "seaborn/_core/scales.py": 3,
+    "seaborn/categorical.py": 2,
+    "seaborn/distributions.py": 20,
+    "tests/test_distributions.py": null
+   },
+   "P3": {
+    "seaborn/_core/plot.py": 5,
+    "seaborn/_core/properties.py": 11,
+    "seaborn/_core/scales.py": 2,
+    "seaborn/categorical.py": 4,
+    "seaborn/distributions.py": 32,
+    "tests/test_distributions.py": 21
+   },
+   "P4": {
+    "seaborn/_core/plot.py": 45,
+    "seaborn/_core/properties.py": 46,
+    "seaborn/_core/scales.py": 44,
+    "seaborn/categorical.py": 1,
+    "seaborn/distributions.py": 5,
+    "tests/test_distributions.py": 24
+   },
+   "P5": {
+    "seaborn/_core/plot.py": 10,
+    "seaborn/_core/properties.py": 11,
+    "seaborn/_core/scales.py": 5,
+    "seaborn/categorical.py": 64,
+    "seaborn/distributions.py": 75,
+    "tests/test_distributions.py": 123
+   }
+  }
+ },
+ {
+  "task": "pallets__flask-5014",
+  "corpus": "pallets__flask@7ee9ceb71e86",
+  "gold": [
+   "src/flask/blueprints.py"
+  ],
+  "rank": {
+   "P0": {
+    "src/flask/blueprints.py": 13
+   },
+   "P1": {
+    "src/flask/blueprints.py": 4
+   },
+   "P2": {
+    "src/flask/blueprints.py": 1
+   },
+   "P3": {
+    "src/flask/blueprints.py": 4
+   },
+   "P4": {
+    "src/flask/blueprints.py": 11
+   },
+   "P5": {
+    "src/flask/blueprints.py": 26
+   }
+  }
+ },
+ {
+  "task": "psf__requests-6028",
+  "corpus": "psf__requests@0192aac24123",
+  "gold": [
+   "requests/adapters.py",
+   "requests/utils.py",
+   "tests/test_utils.py"
+  ],
+  "rank": {
+   "P0": {
+    "requests/adapters.py": 7,
+    "requests/utils.py": 11,
+    "tests/test_utils.py": 9
+   },
+   "P1": {
+    "requests/adapters.py": 8,
+    "requests/utils.py": 4,
+    "tests/test_utils.py": 2
+   },
+   "P2": {
+    "requests/adapters.py": 14,
+    "requests/utils.py": 27,
+    "tests/test_utils.py": 12
+   },
+   "P3": {
+    "requests/adapters.py": 4,
+    "requests/utils.py": 13,
+    "tests/test_utils.py": 12
+   },
+   "P4": {
+    "requests/adapters.py": 17,
+    "requests/utils.py": 14,
+    "tests/test_utils.py": 2
+   },
+   "P5": {
+    "requests/adapters.py": 16,
+    "requests/utils.py": 29,
+    "tests/test_utils.py": 8
+   }
+  }
+ },
+ {
+  "task": "psf__requests-2317",
+  "corpus": "psf__requests@091991be0da1",
+  "gold": [
+   "requests/compat.py",
+   "requests/sessions.py",
+   "requests/utils.py"
+  ],
+  "rank": {
+   "P0": {
+    "requests/compat.py": 35,
+    "requests/sessions.py": 5,
+    "requests/utils.py": 2
+   },
+   "P1": {
+    "requests/compat.py": 62,
+    "requests/sessions.py": 3,
+    "requests/utils.py": 2
+   },
+   "P2": {
+    "requests/compat.py": 10,
+    "requests/sessions.py": 1,
+    "requests/utils.py": 2
+   },
+   "P3": {
+    "requests/compat.py": 43,
+    "requests/sessions.py": 3,
+    "requests/utils.py": 2
+   },
+   "P4": {
+    "requests/compat.py": 13,
+    "requests/sessions.py": 2,
+    "requests/utils.py": 1
+   },
+   "P5": {
+    "requests/compat.py": 8,
+    "requests/sessions.py": 1,
+    "requests/utils.py": 2
+   }
+  }
+ },
+ {
+  "task": "psf__requests-1142",
+  "corpus": "psf__requests@22623bd8c265",
+  "gold": [
+   "requests/models.py"
+  ],
+  "rank": {
+   "P0": {
+    "requests/models.py": 1
+   },
+   "P1": {
+    "requests/models.py": 4
+   },
+   "P2": {
+    "requests/models.py": 11
+   },
+   "P3": {
+    "requests/models.py": 3
+   },
+   "P4": {
+    "requests/models.py": 3
+   },
+   "P5": {
+    "requests/models.py": 28
+   }
+  }
+ },
+ {
+  "task": "psf__requests-5414",
+  "corpus": "psf__requests@39d0fdd9096f",
+  "gold": [
+   "requests/models.py",
+   "tests/test_requests.py"
+  ],
+  "rank": {
+   "P0": {
+    "requests/models.py": 2,
+    "tests/test_requests.py": 5
+   },
+   "P1": {
+    "requests/models.py": 2,
+    "tests/test_requests.py": 1
+   },
+   "P2": {
+    "requests/models.py": 2,
+    "tests/test_requests.py": 20
+   },
+   "P3": {
+    "requests/models.py": 2,
+    "tests/test_requests.py": 1
+   },
+   "P4": {
+    "requests/models.py": 1,
+    "tests/test_requests.py": 19
+   },
+   "P5": {
+    "requests/models.py": 2,
+    "tests/test_requests.py": 20
+   }
+  }
+ },
+ {
+  "task": "psf__requests-2931",
+  "corpus": "psf__requests@5f7a3a74aab1",
+  "gold": [
+   "requests/models.py",
+   "requests/utils.py"
+  ],
+  "rank": {
+   "P0": {
+    "requests/models.py": 7,
+    "requests/utils.py": 1
+   },
+   "P1": {
+    "requests/models.py": 6,
+    "requests/utils.py": 2
+   },
+   "P2": {
+    "requests/models.py": 13,
+    "requests/utils.py": 16
+   },
+   "P3": {
+    "requests/models.py": 4,
+    "requests/utils.py": 2
+   },
+   "P4": {
+    "requests/models.py": 4,
+    "requests/utils.py": 2
+   },
+   "P5": {
+    "requests/models.py": 78,
+    "requests/utils.py": 81
+   }
+  }
+ },
+ {
+  "task": "psf__requests-1766",
+  "corpus": "psf__requests@847735553aed",
+  "gold": [
+   "requests/auth.py"
+  ],
+  "rank": {
+   "P0": {
+    "requests/auth.py": 1
+   },
+   "P1": {
+    "requests/auth.py": 2
+   },
+   "P2": {
+    "requests/auth.py": 1
+   },
+   "P3": {
+    "requests/auth.py": 2
+   },
+   "P4": {
+    "requests/auth.py": 1
+   },
+   "P5": {
+    "requests/auth.py": 1
+   }
+  }
+ }
+]

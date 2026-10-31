@@ -1,0 +1,48 @@
+{
+ "corpus": "darkreader",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/darkreader__darkreader@991883df4d59",
+ "lang": "typescript",
+ "arms": [
+  "astgrep"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "astgrep": 0
+  },
+  "ts-json-parse-unguarded": {
+   "astgrep": 2
+  },
+  "ts-as-any": {
+   "astgrep": 26
+  },
+  "ts-non-null-member": {
+   "astgrep": 0
+  },
+  "ts-await-in-loop": {
+   "astgrep": 3
+  },
+  "ts-async-promise-executor": {
+   "astgrep": 0
+  },
+  "ts-console-log": {
+   "astgrep": 1
+  },
+  "ts-useeffect-empty-deps": {
+   "astgrep": 0
+  }
+ },
+ "stats": {
+  "files": 210,
+  "bytes": 792701,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.007,
+  "decode": 0.0,
+  "astgrep_parse": 0.084,
+  "astgrep_query": 0.101
+ },
+ "peak_rss_mib": 44.1
+}

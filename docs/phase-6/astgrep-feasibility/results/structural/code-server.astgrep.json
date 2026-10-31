@@ -1,0 +1,48 @@
+{
+ "corpus": "code-server",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/coder__code-server@5d3c9edce436",
+ "lang": "typescript",
+ "arms": [
+  "astgrep"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "astgrep": 0
+  },
+  "ts-json-parse-unguarded": {
+   "astgrep": 0
+  },
+  "ts-as-any": {
+   "astgrep": 10
+  },
+  "ts-non-null-member": {
+   "astgrep": 1
+  },
+  "ts-await-in-loop": {
+   "astgrep": 20
+  },
+  "ts-async-promise-executor": {
+   "astgrep": 0
+  },
+  "ts-console-log": {
+   "astgrep": 23
+  },
+  "ts-useeffect-empty-deps": {
+   "astgrep": 0
+  }
+ },
+ "stats": {
+  "files": 83,
+  "bytes": 333695,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.003,
+  "decode": 0.0,
+  "astgrep_parse": 0.038,
+  "astgrep_query": 0.044
+ },
+ "peak_rss_mib": 40.8
+}

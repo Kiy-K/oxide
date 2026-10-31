@@ -1,0 +1,182 @@
+{
+ "corpus": "requests",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/psf__requests@0192aac24123",
+ "lang": "python",
+ "arms": [
+  "astgrep",
+  "regex",
+  "treesitter"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "treesitter": 8,
+   "astgrep": 8,
+   "regex": 6,
+   "agree": 8,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 6,
+   "regex_precision": 1.0,
+   "regex_recall": 0.75,
+   "regex_false_count": 0,
+   "regex_missed_count": 2,
+   "regex_false": [],
+   "regex_missed": [
+    {
+     "path": "requests/utils.py",
+     "line": 128,
+     "text": "        except (io.UnsupportedOperation, AttributeError):"
+    },
+    {
+     "path": "requests/models.py",
+     "line": 902,
+     "text": "                except UnicodeDecodeError:"
+    }
+   ]
+  },
+  "py-bare-except": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 1,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 1,
+   "regex_precision": 0.0,
+   "regex_recall": null,
+   "regex_false_count": 1,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "requests/adapters.py",
+     "line": 494,
+     "text": "                except:"
+    }
+   ],
+   "regex_missed": []
+  },
+  "py-isinstance-tuple": {
+   "treesitter": 7,
+   "astgrep": 7,
+   "regex": 7,
+   "agree": 7,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 7,
+   "regex_precision": 1.0,
+   "regex_recall": 1.0,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-mutable-default": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-open-no-encoding": {
+   "treesitter": 14,
+   "astgrep": 14,
+   "regex": 14,
+   "agree": 14,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 14,
+   "regex_precision": 1.0,
+   "regex_recall": 1.0,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-eq-none": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-raise-from-none": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-return-in-finally": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": []
+  }
+ },
+ "stats": {
+  "files": 35,
+  "bytes": 351967,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.005,
+  "decode": 0.0,
+  "treesitter_parse": 0.032,
+  "treesitter_query": 0.071,
+  "astgrep_parse": 0.042,
+  "astgrep_query": 0.033,
+  "regex": 0.031
+ },
+ "peak_rss_mib": 49.5
+}

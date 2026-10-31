@@ -1,0 +1,1 @@
+selfcheck ok: deadline 2.0 s enforced (late answer killed, never read, request falls back; seam decided in 2.00 s and unchanged after the late answer); latencies {'ok': 0.053, 'late': 2.005, 'hang': 2.006, 'busy': 0.058, 'wrong': 0.049, 'partial': 0.057}; cost cap enforced; manifest sha256:d9ae934c9a6a3650a6f2ca6ef3f3ab919103cc7e9788951a7b8699c354407b1d

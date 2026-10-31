@@ -1,0 +1,419 @@
+{
+ "baseline": "contextbench-py-v12",
+ "protocol": "docs/phase-6/baseline-v12/README.md",
+ "scorer": "contextbench-py-scorer-v2",
+ "tasks": "contextbench-py-tasks-v1 sha256 22af8803b18bdb149bdf98a617aca8f7586cc16edabf2c2d7da2e251ec7ed914",
+ "audit": "contextbench-py-gold-audit-v1 sha256 d916d3e8c30a80805d27c5b94f6f92eb7b3be83b7e02317618c7127585e6b687",
+ "oxide_source": "03dc2baf9cceb20a0d87ff397a822390d728d19d +dirty",
+ "budgets": [
+  256,
+  1024,
+  4096
+ ],
+ "tolerance": 0.02,
+ "gated": [
+  "entry_recall@5",
+  "entry_recall@20",
+  "entry_mrr",
+  "routed_coverage",
+  "span_recall@256",
+  "span_recall@1024",
+  "span_recall@4096",
+  "line_recall@256",
+  "line_recall@1024",
+  "line_recall@4096"
+ ],
+ "corpora": {
+  "fixture:py_repo": {
+   "py_files": 8,
+   "tree_sha256": "c98e4f589580c8d6444f0898e1dc338f14d40ebdcbb43e919fa1d4b387eeff1f",
+   "snapshot": "sha256:44eb860cfbd65e9a13fb5640aa65223532c0359cebbf085a3e6999c217da9537",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "mwaskom__seaborn@54cab15bdacf": {
+   "url": "https://github.com/mwaskom/seaborn",
+   "commit": "54cab15bdacfaa05a88fbc5502a5b322d99f148e",
+   "py_files": 150,
+   "tree_sha256": "1e233e1492a9a2862a7748afc37a6746aef89eace487c1b817dc7c56adeb0776",
+   "snapshot": "sha256:b8e24d3629aa726bd138ffc6a17c04fbdd79a87c14663c237c9781a2809b9528",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pallets__flask@7ee9ceb71e86": {
+   "url": "https://github.com/pallets/flask",
+   "commit": "7ee9ceb71e868944a46e1ff00b506772a53a4f1d",
+   "py_files": 80,
+   "tree_sha256": "aef04d8e251e8932294740789b8957626391eb217f61f9a6ac3c151f50506896",
+   "snapshot": "sha256:5ffb2c7cc8fa248665375687f3cfb1f49a68d098cdaf97051c3fea784e6b6b64",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "psf__requests@0192aac24123": {
+   "url": "https://github.com/psf/requests",
+   "commit": "0192aac24123735b3eaf9b08df46429bb770c283",
+   "py_files": 35,
+   "tree_sha256": "46f1aa3adc012fd2e78bd6b1146389dd33acab624d7d7082f357cde93ac58d61",
+   "snapshot": "sha256:4c480332f4d1e3c80c3a871da419b5be0a23b33d973c8fc004ff1392b5c6f378",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "psf__requests@091991be0da1": {
+   "url": "https://github.com/psf/requests",
+   "commit": "091991be0da19de9108dbe5e3752917fea3d7fdc",
+   "py_files": 83,
+   "tree_sha256": "a183fcdf02aab75f8d8a397697889c1c779e230edfb846d7633ed206c843f14f",
+   "snapshot": "sha256:73fe3d50d83d6ee2e75024edccd51dc1ef410794e8eabc3ef248c904941190f8",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "psf__requests@22623bd8c265": {
+   "url": "https://github.com/psf/requests",
+   "commit": "22623bd8c265b78b161542663ee980738441c307",
+   "py_files": 70,
+   "tree_sha256": "98c6b7bcfb2d6d682fbcc75cf549e07f2d01ec01eea18f63be58bc03f9763b9c",
+   "snapshot": "sha256:c17158de09e9b3dd32c0b2928ffe2e221fb43a75e8b6f211e7ad3856dfbeda4e",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "psf__requests@39d0fdd9096f": {
+   "url": "https://github.com/psf/requests",
+   "commit": "39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e",
+   "py_files": 35,
+   "tree_sha256": "5945961ff6ba2ccf3398409ad594c94066493267c7d36940d8c38a74c8287317",
+   "snapshot": "sha256:65688877a9a3c2eb86fa3518c4cdeac783db1fae8e09cb5d2056817a5c0a3a71",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "psf__requests@5f7a3a74aab1": {
+   "url": "https://github.com/psf/requests",
+   "commit": "5f7a3a74aab1625c2bb65f643197ee885e3da576",
+   "py_files": 84,
+   "tree_sha256": "43fad736bcf199b3cd2d963cbb5723637aef734f4f9815598466b68c2e98b232",
+   "snapshot": "sha256:d87e4be4e0b4410a6789587199bcf43ec743e2dd6c311f5ef499e8bc1cd87d82",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "psf__requests@847735553aed": {
+   "url": "https://github.com/psf/requests",
+   "commit": "847735553aeda6e6633f2b32e14ba14ba86887a4",
+   "py_files": 76,
+   "tree_sha256": "7c08d932cdbd699d38d1ee6f06e7a6cf8e2fe713d6346075e5754a51d7ed401f",
+   "snapshot": "sha256:ed084097948051370f590415a69ddafe37a9e74d9493cf7e7edccd46fb653a27",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@1757dffac2fa": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "1757dffac2fa493d7b9a074b84cf8c830a706688",
+   "py_files": 135,
+   "tree_sha256": "0e6f81c214cc09d21987d3bbc00b60912ed9f9827fa1d342b2f74268c202cfd4",
+   "snapshot": "sha256:f3acad93444b584ebf653da77ae8668f08611ceefeccea5061e06fbb7ea75f89",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@19b088636eb7": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "19b088636eb7d3f65ab7a1046ac672e0689371d8",
+   "py_files": 143,
+   "tree_sha256": "acd79065167515c3d842a70ea17345aedd1d698e7919c4f13b803a58e0acd1ea",
+   "snapshot": "sha256:548d6e3e3aa5ea2bdab05e3e59a6a49d34b0e6c0519aa8ba3391a6e0854a29f2",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@37522e991a32": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "37522e991a32ee3c0ad1a5ff8afe8e3eb1885550",
+   "py_files": 153,
+   "tree_sha256": "197d395cb957d250c996c3468f3db00b7aa0fd6431d350148aaa4ce392c96de2",
+   "snapshot": "sha256:58c049de00f3d7e00363667752994285f4d4923178ad7e06b0ca6e7595ecd6d7",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@3aa75c8d00a4": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "3aa75c8d00a4a2d4acf10d80f76b937cadb666b7",
+   "py_files": 173,
+   "tree_sha256": "e594fb5fe055af96f10482f70f9b233e1f509d7c3ad419e1733d26531c17b89f",
+   "snapshot": "sha256:9da0e4fd0a7763db7d123bbd055ae4ffae4975a0026b2cd5dd792d0ede12c0a7",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@41fef6f1352b": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "41fef6f1352be994cd90056d47440fe9aa4c068f",
+   "py_files": 174,
+   "tree_sha256": "20da9800935b1ad7e692d6d7794f3b4ffab9c130c15120e8352c1e68002a9159",
+   "snapshot": "sha256:b58ad0277d2772dc9919005aa05691c7833960ce04463a0df405df6df487a40f",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@45c0a114e2b7": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "45c0a114e2b7b27b83c9618bc05b36afac82183c",
+   "py_files": 169,
+   "tree_sha256": "95acd80d6643489ca947e6133a55da10d57c4426b86ef880ad349bf2c4616a6d",
+   "snapshot": "sha256:0044f6f4f900eb11d091648ec9b5d973f70d6035b0cac9bba91af9cd407ac7a9",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@51d37d1be955": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "51d37d1be95547059251076b3fadaa317750aab3",
+   "py_files": 173,
+   "tree_sha256": "c11242ea2b205f0fb83b184e65077e5b375228e78c8a14d3273b1f12eb952041",
+   "snapshot": "sha256:4e33d96b2285e7b5f20563c17961ed9ebd45e17541db1eac839799a14abed94e",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@51ef2a66c4e0": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "51ef2a66c4e0896eab7d2b03e3dfb3963e338e3c",
+   "py_files": 150,
+   "tree_sha256": "ab69d6c5d3160f29df968a9c8c3e897d0b92c972f67042d09f0b93f4a0045acb",
+   "snapshot": "sha256:4bbf30b7e1d1d15c1c20575838fc7475c195268088d843a15481763fce459642",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@6bb2b855498b": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "6bb2b855498b5c68d7cca8cceb710365d58e6048",
+   "py_files": 165,
+   "tree_sha256": "8e7c3a7233df55db9c6c70a1ed92da8931e42ee12d7f9b376f5af11e3615bcce",
+   "snapshot": "sha256:832827ec69af74a05383aa28022f600e0cbe3b04f0c97afa937b8bd083181892",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@7c4e2ac83f7b": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "7c4e2ac83f7b4306296ff9b7b51aaf016e5ad614",
+   "py_files": 152,
+   "tree_sha256": "9e77a6007a6431e75a0fab069cc35af26bbdb29a98cc09914f459d8bf33bdfef",
+   "snapshot": "sha256:75f50c0e79f2b942795b9ad3d2599e443b25e55c8efea27662e4574d2a7ddd6b",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@7cc6cc991e58": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "7cc6cc991e586a6158bb656b8001234ccda25407",
+   "py_files": 167,
+   "tree_sha256": "939ba6088268173b87ea591ea1f78e02fb8c2579326dd0dcd2924ed7a1c75e35",
+   "snapshot": "sha256:794231fd8ecbbedfed6b70dd96c907437345fe5d5cd2732892da0c8a7e1cb866",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@851dadeb0338": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "851dadeb0338403e5021c3fbe80cbc9127ee672d",
+   "py_files": 165,
+   "tree_sha256": "fd55c58a9da769f6a4d1817772ea5b74552d7a21c69d88ad1a137ecc13005d65",
+   "snapshot": "sha256:3b4da6863c0277e79c45c19bacdfa349634487e7cd777f18ae93a022edcd0eb5",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@8cc34cb412ba": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "8cc34cb412ba89ebca12fc84f76a9e452628f1bc",
+   "py_files": 151,
+   "tree_sha256": "af0f8c0dd06eeea19ecb7b8d3b60f48f4bdbf6c790302a3a984a30fb8ea8485b",
+   "snapshot": "sha256:cb7aab29f642af8bfd29ad4850a031690387fee238364bb8a718950ea50764ee",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@a41edc7bf530": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "a41edc7bf5302f2ea327943c0c48c532b12009bc",
+   "py_files": 149,
+   "tree_sha256": "fe07a18a76f29c43d8284faac7232f44d95eaaaa6b759f7b303ed4f976e78164",
+   "snapshot": "sha256:fddf7b1e255b4ca34074f903a78eac5e643ee557be2a4da92d6ee5068196b9bf",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@cc183652bf6e": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "cc183652bf6e1273e985e1c4b3cba79c896c1193",
+   "py_files": 166,
+   "tree_sha256": "e138b0a6bbe24078aec45b1f51656602c15dbabb9788e3abae0c6cb8ce68550e",
+   "snapshot": "sha256:dd8f82b687809053f622d745aa9d3223323d330807dcc8fed1c9256d6db8c848",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@d3b6aa6d8b99": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "d3b6aa6d8b997df115a53c001d00222a0f92f63a",
+   "py_files": 165,
+   "tree_sha256": "847bd4ec804be76191f13c80de3b1ea9ab77f0f84b9ea52310ce169ca8ab7323",
+   "snapshot": "sha256:fca4f09097d0f407e6efee629ab343d17031444bbc2b6482e8d5ea7e92598610",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pydata__xarray@e05fddea852d": {
+   "url": "https://github.com/pydata/xarray",
+   "commit": "e05fddea852d08fc0845f954b79deb9e9f9ff883",
+   "py_files": 146,
+   "tree_sha256": "db8e939377ce0ec8f26e3f5a297c77fdbbf9e861ac42506a2398082eb1dcbc78",
+   "snapshot": "sha256:b62b20d100b01333ea8cf0a34795d03e4a1acf6d68f215c5baadb11a0968fb06",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@19ad5889353c": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "19ad5889353c7f5f2b65cc2acd346b7a9e95dfcd",
+   "py_files": 212,
+   "tree_sha256": "123435b0746ef262075ada61f14951b6acbd80d03d940200b45314d4bd3c3869",
+   "snapshot": "sha256:a317e5e18325cceca59f550b322e564f8375e116da4072fa938f37acb1fc2fa6",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@3c1534944cbd": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "3c1534944cbd34e8a41bc9e76818018fadefc9a1",
+   "py_files": 244,
+   "tree_sha256": "acabddec4c8ea0697b7861c090329c3ec3e866d67820a176406ce683080cdf7d",
+   "snapshot": "sha256:5f89540979f15924389348477fcef956ab2dd1acbff30be5db23f557a44a3359",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@422685d0bdc1": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "422685d0bdc110547535036c1ff398b5e1c44145",
+   "py_files": 215,
+   "tree_sha256": "8181b54dba462e8cec05ab6e48b79ca0804d78e82d5a7af0fee3a6118526e1c0",
+   "snapshot": "sha256:3ce40e22abb04b54ee8dcf732d3596f344ed2308eaaa50579e4c831f259b43fd",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@58e6a09db49f": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "58e6a09db49f34886ff13f3b7520dd0bcd7063cd",
+   "py_files": 198,
+   "tree_sha256": "082903957d4fbbf89d79accd5cea80f3f20292624660e4b87a6ddaa28e1d0573",
+   "snapshot": "sha256:0c85b273463727fbefac18985c11b9e2f19ee69262bf52a9b0ebeff2615db0a5",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@5e7f1ab4bf58": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29",
+   "py_files": 210,
+   "tree_sha256": "9926a2f4a2e8647a82ac6de0794075a1a518a4875d6abc08ce6c351b7ba50f21",
+   "snapshot": "sha256:b175995b0fa5e3855d8fab6ea6804ab32bdd268f5d6edae8296b7029a39065aa",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@7f7a36478abe": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "7f7a36478abe7dd1fa993b115d22606aa0e35e88",
+   "py_files": 214,
+   "tree_sha256": "2f723ca706d038de32e8e08aafaa6ab1acd206b9da2cceb748fd1e4c8013370f",
+   "snapshot": "sha256:efd1191cc285157bb3b2e29755d7918671fdfdcbaa570d3d655db8e949804bbd",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@8aba863a634f": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "8aba863a634f40560e25055d179220f0eefabe9a",
+   "py_files": 199,
+   "tree_sha256": "9b392295bc91d8f668787bcda63cff0e2050bb89a039d87bfe8c2c451e210118",
+   "snapshot": "sha256:f340ca89fca5b958e02f36a0aea28776e1a3613e6d7c43966536bf95dce0cbbb",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@955e54221008": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "955e54221008aba577ecbaefa15679f6777d3bf8",
+   "py_files": 202,
+   "tree_sha256": "d0f9b78d810dfea4afa1d0c2abfa137f84e9b133e0cf0b453fa825fd005dbdaa",
+   "snapshot": "sha256:2e37467dac38653c4fdbacef11a764cbdbedda6a1775b3cd87f81ac2b50bb0bb",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@aa55975c7d3f": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a",
+   "py_files": 245,
+   "tree_sha256": "74c9e89896ab2ebfb6866d7c1222bd6606fe00471d0d4ef2848025aeed5e46fc",
+   "snapshot": "sha256:b863d74d46a4bf08f73edf44dfe64311987f853436b200a0c61ab9a47d8039db",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@cb828ebe70b4": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "cb828ebe70b4fa35cd5f9a7ee024272237eab351",
+   "py_files": 201,
+   "tree_sha256": "4abad8c214865ef5187a67243f58b6dac7a3a39acb63c3eb8755578932a1aed9",
+   "snapshot": "sha256:1b23471ae2d325e95d628a1788986c77e55e735f3f171532b81256819892fdaf",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@da9a2b584eb7": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "da9a2b584eb7a6c7e924b2621ed0ddaeca0a7bea",
+   "py_files": 245,
+   "tree_sha256": "f0ad95c2c98b7e3017eab988b4f6e76cb7afe5e0468a138195fc4fc773b7ebd7",
+   "snapshot": "sha256:0de2c5407f80e210798900ff559a4be72452a8369cd72513b5fb38d1d68e9466",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  },
+  "pytest-dev__pytest@e6e300e729dd": {
+   "url": "https://github.com/pytest-dev/pytest",
+   "commit": "e6e300e729dd33956e5448d8be9a0b1540b4e53a",
+   "py_files": 214,
+   "tree_sha256": "d236931750ebda2dfe25d9261598be30816b96b4feb5cc74f4bcd0fb1fdcea6b",
+   "snapshot": "sha256:d593af3b7a7a1fe31c61b057cf07db56d0d1166e308ac26f15dc6770cf37cd21",
+   "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+   "partial_files": 0
+  }
+ },
+ "versions": {
+  "retrieval": "oxide-retrieval-v2",
+  "router": "oxide-router-bfs-v2",
+  "selector": "oxide-select-greedy-v4",
+  "payload": "oxide-payload-v3",
+  "derivation": "sha256:ed41d2c95d40f8c9c821e8ff6c68ecb0115a1d6853176553012383bffeda1fbf",
+  "units": "oxide-units-v1"
+ },
+ "config": {
+  "retrieval": {
+   "lexical_limit": 20,
+   "symbol_limit": 8
+  },
+  "routing": {
+   "max_regions": 64,
+   "max_depth": 2,
+   "max_fanout": 16,
+   "max_edges": 2048,
+   "follow": [
+    "calls",
+    "references",
+    "imports",
+    "tested_by",
+    "contains_logical"
+   ]
+  },
+  "packing": {
+   "graph_nodes": 64,
+   "max_items": 24,
+   "include_floor": 0.4,
+   "max_header_lines": 8
+  },
+  "decision_provider": "none (heuristic packing.value)"
+ },
+ "environment": {
+  "python": "3.13.17",
+  "platform": "linux-x86_64",
+  "packages": {
+   "ladybug": "0.21.0",
+   "tree-sitter": "0.26.0",
+   "tree-sitter-python": "0.25.0",
+   "tree-sitter-typescript": "0.23.2"
+  }
+ },
+ "commands": {
+  "fetch": "uv run python tests/python/contextbench.py fetch",
+  "run": "uv run python tests/python/contextbench.py run --out DIR",
+  "gate": "uv run pytest tests/python/test_contextbench.py",
+  "tasks": "uv run --with pyarrow python tests/python/contextbench.py tasks PARQUET",
+  "audit": "uv run --with pyarrow python tests/python/contextbench.py audit PARQUET"
+ }
+}

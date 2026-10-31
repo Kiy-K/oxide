@@ -1,0 +1,521 @@
+{
+ "summary": {
+  "flask": {
+   "head": {
+    "index_s": 0.6748179839996737,
+    "rss_mb": 163.3515625
+   },
+   "fix": {
+    "index_s": 0.6777666540001519,
+    "rss_mb": 163.81640625
+   },
+   "delta_s": 0.0029486700004781596,
+   "delta_pct": 0.4369578272056751,
+   "delta_rss_mb": 0.46484375
+  },
+  "requests": {
+   "head": {
+    "index_s": 0.4955373539996799,
+    "rss_mb": 157.36328125
+   },
+   "fix": {
+    "index_s": 0.5192353269994783,
+    "rss_mb": 157.765625
+   },
+   "delta_s": 0.023697972999798367,
+   "delta_pct": 4.782277825984771,
+   "delta_rss_mb": 0.40234375
+  },
+  "pytest": {
+   "head": {
+    "index_s": 1.5097617820028972,
+    "rss_mb": 195.13671875
+   },
+   "fix": {
+    "index_s": 1.5839369319983234,
+    "rss_mb": 197.578125
+   },
+   "delta_s": 0.07417514999542618,
+   "delta_pct": 4.913036671058335,
+   "delta_rss_mb": 2.44140625
+  },
+  "xarray": {
+   "head": {
+    "index_s": 1.7589615160031826,
+    "rss_mb": 198.51953125
+   },
+   "fix": {
+    "index_s": 1.7617472950005322,
+    "rss_mb": 199.83203125
+   },
+   "delta_s": 0.002785778997349553,
+   "delta_pct": 0.1583763471801003,
+   "delta_rss_mb": 1.3125
+  },
+  "seaborn": {
+   "head": {
+    "index_s": 1.3309243789990433,
+    "rss_mb": 182.98828125
+   },
+   "fix": {
+    "index_s": 1.3331608979970042,
+    "rss_mb": 182.6171875
+   },
+   "delta_s": 0.0022365189979609568,
+   "delta_pct": 0.1680425299326993,
+   "delta_rss_mb": -0.37109375
+  }
+ },
+ "rows": [
+  {
+   "tree": "head",
+   "repo": "flask",
+   "rep": 0,
+   "index_s": 0.6618786840008397,
+   "rss_mb": 163.37109375,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "flask",
+   "rep": 0,
+   "index_s": 0.609826815998531,
+   "rss_mb": 163.98046875,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "requests",
+   "rep": 0,
+   "index_s": 0.4542458770010853,
+   "rss_mb": 157.36328125,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "requests",
+   "rep": 0,
+   "index_s": 0.4588708429982944,
+   "rss_mb": 157.3984375,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "pytest",
+   "rep": 0,
+   "index_s": 1.5072102990015992,
+   "rss_mb": 195.02734375,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "pytest",
+   "rep": 0,
+   "index_s": 1.5492786249997152,
+   "rss_mb": 196.41796875,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "xarray",
+   "rep": 0,
+   "index_s": 1.749748863003333,
+   "rss_mb": 198.59375,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "xarray",
+   "rep": 0,
+   "index_s": 1.7356771699996898,
+   "rss_mb": 200.08984375,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "seaborn",
+   "rep": 0,
+   "index_s": 1.334266657999251,
+   "rss_mb": 182.98828125,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "seaborn",
+   "rep": 0,
+   "index_s": 1.3331608979970042,
+   "rss_mb": 182.27734375,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "fix",
+   "repo": "flask",
+   "rep": 1,
+   "index_s": 0.6777666540001519,
+   "rss_mb": 163.81640625,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "flask",
+   "rep": 1,
+   "index_s": 0.7587801340014266,
+   "rss_mb": 163.1015625,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "requests",
+   "rep": 1,
+   "index_s": 0.5343888419993164,
+   "rss_mb": 157.87890625,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "requests",
+   "rep": 1,
+   "index_s": 0.5182559079985367,
+   "rss_mb": 157.609375,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "pytest",
+   "rep": 1,
+   "index_s": 1.6006646270034253,
+   "rss_mb": 197.6953125,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "pytest",
+   "rep": 1,
+   "index_s": 1.575311803000659,
+   "rss_mb": 194.88671875,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "xarray",
+   "rep": 1,
+   "index_s": 1.748090871002205,
+   "rss_mb": 199.59765625,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "xarray",
+   "rep": 1,
+   "index_s": 1.7589615160031826,
+   "rss_mb": 198.51953125,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "seaborn",
+   "rep": 1,
+   "index_s": 1.2444900069967844,
+   "rss_mb": 182.6171875,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "seaborn",
+   "rep": 1,
+   "index_s": 1.2639821420016233,
+   "rss_mb": 183.37109375,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "head",
+   "repo": "flask",
+   "rep": 2,
+   "index_s": 0.6690666020003846,
+   "rss_mb": 163.6328125,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "flask",
+   "rep": 2,
+   "index_s": 0.6449649120004324,
+   "rss_mb": 163.7109375,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "requests",
+   "rep": 2,
+   "index_s": 0.4955373539996799,
+   "rss_mb": 157.2421875,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "requests",
+   "rep": 2,
+   "index_s": 0.5287256039991917,
+   "rss_mb": 157.93359375,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "pytest",
+   "rep": 2,
+   "index_s": 1.5097617820028972,
+   "rss_mb": 195.3046875,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "pytest",
+   "rep": 2,
+   "index_s": 1.5839369319983234,
+   "rss_mb": 197.04296875,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "xarray",
+   "rep": 2,
+   "index_s": 1.8083873110008426,
+   "rss_mb": 198.38671875,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "xarray",
+   "rep": 2,
+   "index_s": 1.8401429660007125,
+   "rss_mb": 199.77734375,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "seaborn",
+   "rep": 2,
+   "index_s": 1.3309243789990433,
+   "rss_mb": 182.93359375,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "seaborn",
+   "rep": 2,
+   "index_s": 1.3908215369992831,
+   "rss_mb": 182.5546875,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "fix",
+   "repo": "flask",
+   "rep": 3,
+   "index_s": 0.7009387819998665,
+   "rss_mb": 163.375,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "flask",
+   "rep": 3,
+   "index_s": 0.6748179839996737,
+   "rss_mb": 163.34765625,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "requests",
+   "rep": 3,
+   "index_s": 0.4635807560007379,
+   "rss_mb": 157.46875,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "requests",
+   "rep": 3,
+   "index_s": 0.47182260200133896,
+   "rss_mb": 157.453125,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "pytest",
+   "rep": 3,
+   "index_s": 1.5043883380021725,
+   "rss_mb": 197.578125,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "pytest",
+   "rep": 3,
+   "index_s": 1.5038013289995433,
+   "rss_mb": 195.13671875,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "xarray",
+   "rep": 3,
+   "index_s": 1.7631349459988996,
+   "rss_mb": 199.83203125,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "xarray",
+   "rep": 3,
+   "index_s": 1.8125400649987569,
+   "rss_mb": 198.6640625,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "seaborn",
+   "rep": 3,
+   "index_s": 1.3440051760007918,
+   "rss_mb": 182.671875,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "seaborn",
+   "rep": 3,
+   "index_s": 1.3476790200002142,
+   "rss_mb": 182.99609375,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "head",
+   "repo": "flask",
+   "rep": 4,
+   "index_s": 0.7462682459990901,
+   "rss_mb": 163.3515625,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "flask",
+   "rep": 4,
+   "index_s": 0.6920486480012187,
+   "rss_mb": 164.20703125,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "requests",
+   "rep": 4,
+   "index_s": 0.5307296620012494,
+   "rss_mb": 157.125,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "requests",
+   "rep": 4,
+   "index_s": 0.5192353269994783,
+   "rss_mb": 157.765625,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "pytest",
+   "rep": 4,
+   "index_s": 1.5402151669986779,
+   "rss_mb": 195.18359375,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "pytest",
+   "rep": 4,
+   "index_s": 1.5945526559989958,
+   "rss_mb": 197.92578125,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "xarray",
+   "rep": 4,
+   "index_s": 1.7387084369984223,
+   "rss_mb": 198.203125,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "xarray",
+   "rep": 4,
+   "index_s": 1.7617472950005322,
+   "rss_mb": 200.05859375,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  },
+  {
+   "tree": "head",
+   "repo": "seaborn",
+   "rep": 4,
+   "index_s": 1.2411767820012756,
+   "rss_mb": 181.875,
+   "version": "oxide-python-v5",
+   "derivation": "sha256:82136296e1b2973ee575ed53e2d8d5ff5119210a8510175a6e58c4af34d4005b"
+  },
+  {
+   "tree": "fix",
+   "repo": "seaborn",
+   "rep": 4,
+   "index_s": 1.2554775509997853,
+   "rss_mb": 183.0625,
+   "version": "oxide-python-v6",
+   "derivation": "sha256:d89f4dac0d5e4fc27fa3956b519644b1add4d1ac540cdfa440575023092b5478"
+  }
+ ]
+}

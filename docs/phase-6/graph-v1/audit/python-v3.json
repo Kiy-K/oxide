@@ -1,0 +1,922 @@
+[
+ {
+  "path": "src",
+  "files": 118,
+  "entities": 545,
+  "relations": 3804,
+  "index_s": 0.51,
+  "maxrss_mb": 146,
+  "mix": {
+   "calls/resolved/resolved": 710,
+   "calls/unresolved/syntactic": 1892,
+   "contains/resolved/syntactic": 544,
+   "contains_logical/resolved/syntactic": 30,
+   "defines/resolved/syntactic": 219,
+   "imports/resolved/resolved": 196,
+   "imports/unresolved/syntactic": 201,
+   "references/resolved/resolved": 10,
+   "references/unresolved/syntactic": 2
+  },
+  "ambiguous_fanout": {},
+  "unresolved_call_shape": {
+   "py:bare": 715,
+   "py:qualified": 906,
+   "py:self/this": 271
+  },
+  "top_unresolved_bare": [
+   [
+    "len",
+    129
+   ],
+   [
+    "sorted",
+    59
+   ],
+   [
+    "dataclass",
+    58
+   ],
+   [
+    "tuple",
+    47
+   ],
+   [
+    "isinstance",
+    46
+   ],
+   [
+    "type",
+    34
+   ],
+   [
+    "set",
+    32
+   ],
+   [
+    "all",
+    25
+   ],
+   [
+    "any",
+    24
+   ],
+   [
+    "enumerate",
+    23
+   ],
+   [
+    "field",
+    20
+   ],
+   [
+    "str",
+    20
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:oxide/core/languages/python.py#as_list",
+    53
+   ],
+   [
+    "symbol:oxide/core/languages/python.py#Use",
+    21
+   ],
+   [
+    "symbol:oxide/core/languages/typescript_syntax.py#_span",
+    20
+   ]
+  ],
+  "call_scc_sizes_top": [],
+  "call_scc_count": 0,
+  "file_dep_scc_sizes_top": [],
+  "file_dep_scc_count": 0,
+  "file_dep_nodes": 26
+ },
+ {
+  "path": "/home/khoi/.cache/oxide/contextbench/corpora/pallets__flask@7ee9ceb71e86",
+  "files": 80,
+  "entities": 1731,
+  "relations": 6940,
+  "index_s": 0.46,
+  "maxrss_mb": 155,
+  "mix": {
+   "calls/resolved/resolved": 181,
+   "calls/unresolved/syntactic": 3551,
+   "contains/resolved/syntactic": 1730,
+   "contains_logical/resolved/syntactic": 80,
+   "defines/resolved/syntactic": 579,
+   "imports/resolved/resolved": 105,
+   "imports/unresolved/syntactic": 523,
+   "references/resolved/resolved": 28,
+   "references/unresolved/syntactic": 86,
+   "tested_by/resolved/heuristic": 77
+  },
+  "ambiguous_fanout": {},
+  "unresolved_call_shape": {
+   "py:bare": 825,
+   "py:qualified": 2521,
+   "py:self/this": 205
+  },
+  "top_unresolved_bare": [
+   [
+    "isinstance",
+    103
+   ],
+   [
+    "str",
+    59
+   ],
+   [
+    "len",
+    40
+   ],
+   [
+    "Flask",
+    39
+   ],
+   [
+    "super",
+    31
+   ],
+   [
+    "sorted",
+    23
+   ],
+   [
+    "getattr",
+    22
+   ],
+   [
+    "type",
+    17
+   ],
+   [
+    "get_db",
+    16
+   ],
+   [
+    "RuntimeError",
+    14
+   ],
+   [
+    "dict",
+    13
+   ],
+   [
+    "render_template",
+    13
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:src/flask/cli.py#NoAppException",
+    13
+   ],
+   [
+    "symbol:tests/test_config.py#common_object_test",
+    11
+   ],
+   [
+    "symbol:tests/test_basic.py#test_session_vary_cookie.expect",
+    7
+   ]
+  ],
+  "call_scc_sizes_top": [],
+  "call_scc_count": 0,
+  "file_dep_scc_sizes_top": [
+   15
+  ],
+  "file_dep_scc_count": 1,
+  "file_dep_nodes": 19
+ },
+ {
+  "path": "/home/khoi/.cache/oxide/contextbench/corpora/psf__requests@0192aac24123",
+  "files": 35,
+  "entities": 780,
+  "relations": 4116,
+  "index_s": 0.31,
+  "maxrss_mb": 155,
+  "mix": {
+   "calls/ambiguous/syntactic": 16,
+   "calls/resolved/resolved": 363,
+   "calls/unresolved/syntactic": 1998,
+   "contains/resolved/syntactic": 779,
+   "contains_logical/resolved/syntactic": 35,
+   "defines/resolved/syntactic": 199,
+   "imports/ambiguous/syntactic": 2,
+   "imports/resolved/resolved": 178,
+   "imports/unresolved/syntactic": 307,
+   "references/resolved/resolved": 33,
+   "references/unresolved/syntactic": 36,
+   "tested_by/resolved/heuristic": 179
+  },
+  "ambiguous_fanout": {
+   "2": 9
+  },
+  "unresolved_call_shape": {
+   "py:bare": 671,
+   "py:qualified": 1197,
+   "py:self/this": 130
+  },
+  "top_unresolved_bare": [
+   [
+    "httpbin",
+    148
+   ],
+   [
+    "isinstance",
+    85
+   ],
+   [
+    "len",
+    50
+   ],
+   [
+    "list",
+    32
+   ],
+   [
+    "str",
+    31
+   ],
+   [
+    "hasattr",
+    23
+   ],
+   [
+    "urlparse",
+    22
+   ],
+   [
+    "getattr",
+    18
+   ],
+   [
+    "int",
+    16
+   ],
+   [
+    "iter",
+    15
+   ],
+   [
+    "open",
+    14
+   ],
+   [
+    "frozenset",
+    13
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:requests/structures.py#CaseInsensitiveDict",
+    32
+   ],
+   [
+    "symbol:requests/adapters.py#HTTPAdapter",
+    19
+   ],
+   [
+    "symbol:tests/testserver/server.py#consume_socket_content",
+    19
+   ]
+  ],
+  "call_scc_sizes_top": [],
+  "call_scc_count": 0,
+  "file_dep_scc_sizes_top": [],
+  "file_dep_scc_count": 0,
+  "file_dep_nodes": 22
+ },
+ {
+  "path": "/home/khoi/.cache/oxide/contextbench/corpora/pydata__xarray@51d37d1be955",
+  "files": 173,
+  "entities": 6728,
+  "relations": 58321,
+  "index_s": 2.35,
+  "maxrss_mb": 220,
+  "mix": {
+   "calls/ambiguous/syntactic": 238,
+   "calls/resolved/resolved": 8042,
+   "calls/unresolved/syntactic": 32483,
+   "contains/resolved/syntactic": 6727,
+   "contains_logical/resolved/syntactic": 171,
+   "defines/resolved/syntactic": 2311,
+   "imports/ambiguous/syntactic": 166,
+   "imports/resolved/resolved": 1386,
+   "imports/unresolved/syntactic": 1857,
+   "references/resolved/resolved": 222,
+   "references/unresolved/syntactic": 37,
+   "tested_by/resolved/heuristic": 4988
+  },
+  "ambiguous_fanout": {
+   "2": 27,
+   "3": 14,
+   "4": 9,
+   "5": 10,
+   "6": 37
+  },
+  "unresolved_call_shape": {
+   "py:bare": 11106,
+   "py:qualified": 19122,
+   "py:self/this": 2255
+  },
+  "top_unresolved_bare": [
+   [
+    "isinstance",
+    1185
+   ],
+   [
+    "DataArray",
+    1048
+   ],
+   [
+    "Dataset",
+    915
+   ],
+   [
+    "len",
+    590
+   ],
+   [
+    "ValueError",
+    503
+   ],
+   [
+    "slice",
+    440
+   ],
+   [
+    "Variable",
+    429
+   ],
+   [
+    "set",
+    328
+   ],
+   [
+    "dict",
+    327
+   ],
+   [
+    "range",
+    320
+   ],
+   [
+    "list",
+    315
+   ],
+   [
+    "getattr",
+    314
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:xarray/tests/__init__.py#assert_identical",
+    1608
+   ],
+   [
+    "symbol:xarray/tests/__init__.py#assert_equal",
+    722
+   ],
+   [
+    "symbol:xarray/tests/test_units.py#method",
+    197
+   ]
+  ],
+  "call_scc_sizes_top": [
+   2,
+   2
+  ],
+  "call_scc_count": 2,
+  "file_dep_scc_sizes_top": [
+   43
+  ],
+  "file_dep_scc_count": 1,
+  "file_dep_nodes": 137
+ },
+ {
+  "path": "/home/khoi/.cache/oxide/contextbench/corpora/pytest-dev__pytest@da9a2b584eb7",
+  "files": 245,
+  "entities": 5884,
+  "relations": 29864,
+  "index_s": 1.46,
+  "maxrss_mb": 220,
+  "mix": {
+   "calls/ambiguous/syntactic": 15,
+   "calls/resolved/resolved": 1262,
+   "calls/unresolved/syntactic": 17266,
+   "contains/resolved/syntactic": 5883,
+   "contains_logical/resolved/syntactic": 240,
+   "defines/resolved/syntactic": 1999,
+   "imports/resolved/resolved": 44,
+   "imports/unresolved/syntactic": 2508,
+   "references/resolved/resolved": 63,
+   "references/unresolved/syntactic": 104,
+   "tested_by/resolved/heuristic": 489
+  },
+  "ambiguous_fanout": {
+   "2": 3,
+   "3": 3
+  },
+  "unresolved_call_shape": {
+   "py:bare": 4546,
+   "py:qualified": 11508,
+   "py:self/this": 1212
+  },
+  "top_unresolved_bare": [
+   [
+    "str",
+    565
+   ],
+   [
+    "len",
+    493
+   ],
+   [
+    "isinstance",
+    327
+   ],
+   [
+    "getattr",
+    160
+   ],
+   [
+    "approx",
+    156
+   ],
+   [
+    "print",
+    102
+   ],
+   [
+    "Path",
+    95
+   ],
+   [
+    "hasattr",
+    94
+   ],
+   [
+    "repr",
+    85
+   ],
+   [
+    "super",
+    78
+   ],
+   [
+    "list",
+    75
+   ],
+   [
+    "type",
+    68
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:testing/test_assertion.py#callequal",
+    52
+   ],
+   [
+    "symbol:testing/test_assertrewrite.py#getmsg",
+    50
+   ],
+   [
+    "symbol:testing/code/test_source.py#getstatement",
+    27
+   ]
+  ],
+  "call_scc_sizes_top": [
+   3,
+   2,
+   2
+  ],
+  "call_scc_count": 3,
+  "file_dep_scc_sizes_top": [
+   2
+  ],
+  "file_dep_scc_count": 1,
+  "file_dep_nodes": 23
+ },
+ {
+  "path": "/home/khoi/.cache/oxide/contextbench-ts/corpora/darkreader__darkreader@991883df4d59",
+  "files": 210,
+  "entities": 1598,
+  "relations": 10754,
+  "index_s": 0.65,
+  "maxrss_mb": 220,
+  "mix": {
+   "calls/ambiguous/syntactic": 100,
+   "calls/resolved/resolved": 2202,
+   "calls/unresolved/syntactic": 4857,
+   "contains/resolved/syntactic": 1597,
+   "contains_logical/resolved/syntactic": 209,
+   "defines/resolved/syntactic": 688,
+   "imports/resolved/resolved": 962,
+   "imports/unresolved/syntactic": 176,
+   "references/resolved/resolved": 9,
+   "references/unresolved/syntactic": 4
+  },
+  "ambiguous_fanout": {
+   "2": 50
+  },
+  "unresolved_call_shape": {
+   "ts:bare": 1770,
+   "ts:qualified": 2108,
+   "ts:self/this": 377,
+   "tsx:bare": 164,
+   "tsx:qualified": 438
+  },
+  "top_unresolved_bare": [
+   [
+    "expect",
+    745
+   ],
+   [
+    "getComputedStyle",
+    288
+   ],
+   [
+    "it",
+    125
+   ],
+   [
+    "resolve",
+    49
+   ],
+   [
+    "Date",
+    43
+   ],
+   [
+    "Set",
+    42
+   ],
+   [
+    "Promise",
+    42
+   ],
+   [
+    "test",
+    36
+   ],
+   [
+    "Map",
+    35
+   ],
+   [
+    "reject",
+    24
+   ],
+   [
+    "setTimeout",
+    24
+   ],
+   [
+    "change",
+    21
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:tests/test-utils.ts#multiline",
+    140
+   ],
+   [
+    "symbol:src/inject/dynamic-theme/index.ts#createOrUpdateDynamicTheme",
+    107
+   ],
+   [
+    "symbol:src/utils/locales.ts#getLocalMessage",
+    74
+   ]
+  ],
+  "call_scc_sizes_top": [
+   2
+  ],
+  "call_scc_count": 1,
+  "file_dep_scc_sizes_top": [
+   6,
+   2
+  ],
+  "file_dep_scc_count": 2,
+  "file_dep_nodes": 200
+ },
+ {
+  "path": "/home/khoi/.cache/oxide/contextbench-ts/corpora/coder__code-server@5d3c9edce436",
+  "files": 83,
+  "entities": 569,
+  "relations": 5274,
+  "index_s": 0.34,
+  "maxrss_mb": 220,
+  "mix": {
+   "calls/resolved/resolved": 718,
+   "calls/unresolved/syntactic": 2578,
+   "contains/resolved/syntactic": 568,
+   "contains_logical/resolved/syntactic": 83,
+   "defines/resolved/syntactic": 252,
+   "imports/resolved/resolved": 376,
+   "imports/unresolved/syntactic": 228,
+   "references/resolved/resolved": 12,
+   "references/unresolved/syntactic": 4,
+   "tested_by/resolved/heuristic": 455
+  },
+  "ambiguous_fanout": {},
+  "unresolved_call_shape": {
+   "ts:bare": 1151,
+   "ts:qualified": 1259,
+   "ts:self/this": 168
+  },
+  "top_unresolved_bare": [
+   [
+    "expect",
+    418
+   ],
+   [
+    "it",
+    238
+   ],
+   [
+    "describe",
+    82
+   ],
+   [
+    "Error",
+    68
+   ],
+   [
+    "Promise",
+    27
+   ],
+   [
+    "resolve",
+    25
+   ],
+   [
+    "beforeEach",
+    23
+   ],
+   [
+    "field",
+    22
+   ],
+   [
+    "beforeAll",
+    21
+   ],
+   [
+    "URL",
+    19
+   ],
+   [
+    "afterEach",
+    19
+   ],
+   [
+    "reject",
+    19
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:src/node/cli.ts#parse",
+    51
+   ],
+   [
+    "symbol:test/e2e/baseFixture.ts#expect",
+    31
+   ],
+   [
+    "symbol:src/node/cli.ts#setDefaults",
+    30
+   ]
+  ],
+  "call_scc_sizes_top": [],
+  "call_scc_count": 0,
+  "file_dep_scc_sizes_top": [
+   4,
+   2
+  ],
+  "file_dep_scc_count": 2,
+  "file_dep_nodes": 75
+ },
+ {
+  "path": "/home/khoi/Projects/oxide-eval-data/oxide-go-eval/corpora/cli__cli@4f80400a896a",
+  "files": 733,
+  "entities": 6855,
+  "relations": 72483,
+  "index_s": 3.05,
+  "maxrss_mb": 226,
+  "mix": {
+   "calls/ambiguous/syntactic": 8,
+   "calls/resolved/resolved": 10684,
+   "calls/unresolved/syntactic": 27365,
+   "contains/resolved/syntactic": 6854,
+   "contains_logical/resolved/syntactic": 732,
+   "defines/resolved/syntactic": 5554,
+   "imports/resolved/resolved": 2694,
+   "imports/unresolved/syntactic": 3892,
+   "references/resolved/resolved": 6441,
+   "references/unresolved/syntactic": 1586,
+   "tested_by/resolved/heuristic": 6677
+  },
+  "ambiguous_fanout": {
+   "2": 4
+  },
+  "unresolved_call_shape": {
+   "go:bare": 2918,
+   "go:qualified": 24446,
+   "go:self/this": 1
+  },
+  "top_unresolved_bare": [
+   [
+    "len",
+    1051
+   ],
+   [
+    "append",
+    681
+   ],
+   [
+    "make",
+    206
+   ],
+   [
+    "string",
+    173
+   ],
+   [
+    "runF",
+    151
+   ],
+   [
+    "panic",
+    113
+   ],
+   [
+    "cmdTeardown",
+    65
+   ],
+   [
+    "new",
+    42
+   ],
+   [
+    "float64",
+    40
+   ],
+   [
+    "int",
+    26
+   ],
+   [
+    "f",
+    23
+   ],
+   [
+    "cancel",
+    20
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:pkg/httpmock/stub.go#REST",
+    818
+   ],
+   [
+    "symbol:pkg/httpmock/stub.go#GraphQL",
+    665
+   ],
+   [
+    "symbol:pkg/httpmock/stub.go#StringResponse",
+    584
+   ]
+  ],
+  "call_scc_sizes_top": [],
+  "call_scc_count": 0,
+  "file_dep_scc_sizes_top": [
+   3,
+   2,
+   2,
+   2,
+   2
+  ],
+  "file_dep_scc_count": 5,
+  "file_dep_nodes": 719
+ },
+ {
+  "path": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep",
+  "files": 236,
+  "entities": 4292,
+  "relations": 24707,
+  "index_s": 1.32,
+  "maxrss_mb": 226,
+  "mix": {
+   "calls/ambiguous/syntactic": 141,
+   "calls/resolved/resolved": 4213,
+   "calls/unresolved/syntactic": 4578,
+   "contains/resolved/syntactic": 4291,
+   "contains_logical/resolved/syntactic": 239,
+   "defines/resolved/syntactic": 1703,
+   "imports/ambiguous/syntactic": 9,
+   "imports/resolved/resolved": 611,
+   "imports/unresolved/syntactic": 438,
+   "references/ambiguous/syntactic": 8,
+   "references/resolved/resolved": 3727,
+   "references/unresolved/syntactic": 2965,
+   "tested_by/resolved/heuristic": 1868
+  },
+  "ambiguous_fanout": {
+   "2": 64,
+   "3": 10
+  },
+  "unresolved_call_shape": {
+   "rs:bare": 3646,
+   "rs:qualified": 925,
+   "rs:self/this": 7
+  },
+  "top_unresolved_bare": [
+   [
+    "assert_eq!",
+    1167
+   ],
+   [
+    "assert!",
+    771
+   ],
+   [
+    "Ok",
+    536
+   ],
+   [
+    "Some",
+    469
+   ],
+   [
+    "vec!",
+    251
+   ],
+   [
+    "Err",
+    97
+   ],
+   [
+    "format!",
+    92
+   ],
+   [
+    "write!",
+    56
+   ],
+   [
+    "t!",
+    43
+   ],
+   [
+    "matches!",
+    27
+   ],
+   [
+    "cfg!",
+    26
+   ],
+   [
+    "panic!",
+    22
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:crates/core/flags/parse.rs#parse_low_raw",
+    560
+   ],
+   [
+    "symbol:tests/macros.rs#rgtest",
+    349
+   ],
+   [
+    "symbol:crates/searcher/src/searcher/mod.rs#<impl SearcherBuilder>.new",
+    124
+   ]
+  ],
+  "call_scc_sizes_top": [
+   4,
+   2,
+   2
+  ],
+  "call_scc_count": 3,
+  "file_dep_scc_sizes_top": [
+   10,
+   9,
+   8,
+   5,
+   2
+  ],
+  "file_dep_scc_count": 5,
+  "file_dep_nodes": 103
+ }
+]

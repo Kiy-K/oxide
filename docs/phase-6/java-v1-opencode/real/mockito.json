@@ -1,0 +1,367 @@
+{
+ "repository": "/home/khoi/Projects/oxide-eval-data/oxide-jev-eval/cb-repos/mockito__mockito",
+ "commit": "116a4d6231dc35f90543060af41dcde00fe4e2ae",
+ "snapshot": "sha256:788e2cae5dd16139c99b0975289d3dc9fcba544fd4c426419a5c19a4940fcb25",
+ "files": 1130,
+ "java_files": 1004,
+ "coverage": {
+  "complete": 1004
+ },
+ "entities": 9879,
+ "java_symbol_kinds": {
+  "class": 1536,
+  "method": 6282,
+  "constructor": 495,
+  "enum": 18,
+  "interface": 271,
+  "annotation": 18
+ },
+ "graph_sha256": "1457b809a8738355c6c5df3c4b53139b33c3c5b99a885fb1f12baa8c6fcf4baf",
+ "relations": 78231,
+ "resolution": {
+  "calls:ambiguous": 2610,
+  "calls:resolved": 12159,
+  "calls:unresolved": 10318,
+  "contains:resolved": 9878,
+  "contains_logical:resolved": 1001,
+  "defines:resolved": 957,
+  "imports:ambiguous": 324,
+  "imports:resolved": 3653,
+  "imports:unresolved": 3384,
+  "references:resolved": 8614,
+  "references:unresolved": 16913,
+  "tested_by:resolved": 8420
+ },
+ "derive_cold_s": 1.044452607000494,
+ "derive_reused_s": 0.5192965949991049,
+ "facts_reused": 1004,
+ "derive_parity": true,
+ "index_cold_s": 2.855577643000288,
+ "index_unchanged_s": 0.0984593360008148,
+ "index_edit_s": 2.3574424580001505,
+ "edit_reused": 1003,
+ "persisted_edit_parity": true,
+ "peak_rss_mib": 638.57421875,
+ "resolved_import_sample": [
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/internal/stubbing/answers/AnswersWithDelay.java#AnswersWithDelay"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 262,
+    "end": 324,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/internal/stubbing/answers/ReturnsArgumentAt.java#ReturnsArgumentAt"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 325,
+    "end": 388,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/internal/stubbing/answers/ReturnsElementsOf.java#ReturnsElementsOf"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 389,
+    "end": 452,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/internal/stubbing/defaultanswers/ForwardsInvocations.java#ForwardsInvocations"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 453,
+    "end": 525,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/Answer.java#Answer"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 526,
+    "end": 561,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/Answer1.java#Answer1"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 562,
+    "end": 598,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/Answer2.java#Answer2"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 599,
+    "end": 635,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/Answer3.java#Answer3"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 636,
+    "end": 672,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/Answer4.java#Answer4"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 673,
+    "end": 709,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/Answer5.java#Answer5"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 710,
+    "end": 746,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/Answer6.java#Answer6"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 747,
+    "end": 783,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/VoidAnswer1.java#VoidAnswer1"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 784,
+    "end": 824,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/VoidAnswer2.java#VoidAnswer2"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 825,
+    "end": 865,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/VoidAnswer3.java#VoidAnswer3"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 866,
+    "end": 906,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/VoidAnswer4.java#VoidAnswer4"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 907,
+    "end": 947,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/VoidAnswer5.java#VoidAnswer5"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 948,
+    "end": 988,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/stubbing/VoidAnswer6.java#VoidAnswer6"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalAnswers.java",
+    "start": 989,
+    "end": 1029,
+    "digest": "sha256:e1f69c9185d4ae704dc0a71f7e608e9d093df43a2d7d2ce93e976db500267b5a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalMatchers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/internal/progress/ThreadSafeMockingProgress.java#ThreadSafeMockingProgress.mockingProgress"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalMatchers.java",
+    "start": 142,
+    "end": 228,
+    "digest": "sha256:8ec683202cc21fac8b40d10444cea042d559b122b1607c94d19b9d7a68be65c9"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalMatchers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/internal/matchers/ArrayEquals.java#ArrayEquals"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalMatchers.java",
+    "start": 230,
+    "end": 279,
+    "digest": "sha256:8ec683202cc21fac8b40d10444cea042d559b122b1607c94d19b9d7a68be65c9"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:mockito-core/src/main/java/org/mockito/AdditionalMatchers.java",
+   "targets": [
+    "symbol:mockito-core/src/main/java/org/mockito/internal/matchers/CompareEqual.java#CompareEqual"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "mockito-core/src/main/java/org/mockito/AdditionalMatchers.java",
+    "start": 280,
+    "end": 330,
+    "digest": "sha256:8ec683202cc21fac8b40d10444cea042d559b122b1607c94d19b9d7a68be65c9"
+   }
+  }
+ ]
+}

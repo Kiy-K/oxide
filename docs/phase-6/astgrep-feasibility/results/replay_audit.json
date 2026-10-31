@@ -1,0 +1,422 @@
+[
+ {
+  "index": 0,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7",
+  "pattern": "only_relation_agnostic_fields|deconstruction\\[2\\]\\['to'\\]",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 1,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__17aff6c5",
+  "pattern": "Pipeline.*len|len\\(.*pipeline|len\\(.*pipe",
+  "label": "neutral",
+  "reason": "both empty"
+ },
+ {
+  "index": 2,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "def _binary_op|keep_attrs|OPTIONS\\[\"keep_attrs\"\\]",
+  "label": "harmful",
+  "reason": "drops _get_keep_attrs import (substring of keep_attrs) and keep_attrs parameter docs"
+ },
+ {
+  "index": 3,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "def where|where\\s*=|apply_ufunc\\(",
+  "label": "harmful",
+  "reason": "drops `def apply_ufunc(` (the regex `apply_ufunc\\(` also finds the definition) and doctests"
+ },
+ {
+  "index": 4,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "keep_attrs=True",
+  "label": "neutral",
+  "reason": "both empty"
+ },
+ {
+  "index": 5,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "keep_attrs|OPTIONS\\[.*keep_attrs",
+  "label": "harmful",
+  "reason": "drops _get_keep_attrs import"
+ },
+ {
+  "index": 6,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "xr.where|where\\(.*attrs|keep_attrs.*where",
+  "label": "harmful",
+  "reason": "rule over-broad: adds 66 unrelated `.where` method accesses"
+ },
+ {
+  "index": 7,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4cac510e",
+  "pattern": "MigrationWriter|imports.*sort|sorted\\(.*import|migration.*import",
+  "label": "harmful",
+  "reason": "drops writer.py migration_imports lines (relevant to import sorting); adds serializer imports assignments"
+ },
+ {
+  "index": 8,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+  "pattern": "def fowlkes_mallows_score|tk / np.sqrt",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 9,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+  "pattern": "fowlkes_mallows_score|tk / np.sqrt",
+  "label": "helpful",
+  "reason": "drops 4 doctests and a :ref: line irrelevant to the tk / np.sqrt overflow; minor"
+ },
+ {
+  "index": 10,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+  "pattern": "sqrt\\(.* / .*\\).*sqrt|np.sqrt\\(.* /",
+  "label": "neutral",
+  "reason": "both empty"
+ },
+ {
+  "index": 11,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "_enforce_prediction_order|isinstance\\(predictions, list\\)|estimators_\\[i_label\\]",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 12,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "estimators_\\[i_label\\]\\.classes_|_enforce_prediction_order",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 13,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "isinstance\\(predictions, list\\)|_enforce_prediction_order",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 14,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "predictions = \\[_enforce_prediction_order|isinstance\\(predictions, list\\)",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 15,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "FutureWarning.*stacklevel|stacklevel=2",
+  "label": "helpful",
+  "reason": "drops one docstring sentence; minor"
+ },
+ {
+  "index": 16,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "deprecated.*FutureWarning|warn.*FutureWarning|since='5\\.1|version='5\\.1|5\\.2",
+  "label": "helpful",
+  "reason": "drops 49 float literals matched by 5\\.2 (e.g. 5.29e-11); adds since=\"5.1\" the single-quoted regex missed"
+ },
+ {
+  "index": 17,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "version =|5\\.1",
+  "label": "neutral",
+  "reason": "identical in .py (one non-Python hit unseen by AST)"
+ },
+ {
+  "index": 18,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "version =|__version__|5\\.1|5\\.2",
+  "label": "neutral",
+  "reason": "identical in .py (18 non-Python hits unseen by AST)"
+ },
+ {
+  "index": 19,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "warnings.warn\\(.*FutureWarning|category=FutureWarning",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 20,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "warnings\\.warn\\(.*FutureWarning|category=FutureWarning",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 21,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "attrs =|keep_attrs",
+  "label": "harmful",
+  "reason": "drops _get_keep_attrs import and keep_attrs parameter docs"
+ },
+ {
+  "index": 22,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "combine_attrs.*context|context=",
+  "label": "neutral",
+  "reason": "both empty"
+ },
+ {
+  "index": 23,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "combine_attrs.*context|context\\[|context=",
+  "label": "neutral",
+  "reason": "same lines"
+ },
+ {
+  "index": 24,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "context.*coordinate|context=|combine_attrs\\(",
+  "label": "helpful",
+  "reason": "drops one prose docstring line; minor"
+ },
+ {
+  "index": 25,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "context=",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 26,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "context=.*variable|context=.*coord|context",
+  "label": "harmful",
+  "reason": "drops docstring lines describing the combine_attrs context argument, relevant to the task"
+ },
+ {
+  "index": 27,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "keep_attrs.*context|merge_attrs\\(|keep_attrs=",
+  "label": "harmful",
+  "reason": "drops `keep_attrs = lambda attrs, context: ...` (likely the bug site); adds typed keep_attrs defaults"
+ },
+ {
+  "index": 28,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "merge_attrs\\(|combine_attrs=",
+  "label": "harmful",
+  "reason": "drops `def merge_attrs(...)`; adds typed combine_attrs defaults"
+ },
+ {
+  "index": 29,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "where.*keep_attrs|keep_attrs=True",
+  "label": "neutral",
+  "reason": "same lines"
+ },
+ {
+  "index": 30,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "where\\(.*keep_attrs|keep_attrs=True.*where|where.*attrs",
+  "label": "harmful",
+  "reason": "drops `def test_where_attrs()`"
+ },
+ {
+  "index": 31,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "where\\s*=|where,",
+  "label": "harmful",
+  "reason": "AST finds nothing; drops duck_array_ops.where reference and See Also line"
+ },
+ {
+  "index": 32,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "%(distinct)s|template = .*function",
+  "label": "neutral",
+  "reason": "same lines"
+ },
+ {
+  "index": 33,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(%(distinct|function)|%(distinct)s|class Aggregate",
+  "label": "helpful",
+  "reason": "adds the actual '%(function)s(%(distinct)s%(expressions)s)' template the agent's unescaped regex missed; drops class AggregateQuery. Escaping, not syntax"
+ },
+ {
+  "index": 34,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(DISTINCT|DISTINCT %\\(expressions\\)|distinct=True",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 35,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(|Count|distinct=True|class Count|def as_sql",
+  "label": "helpful",
+  "reason": "drops Counter(), as_sqlite/as_mysql definitions, comments matched by substrings"
+ },
+ {
+  "index": 36,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(|DISTINCT|distinct=True|class Count|as_sql\\(",
+  "label": "harmful",
+  "reason": "call-shaped rule drops 55 `def as_sql(` definitions the regex `as_sql\\(` also found"
+ },
+ {
+  "index": 37,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "distinct.*CASE|COUNT\\(DISTINCT",
+  "label": "neutral",
+  "reason": "both empty"
+ },
+ {
+  "index": 38,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "extra_context\\['distinct'\\]|DISTINCT ' if",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 39,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "template =|%(distinct)s",
+  "label": "harmful",
+  "reason": "drops filter_template / sql_template assignments, plausibly relevant to the template bug"
+ },
+ {
+  "index": 40,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "NotImplemented|except ValueError",
+  "label": "helpful",
+  "reason": "drops 20 `raise NotImplementedError(` substring matches"
+ },
+ {
+  "index": 41,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "converter\\(input_\\)|__array_ufunc__",
+  "label": "neutral",
+  "reason": "both empty"
+ },
+ {
+  "index": 42,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "converters_and_unit|except UnitConversionError|def converters",
+  "label": "harmful",
+  "reason": "drops get_converters_and_unit (the helper converters_and_unit wraps)"
+ },
+ {
+  "index": 43,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def __array_ufunc__|converter\\(input_\\)|arrays.append",
+  "label": "neutral",
+  "reason": "same lines"
+ },
+ {
+  "index": 44,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def __array_ufunc__|converter\\(input_|_condition_arg|NotImplemented",
+  "label": "helpful",
+  "reason": "drops ~56 NotImplementedError substring matches"
+ },
+ {
+  "index": 45,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def converters_and_unit|converter\\(input_|def get_converter",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 46,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def converters_and_unit|def get_converter|__array_ufunc__.*NotImplemented|return NotImplemented",
+  "label": "harmful",
+  "reason": "drops comments explaining `return NotImplemented` and get_converters_and_unit"
+ },
+ {
+  "index": 47,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+  "pattern": "urllib3.*parse_url|parse_url\\(.*auth|get_auth_from_url",
+  "label": "neutral",
+  "reason": "no Python hits; HISTORY.md unseen by AST"
+ },
+ {
+  "index": 48,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "Invalid fill method|\\.loc|method=",
+  "label": "helpful",
+  "reason": "drops .lock/.locks false positives and doctests; adds 16 typed `method: str = None` parameters"
+ },
+ {
+  "index": 49,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "Invalid fill method|class .*Loc|\\.loc|method=",
+  "label": "helpful",
+  "reason": "drops doctests; adds typed method parameters"
+ },
+ {
+  "index": 50,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|LocIndexer|method=",
+  "label": "harmful",
+  "reason": "drops `class _LocIndexer` / `def loc` (exact name rule misses _LocIndexer)"
+ },
+ {
+  "index": 51,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|LocIndexer|method=|fill method|Invalid fill method",
+  "label": "harmful",
+  "reason": "drops `class _LocIndexer` (exact name rule)"
+ },
+ {
+  "index": 52,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|class .*Loc|method=",
+  "label": "helpful",
+  "reason": "drops doctests; adds typed method parameters"
+ },
+ {
+  "index": 53,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|method=|method\\b",
+  "label": "helpful",
+  "reason": "drops ~190 `access_method`-style substring matches"
+ },
+ {
+  "index": 54,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class .*Loc|\\.loc|method=|method",
+  "label": "helpful",
+  "reason": "drops prose comment/docstring lines mentioning 'method'"
+ },
+ {
+  "index": 55,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class _LocIndexer|LocIndexer|loc\\[",
+  "label": "helpful",
+  "reason": "drops `.iloc[` matches of loc\\["
+ },
+ {
+  "index": 56,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class _LocIndexer|def __getitem__\\(self, key\\).*",
+  "label": "neutral",
+  "reason": "identical"
+ },
+ {
+  "index": 57,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class.*Loc|\\.loc|method=|method\\)",
+  "label": "helpful",
+  "reason": "adds typed method parameters and positional `method` arguments; drops doctests"
+ },
+ {
+  "index": 58,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "method=\"nearest\"|method=",
+  "label": "helpful",
+  "reason": "adds typed method parameters; drops doctests"
+ },
+ {
+  "index": 59,
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "remap_label_indexers|\\.sel\\(.*method|\\.loc",
+  "label": "harmful",
+  "reason": "drops `def test_remap_label_indexers`; adds a multi-line .sel( call"
+ }
+]

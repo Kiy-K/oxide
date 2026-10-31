@@ -1,0 +1,1566 @@
+{
+  "ra_version": "rust-analyzer 1.98.0 (88d9e12 2026-08-18)",
+  "cfg": {
+    "default": [
+      "unix",
+      "debug_assertions",
+      "target_os=\"linux\"",
+      "target_family=\"unix\"",
+      "target_arch=\"x86_64\"",
+      "target_pointer_width=\"64\"",
+      "target_endian=\"little\"",
+      "panic=\"unwind\""
+    ],
+    "test": [
+      "unix",
+      "debug_assertions",
+      "target_os=\"linux\"",
+      "target_family=\"unix\"",
+      "target_arch=\"x86_64\"",
+      "target_pointer_width=\"64\"",
+      "target_endian=\"little\"",
+      "panic=\"unwind\"",
+      "test"
+    ]
+  },
+  "workspace_crates": 19,
+  "counts": {
+    "calls": {
+      "no_oracle": 488,
+      "agree": 3724,
+      "disagree": 1
+    },
+    "references": {
+      "agree": 3595,
+      "no_oracle": 128,
+      "disagree": 4
+    },
+    "imports": {
+      "agree": 505,
+      "no_oracle": 91,
+      "disagree": 15
+    }
+  },
+  "overall": {
+    "no_oracle": 707,
+    "agree": 7824,
+    "disagree": 20
+  },
+  "precision": 0.9974502804691484,
+  "no_oracle_reasons": {
+    "empty": 707
+  },
+  "ambiguous": {
+    "matched": 62,
+    "none": 11
+  },
+  "unresolved_categories": {
+    "other": 40
+  },
+  "unresolved_sample": [
+    {
+      "kind": "calls",
+      "source": "symbol:crates/searcher/src/searcher/core.rs#<impl Core<'s, M, S>>.match_by_line_slow",
+      "text": "Range::new",
+      "path": "crates/searcher/src/searcher/core.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 80,
+          "character": 11,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#queries",
+      "text": "t",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 895,
+          "character": 21,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/searcher/src/sink.rs#Sink.binary_data",
+      "text": "Self::Error",
+      "path": "crates/searcher/src/sink.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/searcher/src/sink.rs",
+          "line": 108,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/sink.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#queries",
+      "text": "t",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 895,
+          "character": 21,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#queries",
+      "text": "t",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 895,
+          "character": 21,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.try_captures_iter",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.find_iter",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#<impl GramQuery>.union",
+      "text": "Literal",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 16,
+          "character": 4,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#Matcher.captures_iter",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/globset/src/glob.rs#class",
+      "text": "Class",
+      "path": "crates/globset/src/glob.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/globset/src/glob.rs",
+          "line": 276,
+          "character": 4,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/globset/src/glob.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.is_match",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#Matcher.replace_with_captures_at",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#queries",
+      "text": "t",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 895,
+          "character": 21,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#Matcher.find_at",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.captures_iter_at",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.new_captures",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#queries",
+      "text": "t",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 895,
+          "character": 21,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#queries",
+      "text": "t",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 895,
+          "character": 21,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.try_captures_iter_at",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.captures_iter_at",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.captures",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/searcher/src/searcher/core.rs#<impl Core<'s, M, S>>.after_context_by_line",
+      "text": "Range::new",
+      "path": "crates/searcher/src/searcher/core.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 80,
+          "character": 11,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#Matcher.replace_with_captures_at",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#queries",
+      "text": "t",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 895,
+          "character": 21,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/searcher/src/searcher/glue.rs#<impl MultiLine<'s, M, S>>.sink_matched_inverted",
+      "text": "Range::new",
+      "path": "crates/searcher/src/searcher/glue.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 80,
+          "character": 11,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#Matcher.try_captures_iter",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.replace_with_captures",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#queries",
+      "text": "t",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 895,
+          "character": 21,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.try_find_iter",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.replace",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#queries",
+      "text": "t",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 895,
+          "character": 21,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.replace_with_captures_at",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/index/src/literal.rs#queries",
+      "text": "t",
+      "path": "crates/index/src/literal.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/index/src/literal.rs",
+          "line": 895,
+          "character": 21,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/index/src/literal.rs"
+        }
+      ]
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/searcher/src/searcher/glue.rs#<impl MultiLine<'s, M, S>>.sink_matched_inverted",
+      "text": "Range::new",
+      "path": "crates/searcher/src/searcher/glue.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 80,
+          "character": 11,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#<impl Matcher for &'a M>.replace_with_captures",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#Matcher.try_find_iter",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#Matcher.is_match",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/printer/src/util.rs#DecimalFormatter",
+      "text": "Self::MAX_U64_LEN",
+      "path": "crates/printer/src/util.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/printer/src/util.rs",
+          "line": 421,
+          "character": 10,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/printer/src/util.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#Matcher.replace",
+      "text": "Self::Error",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 558,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/matcher/src/lib.rs#Matcher.try_captures_iter_at",
+      "text": "Self::Captures",
+      "path": "crates/matcher/src/lib.rs",
+      "cause": "other",
+      "ra": [
+        {
+          "path": "crates/matcher/src/lib.rs",
+          "line": 550,
+          "character": 9,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/matcher/src/lib.rs"
+        }
+      ]
+    }
+  ],
+  "disagreements": [
+    {
+      "kind": "imports",
+      "source": "file:crates/core/flags/doc/help.rs",
+      "evidence": "doc::version",
+      "path": "crates/core/flags/doc/help.rs",
+      "line": 11,
+      "targets": [
+        "module:rust:crates/core/main.rs::flags::doc::version"
+      ],
+      "ra": [
+        {
+          "path": "crates/core/flags/doc/version.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/core/flags/doc/version.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/core/flags/doc/help.rs', targets=('module:rust:crates/core/main.rs::flags::doc::version',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/core/flags/doc/help.rs', start=305, end=317, digest='sha256:c3a5ff9abf738dd84fe957378f2bb8e088838a531783f55a3b5e860a982877cb'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/core/flags/doc/man.rs",
+      "evidence": "doc::version",
+      "path": "crates/core/flags/doc/man.rs",
+      "line": 7,
+      "targets": [
+        "module:rust:crates/core/main.rs::flags::doc::version"
+      ],
+      "ra": [
+        {
+          "path": "crates/core/flags/doc/version.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/core/flags/doc/version.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/core/flags/doc/man.rs', targets=('module:rust:crates/core/main.rs::flags::doc::version',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/core/flags/doc/man.rs', start=163, end=175, digest='sha256:5cd7a74aa3f3bf9eaa0e2ad24b2b0214544c53c7a7b7aac3720a3c8af9ed769e'))"
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/core/main.rs#run",
+      "evidence": "search",
+      "path": "crates/core/main.rs",
+      "line": 89,
+      "targets": [
+        "symbol:crates/core/main.rs#search"
+      ],
+      "ra": [
+        {
+          "path": "crates/core/search.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/core/search.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='calls', source='symbol:crates/core/main.rs#run', targets=('symbol:crates/core/main.rs#search',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/core/main.rs', start=3642, end=3648, digest='sha256:21c10c3b35114543b90f38f27fd9102703a099bd504db950e1f10d2739b1444c'))"
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/globset/src/glob.rs#<impl std::str::FromStr for Glob>.from_str",
+      "evidence": "Self",
+      "path": "crates/globset/src/glob.rs",
+      "line": 126,
+      "targets": [
+        "symbol:crates/globset/src/glob.rs#Glob"
+      ],
+      "ra": [
+        {
+          "path": "crates/globset/src/glob.rs",
+          "line": 122,
+          "character": 27,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/globset/src/glob.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='references', source='symbol:crates/globset/src/glob.rs#<impl std::str::FromStr for Glob>.from_str', targets=('symbol:crates/globset/src/glob.rs#Glob',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/globset/src/glob.rs', start=4163, end=4167, digest='sha256:d230e938384da768864b4aff78836271c1e923ee9f1ffae2d9319fed8bb2ccb4'))"
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/globset/src/lib.rs#<impl Default for GlobSet>.default",
+      "evidence": "Self",
+      "path": "crates/globset/src/lib.rs",
+      "line": 558,
+      "targets": [
+        "symbol:crates/globset/src/lib.rs#GlobSet"
+      ],
+      "ra": [
+        {
+          "path": "crates/globset/src/lib.rs",
+          "line": 555,
+          "character": 17,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/globset/src/lib.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='references', source='symbol:crates/globset/src/lib.rs#<impl Default for GlobSet>.default', targets=('symbol:crates/globset/src/lib.rs#GlobSet',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/globset/src/lib.rs', start=18485, end=18489, digest='sha256:7e34c24673ee164d779de7d0efdaf97f19176f9e0bfc71e0842345ef76f0a38a'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/ignore/src/dir.rs",
+      "evidence": "self",
+      "path": "crates/ignore/src/dir.rs",
+      "line": 26,
+      "targets": [
+        "module:rust:crates/ignore/src/lib.rs::gitignore"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/gitignore.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/gitignore.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/ignore/src/dir.rs', targets=('module:rust:crates/ignore/src/lib.rs::gitignore',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/dir.rs', start=1029, end=1033, digest='sha256:e2ad00e37e22433feb6f06795e4a7aea6af2a4e06f44f6f56e171377e42f56f3'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/ignore/src/dir.rs",
+      "evidence": "self",
+      "path": "crates/ignore/src/dir.rs",
+      "line": 27,
+      "targets": [
+        "module:rust:crates/ignore/src/lib.rs::overrides"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/overrides.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/overrides.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/ignore/src/dir.rs', targets=('module:rust:crates/ignore/src/lib.rs::overrides',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/dir.rs', start=1081, end=1085, digest='sha256:e2ad00e37e22433feb6f06795e4a7aea6af2a4e06f44f6f56e171377e42f56f3'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/ignore/src/dir.rs",
+      "evidence": "self",
+      "path": "crates/ignore/src/dir.rs",
+      "line": 29,
+      "targets": [
+        "module:rust:crates/ignore/src/lib.rs::types"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/types.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/types.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/ignore/src/dir.rs', targets=('module:rust:crates/ignore/src/lib.rs::types',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/dir.rs', start=1157, end=1161, digest='sha256:e2ad00e37e22433feb6f06795e4a7aea6af2a4e06f44f6f56e171377e42f56f3'))"
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/ignore/src/lib.rs#<impl Match<T>>.or",
+      "evidence": "Self",
+      "path": "crates/ignore/src/lib.rs",
+      "line": 484,
+      "targets": [
+        "symbol:crates/ignore/src/lib.rs#Match"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/lib.rs",
+          "line": 426,
+          "character": 8,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/lib.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='references', source='symbol:crates/ignore/src/lib.rs#<impl Match<T>>.or', targets=('symbol:crates/ignore/src/lib.rs#Match',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/lib.rs', start=16687, end=16691, digest='sha256:89cb2cbdd479ae4a8cf5ea0bbea4cad72b6833a6dfb95008e8f51b185b44aafc'))"
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/ignore/src/lib.rs#<impl Match<T>>.or",
+      "evidence": "Self",
+      "path": "crates/ignore/src/lib.rs",
+      "line": 484,
+      "targets": [
+        "symbol:crates/ignore/src/lib.rs#Match"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/lib.rs",
+          "line": 426,
+          "character": 8,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/lib.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='references', source='symbol:crates/ignore/src/lib.rs#<impl Match<T>>.or', targets=('symbol:crates/ignore/src/lib.rs#Match',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/lib.rs', start=16696, end=16700, digest='sha256:89cb2cbdd479ae4a8cf5ea0bbea4cad72b6833a6dfb95008e8f51b185b44aafc'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/ignore/src/overrides.rs",
+      "evidence": "self",
+      "path": "crates/ignore/src/overrides.rs",
+      "line": 12,
+      "targets": [
+        "module:rust:crates/ignore/src/lib.rs::gitignore"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/gitignore.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/gitignore.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/ignore/src/overrides.rs', targets=('module:rust:crates/ignore/src/lib.rs::gitignore',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/overrides.rs', start=239, end=243, digest='sha256:4283fd4dc169476a580ea1e393b1b125a357cda4c1862293800097bd91acb69e'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/printer/src/path.rs",
+      "evidence": "self",
+      "path": "crates/printer/src/path.rs",
+      "line": 7,
+      "targets": [
+        "module:rust:crates/printer/src/lib.rs::hyperlink"
+      ],
+      "ra": [
+        {
+          "path": "crates/printer/src/hyperlink/mod.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/printer/src/hyperlink/mod.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/printer/src/path.rs', targets=('module:rust:crates/printer/src/lib.rs::hyperlink',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/printer/src/path.rs', start=108, end=112, digest='sha256:733d31ce45d34bc521d35fa63494f10b0fc73760496c5181a51a1473b672d234'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/printer/src/standard.rs",
+      "evidence": "self",
+      "path": "crates/printer/src/standard.rs",
+      "line": 22,
+      "targets": [
+        "module:rust:crates/printer/src/lib.rs::hyperlink"
+      ],
+      "ra": [
+        {
+          "path": "crates/printer/src/hyperlink/mod.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/printer/src/hyperlink/mod.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/printer/src/standard.rs', targets=('module:rust:crates/printer/src/lib.rs::hyperlink',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/printer/src/standard.rs', start=418, end=422, digest='sha256:8fc94a8cba6add7dbe8394cd2c6f24dffb773b9f85852ee6d4e97747d40e7460'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/printer/src/summary.rs",
+      "evidence": "self",
+      "path": "crates/printer/src/summary.rs",
+      "line": 18,
+      "targets": [
+        "module:rust:crates/printer/src/lib.rs::hyperlink"
+      ],
+      "ra": [
+        {
+          "path": "crates/printer/src/hyperlink/mod.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/printer/src/hyperlink/mod.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/printer/src/summary.rs', targets=('module:rust:crates/printer/src/lib.rs::hyperlink',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/printer/src/summary.rs', start=344, end=348, digest='sha256:76ac78ad878a2a6a45a19563659e710b9080678397fbcffdb68746f5eefe3655'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/regex/src/config.rs",
+      "evidence": "ban",
+      "path": "crates/regex/src/config.rs",
+      "line": 11,
+      "targets": [
+        "module:rust:crates/regex/src/lib.rs::ban"
+      ],
+      "ra": [
+        {
+          "path": "crates/regex/src/ban.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/regex/src/ban.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/regex/src/config.rs', targets=('module:rust:crates/regex/src/lib.rs::ban',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/regex/src/config.rs', start=189, end=192, digest='sha256:8af11cac22616a5227542beead8d7ee9fb62c208a5cfc9923c07186eae1fd9cb'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/searcher/src/lib.rs",
+      "evidence": "sinks",
+      "path": "crates/searcher/src/lib.rs",
+      "line": 94,
+      "targets": [
+        "module:rust:crates/searcher/src/lib.rs::sink::sinks"
+      ],
+      "ra": [
+        {
+          "path": "crates/searcher/src/sink.rs",
+          "line": 516,
+          "character": 8,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/sink.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/searcher/src/lib.rs', targets=('module:rust:crates/searcher/src/lib.rs::sink::sinks',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/searcher/src/lib.rs', start=3595, end=3600, digest='sha256:7b6c771a3d3e5c40dabe776ea0d8b5af9dbacd84508b9e367bd93ede032f968d'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/searcher/src/searcher/core.rs",
+      "evidence": "self",
+      "path": "crates/searcher/src/searcher/core.rs",
+      "line": 7,
+      "targets": [
+        "module:rust:crates/searcher/src/lib.rs::lines"
+      ],
+      "ra": [
+        {
+          "path": "crates/searcher/src/lines.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/lines.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/searcher/src/searcher/core.rs', targets=('module:rust:crates/searcher/src/lib.rs::lines',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/searcher/src/searcher/core.rs', start=126, end=130, digest='sha256:7f3fd0976fc91e8aca2eaa07b423ab2a6ad919984b261604d35d715fa02ab3ef'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/searcher/src/searcher/glue.rs",
+      "evidence": "self",
+      "path": "crates/searcher/src/searcher/glue.rs",
+      "line": 5,
+      "targets": [
+        "module:rust:crates/searcher/src/lib.rs::lines"
+      ],
+      "ra": [
+        {
+          "path": "crates/searcher/src/lines.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/lines.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/searcher/src/searcher/glue.rs', targets=('module:rust:crates/searcher/src/lib.rs::lines',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/searcher/src/searcher/glue.rs', start=115, end=119, digest='sha256:c2a6d3055a7a2e69a7208113e837eec247d30a43e0c96029aad307f83632fb02'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/searcher/src/searcher/glue.rs",
+      "evidence": "crate::sinks",
+      "path": "crates/searcher/src/searcher/glue.rs",
+      "line": 1496,
+      "targets": [
+        "module:rust:crates/searcher/src/lib.rs::sink::sinks"
+      ],
+      "ra": [
+        {
+          "path": "crates/searcher/src/sink.rs",
+          "line": 516,
+          "character": 8,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/sink.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/searcher/src/searcher/glue.rs', targets=('module:rust:crates/searcher/src/lib.rs::sink::sinks',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/searcher/src/searcher/glue.rs', start=48292, end=48304, digest='sha256:c2a6d3055a7a2e69a7208113e837eec247d30a43e0c96029aad307f83632fb02'))"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/searcher/src/searcher/mod.rs",
+      "evidence": "self",
+      "path": "crates/searcher/src/searcher/mod.rs",
+      "line": 16,
+      "targets": [
+        "module:rust:crates/searcher/src/lib.rs::line_buffer"
+      ],
+      "ra": [
+        {
+          "path": "crates/searcher/src/line_buffer.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/line_buffer.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/searcher/src/searcher/mod.rs', targets=('module:rust:crates/searcher/src/lib.rs::line_buffer',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/searcher/src/searcher/mod.rs', start=243, end=247, digest='sha256:6ae846df42f0868385bc54ef728db822c86f20f6d6457777d8f8058fc4c67bf0'))"
+    }
+  ],
+  "first_pass": {
+    "counts": {
+      "calls": {
+        "no_oracle": 488,
+        "agree": 3724,
+        "disagree": 1
+      },
+      "references": {
+        "agree": 3595,
+        "no_oracle": 128,
+        "disagree": 4
+      },
+      "imports": {
+        "agree": 505,
+        "no_oracle": 91,
+        "disagree": 15
+      }
+    },
+    "precision": 0.9974502804691484
+  },
+  "inspection": [
+    {
+      "kind": "imports",
+      "source": "file:crates/core/flags/doc/help.rs",
+      "evidence": "doc::version",
+      "path": "crates/core/flags/doc/help.rs",
+      "line": 11,
+      "targets": [
+        "module:rust:crates/core/main.rs::flags::doc::version"
+      ],
+      "ra": [
+        {
+          "path": "crates/core/flags/doc/version.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/core/flags/doc/version.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/core/flags/doc/help.rs', targets=('module:rust:crates/core/main.rs::flags::doc::version',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/core/flags/doc/help.rs', start=305, end=317, digest='sha256:c3a5ff9abf738dd84fe957378f2bb8e088838a531783f55a3b5e860a982877cb'))",
+      "source_excerpt": "\nis used when the `--help` flag is given.\n*/\n\nuse std::{collections::BTreeMap, fmt::Write};\n\nuse crate::flags::{Category, Flag, defs::FLAGS, doc::version};\n\nconst TEMPLATE_SHORT: &'static str = include_str!(\"template.short.help\");\nconst TEMPLATE_LONG: &'static str = include_str!(\"template.long.help\");\n\n/// Wraps `std::write!` and asserts there is no failure.\n///\n/// We only write to `String` in this module.\nmacro_rules! write {\n    ($($tt:tt)*) => { std::write!($($tt)*).unwrap(); }\n}\n\n/// Genera",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/core/flags/doc/man.rs",
+      "evidence": "doc::version",
+      "path": "crates/core/flags/doc/man.rs",
+      "line": 7,
+      "targets": [
+        "module:rust:crates/core/main.rs::flags::doc::version"
+      ],
+      "ra": [
+        {
+          "path": "crates/core/flags/doc/version.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/core/flags/doc/version.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/core/flags/doc/man.rs', targets=('module:rust:crates/core/main.rs::flags::doc::version',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/core/flags/doc/man.rs', start=163, end=175, digest='sha256:5cd7a74aa3f3bf9eaa0e2ad24b2b0214544c53c7a7b7aac3720a3c8af9ed769e'))",
+      "source_excerpt": "\nProvides routines for generating ripgrep's man page in `roff` format.\n*/\n\nuse std::{collections::BTreeMap, fmt::Write};\n\nuse crate::flags::{Flag, defs::FLAGS, doc::version};\n\nconst TEMPLATE: &'static str = include_str!(\"template.rg.1\");\n\n/// Wraps `std::write!` and asserts there is no failure.\n///\n/// We only write to `String` in this module.\nmacro_rules! write {\n    ($($tt:tt)*) => { std::write!($($tt)*).unwrap(); }\n}\n\n/// Wraps `std::writeln!` and asserts there is no failure.\n///\n/// We only ",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "calls",
+      "source": "symbol:crates/core/main.rs#run",
+      "evidence": "search",
+      "path": "crates/core/main.rs",
+      "line": 89,
+      "targets": [
+        "symbol:crates/core/main.rs#search"
+      ],
+      "ra": [
+        {
+          "path": "crates/core/search.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/core/search.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='calls', source='symbol:crates/core/main.rs#run', targets=('symbol:crates/core/main.rs#search',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/core/main.rs', start=3642, end=3648, digest='sha256:21c10c3b35114543b90f38f27fd9102703a099bd504db950e1f10d2739b1444c'))",
+      "source_excerpt": "\nuse crate::flags::{HiArgs, SearchMode};\n\n#[macro_use]\nmod messages;\n\nmod flags;\nmod haystack;\nmod index;\nmod logger;\nmod search;\n\n// Since Rust no longer uses jemalloc by default, ripgrep will, by default,\n// use the system allocator. On Linux, this would normally be glibc's\n// allocator, which is pretty good. In particular, ripgrep does not have a\n// particularly allocation heavy workload, so there really isn't much\n// difference (for ripgrep's purposes) between glibc's allocator and jemalloc.",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/globset/src/glob.rs#<impl std::str::FromStr for Glob>.from_str",
+      "evidence": "Self",
+      "path": "crates/globset/src/glob.rs",
+      "line": 126,
+      "targets": [
+        "symbol:crates/globset/src/glob.rs#Glob"
+      ],
+      "ra": [
+        {
+          "path": "crates/globset/src/glob.rs",
+          "line": 122,
+          "character": 27,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/globset/src/glob.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='references', source='symbol:crates/globset/src/glob.rs#<impl std::str::FromStr for Glob>.from_str', targets=('symbol:crates/globset/src/glob.rs#Glob',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/globset/src/glob.rs', start=4163, end=4167, digest='sha256:d230e938384da768864b4aff78836271c1e923ee9f1ffae2d9319fed8bb2ccb4'))",
+      "source_excerpt": "\n    }\n}\n\nimpl std::str::FromStr for Glob {\n    type Err = Error;\n\n    fn from_str(glob: &str) -> Result<Self, Self::Err> {\n        Self::new(glob)\n    }\n}\n\n/// A matcher for a single pattern.\n#[derive(Clone, Debug)]\npub struct GlobMatcher {\n    /// The underlying pattern.\n    pat: Glob,\n    /// The pattern, as a compiled regex.\n    re: Regex,\n}\n\nimpl GlobMatcher {\n    /// Tests whether the given path matches this pattern or not.\n    pub fn is_match<P: AsRef<Path>>(&self, path: P) -> bool {\n    ",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/globset/src/lib.rs#<impl Default for GlobSet>.default",
+      "evidence": "Self",
+      "path": "crates/globset/src/lib.rs",
+      "line": 558,
+      "targets": [
+        "symbol:crates/globset/src/lib.rs#GlobSet"
+      ],
+      "ra": [
+        {
+          "path": "crates/globset/src/lib.rs",
+          "line": 555,
+          "character": 17,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/globset/src/lib.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='references', source='symbol:crates/globset/src/lib.rs#<impl Default for GlobSet>.default', targets=('symbol:crates/globset/src/lib.rs#GlobSet',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/globset/src/lib.rs', start=18485, end=18489, digest='sha256:7e34c24673ee164d779de7d0efdaf97f19176f9e0bfc71e0842345ef76f0a38a'))",
+      "source_excerpt": "\n        Ok(GlobSet { len, strats })\n    }\n}\n\nimpl Default for GlobSet {\n    /// Create a default empty GlobSet.\n    fn default() -> Self {\n        GlobSet::empty()\n    }\n}\n\n/// GlobSetBuilder builds a group of patterns that can be used to\n/// simultaneously match a file path.\n#[derive(Clone, Debug)]\npub struct GlobSetBuilder {\n    pats: Vec<Glob>,\n}\n\nimpl GlobSetBuilder {\n    /// Create a new `GlobSetBuilder`. A `GlobSetBuilder` can be used to add new\n    /// patterns. Once all patterns have be",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/ignore/src/dir.rs",
+      "evidence": "self",
+      "path": "crates/ignore/src/dir.rs",
+      "line": 26,
+      "targets": [
+        "module:rust:crates/ignore/src/lib.rs::gitignore"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/gitignore.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/gitignore.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/ignore/src/dir.rs', targets=('module:rust:crates/ignore/src/lib.rs::gitignore',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/dir.rs', start=1029, end=1033, digest='sha256:e2ad00e37e22433feb6f06795e4a7aea6af2a4e06f44f6f56e171377e42f56f3'))",
+      "source_excerpt": "\n// with non-obvious failure modes. Alas, such things haven't been documented\n// well.\n\nuse std::{\n    collections::HashMap,\n    ffi::{OsStr, OsString},\n    fs::{self, File, FileType},\n    io::{self, BufRead},\n    path::{Path, PathBuf},\n    sync::{Arc, RwLock, Weak},\n};\n\nuse crate::{\n    gitignore::{self, Gitignore, GitignoreBuilder},\n    overrides::{self, Override},\n    pathutil::{is_hidden_entry, strip_prefix},\n    types::{self, Types},\n    walk::DirEntry,\n    {Error, Match, PartialErrorBuilde",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/ignore/src/dir.rs",
+      "evidence": "self",
+      "path": "crates/ignore/src/dir.rs",
+      "line": 27,
+      "targets": [
+        "module:rust:crates/ignore/src/lib.rs::overrides"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/overrides.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/overrides.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/ignore/src/dir.rs', targets=('module:rust:crates/ignore/src/lib.rs::overrides',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/dir.rs', start=1081, end=1085, digest='sha256:e2ad00e37e22433feb6f06795e4a7aea6af2a4e06f44f6f56e171377e42f56f3'))",
+      "source_excerpt": "\n// with non-obvious failure modes. Alas, such things haven't been documented\n// well.\n\nuse std::{\n    collections::HashMap,\n    ffi::{OsStr, OsString},\n    fs::{self, File, FileType},\n    io::{self, BufRead},\n    path::{Path, PathBuf},\n    sync::{Arc, RwLock, Weak},\n};\n\nuse crate::{\n    gitignore::{self, Gitignore, GitignoreBuilder},\n    overrides::{self, Override},\n    pathutil::{is_hidden_entry, strip_prefix},\n    types::{self, Types},\n    walk::DirEntry,\n    {Error, Match, PartialErrorBuilde",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/ignore/src/dir.rs",
+      "evidence": "self",
+      "path": "crates/ignore/src/dir.rs",
+      "line": 29,
+      "targets": [
+        "module:rust:crates/ignore/src/lib.rs::types"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/types.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/types.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/ignore/src/dir.rs', targets=('module:rust:crates/ignore/src/lib.rs::types',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/dir.rs', start=1157, end=1161, digest='sha256:e2ad00e37e22433feb6f06795e4a7aea6af2a4e06f44f6f56e171377e42f56f3'))",
+      "source_excerpt": "\n// with non-obvious failure modes. Alas, such things haven't been documented\n// well.\n\nuse std::{\n    collections::HashMap,\n    ffi::{OsStr, OsString},\n    fs::{self, File, FileType},\n    io::{self, BufRead},\n    path::{Path, PathBuf},\n    sync::{Arc, RwLock, Weak},\n};\n\nuse crate::{\n    gitignore::{self, Gitignore, GitignoreBuilder},\n    overrides::{self, Override},\n    pathutil::{is_hidden_entry, strip_prefix},\n    types::{self, Types},\n    walk::DirEntry,\n    {Error, Match, PartialErrorBuilde",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/ignore/src/lib.rs#<impl Match<T>>.or",
+      "evidence": "Self",
+      "path": "crates/ignore/src/lib.rs",
+      "line": 484,
+      "targets": [
+        "symbol:crates/ignore/src/lib.rs#Match"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/lib.rs",
+          "line": 426,
+          "character": 8,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/lib.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='references', source='symbol:crates/ignore/src/lib.rs#<impl Match<T>>.or', targets=('symbol:crates/ignore/src/lib.rs#Match',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/lib.rs', start=16687, end=16691, digest='sha256:89cb2cbdd479ae4a8cf5ea0bbea4cad72b6833a6dfb95008e8f51b185b44aafc'))",
+      "source_excerpt": "\n    }\n\n    /// Return the match if it is not none. Otherwise, return other.\n    pub fn or(self, other: Self) -> Self {\n        if self.is_none() { other } else { self }\n    }\n}\n\n#[cfg(test)]\nmod tests {\n    use std::{\n        env, fs,\n        path::{Path, PathBuf},\n    };\n\n    /// A convenient result type alias.\n    pub(crate) type Result<T> =\n        std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;\n\n    macro_rules! err {\n        ($($tt:tt)*) => {\n            Box::<dyn std::er",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "references",
+      "source": "symbol:crates/ignore/src/lib.rs#<impl Match<T>>.or",
+      "evidence": "Self",
+      "path": "crates/ignore/src/lib.rs",
+      "line": 484,
+      "targets": [
+        "symbol:crates/ignore/src/lib.rs#Match"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/lib.rs",
+          "line": 426,
+          "character": 8,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/lib.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='references', source='symbol:crates/ignore/src/lib.rs#<impl Match<T>>.or', targets=('symbol:crates/ignore/src/lib.rs#Match',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/lib.rs', start=16696, end=16700, digest='sha256:89cb2cbdd479ae4a8cf5ea0bbea4cad72b6833a6dfb95008e8f51b185b44aafc'))",
+      "source_excerpt": "\n    }\n\n    /// Return the match if it is not none. Otherwise, return other.\n    pub fn or(self, other: Self) -> Self {\n        if self.is_none() { other } else { self }\n    }\n}\n\n#[cfg(test)]\nmod tests {\n    use std::{\n        env, fs,\n        path::{Path, PathBuf},\n    };\n\n    /// A convenient result type alias.\n    pub(crate) type Result<T> =\n        std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;\n\n    macro_rules! err {\n        ($($tt:tt)*) => {\n            Box::<dyn std::er",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/ignore/src/overrides.rs",
+      "evidence": "self",
+      "path": "crates/ignore/src/overrides.rs",
+      "line": 12,
+      "targets": [
+        "module:rust:crates/ignore/src/lib.rs::gitignore"
+      ],
+      "ra": [
+        {
+          "path": "crates/ignore/src/gitignore.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/ignore/src/gitignore.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/ignore/src/overrides.rs', targets=('module:rust:crates/ignore/src/lib.rs::gitignore',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/ignore/src/overrides.rs', start=239, end=243, digest='sha256:4283fd4dc169476a580ea1e393b1b125a357cda4c1862293800097bd91acb69e'))",
+      "source_excerpt": "\nThis provides functionality similar to `--include` or `--exclude` in command\nline tools.\n*/\n\nuse std::path::Path;\n\nuse crate::{\n    Error, Match,\n    gitignore::{self, Gitignore, GitignoreBuilder},\n};\n\n/// Glob represents a single glob in an override matcher.\n///\n/// This is used to report information about the highest precedent glob\n/// that matched.\n///\n/// Note that not all matches necessarily correspond to a specific glob. For\n/// example, if there are one or more whitelist globs and a file",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/printer/src/path.rs",
+      "evidence": "self",
+      "path": "crates/printer/src/path.rs",
+      "line": 7,
+      "targets": [
+        "module:rust:crates/printer/src/lib.rs::hyperlink"
+      ],
+      "ra": [
+        {
+          "path": "crates/printer/src/hyperlink/mod.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/printer/src/hyperlink/mod.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/printer/src/path.rs', targets=('module:rust:crates/printer/src/lib.rs::hyperlink',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/printer/src/path.rs', start=108, end=112, digest='sha256:733d31ce45d34bc521d35fa63494f10b0fc73760496c5181a51a1473b672d234'))",
+      "source_excerpt": "use std::{io, path::Path};\n\nuse termcolor::WriteColor;\n\nuse crate::{\n    color::ColorSpecs,\n    hyperlink::{self, HyperlinkConfig},\n    util::PrinterPath,\n};\n\n/// A configuration for describing how paths should be written.\n#[derive(Clone, Debug)]\nstruct Config {\n    colors: ColorSpecs,\n    hyperlink: HyperlinkConfig,\n    separator: Option<u8>,\n    terminator: u8,\n}\n\nimpl Default for Config {\n    fn default() -> Config {\n        Config {\n            colors: ColorSpecs::default(),\n            hype",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/printer/src/standard.rs",
+      "evidence": "self",
+      "path": "crates/printer/src/standard.rs",
+      "line": 22,
+      "targets": [
+        "module:rust:crates/printer/src/lib.rs::hyperlink"
+      ],
+      "ra": [
+        {
+          "path": "crates/printer/src/hyperlink/mod.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/printer/src/hyperlink/mod.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/printer/src/standard.rs', targets=('module:rust:crates/printer/src/lib.rs::hyperlink',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/printer/src/standard.rs', start=418, end=422, digest='sha256:8fc94a8cba6add7dbe8394cd2c6f24dffb773b9f85852ee6d4e97747d40e7460'))",
+      "source_excerpt": "\n        assert_eq_printed!(expected, got);\n    }\n}\n",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/printer/src/summary.rs",
+      "evidence": "self",
+      "path": "crates/printer/src/summary.rs",
+      "line": 18,
+      "targets": [
+        "module:rust:crates/printer/src/lib.rs::hyperlink"
+      ],
+      "ra": [
+        {
+          "path": "crates/printer/src/hyperlink/mod.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/printer/src/hyperlink/mod.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/printer/src/summary.rs', targets=('module:rust:crates/printer/src/lib.rs::hyperlink',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/printer/src/summary.rs', start=344, end=348, digest='sha256:76ac78ad878a2a6a45a19563659e710b9080678397fbcffdb68746f5eefe3655'))",
+      "source_excerpt": "\n        // mush on to find all matches.\n        assert_eq!(3, match_count);\n    }\n}\n",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/regex/src/config.rs",
+      "evidence": "ban",
+      "path": "crates/regex/src/config.rs",
+      "line": 11,
+      "targets": [
+        "module:rust:crates/regex/src/lib.rs::ban"
+      ],
+      "ra": [
+        {
+          "path": "crates/regex/src/ban.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/regex/src/ban.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/regex/src/config.rs', targets=('module:rust:crates/regex/src/lib.rs::ban',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/regex/src/config.rs', start=189, end=192, digest='sha256:8af11cac22616a5227542beead8d7ee9fb62c208a5cfc9923c07186eae1fd9cb'))",
+      "source_excerpt": "\n    regex_syntax::{\n        ast,\n        hir::{self, Hir},\n    },\n};\n\nuse crate::{\n    ast::AstAnalysis, ban, error::Error, non_matching::non_matching_bytes,\n    strip::strip_from_match,\n};\n\n/// Config represents the configuration of a regex matcher in this crate.\n/// The configuration is itself a rough combination of the knobs found in\n/// the `regex` crate itself, along with additional `grep-matcher` specific\n/// options.\n///\n/// The configuration can be used to build a \"configured\" HIR expre",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/searcher/src/lib.rs",
+      "evidence": "sinks",
+      "path": "crates/searcher/src/lib.rs",
+      "line": 94,
+      "targets": [
+        "module:rust:crates/searcher/src/lib.rs::sink::sinks"
+      ],
+      "ra": [
+        {
+          "path": "crates/searcher/src/sink.rs",
+          "line": 516,
+          "character": 8,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/sink.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/searcher/src/lib.rs', targets=('module:rust:crates/searcher/src/lib.rs::sink::sinks',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/searcher/src/lib.rs', start=3595, end=3600, digest='sha256:7b6c771a3d3e5c40dabe776ea0d8b5af9dbacd84508b9e367bd93ede032f968d'))",
+      "source_excerpt": "\neffectively implements grep-like output. This crate also provides convenience\n`Sink` implementations in the [`sinks`] sub-module for easy searching with\nclosures.\n\n# Example\n\nThis example shows how to execute the searcher and read the search results\nusing the [`UTF8`](sinks::UTF8) implementation of `Sink`.\n\n```\nuse {\n    grep_matcher::Matcher,\n    grep_regex::RegexMatcher,\n    grep_searcher::Searcher,\n    grep_searcher::sinks::UTF8,\n};\n\nconst SHERLOCK: &'static [u8] = b\"\\\nFor the Doctor Watsons",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/searcher/src/searcher/core.rs",
+      "evidence": "self",
+      "path": "crates/searcher/src/searcher/core.rs",
+      "line": 7,
+      "targets": [
+        "module:rust:crates/searcher/src/lib.rs::lines"
+      ],
+      "ra": [
+        {
+          "path": "crates/searcher/src/lines.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/lines.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/searcher/src/searcher/core.rs', targets=('module:rust:crates/searcher/src/lib.rs::lines',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/searcher/src/searcher/core.rs', start=126, end=130, digest='sha256:7f3fd0976fc91e8aca2eaa07b423ab2a6ad919984b261604d35d715fa02ab3ef'))",
+      "source_excerpt": "\nuse grep_matcher::{LineMatchKind, Matcher};\n\nuse crate::{\n    line_buffer::BinaryDetection,\n    lines::{self, LineStep},\n    searcher::{Config, Range, Searcher},\n    sink::{\n        Sink, SinkContext, SinkContextKind, SinkError, SinkFinish, SinkMatch,\n    },\n};\n\nenum FastMatchResult {\n    Continue,\n    Stop,\n    SwitchToSlow,\n}\n\n#[derive(Debug)]\npub(crate) struct Core<'s, M: 's, S> {\n    config: &'s Config,\n    matcher: M,\n    searcher: &'s Searcher,\n    sink: S,\n    binary: bool,\n    pos: usiz",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/searcher/src/searcher/glue.rs",
+      "evidence": "self",
+      "path": "crates/searcher/src/searcher/glue.rs",
+      "line": 5,
+      "targets": [
+        "module:rust:crates/searcher/src/lib.rs::lines"
+      ],
+      "ra": [
+        {
+          "path": "crates/searcher/src/lines.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/lines.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/searcher/src/searcher/glue.rs', targets=('module:rust:crates/searcher/src/lib.rs::lines',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/searcher/src/searcher/glue.rs', start=115, end=119, digest='sha256:c2a6d3055a7a2e69a7208113e837eec247d30a43e0c96029aad307f83632fb02'))",
+      "source_excerpt": "use grep_matcher::Matcher;\n\nuse crate::{\n    line_buffer::{DEFAULT_BUFFER_CAPACITY, LineBufferReader},\n    lines::{self, LineStep},\n    searcher::{Config, Range, Searcher, core::Core},\n    sink::{Sink, SinkError},\n};\n\n#[derive(Debug)]\npub(crate) struct ReadByLine<'s, M, R, S> {\n    config: &'s Config,\n    core: Core<'s, M, S>,\n    rdr: LineBufferReader<'s, R>,\n}\n\nimpl<'s, M, R, S> ReadByLine<'s, M, R, S>\nwhere\n    M: Matcher,\n    R: std::io::Read,\n    S: Sink,\n{\n    pub(crate) fn new(\n        se",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/searcher/src/searcher/glue.rs",
+      "evidence": "crate::sinks",
+      "path": "crates/searcher/src/searcher/glue.rs",
+      "line": 1496,
+      "targets": [
+        "module:rust:crates/searcher/src/lib.rs::sink::sinks"
+      ],
+      "ra": [
+        {
+          "path": "crates/searcher/src/sink.rs",
+          "line": 516,
+          "character": 8,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/sink.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/searcher/src/searcher/glue.rs', targets=('module:rust:crates/searcher/src/lib.rs::sink::sinks',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/searcher/src/searcher/glue.rs', start=48292, end=48304, digest='sha256:c2a6d3055a7a2e69a7208113e837eec247d30a43e0c96029aad307f83632fb02'))",
+      "source_excerpt": "\n            .expected_no_line_number(exp)\n            .test();\n    }\n\n    #[test]\n    fn scratch() {\n        use crate::sinks;\n        use crate::testutil::RegexMatcher;\n\n        const SHERLOCK: &'static [u8] = b\"\\\nFor the Doctor Wat\\xFFsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has ",
+      "classification": "OXIDE-error"
+    },
+    {
+      "kind": "imports",
+      "source": "file:crates/searcher/src/searcher/mod.rs",
+      "evidence": "self",
+      "path": "crates/searcher/src/searcher/mod.rs",
+      "line": 16,
+      "targets": [
+        "module:rust:crates/searcher/src/lib.rs::line_buffer"
+      ],
+      "ra": [
+        {
+          "path": "crates/searcher/src/line_buffer.rs",
+          "line": 0,
+          "character": 0,
+          "in_repo": true,
+          "absolute": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep/crates/searcher/src/line_buffer.rs"
+        }
+      ],
+      "edge_repr": "Edge(kind='imports', source='file:crates/searcher/src/searcher/mod.rs', targets=('module:rust:crates/searcher/src/lib.rs::line_buffer',), resolution='resolved', basis='resolved', name=None, evidence=SourceRef(path='crates/searcher/src/searcher/mod.rs', start=243, end=247, digest='sha256:6ae846df42f0868385bc54ef728db822c86f20f6d6457777d8f8058fc4c67bf0'))",
+      "source_excerpt": "\n        assert_eq!(sink_output, \"1:0:foo\\nbyte count:3\\n\");\n    }\n}\n",
+      "classification": "OXIDE-error"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+3492b388eebf3c7b60973f8080bece664a7c2e1a
+ D .agents/skills/jev-model-router/.claude-plugin/plugin.json
+ D .agents/skills/jev-model-router/README.md
+ D .agents/skills/jev-model-router/hooks/hooks.json
+ D .agents/skills/jev-model-router/hooks/jev-model-router.ts
+ D .agents/skills/jev-model-router/hooks/policy.ts
+ D .agents/skills/jev-model-router/tests/policy.test.ts
+ M .codex/config.toml
+ M README.md
+ M docs/phase-6/go-v1/README.md
+ M docs/phase-6/go-v1/verification/README.md
+ M docs/public-api.md
+ D logo.png
+ M pyproject.toml
+ M scripts/smoke_dist.py
+ M skills-lock.json
+ M src/oxide/core/indexing.py
+ M tests/python/contextbench.py
+ M tests/python/contextbench_ts.py
+ M uv.lock
+?? .agents/skills/oxide-eval-freeze/
+?? .agents/skills/security-audit/
+?? .claude/CLAUDE.md
+?? .claude/skills/security-audit
+?? .mcp.json
+?? docs/java.md
+?? docs/oxide-architecture.html
+?? docs/phase-6/baseline-v15/
+?? docs/phase-6/go-v1/oracle/
+?? docs/phase-6/java-v1-opencode/
+?? docs/phase-6/java-v1/
+?? docs/phase-6/rust-v1/real/bench-ripgrep.log
+?? docs/phase-6/rust-v1/real/ripgrep-audit.log
+?? docs/phase-6/rust-v1/real/ripgrep-real.log
+?? docs/phase-6/rust-v1/real/tokio-real.log
+?? docs/phase-6/rust-v1/rust-rows.json
+?? docs/phase-6/typescript-v12/
+?? fixtures/java_repo/
+?? md
+?? opencode.jsonc
+?? scripts/eval_java.py
+?? src/oxide/core/languages/java.py
+?? src/oxide/core/languages/java_resolve.py
+?? tests/python/test_java.py
+JSON OK docs/phase-6/java-v1-opencode/context-after/gold-audit.json
+JSON OK docs/phase-6/java-v1-opencode/context-after/manifest.json
+JSON OK docs/phase-6/java-v1-opencode/context-after/metrics.json
+JSON OK docs/phase-6/java-v1-opencode/context-after/performance.json
+JSON OK docs/phase-6/java-v1-opencode/context-after/results.json
+JSON OK docs/phase-6/java-v1-opencode/context-before/gold-audit.json
+JSON OK docs/phase-6/java-v1-opencode/context-before/manifest.json
+JSON OK docs/phase-6/java-v1-opencode/context-before/metrics.json
+JSON OK docs/phase-6/java-v1-opencode/context-before/performance.json
+JSON OK docs/phase-6/java-v1-opencode/context-before/results.json
+JSON OK docs/phase-6/java-v1-opencode/java-rows.json
+JSON OK docs/phase-6/java-v1-opencode/oracle/gson-oracle.json
+JSON OK docs/phase-6/java-v1-opencode/oracle/gson-uses.json
+JSON OK docs/phase-6/java-v1-opencode/real/bench-gson.json
+JSON OK docs/phase-6/java-v1-opencode/real/bench-mockito.json
+JSON OK docs/phase-6/java-v1-opencode/real/gson-audit.json
+JSON OK docs/phase-6/java-v1-opencode/real/gson.json
+JSON OK docs/phase-6/java-v1-opencode/real/mockito-audit.json
+JSON OK docs/phase-6/java-v1-opencode/real/mockito.json
+REPORT_LINES docs/phase-6/java-v1-opencode/oracle/report.md 21
+uses_bytes 2769166
+
+Editable install check:
+Name: oxide
+Version: 0.0.0
+Location: /home/khoi/Projects/oxide/.venv/lib/python3.13/site-packages
+Editable project location: /home/khoi/Projects/oxide
+Requires: cryptography, fastmcp, ladybug, networkx, pathspec, tree-sitter, tree-sitter-go, tree-sitter-java, tree-sitter-javascript, tree-sitter-python, tree-sitter-rust, tree-sitter-typescript
+Required-by:
+
+Worktrees:
+/home/khoi/Projects/oxide                                   3492b38 [rewrite/v2]
+/home/khoi/.cache/oxide-ci-wt                               37628e6 (detached HEAD)
+/home/khoi/.cache/oxide-treeselect-eval/wt                  96abae8 (detached HEAD)
+/home/khoi/.cache/oxide-ts-eval/before                      b97a189 (detached HEAD)
+/home/khoi/Projects/oxide-eval-data/oxide-valuepack-eval/wt 96abae8 (detached HEAD)
+/home/khoi/Projects/oxide-treeindex                         9fa04f7 [feat/treeindex] prunable

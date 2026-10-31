@@ -1,0 +1,6331 @@
+{
+ "pytest/lookup": [
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/argparsing.py#Parser.getgroup",
+   "name": "getgroup"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/argparsing.py#DropShorterLongHelpFormatter._split_lines",
+   "name": "_split_lines"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#doctest_namespace",
+   "name": "doctest_namespace"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#CaptureManager.activate_fixture",
+   "name": "activate_fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineMatcher.fnmatch_lines",
+   "name": "fnmatch_lines"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#get_parametrized_fixture_keys",
+   "name": "get_parametrized_fixture_keys"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#ischildnode",
+   "name": "ischildnode"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/source.py#Source.strip",
+   "name": "strip"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.parseconfigure",
+   "name": "parseconfigure"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.explanation_param",
+   "name": "explanation_param"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#capfd",
+   "name": "capfd"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#_report_kwargs_from_json",
+   "name": "_report_kwargs_from_json"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#CaptureManager.global_and_fixture_disabled",
+   "name": "global_and_fixture_disabled"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#wrap_function_to_error_out_if_called_directly",
+   "name": "wrap_function_to_error_out_if_called_directly"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#rm_rf",
+   "name": "rm_rf"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/cacheprovider.py#Cache.clear_cache",
+   "name": "clear_cache"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#fillfixtures",
+   "name": "fillfixtures"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#Module._inject_setup_module_fixture",
+   "name": "_inject_setup_module_fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureRequest.applymarker",
+   "name": "applymarker"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#_get_number_flag",
+   "name": "_get_number_flag"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.rewrite",
+   "name": "rewrite"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#Traceback.recursionindex",
+   "name": "recursionindex"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineMatcher._no_match_line",
+   "name": "_no_match_line"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#Class._inject_setup_class_fixture",
+   "name": "_inject_setup_class_fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.typename",
+   "name": "typename"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/debugging.py#pytestPDB._init_pdb",
+   "name": "_init_pdb"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.pop_format_context",
+   "name": "pop_format_context"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.makefile",
+   "name": "makefile"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/saferepr.py#saferepr",
+   "name": "saferepr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#get_fslocation_from_item",
+   "name": "get_fslocation_from_item"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#ascii_escaped",
+   "name": "ascii_escaped"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.makepyfile",
+   "name": "makepyfile"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#SetupState.prepare",
+   "name": "prepare"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.syspathinsert",
+   "name": "syspathinsert"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/hookspec.py#pytest_itemcollected",
+   "name": "pytest_itemcollected"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/__init__.py#pytest_runtest_protocol.callbinrepr",
+   "name": "callbinrepr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/cacheprovider.py#cache",
+   "name": "cache"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#Node.nodeid",
+   "name": "nodeid"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config.add_cleanup",
+   "name": "add_cleanup"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/recwarn.py#WarningsRecorder.pop",
+   "name": "pop"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/argparsing.py#MyOptionParser.error",
+   "name": "error"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.make_hook_recorder",
+   "name": "make_hook_recorder"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.runpytest",
+   "name": "runpytest"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#console_main",
+   "name": "console_main"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureRequest.session",
+   "name": "session"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/debugging.py#pytestPDB.set_trace",
+   "name": "set_trace"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#_iter_rewritable_modules",
+   "name": "_iter_rewritable_modules"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#on_rm_rf_error",
+   "name": "on_rm_rf_error"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.mkpydir",
+   "name": "mkpydir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/debugging.py#maybe_wrap_pytest_function_for_tracing",
+   "name": "maybe_wrap_pytest_function_for_tracing"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/tmpdir.py#tmpdir_factory",
+   "name": "tmpdir_factory"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config._validate_args",
+   "name": "_validate_args"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureRequest._compute_fixture_value",
+   "name": "_compute_fixture_value"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter._write_source",
+   "name": "_write_source"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FuncFixtureInfo.prune_dependency_tree",
+   "name": "prune_dependency_tree"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#MarkDecorator.kwargs",
+   "name": "kwargs"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#Node.iter_markers_with_node",
+   "name": "iter_markers_with_node"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineMatcher.no_fnmatch_line",
+   "name": "no_fnmatch_line"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#_force_symlink",
+   "name": "_force_symlink"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureRequest.node",
+   "name": "node"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.exconly",
+   "name": "exconly"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LogCaptureFixture.set_level",
+   "name": "set_level"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.helper",
+   "name": "helper"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#MultiCapture.stop_capturing",
+   "name": "stop_capturing"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureRequest.getfixturevalue",
+   "name": "getfixturevalue"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#ensure_reset_dir",
+   "name": "ensure_reset_dir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#Frame.eval",
+   "name": "eval"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#BaseReport._to_json",
+   "name": "_to_json"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineMatcher_fixture",
+   "name": "LineMatcher_fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/util.py#format_explanation",
+   "name": "format_explanation"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ReprEntry._write_entry_lines",
+   "name": "_write_entry_lines"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#normalize_mark_list",
+   "name": "normalize_mark_list"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.assign",
+   "name": "assign"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter._highlight",
+   "name": "_highlight"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#find_prefixed",
+   "name": "find_prefixed"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/junitxml.py#LogXML._get_global_properties_node",
+   "name": "_get_global_properties_node"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/truncate.py#_running_on_ci",
+   "name": "_running_on_ci"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#safe_getattr",
+   "name": "safe_getattr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineMatcher.re_match_lines",
+   "name": "re_match_lines"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.runitem",
+   "name": "runitem"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#_check_if_assertion_pass_impl",
+   "name": "_check_if_assertion_pass_impl"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#_read_pyc",
+   "name": "_read_pyc"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#path_matches_patterns",
+   "name": "path_matches_patterns"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#MonkeyPatch.delitem",
+   "name": "delitem"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#get_plugin_manager",
+   "name": "get_plugin_manager"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#_format_assertmsg",
+   "name": "_format_assertmsg"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#ensure_deletable",
+   "name": "ensure_deletable"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#MarkDecorator.with_args",
+   "name": "with_args"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#testdir",
+   "name": "testdir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#try_makedirs",
+   "name": "try_makedirs"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#linecomp",
+   "name": "linecomp"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.runpytest_subprocess",
+   "name": "runpytest_subprocess"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/debugging.py#wrap_pytest_function_for_tracing",
+   "name": "wrap_pytest_function_for_tracing"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#_splitnode",
+   "name": "_splitnode"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/hookspec.py#pytest_addhooks",
+   "name": "pytest_addhooks"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/cacheprovider.py#Cache.makedir",
+   "name": "makedir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#_get_allow_bytes_flag",
+   "name": "_get_allow_bytes_flag"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#PytestPluginManager.hasplugin",
+   "name": "hasplugin"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/tmpdir.py#tmpdir",
+   "name": "tmpdir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LogCaptureFixture._finalize",
+   "name": "_finalize"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/hookspec.py#pytest_assertion_pass",
+   "name": "pytest_assertion_pass"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#monkeypatch",
+   "name": "monkeypatch"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.runpython",
+   "name": "runpython"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#Module._inject_setup_function_fixture",
+   "name": "_inject_setup_function_fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter._determine_show_progress_info",
+   "name": "_determine_show_progress_info"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.runpython_c",
+   "name": "runpython_c"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#Class._inject_setup_method_fixture",
+   "name": "_inject_setup_method_fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pastebin.py#create_new_paste",
+   "name": "create_new_paste"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#FormattedExcinfo._truncate_recursive_traceback",
+   "name": "_truncate_recursive_traceback"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#make_numbered_dir_with_cleanup",
+   "name": "make_numbered_dir_with_cleanup"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/argparsing.py#Argument._set_opt_strings",
+   "name": "_set_opt_strings"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/cacheprovider.py#LFPlugin.get_last_failed_paths",
+   "name": "get_last_failed_paths"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#maybe_delete_a_numbered_dir",
+   "name": "maybe_delete_a_numbered_dir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#capsysbinary",
+   "name": "capsysbinary"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/junitxml.py#record_testsuite_property.record_func",
+   "name": "record_func"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.traceback",
+   "name": "traceback"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#CaptureFixture.disabled",
+   "name": "disabled"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#_check_all_skipped",
+   "name": "_check_all_skipped"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#get_cache_dir",
+   "name": "get_cache_dir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config.fromdictargs",
+   "name": "fromdictargs"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LoggingPlugin._log_cli_enabled",
+   "name": "_log_cli_enabled"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.visit_Assert",
+   "name": "visit_Assert"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/outcomes.py#importorskip",
+   "name": "importorskip"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/recwarn.py#deprecated_call",
+   "name": "deprecated_call"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureManager._get_direct_parametrize_args",
+   "name": "_get_direct_parametrize_args"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config._mark_plugins_for_rewrite",
+   "name": "_mark_plugins_for_rewrite"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/outcomes.py#xfail",
+   "name": "xfail"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/junitxml.py#_NodeReporter.make_properties_node",
+   "name": "make_properties_node"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/recwarn.py#WarningsRecorder.list",
+   "name": "list"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#MonkeyPatch.syspath_prepend",
+   "name": "syspath_prepend"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/outcomes.py#fail",
+   "name": "fail"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter._width_of_current_line",
+   "name": "_width_of_current_line"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#parse_num",
+   "name": "parse_num"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/junitxml.py#record_property",
+   "name": "record_property"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureManager.getfixturedefs",
+   "name": "getfixturedefs"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#_patch_unwrap_mock_aware",
+   "name": "_patch_unwrap_mock_aware"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#TestReport.from_item_and_call",
+   "name": "from_item_and_call"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/hookspec.py#pytest_leave_pdb",
+   "name": "pytest_leave_pdb"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#_saferepr",
+   "name": "_saferepr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.getpathnode",
+   "name": "getpathnode"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#get_extended_length_path_str",
+   "name": "get_extended_length_path_str"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#make_numbered_dir",
+   "name": "make_numbered_dir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/source.py#Source.putaround",
+   "name": "putaround"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/junitxml.py#_check_record_param_type",
+   "name": "_check_record_param_type"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/tmpdir.py#tmp_path",
+   "name": "tmp_path"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#_update_current_test_var",
+   "name": "_update_current_test_var"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.push_format_context",
+   "name": "push_format_context"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/freeze_support.py#_iter_all_modules",
+   "name": "_iter_all_modules"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LogCaptureFixture.records",
+   "name": "records"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.spawn",
+   "name": "spawn"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.getitems",
+   "name": "getitems"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#RunResult.parseoutcomes",
+   "name": "parseoutcomes"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.visit_Call",
+   "name": "visit_Call"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/source.py#getrawcode",
+   "name": "getrawcode"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#_strtobool",
+   "name": "_strtobool"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/wcwidth.py#wcwidth",
+   "name": "wcwidth"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/outcomes.py#exit",
+   "name": "exit"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#Code.fullsource",
+   "name": "fullsource"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#Mark.combined_with",
+   "name": "combined_with"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#Node.add_marker",
+   "name": "add_marker"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/source.py#Source.isparseable",
+   "name": "isparseable"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.generic_visit",
+   "name": "generic_visit"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#create_terminal_writer",
+   "name": "create_terminal_writer"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#getfslineno",
+   "name": "getfslineno"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#CaptureManager.deactivate_fixture",
+   "name": "deactivate_fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#PyobjMixin.obj",
+   "name": "obj"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/freeze_support.py#freeze_includes",
+   "name": "freeze_includes"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LogCaptureFixture.messages",
+   "name": "messages"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/skipping.py#check_strict_xfail",
+   "name": "check_strict_xfail"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#get_real_method",
+   "name": "get_real_method"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#fnmatch_ex",
+   "name": "fnmatch_ex"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#MonkeyPatch.setitem",
+   "name": "setitem"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#MarkDecorator.args",
+   "name": "args"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineComp.assert_contains_lines",
+   "name": "assert_contains_lines"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.getitem",
+   "name": "getitem"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.getmodulecol",
+   "name": "getmodulecol"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LogCaptureFixture.get_records",
+   "name": "get_records"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#MultiCapture.pop_outerr_to_orig",
+   "name": "pop_outerr_to_orig"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#directory_arg",
+   "name": "directory_arg"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/store.py#Store.setdefault",
+   "name": "setdefault"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/source.py#Source.indent",
+   "name": "indent"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#ensure_extended_length_path",
+   "name": "ensure_extended_length_path"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#filename_arg",
+   "name": "filename_arg"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#CaptureFixture._suspend",
+   "name": "_suspend"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/outcomes.py#skip",
+   "name": "skip"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#Traceback.getcrashentry",
+   "name": "getcrashentry"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#set_location",
+   "name": "set_location"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#_is_mocked",
+   "name": "_is_mocked"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#store_mark",
+   "name": "store_mark"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/util.py#_format_lines",
+   "name": "_format_lines"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LoggingPlugin.set_log_path",
+   "name": "set_log_path"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewritingHook._early_rewrite_bailout",
+   "name": "_early_rewrite_bailout"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#MonkeyPatch.setenv",
+   "name": "setenv"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/junitxml.py#_warn_incompatibility_with_xunit2",
+   "name": "_warn_incompatibility_with_xunit2"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/util.py#_split_explanation",
+   "name": "_split_explanation"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#show_test_item",
+   "name": "show_test_item"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#MonkeyPatch.delattr",
+   "name": "delattr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#MonkeyPatch.setattr",
+   "name": "setattr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.inline_genitems",
+   "name": "inline_genitems"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.builtin",
+   "name": "builtin"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/expression.py#Expression.evaluate",
+   "name": "evaluate"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureRequest.fixturenames",
+   "name": "fixturenames"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/recwarn.py#recwarn",
+   "name": "recwarn"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#get_unpacked_marks",
+   "name": "get_unpacked_marks"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#cleanup_numbered_dir",
+   "name": "cleanup_numbered_dir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config.getini",
+   "name": "getini"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#get_public_names",
+   "name": "get_public_names"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#Node.ihook",
+   "name": "ihook"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineMatcher.get_lines_after",
+   "name": "get_lines_after"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/warnings.py#warning_record_to_str",
+   "name": "warning_record_to_str"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#_find_parametrized_scope",
+   "name": "_find_parametrized_scope"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#format_session_duration",
+   "name": "format_session_duration"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.for_later",
+   "name": "for_later"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#main",
+   "name": "main"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#_py36_windowsconsoleio_workaround",
+   "name": "_py36_windowsconsoleio_workaround"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.collect_by_name",
+   "name": "collect_by_name"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config.getvalueorskip",
+   "name": "getvalueorskip"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#cleanup_candidates",
+   "name": "cleanup_candidates"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#PyobjMixin.getmodpath",
+   "name": "getmodpath"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.display",
+   "name": "display"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineMatcher.re_match_lines_random",
+   "name": "re_match_lines_random"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#BaseReport.capstderr",
+   "name": "capstderr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#_get_first_non_fixture_func",
+   "name": "_get_first_non_fixture_func"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#filter_traceback",
+   "name": "filter_traceback"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.copy_example",
+   "name": "copy_example"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#TracebackEntry.ishidden",
+   "name": "ishidden"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#extract_suffixes",
+   "name": "extract_suffixes"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#_get_checker",
+   "name": "_get_checker"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#_teardown_yield_fixture",
+   "name": "_teardown_yield_fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#try_cleanup",
+   "name": "try_cleanup"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.width_of_current_line",
+   "name": "width_of_current_line"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineMatcher.str",
+   "name": "str"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LogCaptureFixture.handler",
+   "name": "handler"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#TracebackEntry.locals",
+   "name": "locals"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#_get_plugin_specs_as_list",
+   "name": "_get_plugin_specs_as_list"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/main.py#wrap_session",
+   "name": "wrap_session"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config.invocation_dir",
+   "name": "invocation_dir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/skipping.py#check_xfail_no_run",
+   "name": "check_xfail_no_run"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#scope2index",
+   "name": "scope2index"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/hookspec.py#pytest_cmdline_preparse",
+   "name": "pytest_cmdline_preparse"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.tb",
+   "name": "tb"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#PyCollector._matches_prefix_or_glob_option",
+   "name": "_matches_prefix_or_glob_option"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#BaseReport.capstdout",
+   "name": "capstdout"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#_get_assertion_exprs",
+   "name": "_get_assertion_exprs"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/util.py#assertrepr_compare",
+   "name": "assertrepr_compare"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/junitxml.py#record_testsuite_property",
+   "name": "record_testsuite_property"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#BaseReport.count_towards_summary",
+   "name": "count_towards_summary"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#_colorama_workaround",
+   "name": "_colorama_workaround"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/main.py#Session._tryconvertpyarg",
+   "name": "_tryconvertpyarg"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#PytestPluginManager.import_plugin",
+   "name": "import_plugin"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.maketxtfile",
+   "name": "maketxtfile"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewriter.variable",
+   "name": "variable"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.parseconfig",
+   "name": "parseconfig"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#_call_with_optional_argument",
+   "name": "_call_with_optional_argument"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/source.py#Source.getstatement",
+   "name": "getstatement"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#Code.source",
+   "name": "source"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/tmpdir.py#tmp_path_factory",
+   "name": "tmp_path_factory"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.inline_runsource",
+   "name": "inline_runsource"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#_setup_fixtures",
+   "name": "_setup_fixtures"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/truncate.py#truncate_if_required",
+   "name": "truncate_if_required"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#capsys",
+   "name": "capsys"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#_readline_workaround",
+   "name": "_readline_workaround"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#capfdbinary",
+   "name": "capfdbinary"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/__init__.py#install_importhook",
+   "name": "install_importhook"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#CaptureFixture._resume",
+   "name": "_resume"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#_get_line_with_reprcrash_message",
+   "name": "_get_line_with_reprcrash_message"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.type",
+   "name": "type"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#find_suffixes",
+   "name": "find_suffixes"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config.addinivalue_line",
+   "name": "addinivalue_line"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#is_async_function",
+   "name": "is_async_function"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.getinicfg",
+   "name": "getinicfg"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.getnode",
+   "name": "getnode"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#BaseReport.longreprtext",
+   "name": "longreprtext"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.mkdir",
+   "name": "mkdir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#DoctestItem._disable_output_capturing_for_darwin",
+   "name": "_disable_output_capturing_for_darwin"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.fill_unfilled",
+   "name": "fill_unfilled"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#_get_allow_unicode_flag",
+   "name": "_get_allow_unicode_flag"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/unittest.py#_is_skipped",
+   "name": "_is_skipped"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/junitxml.py#record_xml_attribute",
+   "name": "record_xml_attribute"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/source.py#Source.getstatementrange",
+   "name": "getstatementrange"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LogCaptureFixture.record_tuples",
+   "name": "record_tuples"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python_api.py#ApproxScalar.tolerance",
+   "name": "tolerance"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#Node.listextrakeywords",
+   "name": "listextrakeywords"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#get_real_func",
+   "name": "get_real_func"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureRequest.keywords",
+   "name": "keywords"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.inline_run",
+   "name": "inline_run"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/hookspec.py#pytest_collect_directory",
+   "name": "pytest_collect_directory"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#num_mock_patch_args",
+   "name": "num_mock_patch_args"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureManager._getautousenames",
+   "name": "_getautousenames"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineMatcher.fnmatch_lines_random",
+   "name": "fnmatch_lines_random"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/cacheprovider.py#Cache.set",
+   "name": "set"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#_report_to_json",
+   "name": "_report_to_json"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.runpytest_inprocess",
+   "name": "runpytest_inprocess"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/main.py#Session._parsearg",
+   "name": "_parsearg"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/util.py#_diff_text",
+   "name": "_diff_text"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/hookspec.py#pytest_doctest_prepare_content",
+   "name": "pytest_doctest_prepare_content"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/util.py#_surrounding_parens_on_own_lines",
+   "name": "_surrounding_parens_on_own_lines"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#LineMatcher.no_re_match_line",
+   "name": "no_re_match_line"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/tmpdir.py#get_user",
+   "name": "get_user"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#PytestPluginManager._set_initial_conftests",
+   "name": "_set_initial_conftests"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#BaseReport._from_json",
+   "name": "_from_json"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#iscoroutinefunction",
+   "name": "iscoroutinefunction"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/__init__.py#register_assert_rewrite",
+   "name": "register_assert_rewrite"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#getfixturemarker",
+   "name": "getfixturemarker"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureRequest.raiseerror",
+   "name": "raiseerror"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureRequest.config",
+   "name": "config"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/main.py#_in_venv",
+   "name": "_in_venv"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/debugging.py#_validate_usepdb_cls",
+   "name": "_validate_usepdb_cls"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#pytestconfig",
+   "name": "pytestconfig"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#PercentStyleMultiline._get_auto_indent",
+   "name": "_get_auto_indent"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.value",
+   "name": "value"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#MonkeyPatch.context",
+   "name": "context"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config.getoption",
+   "name": "getoption"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/warnings.py#_issue_warning_captured",
+   "name": "_issue_warning_captured"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#register_cleanup_lock_removal",
+   "name": "register_cleanup_lock_removal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/wcwidth.py#wcswidth",
+   "name": "wcswidth"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#WarningReport.get_location",
+   "name": "get_location"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#Traceback.filter",
+   "name": "filter"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LoggingPlugin._runtest_for",
+   "name": "_runtest_for"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/unittest.py#UnitTestCase._inject_setup_teardown_fixtures",
+   "name": "_inject_setup_teardown_fixtures"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.errisinstance",
+   "name": "errisinstance"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/unittest.py#TestCaseFunction._expecting_failure",
+   "name": "_expecting_failure"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.makeconftest",
+   "name": "makeconftest"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#create_cleanup_lock",
+   "name": "create_cleanup_lock"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/truncate.py#_should_truncate_item",
+   "name": "_should_truncate_item"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#MonkeyPatch.delenv",
+   "name": "delenv"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python_api.py#_is_numpy_array",
+   "name": "_is_numpy_array"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/saferepr.py#safeformat",
+   "name": "safeformat"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#Frame.exec_",
+   "name": "exec_"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.spawn_pytest",
+   "name": "spawn_pytest"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/cacheprovider.py#Cache._ensure_supporting_files",
+   "name": "_ensure_supporting_files"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#Item.add_report_section",
+   "name": "add_report_section"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/debugging.py#pytestPDB._get_pdb_wrapper_class.PytestPdbWrapper.do_quit",
+   "name": "do_quit"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/findpaths.py#getcfg",
+   "name": "getcfg"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#BaseReport.head_line",
+   "name": "head_line"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#PyCollector.isnosetest",
+   "name": "isnosetest"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LogCaptureFixture.text",
+   "name": "text"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python_api.py#approx",
+   "name": "approx"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#resolve_fixture_function",
+   "name": "resolve_fixture_function"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#_pytest",
+   "name": "_pytest"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.makeini",
+   "name": "makeini"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#_get_report_choice",
+   "name": "_get_report_choice"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#_rewrite_test",
+   "name": "_rewrite_test"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/junitxml.py#LogXML.update_testcase_duration",
+   "name": "update_testcase_duration"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/main.py#_main",
+   "name": "_main"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewritingHook.get_data",
+   "name": "get_data"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#safe_isclass",
+   "name": "safe_isclass"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#DoctestModule.collect.MockAwareDocTestFinder._find_lineno",
+   "name": "_find_lineno"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.match",
+   "name": "match"
+  }
+ ],
+ "pytest/callers": [
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionChainRepr.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ReprFuncArgs.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#Class.from_parent",
+   "name": "from_parent"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#DoctestItem.from_parent",
+   "name": "from_parent"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#BaseReport.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ReprLocals.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ExceptionRepr.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#TeeCaptureIO.write",
+   "name": "write"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.write",
+   "name": "write"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ReprTraceback.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ReprEntry.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ReprExceptionInfo.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ReprEntryNative.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#Node.from_parent",
+   "name": "from_parent"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ReprFileLocation.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#Function.from_parent",
+   "name": "from_parent"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.write",
+   "name": "write"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#CollectErrorRepr.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureLookupErrorRepr.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#ReprFailDoctest.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#TerminalRepr.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#FSCollector.from_parent",
+   "name": "from_parent"
+  }
+ ],
+ "pytest/impact": [
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#ascii_escaped",
+   "name": "ascii_escaped"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#getlocation",
+   "name": "getlocation"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/source.py#getrawcode",
+   "name": "getrawcode"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/wcwidth.py#wcswidth",
+   "name": "wcswidth"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#call_and_report",
+   "name": "call_and_report"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#create_terminal_writer",
+   "name": "create_terminal_writer"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#collect_one_node",
+   "name": "collect_one_node"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/warnings.py#catch_warnings_for_item",
+   "name": "catch_warnings_for_item"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#_update_current_test_var",
+   "name": "_update_current_test_var"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/warnings.py#_issue_warning_captured",
+   "name": "_issue_warning_captured"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#getimfunc",
+   "name": "getimfunc"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#get_config",
+   "name": "get_config"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/expression.py#not_expr",
+   "name": "not_expr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/util.py#format_explanation",
+   "name": "format_explanation"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#get_real_func",
+   "name": "get_real_func"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/outcomes.py#_with_exception",
+   "name": "_with_exception"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#make_numbered_dir",
+   "name": "make_numbered_dir"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/doctest.py#_get_checker",
+   "name": "_get_checker"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#parts",
+   "name": "parts"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#scopeproperty",
+   "name": "scopeproperty"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/warnings.py#_parse_filter",
+   "name": "_parse_filter"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#rm_rf",
+   "name": "rm_rf"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#safe_getattr",
+   "name": "safe_getattr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python_api.py#_non_numeric_type_error",
+   "name": "_non_numeric_type_error"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/saferepr.py#_format_repr_exception",
+   "name": "_format_repr_exception"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/freeze_support.py#_iter_all_modules",
+   "name": "_iter_all_modules"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#_get_pos",
+   "name": "_get_pos"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/recwarn.py#warns",
+   "name": "warns"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/outcomes.py#exit",
+   "name": "exit"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/unittest.py#_is_skipped",
+   "name": "_is_skipped"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#normalize_mark_list",
+   "name": "normalize_mark_list"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nose.py#call_optional",
+   "name": "call_optional"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/findpaths.py#get_common_ancestor",
+   "name": "get_common_ancestor"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#_get_first_non_fixture_func",
+   "name": "_get_first_non_fixture_func"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#get_unpacked_marks",
+   "name": "get_unpacked_marks"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#iscoroutinefunction",
+   "name": "iscoroutinefunction"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/source.py#findsource",
+   "name": "findsource"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/saferepr.py#safeformat",
+   "name": "safeformat"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#getfixturemarker",
+   "name": "getfixturemarker"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/util.py#istext",
+   "name": "istext"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/outcomes.py#xfail",
+   "name": "xfail"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#get_log_level_for_setting",
+   "name": "get_log_level_for_setting"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/setuponly.py#_show_fixture_action",
+   "name": "_show_fixture_action"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/main.py#wrap_session",
+   "name": "wrap_session"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#getfslineno",
+   "name": "getfslineno"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#_read_pyc",
+   "name": "_read_pyc"
+  }
+ ],
+ "pytest/callees": [
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#BaseReport.longreprtext",
+   "name": "longreprtext"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#FDCaptureBinary.done",
+   "name": "done"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LoggingPlugin.set_log_path",
+   "name": "set_log_path"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#capsys",
+   "name": "capsys"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#_LiveLoggingStreamHandler.emit",
+   "name": "emit"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter._write_source",
+   "name": "_write_source"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#capfd",
+   "name": "capfd"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/debugging.py#pytestPDB._import_pdb_cls",
+   "name": "_import_pdb_cls"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#PytestPluginManager.import_plugin",
+   "name": "import_plugin"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#call_and_report",
+   "name": "call_and_report"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#_rewrite_test",
+   "name": "_rewrite_test"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/cacheprovider.py#LFPluginCollWrapper.pytest_make_collect_report",
+   "name": "pytest_make_collect_report"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#BaseReport.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#pytest_collect_file",
+   "name": "pytest_collect_file"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/debugging.py#pytestPDB._get_pdb_wrapper_class.PytestPdbWrapper.do_continue",
+   "name": "do_continue"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/helpconfig.py#showversion",
+   "name": "showversion"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureRequest._compute_fixture_value",
+   "name": "_compute_fixture_value"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.report_collect",
+   "name": "report_collect"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/hookspec.py#pytest_addoption",
+   "name": "pytest_addoption"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.short_test_summary.show_xpassed",
+   "name": "show_xpassed"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#HookRecorder.matchreport",
+   "name": "matchreport"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#_show_fixtures_per_test.write_fixture",
+   "name": "write_fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/__init__.py#deselect_by_mark",
+   "name": "deselect_by_mark"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.summary_warnings.collapsed_location_report",
+   "name": "collapsed_location_report"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter._printcollecteditems",
+   "name": "_printcollecteditems"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/__init__.py#pytest_cmdline_main",
+   "name": "pytest_cmdline_main"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#call_fixture_func",
+   "name": "call_fixture_func"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/skipping.py#pytest_runtest_makereport",
+   "name": "pytest_runtest_makereport"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config.pytest_cmdline_parse",
+   "name": "pytest_cmdline_parse"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pastebin.py#pytest_terminal_summary",
+   "name": "pytest_terminal_summary"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#show_test_item",
+   "name": "show_test_item"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#PyCollector._genfunctions",
+   "name": "_genfunctions"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/junitxml.py#record_xml_attribute",
+   "name": "record_xml_attribute"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.getnode",
+   "name": "getnode"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/main.py#Session.genitems",
+   "name": "genitems"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/__init__.py#pytest_runtest_protocol.callbinrepr",
+   "name": "callbinrepr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.pytest_sessionfinish",
+   "name": "pytest_sessionfinish"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.popen",
+   "name": "popen"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ReprEntry.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.pytest_runtest_logfinish",
+   "name": "pytest_runtest_logfinish"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.pytest_sessionstart",
+   "name": "pytest_sessionstart"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/outcomes.py#importorskip",
+   "name": "importorskip"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#MonkeyPatch.undo",
+   "name": "undo"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#wrap_function_to_error_out_if_called_directly",
+   "name": "wrap_function_to_error_out_if_called_directly"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/__init__.py#register_assert_rewrite",
+   "name": "register_assert_rewrite"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.write_fspath_result",
+   "name": "write_fspath_result"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#MonkeyPatch.setattr",
+   "name": "setattr"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/code.py#ReprEntry._write_entry_lines",
+   "name": "_write_entry_lines"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.pytest_runtest_logreport",
+   "name": "pytest_runtest_logreport"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/tmpdir.py#TempPathFactory._ensure_relative_to_basetemp",
+   "name": "_ensure_relative_to_basetemp"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#on_rm_rf_error",
+   "name": "on_rm_rf_error"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pathlib.py#create_cleanup_lock",
+   "name": "create_cleanup_lock"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#capsysbinary",
+   "name": "capsysbinary"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureDef.execute",
+   "name": "execute"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/unittest.py#UnitTestCase.collect",
+   "name": "collect"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#capfdbinary",
+   "name": "capfdbinary"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/tmpdir.py#TempPathFactory.getbasetemp",
+   "name": "getbasetemp"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pastebin.py#pytest_configure",
+   "name": "pytest_configure"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/monkeypatch.py#monkeypatch",
+   "name": "monkeypatch"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.pytest_collection_finish",
+   "name": "pytest_collection_finish"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#ParameterSet.extract_from",
+   "name": "extract_from"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#Class.collect",
+   "name": "collect"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/__init__.py#deselect_by_keyword",
+   "name": "deselect_by_keyword"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/capture.py#pytest_load_initial_conftests",
+   "name": "pytest_load_initial_conftests"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#HookRecorder.listoutcomes",
+   "name": "listoutcomes"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/pytester.py#Testdir.getpathnode",
+   "name": "getpathnode"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/logging.py#LoggingPlugin._runtest_for",
+   "name": "_runtest_for"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/cacheprovider.py#Cache.set",
+   "name": "set"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/_code/source.py#getstatementrange_ast",
+   "name": "getstatementrange_ast"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config.getoption",
+   "name": "getoption"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.short_test_summary.show_xfailed",
+   "name": "show_xfailed"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/python.py#_show_fixtures_per_test.write_item",
+   "name": "write_item"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#AssertionRewritingHook._should_rewrite",
+   "name": "_should_rewrite"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#FSCollector._collectfile",
+   "name": "_collectfile"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/structures.py#ParameterSet.param",
+   "name": "param"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config.notify_exception",
+   "name": "notify_exception"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#pytest_terminal_summary",
+   "name": "pytest_terminal_summary"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#FixtureLookupErrorRepr.toterminal",
+   "name": "toterminal"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/fixtures.py#add_funcarg_pseudo_fixture_def",
+   "name": "add_funcarg_pseudo_fixture_def"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/unittest.py#_make_xunit_fixture",
+   "name": "_make_xunit_fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/mark/__init__.py#KeywordMatcher.from_item",
+   "name": "from_item"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#_prepareconfig",
+   "name": "_prepareconfig"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/unittest.py#_make_xunit_fixture.fixture",
+   "name": "fixture"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/reports.py#TestReport.from_item_and_call",
+   "name": "from_item_and_call"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#Node._repr_failure_py",
+   "name": "_repr_failure_py"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/unittest.py#pytest_runtest_makereport",
+   "name": "pytest_runtest_makereport"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#PytestPluginManager.register",
+   "name": "register"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/assertion/rewrite.py#_write_pyc",
+   "name": "_write_pyc"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/debugging.py#pytestPDB._init_pdb",
+   "name": "_init_pdb"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#pytest_make_collect_report",
+   "name": "pytest_make_collect_report"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/config/__init__.py#Config._validatekeys",
+   "name": "_validatekeys"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/debugging.py#_enter_pdb",
+   "name": "_enter_pdb"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/runner.py#collect_one_node",
+   "name": "collect_one_node"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#Node.warn",
+   "name": "warn"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/terminal.py#TerminalReporter.summary_errors",
+   "name": "summary_errors"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/compat.py#getfuncargnames",
+   "name": "getfuncargnames"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nose.py#pytest_runtest_setup",
+   "name": "pytest_runtest_setup"
+  }
+ ],
+ "pytest/overrides": [
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/unittest.py#TestCaseFunction",
+   "name": "TestCaseFunction"
+  },
+  {
+   "repo": "pytest",
+   "key": "symbol:src/_pytest/nodes.py#Collector",
+   "name": "Collector"
+  }
+ ],
+ "flask/lookup": [
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/blueprints.py#Blueprint.before_app_request",
+   "name": "before_app_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.teardown_request",
+   "name": "teardown_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#_validate_key",
+   "name": "_validate_key"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionInterface.make_null_session",
+   "name": "make_null_session"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/config.py#Config.from_object",
+   "name": "from_object"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#is_ip",
+   "name": "is_ip"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/json/__init__.py#jsonify",
+   "name": "jsonify"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/templating.py#stream_template_string",
+   "name": "stream_template_string"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/ctx.py#has_app_context",
+   "name": "has_app_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/ctx.py#after_this_request",
+   "name": "after_this_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/ctx.py#copy_current_request_context",
+   "name": "copy_current_request_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionInterface.is_null_session",
+   "name": "is_null_session"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/config.py#Config.from_prefixed_env",
+   "name": "from_prefixed_env"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.static_folder",
+   "name": "static_folder"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.should_ignore_error",
+   "name": "should_ignore_error"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/wrappers.py#Request.blueprints",
+   "name": "blueprints"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.has_static_folder",
+   "name": "has_static_folder"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.process_response",
+   "name": "process_response"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.request_context",
+   "name": "request_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.delete",
+   "name": "delete"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/config.py#Config.from_envvar",
+   "name": "from_envvar"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/logging.py#has_level_handler",
+   "name": "has_level_handler"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.trap_http_exception",
+   "name": "trap_http_exception"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#AppGroup.group",
+   "name": "group"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.patch",
+   "name": "patch"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.iter_blueprints",
+   "name": "iter_blueprints"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.open_resource",
+   "name": "open_resource"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionMixin.permanent",
+   "name": "permanent"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.before_request",
+   "name": "before_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/debughelpers.py#attach_enctype_error_multidict",
+   "name": "attach_enctype_error_multidict"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.make_default_options_response",
+   "name": "make_default_options_response"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.logger",
+   "name": "logger"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.url_defaults",
+   "name": "url_defaults"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.static_url_path",
+   "name": "static_url_path"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#get_template_attribute",
+   "name": "get_template_attribute"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/wrappers.py#Request.max_content_length",
+   "name": "max_content_length"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.test_client",
+   "name": "test_client"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.preprocess_request",
+   "name": "preprocess_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#find_app_by_string",
+   "name": "find_app_by_string"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#find_best_app",
+   "name": "find_best_app"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/config.py#Config.from_pyfile",
+   "name": "from_pyfile"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.async_to_sync",
+   "name": "async_to_sync"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.make_config",
+   "name": "make_config"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#_endpoint_from_view_func",
+   "name": "_endpoint_from_view_func"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.create_jinja_environment",
+   "name": "create_jinja_environment"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#abort",
+   "name": "abort"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#AppGroup.command",
+   "name": "command"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionInterface.get_cookie_domain",
+   "name": "get_cookie_domain"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionInterface.should_set_cookie",
+   "name": "should_set_cookie"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.handle_url_build_error",
+   "name": "handle_url_build_error"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.jinja_loader",
+   "name": "jinja_loader"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#flash",
+   "name": "flash"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.after_request",
+   "name": "after_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionInterface.get_expiration_time",
+   "name": "get_expiration_time"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.do_teardown_request",
+   "name": "do_teardown_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#get_debug_flag",
+   "name": "get_debug_flag"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#show_server_banner",
+   "name": "show_server_banner"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionInterface.get_cookie_path",
+   "name": "get_cookie_path"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionInterface.get_cookie_secure",
+   "name": "get_cookie_secure"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#shell_command",
+   "name": "shell_command"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.got_first_request",
+   "name": "got_first_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/testing.py#EnvironBuilder.json_dumps",
+   "name": "json_dumps"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/logging.py#wsgi_errors_stream",
+   "name": "wsgi_errors_stream"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.auto_find_instance_path",
+   "name": "auto_find_instance_path"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.handle_exception",
+   "name": "handle_exception"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#ScriptInfo.load_app",
+   "name": "load_app"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/wrappers.py#Response.max_cookie_size",
+   "name": "max_cookie_size"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/templating.py#_default_template_ctx_processor",
+   "name": "_default_template_ctx_processor"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/testing.py#FlaskCliRunner.invoke",
+   "name": "invoke"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.make_shell_context",
+   "name": "make_shell_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/ctx.py#has_request_context",
+   "name": "has_request_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.update_template_context",
+   "name": "update_template_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#_path_is_ancestor",
+   "name": "_path_is_ancestor"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.name",
+   "name": "name"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.put",
+   "name": "put"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/blueprints.py#Blueprint.record",
+   "name": "record"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#find_package",
+   "name": "find_package"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.route",
+   "name": "route"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/config.py#Config.get_namespace",
+   "name": "get_namespace"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.wsgi_app",
+   "name": "wsgi_app"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#prepare_import",
+   "name": "prepare_import"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/debughelpers.py#explain_template_loading_attempts",
+   "name": "explain_template_loading_attempts"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.jinja_env",
+   "name": "jinja_env"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/wrappers.py#Request.blueprint",
+   "name": "blueprint"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.make_aborter",
+   "name": "make_aborter"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.full_dispatch_request",
+   "name": "full_dispatch_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionInterface.get_cookie_name",
+   "name": "get_cookie_name"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.post",
+   "name": "post"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#get_flashed_messages",
+   "name": "get_flashed_messages"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.open_instance_resource",
+   "name": "open_instance_resource"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/logging.py#create_logger",
+   "name": "create_logger"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#load_dotenv",
+   "name": "load_dotenv"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.handle_http_exception",
+   "name": "handle_http_exception"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionInterface.get_cookie_samesite",
+   "name": "get_cookie_samesite"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/blueprints.py#Blueprint.app_url_defaults",
+   "name": "app_url_defaults"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.inject_url_defaults",
+   "name": "inject_url_defaults"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.do_teardown_appcontext",
+   "name": "do_teardown_appcontext"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#get_load_dotenv",
+   "name": "get_load_dotenv"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/blueprints.py#Blueprint.after_app_request",
+   "name": "after_app_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.create_global_jinja_loader",
+   "name": "create_global_jinja_loader"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/templating.py#render_template_string",
+   "name": "render_template_string"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.app_context",
+   "name": "app_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/json/tag.py#TaggedJSONSerializer.untag",
+   "name": "untag"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.test_request_context",
+   "name": "test_request_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask._find_error_handler",
+   "name": "_find_error_handler"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SessionInterface.get_cookie_httponly",
+   "name": "get_cookie_httponly"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/config.py#Config.from_mapping",
+   "name": "from_mapping"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#_called_with_wrong_args",
+   "name": "_called_with_wrong_args"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#_matching_loader_thinks_module_is_package",
+   "name": "_matching_loader_thinks_module_is_package"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.teardown_appcontext",
+   "name": "teardown_appcontext"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.raise_routing_exception",
+   "name": "raise_routing_exception"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/ctx.py#RequestContext.copy",
+   "name": "copy"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/blueprints.py#Blueprint.record_once",
+   "name": "record_once"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.get_send_file_max_age",
+   "name": "get_send_file_max_age"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/ctx.py#RequestContext.match_request",
+   "name": "match_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.handle_user_exception",
+   "name": "handle_user_exception"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#get_root_path",
+   "name": "get_root_path"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/blueprints.py#Blueprint.make_setup_state",
+   "name": "make_setup_state"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.send_static_file",
+   "name": "send_static_file"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#_find_package_path",
+   "name": "_find_package_path"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.select_jinja_autoescape",
+   "name": "select_jinja_autoescape"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#with_appcontext",
+   "name": "with_appcontext"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.debug",
+   "name": "debug"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/blueprints.py#Blueprint.teardown_app_request",
+   "name": "teardown_app_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.test_cli_runner",
+   "name": "test_cli_runner"
+  }
+ ],
+ "flask/impact": [
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/templating.py#render_template",
+   "name": "render_template"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#get_debug_flag",
+   "name": "get_debug_flag"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#send_from_directory",
+   "name": "send_from_directory"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#main",
+   "name": "main"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/cli.py#load_dotenv",
+   "name": "load_dotenv"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#stream_with_context",
+   "name": "stream_with_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#_split_blueprint_path",
+   "name": "_split_blueprint_path"
+  }
+ ],
+ "flask/callees": [
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/blueprints.py#BlueprintSetupState.add_url_rule",
+   "name": "add_url_rule"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/json/provider.py#DefaultJSONProvider.response",
+   "name": "response"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.wsgi_app",
+   "name": "wsgi_app"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/helpers.py#flash",
+   "name": "flash"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.teardown_request",
+   "name": "teardown_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/testing.py#FlaskClient.session_transaction",
+   "name": "session_transaction"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.test_request_context",
+   "name": "test_request_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.route",
+   "name": "route"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/ctx.py#RequestContext.pop",
+   "name": "pop"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.add_url_rule",
+   "name": "add_url_rule"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SecureCookieSessionInterface.open_session",
+   "name": "open_session"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask.test_client",
+   "name": "test_client"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/ctx.py#AppContext.pop",
+   "name": "pop"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.add_url_rule",
+   "name": "add_url_rule"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/ctx.py#RequestContext.push",
+   "name": "push"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.before_request",
+   "name": "before_request"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/ctx.py#copy_current_request_context",
+   "name": "copy_current_request_context"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/scaffold.py#Scaffold.endpoint",
+   "name": "endpoint"
+  }
+ ],
+ "flask/overrides": [
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/json/tag.py#TagMarkup",
+   "name": "TagMarkup"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/app.py#Flask",
+   "name": "Flask"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/json/tag.py#TagTuple",
+   "name": "TagTuple"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/json/tag.py#TagDateTime",
+   "name": "TagDateTime"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/json/tag.py#TagUUID",
+   "name": "TagUUID"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/json/tag.py#TagBytes",
+   "name": "TagBytes"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/json/provider.py#DefaultJSONProvider",
+   "name": "DefaultJSONProvider"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/sessions.py#SecureCookieSessionInterface",
+   "name": "SecureCookieSessionInterface"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/json/tag.py#TagDict",
+   "name": "TagDict"
+  },
+  {
+   "repo": "flask",
+   "key": "symbol:src/flask/blueprints.py#Blueprint",
+   "name": "Blueprint"
+  }
+ ],
+ "vue-core/lookup": [
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderContext.ts#pushScopeId",
+   "name": "pushScopeId"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#invalidateTypeCache",
+   "name": "invalidateTypeCache"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/resolveAssets.ts#resolveAsset",
+   "name": "resolveAsset"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#shallowReadonly",
+   "name": "shallowReadonly"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#shallowRef",
+   "name": "shallowRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/importUsageCheck.ts#isImportUsed",
+   "name": "isImportUsed"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#withAsyncContext",
+   "name": "withAsyncContext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderUtils.ts#getChildRoot",
+   "name": "getChildRoot"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactiveEffect.ts#trigger",
+   "name": "trigger"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentProps.ts#getInvalidTypeMessage",
+   "name": "getInvalidTypeMessage"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Tokenizer.handleTrailingData",
+   "name": "handleTrailingData"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-dom/src/transforms/stringifyStatic.ts#stringifyStatic",
+   "name": "stringifyStatic"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effectScope.ts#effectScope",
+   "name": "effectScope"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#isRef",
+   "name": "isRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/renderList.ts#renderList",
+   "name": "renderList"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/createSlots.ts#createSlots",
+   "name": "createSlots"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#resetTracking",
+   "name": "resetTracking"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/utils.ts#isMemberExpressionBrowser",
+   "name": "isMemberExpressionBrowser"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/apiCustomElement.ts#VueElement._resolveDef",
+   "name": "_resolveDef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/warning.ts#assertNumber",
+   "name": "assertNumber"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/global.ts#delete",
+   "name": "delete"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/makeMap.ts#makeMap",
+   "name": "makeMap"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#formatComponentName",
+   "name": "formatComponentName"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/featureFlags.ts#initFeatureFlags",
+   "name": "initFeatureFlags"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/template/transformAssetUrl.ts#transformAssetUrl",
+   "name": "transformAssetUrl"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#isReadonly",
+   "name": "isReadonly"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#toNumber",
+   "name": "toNumber"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/utils.ts#createGetCanonicalFileName",
+   "name": "createGetCanonicalFileName"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vOn.ts#withKeys",
+   "name": "withKeys"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/renderer.ts#createRenderer",
+   "name": "createRenderer"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/compileScript.ts#compileScript",
+   "name": "compileScript"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/domAttrConfig.ts#includeBooleanAttr",
+   "name": "includeBooleanAttr"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#toReactive",
+   "name": "toReactive"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/topLevelAwait.ts#processAwait",
+   "name": "processAwait"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/parse.ts#hmrShouldReload",
+   "name": "hmrShouldReload"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#createPropsRestProxy",
+   "name": "createPropsRestProxy"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#unref",
+   "name": "unref"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderContext.ts#withCtx",
+   "name": "withCtx"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#registerTS",
+   "name": "registerTS"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/parse.ts#dedent",
+   "name": "dedent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-dom/src/transforms/stringifyStatic.ts#analyzeNode",
+   "name": "analyzeNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Tokenizer.getPos",
+   "name": "getPos"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effectScope.ts#getCurrentScope",
+   "name": "getCurrentScope"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#toReadonly",
+   "name": "toReadonly"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#App._createRoot",
+   "name": "_createRoot"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#ref",
+   "name": "ref"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#reactive",
+   "name": "reactive"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/template/templateUtils.ts#parseUriParts",
+   "name": "parseUriParts"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#mergeDefaults",
+   "name": "mergeDefaults"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#isTagStartChar",
+   "name": "isTagStartChar"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiInject.ts#hasInjectionContext",
+   "name": "hasInjectionContext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentPublicInstance.ts#getPublicInstance",
+   "name": "getPublicInstance"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#pauseTracking",
+   "name": "pauseTracking"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderContext.ts#setCurrentRenderingInstance",
+   "name": "setCurrentRenderingInstance"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/rendererTemplateRef.ts#setRef",
+   "name": "setRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vOn.ts#withModifiers",
+   "name": "withModifiers"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/renderSlot.ts#renderSlot",
+   "name": "renderSlot"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#markRaw",
+   "name": "markRaw"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/resolveAssets.ts#resolveComponent",
+   "name": "resolveComponent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#registerRuntimeCompiler",
+   "name": "registerRuntimeCompiler"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#isReactive",
+   "name": "isReactive"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentProps.ts#styleValue",
+   "name": "styleValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/toDisplayString.ts#toDisplayString",
+   "name": "toDisplayString"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#openBlock",
+   "name": "openBlock"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/warning.ts#formatTrace",
+   "name": "formatTrace"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/index.ts#shouldTransformRef",
+   "name": "shouldTransformRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#effect",
+   "name": "effect"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderContext.ts#popScopeId",
+   "name": "popScopeId"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#deepCloneVNode",
+   "name": "deepCloneVNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#setBlockTracking",
+   "name": "setBlockTracking"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentOptions.ts#LegacyOptions.destroyed",
+   "name": "destroyed"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiAsyncComponent.ts#defineAsyncComponent",
+   "name": "defineAsyncComponent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderContext.ts#withScopeId",
+   "name": "withScopeId"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#toRefs",
+   "name": "toRefs"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#normalizePropsOrEmits",
+   "name": "normalizePropsOrEmits"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#defineOptions",
+   "name": "defineOptions"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#createTextVNode",
+   "name": "createTextVNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/renderToStream.ts#renderToStream",
+   "name": "renderToStream"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#readonly",
+   "name": "readonly"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentProps.ts#validateProps",
+   "name": "validateProps"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/resolveAssets.ts#resolveDynamicComponent",
+   "name": "resolveDynamicComponent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/helpers/useCssVars.ts#useCssVars",
+   "name": "useCssVars"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#defineExpose",
+   "name": "defineExpose"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/apiCustomElement.ts#VueElement._setProp",
+   "name": "_setProp"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#customRef",
+   "name": "customRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/defineProps.ts#hasStaticWithDefaults",
+   "name": "hasStaticWithDefaults"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/toHandlers.ts#toHandlers",
+   "name": "toHandlers"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/directives.ts#withDirectives",
+   "name": "withDirectives"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#NO",
+   "name": "NO"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/template/templateUtils.ts#parseUrl",
+   "name": "parseUrl"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/hydration.ts#propHasMismatch",
+   "name": "propHasMismatch"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/resolveAssets.ts#resolveDirective",
+   "name": "resolveDirective"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/renderer.ts#traverseStaticChildren",
+   "name": "traverseStaticChildren"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Tokenizer.fastForwardTo",
+   "name": "fastForwardTo"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#defineModel",
+   "name": "defineModel"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#isProxy",
+   "name": "isProxy"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/warning.ts#formatProps",
+   "name": "formatProps"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentProps.ts#isExplicable",
+   "name": "isExplicable"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentProps.ts#assertType",
+   "name": "assertType"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentProps.ts#validateProp",
+   "name": "validateProp"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#getSlotsProxy",
+   "name": "getSlotsProxy"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#triggerRef",
+   "name": "triggerRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#mergeModels",
+   "name": "mergeModels"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#enableTracking",
+   "name": "enableTracking"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#resolveTypeElements",
+   "name": "resolveTypeElements"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#resolveExtractPropTypes",
+   "name": "resolveExtractPropTypes"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentProps.ts#isBoolean",
+   "name": "isBoolean"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#createElementBlock",
+   "name": "createElementBlock"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Tokenizer.stateInCommentLike",
+   "name": "stateInCommentLike"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactiveEffect.ts#track",
+   "name": "track"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/rewriteDefault.ts#rewriteDefaultAST",
+   "name": "rewriteDefaultAST"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effectScope.ts#onScopeDispose",
+   "name": "onScopeDispose"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#shallowReactive",
+   "name": "shallowReactive"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/babelUtils.ts#isReferenced",
+   "name": "isReferenced"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/resolveAssets.ts#resolveFilter",
+   "name": "resolveFilter"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/compatConfig.ts#softAssertCompatEnabled",
+   "name": "softAssertCompatEnabled"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/compatConfig.ts#assertCompatEnabled",
+   "name": "assertCompatEnabled"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/components/TransitionGroup.ts#removeMode",
+   "name": "removeMode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#looseToNumber",
+   "name": "looseToNumber"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#resetSuspenseId",
+   "name": "resetSuspenseId"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/components/Transition.ts#hasExplicitCallback",
+   "name": "hasExplicitCallback"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Tokenizer.stateInRCDATA",
+   "name": "stateInRCDATA"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentOptions.ts#LegacyOptions.beforeDestroy",
+   "name": "beforeDestroy"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#toRaw",
+   "name": "toRaw"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#createCommentVNode",
+   "name": "createCommentVNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#toRef",
+   "name": "toRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#transformVNodeArgs",
+   "name": "transformVNodeArgs"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/analyzeScriptBindings.ts#analyzeScriptBindings",
+   "name": "analyzeScriptBindings"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/validateExpression.ts#validateBrowserExpression",
+   "name": "validateBrowserExpression"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/apiCustomElement.ts#VueElement._getProp",
+   "name": "_getProp"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#proxyRefs",
+   "name": "proxyRefs"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#toValue",
+   "name": "toValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Tokenizer.cleanup",
+   "name": "cleanup"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/parse.ts#isEmpty",
+   "name": "isEmpty"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#withDefaults",
+   "name": "withDefaults"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentOptions.ts#resolveMergedOptions",
+   "name": "resolveMergedOptions"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#createStaticVNode",
+   "name": "createStaticVNode"
+  }
+ ],
+ "vue-core/callers": [
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#createSuspenseBoundary.next",
+   "name": "next"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/apiCustomElement.ts#VueElement._createVNode",
+   "name": "_createVNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/nodeOps.ts#nodeOps.setScopeId",
+   "name": "setScopeId"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#GetterRefImpl.value",
+   "name": "value"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#_createVNode",
+   "name": "_createVNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.ondirmodifier",
+   "name": "ondirmodifier"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#CustomRefImpl.value",
+   "name": "value"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#SuspenseImpl.process",
+   "name": "process"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/importUsageCheck.ts#resolveTemplateUsedIdentifiers.walk",
+   "name": "walk"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#ontext",
+   "name": "ontext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/renderToStream.ts#SimpleReadable.destroy",
+   "name": "destroy"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#resolveTransitionHooks.clone",
+   "name": "clone"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#createAppAPI.runWithContext",
+   "name": "runWithContext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onopentagname",
+   "name": "onopentagname"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-dom/src/index.ts#parse",
+   "name": "parse"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/renderToStream.ts#pipeToWebWritable.destroy",
+   "name": "destroy"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/codegen.ts#isText",
+   "name": "isText"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-dom/src/transforms/vModel.ts#transformModel.checkDuplicatedValue",
+   "name": "checkDuplicatedValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#getAttrsProxy.deleteProperty",
+   "name": "deleteProperty"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#createTransformContext.removeIdentifiers",
+   "name": "removeIdentifiers"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelText.mounted",
+   "name": "mounted"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#ondirname",
+   "name": "ondirname"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#ObjectRefImpl.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/instanceEventEmitter.ts#off",
+   "name": "off"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#TransformContext.removeNode",
+   "name": "removeNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onattribentity",
+   "name": "onattribentity"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentOptions.ts#LegacyOptions.created",
+   "name": "created"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onattribentity",
+   "name": "onattribentity"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelDynamic.created",
+   "name": "created"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#SuspenseBoundary.registerDep",
+   "name": "registerDep"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/computed.ts#ComputedRefImpl.value",
+   "name": "value"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/renderToString.ts#unrollBuffer",
+   "name": "unrollBuffer"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/instanceChildren.ts#walk",
+   "name": "walk"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/baseHandlers.ts#ReadonlyReactiveHandler.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#RefImpl.value",
+   "name": "value"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelRadio.created",
+   "name": "created"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/global.ts#use",
+   "name": "use"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#ReactiveEffect.stop",
+   "name": "stop"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentOptions.ts#LegacyOptions.beforeUpdate",
+   "name": "beforeUpdate"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/babelUtils.ts#walkIdentifiers.leave",
+   "name": "leave"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onprocessinginstruction",
+   "name": "onprocessinginstruction"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/computed.ts#computed",
+   "name": "computed"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#createAppAPI.mixin",
+   "name": "mixin"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/hoistStatic.ts#walk",
+   "name": "walk"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/compileScript.ts#registerBinding",
+   "name": "registerBinding"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#App.provide",
+   "name": "provide"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onattribnameend",
+   "name": "onattribnameend"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelSelect.beforeUpdate",
+   "name": "beforeUpdate"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/codegen.ts#CodegenContext.indent",
+   "name": "indent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/scheduler.ts#getId",
+   "name": "getId"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/renderToStream.ts#pipeToNodeWritable.destroy",
+   "name": "destroy"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#ontextentity",
+   "name": "ontextentity"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#createTransformContext.cache",
+   "name": "cache"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/definePropsDestructure.ts#transformDestructuredProps.leave",
+   "name": "leave"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onclosetag",
+   "name": "onclosetag"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#createSetupContext.attrs",
+   "name": "attrs"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentOptions.ts#LegacyOptions.mounted",
+   "name": "mounted"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/baseHandlers.ts#MutableReactiveHandler.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelRadio.beforeUpdate",
+   "name": "beforeUpdate"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#resolveFS.readFile",
+   "name": "readFile"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-ssr/src/index.ts#compile",
+   "name": "compile"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/compileScript.ts#compileScript.enter",
+   "name": "enter"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#createTransformContext.hoist",
+   "name": "hoist"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/instanceEventEmitter.ts#on",
+   "name": "on"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/codegen.ts#createCodegenContext.indent",
+   "name": "indent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Teleport.ts#TeleportImpl.process.mount",
+   "name": "mount"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#CustomRefImpl.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/renderToStream.ts#renderToWebStream.start.destroy",
+   "name": "destroy"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#BaseTransition.default",
+   "name": "default"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/codegen.ts#CodegenContext.deindent",
+   "name": "deindent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/utils.ts#isText",
+   "name": "isText"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.ondirarg",
+   "name": "ondirarg"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onattribend",
+   "name": "onattribend"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#createSuspenseBoundary.registerDep",
+   "name": "registerDep"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/apiCustomElement.ts#VueElement.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/collectionHandlers.ts#createIterableMethod.next",
+   "name": "next"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#ReactiveEffect.run",
+   "name": "run"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/hydration.ts#createHydrationFunctions.replaceNode",
+   "name": "replaceNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vShow.ts#vShow.updated",
+   "name": "updated"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/vue-compat/src/dev.ts#initDev",
+   "name": "initDev"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/collectionHandlers.ts#Iterator.next",
+   "name": "next"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/definePropsDestructure.ts#transformDestructuredProps.enter",
+   "name": "enter"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/codegen.ts#createCodegenContext.deindent",
+   "name": "deindent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/global.ts#directive",
+   "name": "directive"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/hydration.ts#createHydrationFunctions.isTemplateNode",
+   "name": "isTemplateNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#ondirmodifier",
+   "name": "ondirmodifier"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/compatConfig.ts#checkCompatEnabled",
+   "name": "checkCompatEnabled"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/global.ts#mixin",
+   "name": "mixin"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#createAppAPI.directive",
+   "name": "directive"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.ondirname",
+   "name": "ondirname"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#resolveFS.fileExists",
+   "name": "fileExists"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.oncomment",
+   "name": "oncomment"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#createAppAPI.use",
+   "name": "use"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/parse.ts#createBlock",
+   "name": "createBlock"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onattribnameend",
+   "name": "onattribnameend"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#App.component",
+   "name": "component"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#App.runWithContext",
+   "name": "runWithContext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/utils.ts#isTemplateNode",
+   "name": "isTemplateNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/importUsageCheck.ts#extractIdentifiers",
+   "name": "extractIdentifiers"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onopentagend",
+   "name": "onopentagend"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/context.ts#ScriptCompileContext.constructor.parse",
+   "name": "parse"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#Suspense.default",
+   "name": "default"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#Suspense.fallback",
+   "name": "fallback"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#TransformContext.hoist",
+   "name": "hoist"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/computed.ts#ComputedRefImpl.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentOptions.ts#LegacyOptions.updated",
+   "name": "updated"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#createAppAPI.component",
+   "name": "component"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#TransitionHooks.leave",
+   "name": "leave"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelDynamic.beforeUpdate",
+   "name": "beforeUpdate"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#ReactiveEffect.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Teleport.ts#Teleport.default",
+   "name": "default"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/babelUtils.ts#walkIdentifiers.enter",
+   "name": "enter"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/parse.ts#parse",
+   "name": "parse"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/renderer.ts#RendererOptions.patchProp",
+   "name": "patchProp"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#TransitionHooks.enter",
+   "name": "enter"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelDynamic.updated",
+   "name": "updated"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelSelect.updated",
+   "name": "updated"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Tokenizer.parse",
+   "name": "parse"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.oninterpolation",
+   "name": "oninterpolation"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onend",
+   "name": "onend"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#createSuspenseBoundary.move",
+   "name": "move"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#createTransformContext.removeHelper",
+   "name": "removeHelper"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/baseHandlers.ts#MutableReactiveHandler.deleteProperty",
+   "name": "deleteProperty"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effectScope.ts#EffectScope.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onopentagname",
+   "name": "onopentagname"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/context.ts#ScriptCompileContext.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-ssr/src/transforms/ssrVModel.ts#ssrTransformModel.checkDuplicatedValue",
+   "name": "checkDuplicatedValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.ontextentity",
+   "name": "ontextentity"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#resolveTransitionHooks.enter",
+   "name": "enter"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/KeepAlive.ts#KeepAlive.default",
+   "name": "default"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/renderer.ts#RendererOptions.setScopeId",
+   "name": "setScopeId"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/global.ts#compile",
+   "name": "compile"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#SuspenseBoundary.next",
+   "name": "next"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/compileScript.ts#SFCScriptCompileOptions.readFile",
+   "name": "readFile"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/baseHandlers.ts#ReadonlyReactiveHandler.deleteProperty",
+   "name": "deleteProperty"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#createTransformContext.helperString",
+   "name": "helperString"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#TypeScope.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/compileTemplate.ts#TemplateCompiler.parse",
+   "name": "parse"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#GetterRefImpl.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/renderToString.ts#unrollBufferSync",
+   "name": "unrollBufferSync"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#ObjectRefImpl.value",
+   "name": "value"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.ontext",
+   "name": "ontext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/patchProp.ts#patchProp",
+   "name": "patchProp"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#App.mount",
+   "name": "mount"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#SuspenseBoundary.move",
+   "name": "move"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/hydration.ts#isComment",
+   "name": "isComment"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-dom/src/transforms/stringifyStatic.ts#analyzeNode.walk",
+   "name": "walk"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelText.beforeUpdate",
+   "name": "beforeUpdate"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#TransformContext.removeHelper",
+   "name": "removeHelper"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#createSuspenseBoundary.fallback",
+   "name": "fallback"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#TransformContext.cache",
+   "name": "cache"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#SuspenseBoundary.fallback",
+   "name": "fallback"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelText.created",
+   "name": "created"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#TransformContext.addIdentifiers",
+   "name": "addIdentifiers"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelSelect.mounted",
+   "name": "mounted"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/baseHandlers.ts#BaseReactiveHandler.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#resolveTransitionHooks.leave",
+   "name": "leave"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#createTransformContext.removeNode",
+   "name": "removeNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#createTransformContext.replaceNode",
+   "name": "replaceNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/definePropsDestructure.ts#processPropsDestructure.registerBinding",
+   "name": "registerBinding"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#createAppAPI.provide",
+   "name": "provide"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelDynamic.mounted",
+   "name": "mounted"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effectScope.ts#EffectScope.run",
+   "name": "run"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#ondirarg",
+   "name": "ondirarg"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onend",
+   "name": "onend"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Tokenizer.reset",
+   "name": "reset"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#oncomment",
+   "name": "oncomment"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onselfclosingtag",
+   "name": "onselfclosingtag"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Tokenizer.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/collectionHandlers.ts#size",
+   "name": "size"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#reset",
+   "name": "reset"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vShow.ts#vShow.mounted",
+   "name": "mounted"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#RefImpl.constructor",
+   "name": "constructor"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#createTransformContext.addIdentifiers",
+   "name": "addIdentifiers"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.oncdata",
+   "name": "oncdata"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/renderToStream.ts#unrollBufferSync",
+   "name": "unrollBufferSync"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#resolveTransitionHooks.beforeEnter",
+   "name": "beforeEnter"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onprocessinginstruction",
+   "name": "onprocessinginstruction"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onattribend",
+   "name": "onattribend"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/vue-compat/src/createCompatVue.ts#createCompatVue",
+   "name": "createCompatVue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onattribdata",
+   "name": "onattribdata"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiComputed.ts#computed",
+   "name": "computed"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effectScope.ts#EffectScope.on",
+   "name": "on"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#TransformContext.helperString",
+   "name": "helperString"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effectScope.ts#EffectScope.off",
+   "name": "off"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/compat/compatConfig.ts#checkCompatEnabled",
+   "name": "checkCompatEnabled"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/global.ts#createCompatVue",
+   "name": "createCompatVue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onattribdata",
+   "name": "onattribdata"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/vue/src/dev.ts#initDev",
+   "name": "initDev"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelCheckbox.created",
+   "name": "created"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-ssr/src/transforms/ssrTransformComponent.ts#clone",
+   "name": "clone"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderUtils.ts#renderComponentRoot.attrs",
+   "name": "attrs"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#stop",
+   "name": "stop"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onclosetag",
+   "name": "onclosetag"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onopentagend",
+   "name": "onopentagend"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onselfclosingtag",
+   "name": "onselfclosingtag"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/utils.ts#getId",
+   "name": "getId"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#oncdata",
+   "name": "oncdata"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#TransformContext.replaceNode",
+   "name": "replaceNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/vue/src/runtime.ts#compile",
+   "name": "compile"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#createBlock",
+   "name": "createBlock"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelSelect.created",
+   "name": "created"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onattribname",
+   "name": "onattribname"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#App.mixin",
+   "name": "mixin"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/helpers/ssrRenderSlot.ts#isComment",
+   "name": "isComment"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiInject.ts#provide",
+   "name": "provide"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effectScope.ts#EffectScope.stop",
+   "name": "stop"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/global.ts#component",
+   "name": "component"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/renderToStream.ts#unrollBuffer",
+   "name": "unrollBuffer"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#vModelCheckbox.beforeUpdate",
+   "name": "beforeUpdate"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/compileScript.ts#SFCScriptCompileOptions.fileExists",
+   "name": "fileExists"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#App.use",
+   "name": "use"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/babelUtils.ts#extractIdentifiers",
+   "name": "extractIdentifiers"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#TransformContext.removeIdentifiers",
+   "name": "removeIdentifiers"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#Callbacks.onattribname",
+   "name": "onattribname"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/compileTemplate.ts#TemplateCompiler.compile",
+   "name": "compile"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-dom/src/index.ts#compile",
+   "name": "compile"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#TransitionHooks.clone",
+   "name": "clone"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#App.directive",
+   "name": "directive"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#oninterpolation",
+   "name": "oninterpolation"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#TransitionHooks.beforeEnter",
+   "name": "beforeEnter"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiCreateApp.ts#createAppAPI.mount",
+   "name": "mount"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/collectionHandlers.ts#createInstrumentations.size",
+   "name": "size"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Teleport.ts#TeleportImpl.process",
+   "name": "process"
+  }
+ ],
+ "vue-core/impact": [
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/analyzeScriptBindings.ts#getObjectOrArrayExpressionKeys",
+   "name": "getObjectOrArrayExpressionKeys"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/rendererTemplateRef.ts#setRef",
+   "name": "setRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#recordType",
+   "name": "recordType"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/hmr.ts#normalizeClassComponent",
+   "name": "normalizeClassComponent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/KeepAlive.ts#matches",
+   "name": "matches"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#resetTracking",
+   "name": "resetTracking"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/template/templateUtils.ts#isDataUrl",
+   "name": "isDataUrl"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#flattenTypes",
+   "name": "flattenTypes"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/helpers/useCssVars.ts#setVarsOnVNode",
+   "name": "setVarsOnVNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/renderer.ts#resolveChildrenNamespace",
+   "name": "resolveChildrenNamespace"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-ssr/src/errors.ts#createSSRCompilerError",
+   "name": "createSSRCompilerError"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/compatConfig.ts#configureCompat",
+   "name": "configureCompat"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/ast.ts#convertToBlock",
+   "name": "convertToBlock"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#toTypeString",
+   "name": "toTypeString"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/codegen.ts#genAssets",
+   "name": "genAssets"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/collectionHandlers.ts#createInstrumentationGetter",
+   "name": "createInstrumentationGetter"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/global.ts#defineReactiveSimple",
+   "name": "defineReactiveSimple"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#looseToNumber",
+   "name": "looseToNumber"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/defineProps.ts#processDefineProps",
+   "name": "processDefineProps"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/render.ts#renderVNodeChildren",
+   "name": "renderVNodeChildren"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#pauseTracking",
+   "name": "pauseTracking"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/renderToStream.ts#renderToSimpleStream",
+   "name": "renderToSimpleStream"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/renderer.ts#toggleRecurse",
+   "name": "toggleRecurse"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#cacheStringFunction",
+   "name": "cacheStringFunction"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/resolveAssets.ts#resolveDirective",
+   "name": "resolveDirective"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/transformElement.ts#buildProps",
+   "name": "buildProps"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vShow.ts#setDisplay",
+   "name": "setDisplay"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#ctxToScope",
+   "name": "ctxToScope"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#addNode",
+   "name": "addNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#normalizeChildren",
+   "name": "normalizeChildren"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/utils.ts#getImportedName",
+   "name": "getImportedName"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiDefineComponent.ts#defineComponent",
+   "name": "defineComponent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/normalizeProp.ts#normalizeStyle",
+   "name": "normalizeStyle"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/transformElement.ts#resolveComponentType",
+   "name": "resolveComponentType"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#isRuntimeOnly",
+   "name": "isRuntimeOnly"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/compat/transformFilter.ts#rewriteFilter",
+   "name": "rewriteFilter"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#warnRuntimeUsage",
+   "name": "warnRuntimeUsage"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#traverseNode",
+   "name": "traverseNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#isModelListener",
+   "name": "isModelListener"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#setupComponent",
+   "name": "setupComponent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/helpers/useCssVars.ts#setVarsOnNode",
+   "name": "setVarsOnNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#resolveTemplateKeys",
+   "name": "resolveTemplateKeys"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/compatConfig.ts#getCompatConfigForKey",
+   "name": "getCompatConfigForKey"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiAsyncComponent.ts#createInnerComp",
+   "name": "createInnerComp"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#isPlainObject",
+   "name": "isPlainObject"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#createTransformContext",
+   "name": "createTransformContext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/errorHandling.ts#handleError",
+   "name": "handleError"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/warning.ts#pushWarningContext",
+   "name": "pushWarningContext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#handleSetupResult",
+   "name": "handleSetupResult"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/utils.ts#assert",
+   "name": "assert"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/modules/style.ts#setStyle",
+   "name": "setStyle"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/devtools.ts#createDevtoolsComponentHook",
+   "name": "createDevtoolsComponentHook"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#shallowRef",
+   "name": "shallowRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#createProperty",
+   "name": "createProperty"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/profiling.ts#isSupported",
+   "name": "isSupported"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/components/Transition.ts#NumberOf",
+   "name": "NumberOf"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#resolveFS",
+   "name": "resolveFS"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#resolveTransitionHooks",
+   "name": "resolveTransitionHooks"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#toCharCodes",
+   "name": "toCharCodes"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiWatch.ts#doWatch",
+   "name": "doWatch"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/warning.ts#popWarningContext",
+   "name": "popWarningContext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#createComponentInstance",
+   "name": "createComponentInstance"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#baseParse",
+   "name": "baseParse"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/utils.ts#isSlotOutlet",
+   "name": "isSlotOutlet"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/normalizeProp.ts#normalizeProps",
+   "name": "normalizeProps"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/analyzeScriptBindings.ts#getObjectExpressionKeys",
+   "name": "getObjectExpressionKeys"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#getComponentName",
+   "name": "getComponentName"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/normalizeProp.ts#stringifyStyle",
+   "name": "stringifyStyle"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/vModel.ts#createTransformProps",
+   "name": "createTransformProps"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#formatComponentName",
+   "name": "formatComponentName"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-ssr/src/transforms/ssrTransformElement.ts#buildSSRProps",
+   "name": "buildSSRProps"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#isProxy",
+   "name": "isProxy"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Teleport.ts#isTeleportDisabled",
+   "name": "isTeleportDisabled"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#getTransitionRawChildren",
+   "name": "getTransitionRawChildren"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/style/pluginScoped.ts#rewriteSelector",
+   "name": "rewriteSelector"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#markRaw",
+   "name": "markRaw"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/KeepAlive.ts#resetShapeFlag",
+   "name": "resetShapeFlag"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#validateComponentName",
+   "name": "validateComponentName"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#openBlock",
+   "name": "openBlock"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentSlots.ts#normalizeSlotValue",
+   "name": "normalizeSlotValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#recordTypes",
+   "name": "recordTypes"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#setActiveBranch",
+   "name": "setActiveBranch"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#isIntegerKey",
+   "name": "isIntegerKey"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/warn.ts#warnOnce",
+   "name": "warnOnce"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderUtils.ts#markAttrsAccessed",
+   "name": "markAttrsAccessed"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/utils.ts#injectProp",
+   "name": "injectProp"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentPublicInstance.ts#getPublicInstance",
+   "name": "getPublicInstance"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/codegen.ts#genNodeListAsArray",
+   "name": "genNodeListAsArray"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/tokenizer.ts#isEndOfTagSection",
+   "name": "isEndOfTagSection"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/scheduler.ts#checkRecursiveUpdates",
+   "name": "checkRecursiveUpdates"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/utils.ts#hasDynamicKeyVBind",
+   "name": "hasDynamicKeyVBind"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#pauseScheduling",
+   "name": "pauseScheduling"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/transformElement.ts#resolveSetupReference",
+   "name": "resolveSetupReference"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#shallowReactive",
+   "name": "shallowReactive"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/utils.ts#toValidAssetId",
+   "name": "toValidAssetId"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/KeepAlive.ts#getInnerChild",
+   "name": "getInnerChild"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/babelUtils.ts#isStaticProperty",
+   "name": "isStaticProperty"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#toNumber",
+   "name": "toNumber"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/validateExpression.ts#validateBrowserExpression",
+   "name": "validateBrowserExpression"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/babelUtils.ts#isInDestructureAssignment",
+   "name": "isInDestructureAssignment"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#setBlockTracking",
+   "name": "setBlockTracking"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#getGlobalThis",
+   "name": "getGlobalThis"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentOptions.ts#resolveMergedOptions",
+   "name": "resolveMergedOptions"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/ast.ts#createInterpolation",
+   "name": "createInterpolation"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/looseEqual.ts#looseIndexOf",
+   "name": "looseIndexOf"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/scheduler.ts#queueJob",
+   "name": "queueJob"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#def",
+   "name": "def"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#createReactiveObject",
+   "name": "createReactiveObject"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/domAttrConfig.ts#includeBooleanAttr",
+   "name": "includeBooleanAttr"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#mergeProps",
+   "name": "mergeProps"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#getModelAssigner",
+   "name": "getModelAssigner"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/babelUtils.ts#walkIdentifiers",
+   "name": "walkIdentifiers"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/render.ts#renderVNode",
+   "name": "renderVNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/utils.ts#resolveObjectKey",
+   "name": "resolveObjectKey"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/collectionHandlers.ts#createIterableMethod",
+   "name": "createIterableMethod"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentProps.ts#getType",
+   "name": "getType"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/utils.ts#isSimpleIdentifier",
+   "name": "isSimpleIdentifier"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#trackRefValue",
+   "name": "trackRefValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-dom/src/transforms/stringifyStatic.ts#evaluateConstant",
+   "name": "evaluateConstant"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#toRawType",
+   "name": "toRawType"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/useSsrContext.ts#useSSRContext",
+   "name": "useSSRContext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiAsyncComponent.ts#defineAsyncComponent",
+   "name": "defineAsyncComponent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#triggerRefValue",
+   "name": "triggerRefValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/ast.ts#createBlockStatement",
+   "name": "createBlockStatement"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/vFor.ts#createForLoopParams",
+   "name": "createForLoopParams"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/vFor.ts#finalizeForParseResult",
+   "name": "finalizeForParseResult"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderUtils.ts#filterSingleRoot",
+   "name": "filterSingleRoot"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/utils.ts#concatStrings",
+   "name": "concatStrings"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-ssr/src/transforms/ssrInjectFallthroughAttrs.ts#hasSingleChild",
+   "name": "hasSingleChild"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/ast.ts#createIfStatement",
+   "name": "createIfStatement"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#createExp",
+   "name": "createExp"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/context.ts#resolveParserPlugins",
+   "name": "resolveParserPlugins"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-ssr/src/transforms/ssrInjectFallthroughAttrs.ts#injectFallthroughAttrs",
+   "name": "injectFallthroughAttrs"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/toHandlers.ts#toHandlers",
+   "name": "toHandlers"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-ssr/src/transforms/ssrInjectFallthroughAttrs.ts#filterChild",
+   "name": "filterChild"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/compat/compatConfig.ts#getCompatValue",
+   "name": "getCompatValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentEmits.ts#isEmitListener",
+   "name": "isEmitListener"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiLifecycle.ts#injectHook",
+   "name": "injectHook"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/scheduler.ts#flushPostFlushCbs",
+   "name": "flushPostFlushCbs"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/reactive.ts#isShallow",
+   "name": "isShallow"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/template/templateUtils.ts#parseUrl",
+   "name": "parseUrl"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#setCurrentInstance",
+   "name": "setCurrentInstance"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderContext.ts#setCurrentRenderingInstance",
+   "name": "setCurrentRenderingInstance"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Teleport.ts#moveTeleport",
+   "name": "moveTeleport"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#toValue",
+   "name": "toValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiWatch.ts#watchEffect",
+   "name": "watchEffect"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/instanceEventEmitter.ts#getRegistry",
+   "name": "getRegistry"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/renderer.ts#traverseStaticChildren",
+   "name": "traverseStaticChildren"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/renderSlot.ts#renderSlot",
+   "name": "renderSlot"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#setTransitionHooks",
+   "name": "setTransitionHooks"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/ast.ts#createVNodeCall",
+   "name": "createVNodeCall"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#defineProps",
+   "name": "defineProps"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/ast.ts#getVNodeHelper",
+   "name": "getVNodeHelper"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/modules/events.ts#removeEventListener",
+   "name": "removeEventListener"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/codegen.ts#genNodeList",
+   "name": "genNodeList"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/Suspense.ts#triggerEvent",
+   "name": "triggerEvent"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/compileScript.ts#walkPattern",
+   "name": "walkPattern"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiLifecycle.ts#createHook",
+   "name": "createHook"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/hmr.ts#tryWrap",
+   "name": "tryWrap"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/ast.ts#createRoot",
+   "name": "createRoot"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/collectionHandlers.ts#createReadonlyMethod",
+   "name": "createReadonlyMethod"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#guardReactiveProps",
+   "name": "guardReactiveProps"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#withAsyncContext",
+   "name": "withAsyncContext"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/scheduler.ts#queuePostFlushCb",
+   "name": "queuePostFlushCb"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/compileScript.ts#walkDeclaration",
+   "name": "walkDeclaration"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#isMap",
+   "name": "isMap"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/toDisplayString.ts#stringifySymbol",
+   "name": "stringifySymbol"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/collectionHandlers.ts#createForEach",
+   "name": "createForEach"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiWatch.ts#traverse",
+   "name": "traverse"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentPublicInstance.ts#hasSetupBinding",
+   "name": "hasSetupBinding"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiAsyncComponent.ts#isAsyncWrapper",
+   "name": "isAsyncWrapper"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/compat/renderFn.ts#convertLegacySlots",
+   "name": "convertLegacySlots"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#setLocEnd",
+   "name": "setLocEnd"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/codeframe.ts#generateCodeFrame",
+   "name": "generateCodeFrame"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentOptions.ts#normalizeInject",
+   "name": "normalizeInject"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/vSlot.ts#buildSlots",
+   "name": "buildSlots"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#toRef",
+   "name": "toRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#getExposeProxy",
+   "name": "getExposeProxy"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/collectionHandlers.ts#getProto",
+   "name": "getProto"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onCloseTag",
+   "name": "onCloseTag"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-ssr/src/transforms/ssrInjectCssVars.ts#injectCssVars",
+   "name": "injectCssVars"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/vSlot.ts#hasForwardedSlots",
+   "name": "hasForwardedSlots"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/apiSetupHelpers.ts#normalizePropsOrEmits",
+   "name": "normalizePropsOrEmits"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/transformElement.ts#isComponentTag",
+   "name": "isComponentTag"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/helpers/resolveAssets.ts#resolveAsset",
+   "name": "resolveAsset"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#createTextVNode",
+   "name": "createTextVNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#unsetCurrentInstance",
+   "name": "unsetCurrentInstance"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transform.ts#createStructuralDirectiveTransform",
+   "name": "createStructuralDirectiveTransform"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#callModelHook",
+   "name": "callModelHook"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/hydration.ts#getContainerType",
+   "name": "getContainerType"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/transforms/vSlot.ts#buildDynamicSlot",
+   "name": "buildDynamicSlot"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/effect.ts#resetScheduling",
+   "name": "resetScheduling"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#mergeNamespaces",
+   "name": "mergeNamespaces"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#innerResolveTypeReference",
+   "name": "innerResolveTypeReference"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentOptions.ts#mergeOptions",
+   "name": "mergeOptions"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#isSet",
+   "name": "isSet"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentProps.ts#resolvePropValue",
+   "name": "resolvePropValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/utils.ts#normalizePath",
+   "name": "normalizePath"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-ssr/src/ssrCodegenTransform.ts#processChildrenAsStatement",
+   "name": "processChildrenAsStatement"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/rewriteDefault.ts#specifierEnd",
+   "name": "specifierEnd"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/toDisplayString.ts#toDisplayString",
+   "name": "toDisplayString"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/KeepAlive.ts#isKeepAlive",
+   "name": "isKeepAlive"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentPublicInstance.ts#isReservedPrefix",
+   "name": "isReservedPrefix"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderUtils.ts#renderComponentRoot",
+   "name": "renderComponentRoot"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/babelUtils.ts#markKnownIds",
+   "name": "markKnownIds"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#getReferenceName",
+   "name": "getReferenceName"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#normalizeRef",
+   "name": "normalizeRef"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/server-renderer/src/render.ts#renderComponentVNode",
+   "name": "renderComponentVNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/shared/src/general.ts#genPropsAccessExp",
+   "name": "genPropsAccessExp"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#reverseInferType",
+   "name": "reverseInferType"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/ast.ts#createArrayExpression",
+   "name": "createArrayExpression"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/ref.ts#unref",
+   "name": "unref"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/babelUtils.ts#isFunctionType",
+   "name": "isFunctionType"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/utils.ts#toRuntimeTypeString",
+   "name": "toRuntimeTypeString"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-dom/src/directives/vModel.ts#getValue",
+   "name": "getValue"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-sfc/src/script/resolveType.ts#importSourceToScope",
+   "name": "importSourceToScope"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/component.ts#finishComponentSetup",
+   "name": "finishComponentSetup"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/components/BaseTransition.ts#emptyPlaceholder",
+   "name": "emptyPlaceholder"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/reactivity/src/baseHandlers.ts#hasOwnProperty",
+   "name": "hasOwnProperty"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/vnode.ts#cloneIfMounted",
+   "name": "cloneIfMounted"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/parser.ts#onText",
+   "name": "onText"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-dom/src/transforms/stringifyStatic.ts#stringifyNode",
+   "name": "stringifyNode"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/compiler-core/src/ast.ts#getVNodeBlockHelper",
+   "name": "getVNodeBlockHelper"
+  },
+  {
+   "repo": "vue-core",
+   "key": "symbol:packages/runtime-core/src/componentRenderUtils.ts#updateHOCHostEl",
+   "name": "updateHOCHostEl"
+  }
+ ]
+}

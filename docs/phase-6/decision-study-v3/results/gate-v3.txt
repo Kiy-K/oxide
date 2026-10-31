@@ -1,0 +1,97 @@
+preregistration sha256:cf4707aa7fb4d07b3f53b0f002cd75522189580e151b25d0112ce6d72c6a1291
+split v3: 52 tasks with verified gold; validity checks pass
+
+END TO END (every task; a failed request packs production)
+arm                            LR@256  LR@1024  LR@4096  used@256 used@1024 used@4096 AUROC adm fallback
+heuristic                      0.0201   0.1779   0.3161     0.950     0.990     0.994     0.616        0
+oracle_order                   0.0458   0.3064   0.5022     0.947     0.989     0.997     1.000        0
+oracle_pick                    0.0477   0.3186   0.5281     0.947     0.989     0.997     1.000        0
+random~order (mean of 5)       0.0058   0.0505   0.1405     0.953     0.988     0.997     0.508        0
+compact~order                  0.0334   0.3026   0.4755     0.954     0.989     0.993     0.934        0
+compact-repeat~order           0.0318   0.2977   0.4686     0.955     0.989     0.992     0.930        2
+(used@B: mean packed units / budget; AUROC adm: within-task, admitted set only)
+
+per task, compact~order minus heuristic (Δ line_recall @256/1024/4096)
+  + Significant-Gravitas__AutoGPT-4652    +0.000  +0.014  +0.014
+  + instance_ansible__ansible-39bd8b99ec8c6624207bf3556ac7f9626dad9173-v1055803c3a812189a1133297f7f5468579283f86  +0.000  +0.068  +0.283
+  + instance_ansible__ansible-4c5ce5a1a9e79a845aff4978cfeb72a0d4ecf7d6-v1055803c3a812189a1133297f7f5468579283f86  +0.003  +0.003  +0.094
+  = instance_ansible__ansible-3b823d908e8a5d17674f8c26d337d3114b7493b1-v0f01c69f1e2528b935359cfe578530722bca2c59  +0.000  +0.000  +0.000
+  + instance_ansible__ansible-395e5e20fab9cad517243372fa3c3c5d9e09ab2a-v7eee2454f617569fd6889f2211f75bc02a35f9f8  -0.012  +0.010  +0.215
+  = instance_ansible__ansible-34db57a47f875d11c4068567b9ec7ace174ec4cf-v1055803c3a812189a1133297f7f5468579283f86  +0.000  +0.000  +0.000
+  = instance_ansible__ansible-984216f52e76b904e5b0fa0fb956ab4f1e0a7751-v1055803c3a812189a1133297f7f5468579283f86  -0.002  -0.098  +0.000
+  + instance_ansible__ansible-6cc97447aac5816745278f3735af128afb255c81-v0f01c69f1e2528b935359cfe578530722bca2c59  +0.010  +0.008  +0.012
+  + instance_ansible__ansible-42355d181a11b51ebfc56f6f4b3d9c74e01cb13b-v1055803c3a812189a1133297f7f5468579283f86  +0.005  +0.000  +0.210
+  + huggingface__transformers-29449       +0.012  +0.012  +0.801
+  + huggingface__transformers-28071       -0.375  +0.000  +0.562
+  = huggingface__transformers-7078        +0.000  +0.000  +0.000
+  + huggingface__transformers-28115       -0.002  -0.002  +0.136
+  = huggingface__transformers-5122        +0.000  +0.020  +0.000
+  = huggingface__transformers-22458       +0.000  +0.000  +0.000
+  = huggingface__transformers-24238       +0.000  +0.000  +0.000
+  = huggingface__transformers-17082       +0.000  +0.000  +0.000
+  + instance_internetarchive__openlibrary-7bf3238533070f2d24bafbb26eedf675d51941f6-v08d8e8889ec945ab821fb156c04c7d2e2810debb  +0.013  -0.013  +0.062
+  + instance_internetarchive__openlibrary-25858f9f0c165df25742acf8309ce909773f0cdd-v13642507b4fc1f8d234172bf8129942da2c2ca26  +0.019  +0.065  +0.183
+  + instance_internetarchive__openlibrary-757fcf46c70530739c150c57b37d6375f155dc97-ve8c8d62a2b60610a3c4631f5f23ed866bada9818  +0.003  -0.013  +0.068
+  + instance_internetarchive__openlibrary-09865f5fb549694d969f0a8e49b9d204ef1853ca-ve8c8d62a2b60610a3c4631f5f23ed866bada9818  +0.031  +0.020  +0.184
+  + instance_internetarchive__openlibrary-5de7de19211e71b29b2f2ba3b1dff2fe065d660f-v08d8e8889ec945ab821fb156c04c7d2e2810debb  +0.006  +0.287  +0.275
+  + instance_internetarchive__openlibrary-6fdbbeee4c0a7e976ff3e46fb1d36f4eb110c428-v08d8e8889ec945ab821fb156c04c7d2e2810debb  -0.002  -0.038  +0.185
+  + instance_internetarchive__openlibrary-798a582540019363d14b2090755cc7b89a350788-v430f20c722405e462d9ef44dee7d34c41e76fe7a  +0.026  +0.344  +0.305
+  + instance_internetarchive__openlibrary-910b08570210509f3bcfebf35c093a48243fe754-v0f5aece3601a5b4419f7ccec1dbda2071be28ee4  +0.007  +0.037  +0.044
+  + keras-team__keras-19973               +0.034  +0.898  +0.508
+  + keras-team__keras-19937               +0.016  +0.011  +0.254
+  + keras-team__keras-18975               +0.000  +0.000  +0.655
+  + keras-team__keras-19636               +0.091  +0.000  +0.182
+  + keras-team__keras-19641               +0.424  +1.000  +1.000
+  = keras-team__keras-19775               +0.000  +0.000  +0.000
+  + keras-team__keras-19924               +0.008  +0.095  +0.531
+  = keras-team__keras-19915               +0.000  +0.000  +0.000
+  = langchain-ai__langchain-4579          +0.000  +0.000  +0.000
+  = langchain-ai__langchain-3367          +0.077  +1.000  +0.000
+  = langchain-ai__langchain-5584          +0.000  +0.000  +0.000
+  + langchain-ai__langchain-5450          +0.028  +0.000  +0.015
+  = langchain-ai__langchain-4646          +0.000  +1.000  +0.000
+  + langchain-ai__langchain-4009          +0.015  +0.133  +0.072
+  = langchain-ai__langchain-6765          +0.000  +1.000  +0.000
+  = langchain-ai__langchain-4420          +0.000  +0.000  +0.000
+  + instance_qutebrowser__qutebrowser-bedc9f7fadf93f83d8dee95feeecb9922b6f063f-v2ef375ac784985212b1805e1d0431dc8f1b3c171  +0.008  -0.210  +0.269
+  + instance_qutebrowser__qutebrowser-2e961080a85d660148937ee8f0f6b3445a8f2c01-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d  +0.111  +0.178  +0.111
+  + instance_qutebrowser__qutebrowser-0fc6d1109d041c69a68a896db87cf1b8c194cef7-v2ef375ac784985212b1805e1d0431dc8f1b3c171  +0.005  -0.010  +0.192
+  + instance_qutebrowser__qutebrowser-473a15f7908f2bb6d670b0e908ab34a28d8cf7e2-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d  +0.012  +0.174  +0.523
+  + instance_qutebrowser__qutebrowser-52708364b5f91e198defb022d1a5b4b3ebd9b563-v2ef375ac784985212b1805e1d0431dc8f1b3c171  +0.002  +0.089  +0.145
+  + instance_qutebrowser__qutebrowser-394bfaed6544c952c6b3463751abab3176ad4997-vafb3e8e01b31319c66c4e666b8a3b1d8ba55db24  +0.047  +0.121  +0.047
+  + instance_qutebrowser__qutebrowser-46e6839e21d9ff72abb6c5d49d5abaa5a8da8a81-v2ef375ac784985212b1805e1d0431dc8f1b3c171  +0.042  +0.050  +0.046
+  + instance_qutebrowser__qutebrowser-ff1c025ad3210506fc76e1f604d8c8c27637d88e-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d  -0.017  +0.000  +0.105
+  = yt-dlp__yt-dlp-4841                   +0.000  +0.000  +0.000
+  = yt-dlp__yt-dlp-9862                   +0.047  +0.235  +0.000
+  = yt-dlp__yt-dlp-10390                  +0.000  +0.000  +0.000
+
+compact~order: Δ@256/1024/4096 +0.0133 +0.1247 +0.1594; Δ@4096 task bootstrap 95% CI +0.1028 … +0.2239, repository-cluster +0.0754 … +0.2500; tasks +33 -0 =19
+  Significant-Gravitas__AutoGPT      n= 1  Δ@4096 +0.0141  without it +0.1623
+  ansible__ansible                   n= 8  Δ@4096 +0.1017  without it +0.1699
+  huggingface__transformers          n= 8  Δ@4096 +0.1875  without it +0.1543
+  internetarchive__openlibrary       n= 8  Δ@4096 +0.1632  without it +0.1587
+  keras-team__keras                  n= 8  Δ@4096 +0.3913  without it +0.1172
+  langchain-ai__langchain            n= 8  Δ@4096 +0.0109  without it +0.1864
+  qutebrowser__qutebrowser           n= 8  Δ@4096 +0.1798  without it +0.1557
+  yt-dlp__yt-dlp                     n= 3  Δ@4096 +0.0000  without it +0.1692
+  regressions, compact~order (task, budget, Δ < -0.005): [('instance_ansible__ansible-395e5e20fab9cad517243372fa3c3c5d9e09ab2a-v7eee2454f617569fd6889f2211f75bc02a35f9f8', '256', -0.012), ('instance_ansible__ansible-984216f52e76b904e5b0fa0fb956ab4f1e0a7751-v1055803c3a812189a1133297f7f5468579283f86', '1024', -0.098), ('huggingface__transformers-28071', '256', -0.375), ('instance_internetarchive__openlibrary-7bf3238533070f2d24bafbb26eedf675d51941f6-v08d8e8889ec945ab821fb156c04c7d2e2810debb', '1024', -0.013), ('instance_internetarchive__openlibrary-757fcf46c70530739c150c57b37d6375f155dc97-ve8c8d62a2b60610a3c4631f5f23ed866bada9818', '1024', -0.013), ('instance_internetarchive__openlibrary-6fdbbeee4c0a7e976ff3e46fb1d36f4eb110c428-v08d8e8889ec945ab821fb156c04c7d2e2810debb', '1024', -0.038), ('instance_qutebrowser__qutebrowser-bedc9f7fadf93f83d8dee95feeecb9922b6f063f-v2ef375ac784985212b1805e1d0431dc8f1b3c171', '1024', -0.21), ('instance_qutebrowser__qutebrowser-0fc6d1109d041c69a68a896db87cf1b8c194cef7-v2ef375ac784985212b1805e1d0431dc8f1b3c171', '1024', -0.01), ('instance_qutebrowser__qutebrowser-ff1c025ad3210506fc76e1f604d8c8c27637d88e-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d', '256', -0.017)]
+  regressions, compact-repeat~order (task, budget, Δ < -0.005): [('instance_ansible__ansible-395e5e20fab9cad517243372fa3c3c5d9e09ab2a-v7eee2454f617569fd6889f2211f75bc02a35f9f8', '256', -0.012), ('instance_ansible__ansible-984216f52e76b904e5b0fa0fb956ab4f1e0a7751-v1055803c3a812189a1133297f7f5468579283f86', '1024', -0.098), ('huggingface__transformers-28071', '256', -0.375), ('instance_internetarchive__openlibrary-757fcf46c70530739c150c57b37d6375f155dc97-ve8c8d62a2b60610a3c4631f5f23ed866bada9818', '1024', -0.078), ('instance_internetarchive__openlibrary-6fdbbeee4c0a7e976ff3e46fb1d36f4eb110c428-v08d8e8889ec945ab821fb156c04c7d2e2810debb', '1024', -0.038), ('instance_qutebrowser__qutebrowser-bedc9f7fadf93f83d8dee95feeecb9922b6f063f-v2ef375ac784985212b1805e1d0431dc8f1b3c171', '1024', -0.21), ('instance_qutebrowser__qutebrowser-0fc6d1109d041c69a68a896db87cf1b8c194cef7-v2ef375ac784985212b1805e1d0431dc8f1b3c171', '1024', -0.01), ('instance_qutebrowser__qutebrowser-ff1c025ad3210506fc76e1f604d8c8c27637d88e-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d', '256', -0.017)]
+
+CONDITIONAL ON AN ANSWERED REQUEST (reported, not gated)
+compact~order: answered 52/52; Δ@256/1024/4096 +0.0133 +0.1247 +0.1594 (Δ@4096 CI +0.1028 … +0.2239); heuristic @4096 on them 0.3161; the 0 unanswered pack production (validity); answered but fallen back (an admitted candidate unsendable): 0
+compact-repeat~order: answered 50/52; Δ@256/1024/4096 +0.0122 +0.1246 +0.1586 (Δ@4096 CI +0.0998 … +0.2247); heuristic @4096 on them 0.3226; the 2 unanswered pack production (validity); answered but fallen back (an admitted candidate unsendable): 0
+repeat vs primary, 50 tasks both answered: median Spearman (admitted) 0.9890747225821581, ΔΔ {'256': -0.0008, '1024': 0.0015, '4096': 0.0002}
+
+OPERATIONS
+compact: 52 requests, 0 without an answer by 2.0 s (rate 0.000, Wilson 95% 0.000 to 0.069); statuses {'200': 52}; latency, sent: p50 1.01 p95 1.19 max 1.42 s; answered: p50 1.01 p95 1.19 s; billed tokens/request 24280; $0.0530
+compact-repeat: 52 requests, 2 without an answer by 2.0 s (rate 0.038, Wilson 95% 0.011 to 0.130); statuses {'200': 50, 'killed': 2}; latency, sent: p50 1.02 p95 1.45 max 2.01 s; answered: p50 1.02 p95 1.23 s; billed tokens/request 24399; $0.0530
+spend: this run $0.1060; ledger $0.1060 of $0.2; billed tokens per request per +1 recall point 1523
+  Q1 recall: pass
+  Q2 no harm: pass
+  Q3 random order: pass
+  Q4 regressions: pass
+  Q5 reproducibility: pass
+  O1 failures: pass
+  O2 replies: pass
+  O3 spend: pass
+VERDICT: PASS

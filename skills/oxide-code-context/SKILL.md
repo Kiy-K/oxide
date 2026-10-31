@@ -11,6 +11,8 @@ allowed_tools:
   - Read
 ---
 
+> **Legacy v1 reference.** This describes the retired v1 implementation (root Rust crate, SQLite index, legacy CLI/MCP/`packages/*`), removed from `rewrite/v2` and recoverable from `main` / `ac985b28`. It is historical evidence, not instructions for OXIDE v2: see `docs/spec/SPEC.md`, `docs/BOOTSTRAP.md` and the root `AGENTS.md`.
+
 Full policy (transport-independent source of truth): `docs/agent-usage-policy.md`.
 
 ## When to activate

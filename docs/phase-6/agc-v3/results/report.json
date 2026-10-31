@@ -1,0 +1,371 @@
+{
+ "stage": "final",
+ "n_runs": 84,
+ "tasks": [
+  "D1",
+  "D2",
+  "D3",
+  "I1",
+  "I2",
+  "I3",
+  "I4"
+ ],
+ "arms": {
+  "B": {
+   "runs": 21,
+   "technical_failures": 0,
+   "schema_missing": 0,
+   "success_rate": 0.571,
+   "f1": 0.841,
+   "false_claims": 2.048,
+   "cps": 31403.7,
+   "ratio_cps": 1.0,
+   "ratio_cps_ci95": [
+    1.0,
+    1.0
+   ],
+   "ratio_tokens": 1.0,
+   "ratio_seconds": 1.0,
+   "ratio_calls": 1.0,
+   "grep_calls_mean": 3.333,
+   "read_calls_mean": 3.667,
+   "repeated_reads_mean": 1.095,
+   "oxide_use_rate": 0.0,
+   "graph_use_rate": 0.0,
+   "oxide_calls_mean": 0.0,
+   "first_call_oxide": 0,
+   "exposure_first_step_tokens": 0,
+   "exposure_cost_est_mean": 0.0,
+   "cost_vs_b_not_invoked": 1.046,
+   "cost_vs_b_invoked": null,
+   "n_invoked": 0,
+   "oxide_output_tokens_est_mean_when_used": 0,
+   "oxide_ms_mean_when_used": 0.0,
+   "per_type": {
+    "dispatch": {
+     "success": 0.444,
+     "false": 3.222,
+     "oxide_use": 0.0
+    },
+    "impact": {
+     "success": 0.667,
+     "false": 1.167,
+     "oxide_use": 0.0
+    }
+   },
+   "per_task": {
+    "D1": {
+     "success": 0.333,
+     "f1": 0.555,
+     "false": 6.667,
+     "oxide": 0
+    },
+    "D2": {
+     "success": 0.333,
+     "f1": 0.807,
+     "false": 2.667,
+     "oxide": 0
+    },
+    "D3": {
+     "success": 0.667,
+     "f1": 0.933,
+     "false": 0.333,
+     "oxide": 0
+    },
+    "I1": {
+     "success": 0.0,
+     "f1": 0.675,
+     "false": 4.333,
+     "oxide": 0
+    },
+    "I2": {
+     "success": 0.667,
+     "f1": 0.917,
+     "false": 0.333,
+     "oxide": 0
+    },
+    "I3": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 0
+    },
+    "I4": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 0
+    }
+   }
+  },
+  "D": {
+   "runs": 21,
+   "technical_failures": 0,
+   "schema_missing": 0,
+   "success_rate": 0.762,
+   "f1": 0.894,
+   "false_claims": 1.381,
+   "cps": 18308.8,
+   "ratio_cps": 0.583,
+   "ratio_cps_ci95": [
+    0.355,
+    0.952
+   ],
+   "ratio_tokens": 0.764,
+   "ratio_seconds": 0.859,
+   "ratio_calls": 1.016,
+   "grep_calls_mean": 1.857,
+   "read_calls_mean": 3.286,
+   "repeated_reads_mean": 1.095,
+   "oxide_use_rate": 0.667,
+   "graph_use_rate": 0.667,
+   "oxide_calls_mean": 1.762,
+   "first_call_oxide": 12,
+   "exposure_first_step_tokens": 287,
+   "exposure_cost_est_mean": 405.9,
+   "cost_vs_b_not_invoked": 0.936,
+   "cost_vs_b_invoked": 0.745,
+   "n_invoked": 14,
+   "oxide_output_tokens_est_mean_when_used": 1010.2,
+   "oxide_ms_mean_when_used": 406.5,
+   "per_type": {
+    "dispatch": {
+     "success": 0.667,
+     "false": 2.222,
+     "oxide_use": 0.444
+    },
+    "impact": {
+     "success": 0.833,
+     "false": 0.75,
+     "oxide_use": 0.833
+    }
+   },
+   "per_task": {
+    "D1": {
+     "success": 0.0,
+     "f1": 0.498,
+     "false": 6.667,
+     "oxide": 0
+    },
+    "D2": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 2
+    },
+    "D3": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 2
+    },
+    "I1": {
+     "success": 0.333,
+     "f1": 0.761,
+     "false": 3.0,
+     "oxide": 3
+    },
+    "I2": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 3
+    },
+    "I3": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 2
+    },
+    "I4": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 2
+    }
+   }
+  },
+  "G": {
+   "runs": 21,
+   "technical_failures": 0,
+   "schema_missing": 0,
+   "success_rate": 0.667,
+   "f1": 0.854,
+   "false_claims": 1.905,
+   "cps": 24389.7,
+   "ratio_cps": 0.777,
+   "ratio_cps_ci95": [
+    0.476,
+    1.229
+   ],
+   "ratio_tokens": 0.974,
+   "ratio_seconds": 0.937,
+   "ratio_calls": 1.076,
+   "grep_calls_mean": 0.857,
+   "read_calls_mean": 3.048,
+   "repeated_reads_mean": 0.857,
+   "oxide_use_rate": 0.952,
+   "graph_use_rate": 0.952,
+   "oxide_calls_mean": 3.333,
+   "first_call_oxide": 18,
+   "exposure_first_step_tokens": 450,
+   "exposure_cost_est_mean": 675.0,
+   "cost_vs_b_not_invoked": 1.333,
+   "cost_vs_b_invoked": 0.944,
+   "n_invoked": 20,
+   "oxide_output_tokens_est_mean_when_used": 1365.1,
+   "oxide_ms_mean_when_used": 456.025,
+   "per_type": {
+    "dispatch": {
+     "success": 0.556,
+     "false": 3.0,
+     "oxide_use": 0.889
+    },
+    "impact": {
+     "success": 0.75,
+     "false": 1.083,
+     "oxide_use": 1.0
+    }
+   },
+   "per_task": {
+    "D1": {
+     "success": 0.0,
+     "f1": 0.421,
+     "false": 8.667,
+     "oxide": 3
+    },
+    "D2": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 2
+    },
+    "D3": {
+     "success": 0.667,
+     "f1": 0.933,
+     "false": 0.333,
+     "oxide": 3
+    },
+    "I1": {
+     "success": 0.0,
+     "f1": 0.626,
+     "false": 4.333,
+     "oxide": 3
+    },
+    "I2": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 3
+    },
+    "I3": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 3
+    },
+    "I4": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 3
+    }
+   }
+  },
+  "F": {
+   "runs": 21,
+   "technical_failures": 0,
+   "schema_missing": 0,
+   "success_rate": 0.857,
+   "f1": 0.932,
+   "false_claims": 0.667,
+   "cps": 18233.9,
+   "ratio_cps": 0.581,
+   "ratio_cps_ci95": [
+    0.298,
+    0.938
+   ],
+   "ratio_tokens": 0.79,
+   "ratio_seconds": 0.813,
+   "ratio_calls": 1.008,
+   "grep_calls_mean": 1.048,
+   "read_calls_mean": 3.143,
+   "repeated_reads_mean": 0.714,
+   "oxide_use_rate": 1.0,
+   "graph_use_rate": 1.0,
+   "oxide_calls_mean": 3.0,
+   "first_call_oxide": 21,
+   "exposure_first_step_tokens": 481,
+   "exposure_cost_est_mean": 687.1,
+   "cost_vs_b_not_invoked": null,
+   "cost_vs_b_invoked": 0.882,
+   "n_invoked": 21,
+   "oxide_output_tokens_est_mean_when_used": 1291.0,
+   "oxide_ms_mean_when_used": 428.8,
+   "per_type": {
+    "dispatch": {
+     "success": 0.667,
+     "false": 1.556,
+     "oxide_use": 1.0
+    },
+    "impact": {
+     "success": 1.0,
+     "false": 0.0,
+     "oxide_use": 1.0
+    }
+   },
+   "per_task": {
+    "D1": {
+     "success": 0.333,
+     "f1": 0.61,
+     "false": 4.333,
+     "oxide": 3
+    },
+    "D2": {
+     "success": 0.667,
+     "f1": 0.917,
+     "false": 0.333,
+     "oxide": 3
+    },
+    "D3": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 3
+    },
+    "I1": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 3
+    },
+    "I2": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 3
+    },
+    "I3": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 3
+    },
+    "I4": {
+     "success": 1.0,
+     "f1": 1.0,
+     "false": 0.0,
+     "oxide": 3
+    }
+   }
+  }
+ },
+ "valid": true,
+ "criteria": {
+  "utility_U": true,
+  "adoption_A": true,
+  "product_P": true,
+  "premium": false
+ },
+ "decision": "PROMOTE G: propose an ADR for direct oxide_context with guidance"
+}

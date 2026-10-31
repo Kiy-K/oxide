@@ -1,0 +1,112 @@
+{
+ "base_commit": "95090a2ccc324642b0c71740338db8b2b6b49559",
+ "branch": "rewrite/v2",
+ "committed": false,
+ "pushed_published_released": false,
+ "mcp": {
+  "tools": [
+   "oxide_search"
+  ],
+  "modes": [
+   "search",
+   "context"
+  ],
+  "structural_trial_verdict": "REJECT",
+  "adapter_and_public_exports_unchanged": true
+ },
+ "verify": {
+  "command": "mise run verify",
+  "exit_code": 0,
+  "ruff": "passed",
+  "strict_mypy": "passed",
+  "passed": 250,
+  "skipped": 7,
+  "seconds": 113.87,
+  "skips": "7 opt-in TS gate tests, separately passed"
+ },
+ "typescript_gate": {
+  "command": "mise run contextbench-ts",
+  "exit_code": 0,
+  "passed": 17,
+  "seconds": 565.54,
+  "tasks": 89
+ },
+ "fresh_installs": {
+  "python": [
+   "3.12.15",
+   "3.13.16",
+   "3.14.8"
+  ],
+  "artifacts": [
+   "wheel on 3.12",
+   "sdist on 3.13",
+   "wheel on 3.14"
+  ],
+  "smokes_passed": 3,
+  "js_ts_conformance_passed_per_version": 65,
+  "checkout_imports_refused": true
+ },
+ "platforms": {
+  "runtime_verified": [
+   "Linux x86_64 CPython 3.12, 3.13, 3.14"
+  ],
+  "strict_mypy_branches": [
+   "win32",
+   "darwin"
+  ],
+  "native_runtime_pending": [
+   "Windows x86_64",
+   "macOS x86_64",
+   "macOS arm64"
+  ],
+  "grammar_wheel_metadata": "grammar-selection.json"
+ },
+ "quality": {
+  "baseline-v8": {
+   "successor": "baseline-v9",
+   "tasks": 44,
+   "results_identical_except_derivation": true,
+   "metrics_byte_identical": true,
+   "manifest_identity_only": true,
+   "metrics_sha256": "c600b26cc217e2420a2e762d5ad7c67e774b5c3af69f1978ad0f8cf0f4a7ff96"
+  },
+  "typescript-v5": {
+   "successor": "typescript-v6",
+   "tasks": 89,
+   "results_identical_except_derivation": true,
+   "metrics_byte_identical": true,
+   "manifest_identity_only": true,
+   "metrics_sha256": "468718a20cf60943203d87578776e0080ffdaf42c86b98879bfcc8495a9ad836"
+  }
+ },
+ "incremental": {
+  "fixture_persisted_edit_rebuild_parity": true,
+  "real_repository_parity": [
+   "preact",
+   "express"
+  ],
+  "cached_facts_equal_full_derivation": true
+ },
+ "preservation": {
+  "staged_deletions": 1636,
+  "staged_patch_sha256": "0c8658bfe3aec544c49b6bce6521f94548f061dfa3df7a770238e2254102b618",
+  "original_git_statuses_unchanged": true,
+  "historical_frozen_artifacts_and_trial_unchanged": true
+ },
+ "distribution_sha256": {
+  ".gitignore": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1",
+  "oxide-0.0.0-py3-none-any.whl": "d79a0823164a394821248570ca16eb06771cd7d24a2960bee4aa9fad1b0514d3",
+  "oxide-0.0.0.tar.gz": "8776134b1e3c3ef6ff5b24926f1c37d4e72c4c396b5defdfca1574441ee516aa"
+ },
+ "deviations": [
+  "Selected grammar 0.23.1 after 0.25.0 failed ordinary JSX class/for probes.",
+  "Temporary verification recorder failed on session-fixture teardown; corrected and all canonical checks rerun successfully.",
+  "Host verification used because prior milestone established sandbox MCP I/O stalls."
+ ],
+ "limits": [
+  "No native Windows/macOS execution in this milestone.",
+  "ContextBench JS diagnostic covers 3 tasks / 22 verified spans, not all excluded JS evidence.",
+  "Source-only module resolution: package exports, dynamic loaders, opaque CJS shapes and unsupported bindings remain unresolved; see docs/javascript.md.",
+  "Existing indices require re-indexing for new derivation components."
+ ]
+}

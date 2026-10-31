@@ -1,30 +1,23 @@
 ---
 name: verify
-description: Runs OXIDE's full pre-commit checklist (fmt, clippy, test, benchmark gate) in the order that matters and reports pass/fail. Use before committing any change to this repo, or when asked to "verify", "check everything passes", or "run the checklist".
+description: Runs OXIDE v2's full verification (`mise run verify`: Ruff lint and format check, mypy --strict, pytest over the Python engine) and reports pass/fail. Use before committing any change to this repo, or when asked to "verify", "check everything passes", or "run the checklist".
 ---
 
-Run these in order — order matters, per `docs/agents/workflow.md`:
+Run the one canonical check from the repo root (CI runs the same command):
 
 ```bash
-cargo fmt --check
-cargo clippy -j 2 --all-targets -- -D warnings
-cargo test -j 2
+mise run verify
 ```
 
-`cargo test` already includes `tests/benchmark_gate.rs`, which fails unless
-hybrid retrieval recall@5 is still ≥ vector-only recall@5 on
-`fixtures/benchmark.json` — no separate benchmark step is needed for a normal
-change.
+It runs, in order, stopping at the first failure (`docs/agents/workflow.md`):
+`lint` (`ruff check` and `ruff format --check` over `src/` and `tests/python/`),
+`typecheck` (`mypy --strict`), `test` (`pytest`, including the frozen Phase 3
+baseline oracle). Lexical tests need the pinned FTS extension: run
+`mise run bootstrap` (or `uv run oxide prepare`) once.
 
-Stop at the first failing step and report it — do not run later steps against
-code you know is broken. If `cargo fmt --check` fails, run `cargo fmt` and
-re-check rather than hand-editing whitespace.
-
-If the change touched `src/retrieval/`, `src/config.rs`, or embedding
-selection logic, also do the extra retrieval-diff check described in the
-`retrieval-baseline-check` skill before declaring the change verified — the
-benchmark gate only catches a hybrid-vs-vector-only regression, not a
-same-direction shift in the actual numbers.
+Report the first failing step and its output; do not run later steps against
+code you know is broken. If `ruff format --check` fails, run
+`uv run ruff format src tests/python`; don't hand-edit whitespace.
 
 Report each step's pass/fail plainly. Don't claim success for a step you
-didn't actually run.
+didn't actually run. Never regenerate a frozen baseline to make a test pass.

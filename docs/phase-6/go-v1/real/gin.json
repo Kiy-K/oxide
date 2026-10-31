@@ -1,0 +1,368 @@
+{
+ "repository": "/home/khoi/Projects/oxide-eval-data/oxide-go-eval/real/gin",
+ "commit": "0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646",
+ "snapshot": "sha256:a1b1e893e70c40a84602e9c2b13c23d06be92adbc61cb44ec6b79e5c57646e0f",
+ "files": 130,
+ "go_files": 99,
+ "coverage": {
+  "complete": 99
+ },
+ "entities": 1914,
+ "go_symbol_kinds": {
+  "constant": 101,
+  "type": 35,
+  "struct": 125,
+  "method": 483,
+  "function": 912,
+  "interface": 20,
+  "variable": 99
+ },
+ "graph_sha256": "d9c18a53fa95ea5618136fd78ab1990022ba33ae4b7fd3de4fecbfad55edf4a6",
+ "relations": 15373,
+ "resolution": {
+  "calls:ambiguous": 51,
+  "calls:resolved": 1821,
+  "calls:unresolved": 6578,
+  "contains:resolved": 1913,
+  "contains_logical:resolved": 99,
+  "defines:resolved": 1722,
+  "imports:resolved": 28,
+  "imports:unresolved": 493,
+  "references:ambiguous": 2,
+  "references:resolved": 1261,
+  "references:unresolved": 164,
+  "tested_by:resolved": 1241
+ },
+ "derive_cold_s": 0.18528904000049806,
+ "derive_reused_s": 0.04308108900113439,
+ "facts_reused": 99,
+ "derive_parity": true,
+ "index_cold_s": 0.5782583279997198,
+ "index_unchanged_s": 0.0097855170006369,
+ "index_edit_s": 0.3802470640002866,
+ "edit_reused": 98,
+ "persisted_edit_parity": true,
+ "peak_rss_mib": 256.3359375,
+ "resolved_import_sample": [
+  {
+   "kind": "imports",
+   "source": "file:auth.go",
+   "targets": [
+    "module:go:internal/bytesconv/bytesconv"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "auth.go",
+    "start": 250,
+    "end": 295,
+    "digest": "sha256:be38ef38614d2b9488d0e73ff2f8b432fc61cc90f4b7e071d0bbf78d898464c1"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:binding/form_mapping.go",
+   "targets": [
+    "module:go:codec/json/json"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "binding/form_mapping.go",
+    "start": 291,
+    "end": 328,
+    "digest": "sha256:f4614e1a18dd51ee8cfa6030c4a62b55920675d74eca9b54c0891038bbf098dc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:binding/form_mapping.go",
+   "targets": [
+    "module:go:internal/bytesconv/bytesconv"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "binding/form_mapping.go",
+    "start": 330,
+    "end": 375,
+    "digest": "sha256:f4614e1a18dd51ee8cfa6030c4a62b55920675d74eca9b54c0891038bbf098dc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:binding/json.go",
+   "targets": [
+    "module:go:codec/json/json"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "binding/json.go",
+    "start": 232,
+    "end": 269,
+    "digest": "sha256:d243c6e10cf15fb599b2251359c822604029af7d4e1cfa415a58d7b9939f9c44"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:binding/json_test.go",
+   "targets": [
+    "module:go:codec/json/json"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "binding/json_test.go",
+    "start": 243,
+    "end": 280,
+    "digest": "sha256:b8674a89b88d155631eb80daf7c3c1e2c0bbe3829fc86021f59d2d8574d89208"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:binding/json_test.go",
+   "targets": [
+    "module:go:render/render"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "binding/json_test.go",
+    "start": 282,
+    "end": 315,
+    "digest": "sha256:b8674a89b88d155631eb80daf7c3c1e2c0bbe3829fc86021f59d2d8574d89208"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:binding/plain.go",
+   "targets": [
+    "module:go:internal/bytesconv/bytesconv"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "binding/plain.go",
+    "start": 64,
+    "end": 109,
+    "digest": "sha256:f920be5fcded4f9f226dd32ffbf869c9d8fcd6a2f5ba87e1ac5f8b28325e0ac3"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:context.go",
+   "targets": [
+    "module:go:binding/binding"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "context.go",
+    "start": 374,
+    "end": 408,
+    "digest": "sha256:b2336e5768f9175f2855c7df91bb48de0bbb533d74f6a6e7c3af5576491524ce"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:context.go",
+   "targets": [
+    "module:go:render/render"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "context.go",
+    "start": 410,
+    "end": 443,
+    "digest": "sha256:b2336e5768f9175f2855c7df91bb48de0bbb533d74f6a6e7c3af5576491524ce"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:context_test.go",
+   "targets": [
+    "module:go:binding/binding"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "context_test.go",
+    "start": 456,
+    "end": 490,
+    "digest": "sha256:8969c701f0809745bdd30bea6b403cb1e509e97241979430add92b6a10e9a924"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:context_test.go",
+   "targets": [
+    "module:go:codec/json/json"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "context_test.go",
+    "start": 492,
+    "end": 529,
+    "digest": "sha256:8969c701f0809745bdd30bea6b403cb1e509e97241979430add92b6a10e9a924"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:deprecated.go",
+   "targets": [
+    "module:go:binding/binding"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "deprecated.go",
+    "start": 198,
+    "end": 232,
+    "digest": "sha256:72b6893e15bb053bedaee8292166f1430991f45aa11ae5614439b71c90cf448f"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:deprecated_test.go",
+   "targets": [
+    "module:go:binding/binding"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "deprecated_test.go",
+    "start": 244,
+    "end": 278,
+    "digest": "sha256:3b28b9b5a72302a2bd5960fbac164544ccd0956242ee660335c2d9c39bda3c2c"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:errors.go",
+   "targets": [
+    "module:go:codec/json/json"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "errors.go",
+    "start": 220,
+    "end": 257,
+    "digest": "sha256:98e86f323c9bf2b960f631d85f080417394758d79d1a9bfd7a45dd0f51fb57ea"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:errors_test.go",
+   "targets": [
+    "module:go:codec/json/json"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "errors_test.go",
+    "start": 219,
+    "end": 256,
+    "digest": "sha256:d42ae35757a149990173ffb942c4b8159cd2dd856ec61f36dda65ac67b67dc62"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:gin.go",
+   "targets": [
+    "module:go:internal/bytesconv/bytesconv"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "gin.go",
+    "start": 275,
+    "end": 320,
+    "digest": "sha256:cf06a70af410c92214369dd0a87d8c82903af661d369b8840242c439838f40c8"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:gin.go",
+   "targets": [
+    "module:go:internal/fs/fs"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "gin.go",
+    "start": 322,
+    "end": 371,
+    "digest": "sha256:cf06a70af410c92214369dd0a87d8c82903af661d369b8840242c439838f40c8"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:gin.go",
+   "targets": [
+    "module:go:render/render"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "gin.go",
+    "start": 373,
+    "end": 406,
+    "digest": "sha256:cf06a70af410c92214369dd0a87d8c82903af661d369b8840242c439838f40c8"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:ginS/gins.go",
+   "targets": [
+    "module:go:gin"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "ginS/gins.go",
+    "start": 229,
+    "end": 255,
+    "digest": "sha256:26ce20c97b482c0f1a1bd6add639f03f4660f78b91a0c67c390a4b1ff5b70310"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:ginS/gins_test.go",
+   "targets": [
+    "module:go:gin"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "ginS/gins_test.go",
+    "start": 245,
+    "end": 271,
+    "digest": "sha256:ff3a68aad5d7528122c06590a5a5a3b87686cfec65ed87c348652320cbf72b71"
+   }
+  }
+ ]
+}

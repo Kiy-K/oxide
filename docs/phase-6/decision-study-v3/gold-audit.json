@@ -1,0 +1,4732 @@
+{
+ "version": "contextbench-py-gold-audit-v1",
+ "tasks": "docs/phase-6/decision-study-v3/tasks.json sha256 34b2b2a2d7fa295d5be9b29a36e46512e20460b68fcabdc7ce290742e3a6fda7",
+ "source": "EuniAI/ContextBench data/full.parquet sha256 2f56535bdc73eb8a68bf4ebb49789d8e9cd4f219ea60df6290b85278aee61ca8",
+ "verified": [
+  "ast",
+  "exact",
+  "contained",
+  "path"
+ ],
+ "spans": {
+  "Significant-Gravitas__AutoGPT-4652": [
+   {
+    "file": "autogpt/memory/message_history.py",
+    "start": 14,
+    "end": 20,
+    "class": "exact"
+   },
+   {
+    "file": "autogpt/memory/message_history.py",
+    "start": 123,
+    "end": 204,
+    "class": "exact"
+   },
+   {
+    "file": "autogpt/memory/message_history.py",
+    "start": 167,
+    "end": 186,
+    "class": "exact"
+   },
+   {
+    "file": "autogpt/memory/message_history.py",
+    "start": 200,
+    "end": 204,
+    "class": "exact"
+   }
+  ],
+  "instance_ansible__ansible-984216f52e76b904e5b0fa0fb956ab4f1e0a7751-v1055803c3a812189a1133297f7f5468579283f86": [
+   {
+    "file": "lib/ansible/config/ansible_builtin_runtime.yml",
+    "start": 2,
+    "end": 8,
+    "class": "unresolved",
+    "detail": "lib/ansible/config/ansible_builtin_runtime.yml is not in the corpus"
+   },
+   {
+    "file": "lib/ansible/errors/__init__.py",
+    "start": 276,
+    "end": 296,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/errors/__init__.py",
+    "start": 327,
+    "end": 329,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/task_executor.py",
+    "start": 911,
+    "end": 917,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/action/__init__.py",
+    "start": 18,
+    "end": 24,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/action/__init__.py",
+    "start": 191,
+    "end": 197,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 13,
+    "end": 22,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 52,
+    "end": 58,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 115,
+    "end": 179,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 140,
+    "end": 154,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 399,
+    "end": 428,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 430,
+    "end": 517,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 450,
+    "end": 471,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 527,
+    "end": 553,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 545,
+    "end": 554,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 555,
+    "end": 618,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 597,
+    "end": 603,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 757,
+    "end": 762,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 759,
+    "end": 813,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 767,
+    "end": 773,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 787,
+    "end": 795,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/loader.py",
+    "start": 806,
+    "end": 816,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/template/__init__.py",
+    "start": 42,
+    "end": 48,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/template/__init__.py",
+    "start": 354,
+    "end": 423,
+    "class": "range",
+    "detail": "content verbatim at lines 352-423"
+   },
+   {
+    "file": "lib/ansible/template/__init__.py",
+    "start": 364,
+    "end": 390,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/template/__init__.py",
+    "start": 415,
+    "end": 426,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "start": 552,
+    "end": 558,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/collection_loader/_collection_finder.py",
+    "start": 578,
+    "end": 584,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 18,
+    "end": 24,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 26,
+    "end": 32,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 51,
+    "end": 59,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 254,
+    "end": 306,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 257,
+    "end": 305,
+    "class": "exact"
+   }
+  ],
+  "instance_ansible__ansible-39bd8b99ec8c6624207bf3556ac7f9626dad9173-v1055803c3a812189a1133297f7f5468579283f86": [
+   {
+    "file": "lib/ansible/modules/async_status.py",
+    "start": 87,
+    "end": 136,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "start": 31,
+    "end": 51,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "start": 55,
+    "end": 65,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "start": 126,
+    "end": 139,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "start": 173,
+    "end": 179,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "start": 185,
+    "end": 191,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "start": 196,
+    "end": 215,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "start": 232,
+    "end": 248,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "start": 272,
+    "end": 281,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/async_wrapper.py",
+    "start": 307,
+    "end": 343,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/action/__init__.py",
+    "start": 960,
+    "end": 1115,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/action/__init__.py",
+    "start": 1150,
+    "end": 1173,
+    "class": "range",
+    "detail": "content verbatim at lines 1150-1178"
+   },
+   {
+    "file": "test/units/modules/test_async_wrapper.py",
+    "start": 20,
+    "end": 57,
+    "class": "exact"
+   }
+  ],
+  "instance_ansible__ansible-4c5ce5a1a9e79a845aff4978cfeb72a0d4ecf7d6-v1055803c3a812189a1133297f7f5468579283f86": [
+   {
+    "file": ".azure-pipelines/azure-pipelines.yml",
+    "start": 91,
+    "end": 98,
+    "class": "unresolved",
+    "detail": ".azure-pipelines/azure-pipelines.yml is not in the corpus"
+   },
+   {
+    "file": ".azure-pipelines/azure-pipelines.yml",
+    "start": 170,
+    "end": 177,
+    "class": "unresolved",
+    "detail": ".azure-pipelines/azure-pipelines.yml is not in the corpus"
+   },
+   {
+    "file": "lib/ansible/executor/module_common.py",
+    "start": 23,
+    "end": 32,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/module_common.py",
+    "start": 150,
+    "end": 170,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/module_common.py",
+    "start": 194,
+    "end": 200,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/module_common.py",
+    "start": 312,
+    "end": 317,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 35,
+    "end": 56,
+    "class": "contained",
+    "detail": "1 of 22 range lines not in the content"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 74,
+    "end": 80,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 240,
+    "end": 242,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 605,
+    "end": 629,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 763,
+    "end": 768,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 876,
+    "end": 912,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 921,
+    "end": 927,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 985,
+    "end": 998,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 999,
+    "end": 1036,
+    "class": "range",
+    "detail": "content verbatim at lines 998-1036"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 1460,
+    "end": 1466,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/common/text/converters.py",
+    "start": 30,
+    "end": 90,
+    "class": "drift",
+    "detail": "4 of 44 content lines are not in the file"
+   },
+   {
+    "file": "lib/ansible/module_utils/common/text/converters.py",
+    "start": 150,
+    "end": 210,
+    "class": "drift",
+    "detail": "16 of 44 content lines are not in the file"
+   },
+   {
+    "file": "lib/ansible/module_utils/facts/system/selinux.py",
+    "start": 21,
+    "end": 27,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/six.py",
+    "start": 1,
+    "end": 30,
+    "class": "unresolved",
+    "detail": "lib/ansible/module_utils/six.py is not in the corpus"
+   },
+   {
+    "file": "lib/ansible/module_utils/urls.py",
+    "start": 140,
+    "end": 157,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/apt.py",
+    "start": 315,
+    "end": 321,
+    "class": "unresolved",
+    "detail": "content lines present, not in this order"
+   },
+   {
+    "file": "lib/ansible/modules/apt.py",
+    "start": 321,
+    "end": 327,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/apt.py",
+    "start": 350,
+    "end": 367,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/apt.py",
+    "start": 1088,
+    "end": 1113,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/apt_repository.py",
+    "start": 136,
+    "end": 143,
+    "class": "unresolved",
+    "detail": "content lines present, not in this order"
+   },
+   {
+    "file": "lib/ansible/modules/apt_repository.py",
+    "start": 140,
+    "end": 190,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/apt_repository.py",
+    "start": 552,
+    "end": 561,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/dnf.py",
+    "start": 320,
+    "end": 335,
+    "class": "range",
+    "detail": "content verbatim at lines 323-338"
+   },
+   {
+    "file": "lib/ansible/modules/dnf.py",
+    "start": 324,
+    "end": 329,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/dnf.py",
+    "start": 335,
+    "end": 348,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/dnf.py",
+    "start": 509,
+    "end": 548,
+    "class": "drift",
+    "detail": "1 of 36 content lines are not in the file"
+   },
+   {
+    "file": "lib/ansible/modules/package_facts.py",
+    "start": 212,
+    "end": 217,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/package_facts.py",
+    "start": 235,
+    "end": 242,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/package_facts.py",
+    "start": 269,
+    "end": 276,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/yum.py",
+    "start": 370,
+    "end": 375,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/yum.py",
+    "start": 377,
+    "end": 382,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/modules/yum.py",
+    "start": 1598,
+    "end": 1603,
+    "class": "exact"
+   }
+  ],
+  "instance_ansible__ansible-42355d181a11b51ebfc56f6f4b3d9c74e01cb13b-v1055803c3a812189a1133297f7f5468579283f86": [
+   {
+    "file": "lib/ansible/executor/process/worker.py",
+    "start": 184,
+    "end": 190,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/task_executor.py",
+    "start": 82,
+    "end": 88,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/task_executor.py",
+    "start": 85,
+    "end": 97,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/task_executor.py",
+    "start": 92,
+    "end": 97,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/task_executor.py",
+    "start": 99,
+    "end": 120,
+    "class": "range",
+    "detail": "content verbatim at lines 99-121"
+   },
+   {
+    "file": "lib/ansible/executor/task_executor.py",
+    "start": 203,
+    "end": 257,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/task_executor.py",
+    "start": 215,
+    "end": 226,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/task_executor.py",
+    "start": 399,
+    "end": 404,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/task_executor.py",
+    "start": 411,
+    "end": 416,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/task_executor.py",
+    "start": 532,
+    "end": 540,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/playbook/delegatable.py",
+    "start": 1,
+    "end": 10,
+    "class": "drift",
+    "detail": "8 of 11 content lines are not in the file"
+   },
+   {
+    "file": "lib/ansible/playbook/delegatable.py",
+    "start": 8,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/playbook/task.py",
+    "start": 48,
+    "end": 87,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/playbook/task.py",
+    "start": 508,
+    "end": 510,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 139,
+    "end": 145,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 172,
+    "end": 178,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 437,
+    "end": 441,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 446,
+    "end": 452,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 518,
+    "end": 523,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 521,
+    "end": 530,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 529,
+    "end": 534,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 546,
+    "end": 600,
+    "class": "contained",
+    "detail": "1 of 48 range lines not in the content"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 641,
+    "end": 649,
+    "class": "exact"
+   }
+  ],
+  "instance_ansible__ansible-34db57a47f875d11c4068567b9ec7ace174ec4cf-v1055803c3a812189a1133297f7f5468579283f86": [
+   {
+    "file": "docs/docsite/rst/porting_guides/porting_guide_2.10.rst",
+    "start": 25,
+    "end": 30,
+    "class": "unresolved",
+    "detail": "docs/docsite/rst/porting_guides/porting_guide_2.10.rst is not in the corpus"
+   },
+   {
+    "file": "docs/docsite/rst/user_guide/playbooks_variables.rst",
+    "start": 555,
+    "end": 560,
+    "class": "unresolved",
+    "detail": "docs/docsite/rst/user_guide/playbooks_variables.rst is not in the corpus"
+   },
+   {
+    "file": "lib/ansible/module_utils/facts/hardware/linux.py",
+    "start": 16,
+    "end": 29,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/facts/hardware/linux.py",
+    "start": 30,
+    "end": 35,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/facts/hardware/linux.py",
+    "start": 158,
+    "end": 274,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/facts/hardware/linux.py",
+    "start": 275,
+    "end": 280,
+    "class": "exact"
+   }
+  ],
+  "instance_ansible__ansible-3b823d908e8a5d17674f8c26d337d3114b7493b1-v0f01c69f1e2528b935359cfe578530722bca2c59": [
+   {
+    "file": "lib/ansible/parsing/dataloader.py",
+    "start": 33,
+    "end": 168,
+    "class": "contained",
+    "detail": "16 of 104 range lines not in the content"
+   },
+   {
+    "file": "lib/ansible/parsing/dataloader.py",
+    "start": 77,
+    "end": 106,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/parsing/dataloader.py",
+    "start": 284,
+    "end": 341,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/inventory/__init__.py",
+    "start": 168,
+    "end": 244,
+    "class": "contained",
+    "detail": "21 of 66 range lines not in the content"
+   },
+   {
+    "file": "lib/ansible/plugins/inventory/__init__.py",
+    "start": 218,
+    "end": 224,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/inventory/auto.py",
+    "start": 29,
+    "end": 63,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/inventory/auto.py",
+    "start": 36,
+    "end": 42,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/inventory/yaml.py",
+    "start": 97,
+    "end": 122,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/inventory/yaml.py",
+    "start": 101,
+    "end": 107,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/vars/host_group_vars.py",
+    "start": 63,
+    "end": 152,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/vars/host_group_vars.py",
+    "start": 73,
+    "end": 79,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 48,
+    "end": 66,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 319,
+    "end": 384,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/vars/manager.py",
+    "start": 352,
+    "end": 359,
+    "class": "exact"
+   }
+  ],
+  "instance_ansible__ansible-395e5e20fab9cad517243372fa3c3c5d9e09ab2a-v7eee2454f617569fd6889f2211f75bc02a35f9f8": [
+   {
+    "file": "changelogs/fragments/76009-validate-modules-choices-return-value.yml",
+    "start": 1,
+    "end": 2,
+    "class": "unresolved",
+    "detail": "changelogs/fragments/76009-validate-modules-choices-return-value.yml is not in the corpus"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 18,
+    "end": 45,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 21,
+    "end": 26,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 31,
+    "end": 37,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 42,
+    "end": 49,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 55,
+    "end": 86,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 57,
+    "end": 103,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 124,
+    "end": 145,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 127,
+    "end": 143,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 195,
+    "end": 201,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 204,
+    "end": 213,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 220,
+    "end": 233,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 238,
+    "end": 244,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 264,
+    "end": 275,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 292,
+    "end": 303,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 307,
+    "end": 313,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 323,
+    "end": 329,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 335,
+    "end": 357,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 362,
+    "end": 390,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 392,
+    "end": 410,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 413,
+    "end": 423,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 427,
+    "end": 461,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 472,
+    "end": 491,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 499,
+    "end": 509,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 512,
+    "end": 518,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 524,
+    "end": 533,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 536,
+    "end": 542,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/play_iterator.py",
+    "start": 545,
+    "end": 551,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/executor/task_queue_manager.py",
+    "start": 29,
+    "end": 36,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/__init__.py",
+    "start": 34,
+    "end": 54,
+    "class": "contained",
+    "detail": "1 of 20 range lines not in the content"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/__init__.py",
+    "start": 37,
+    "end": 42,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/__init__.py",
+    "start": 274,
+    "end": 280,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/__init__.py",
+    "start": 565,
+    "end": 578,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/__init__.py",
+    "start": 1158,
+    "end": 1164,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/__init__.py",
+    "start": 1167,
+    "end": 1173,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/__init__.py",
+    "start": 1176,
+    "end": 1182,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/__init__.py",
+    "start": 1186,
+    "end": 1192,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/linear.py",
+    "start": 33,
+    "end": 39,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/linear.py",
+    "start": 34,
+    "end": 46,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/linear.py",
+    "start": 112,
+    "end": 118,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/linear.py",
+    "start": 128,
+    "end": 140,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/linear.py",
+    "start": 168,
+    "end": 198,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/strategy/linear.py",
+    "start": 416,
+    "end": 429,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 342,
+    "end": 392,
+    "class": "exact"
+   }
+  ],
+  "instance_ansible__ansible-6cc97447aac5816745278f3735af128afb255c81-v0f01c69f1e2528b935359cfe578530722bca2c59": [
+   {
+    "file": "lib/ansible/_internal/_templating/_jinja_bits.py",
+    "start": 80,
+    "end": 188,
+    "class": "range",
+    "detail": "content verbatim at lines 80-194"
+   },
+   {
+    "file": "lib/ansible/_internal/_templating/_jinja_plugins.py",
+    "start": 8,
+    "end": 17,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/_internal/_templating/_jinja_plugins.py",
+    "start": 197,
+    "end": 291,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/_internal/_templating/_jinja_plugins.py",
+    "start": 263,
+    "end": 277,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/cli/__init__.py",
+    "start": 89,
+    "end": 106,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/cli/__init__.py",
+    "start": 715,
+    "end": 752,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 53,
+    "end": 61,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 316,
+    "end": 351,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 341,
+    "end": 347,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 1459,
+    "end": 1465,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 1462,
+    "end": 1512,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/basic.py",
+    "start": 1498,
+    "end": 1504,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/common/warnings.py",
+    "start": 11,
+    "end": 17,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/module_utils/common/warnings.py",
+    "start": 17,
+    "end": 69,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/parsing/yaml/objects.py",
+    "start": 1,
+    "end": 31,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/parsing/yaml/objects.py",
+    "start": 8,
+    "end": 32,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/parsing/yaml/objects.py",
+    "start": 33,
+    "end": 56,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/test/core.py",
+    "start": 48,
+    "end": 53,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/test/core.py",
+    "start": 290,
+    "end": 341,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/plugins/test/timedout.yml",
+    "start": 1,
+    "end": 21,
+    "class": "unresolved",
+    "detail": "lib/ansible/plugins/test/timedout.yml is not in the corpus"
+   },
+   {
+    "file": "lib/ansible/template/__init__.py",
+    "start": 28,
+    "end": 34,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/template/__init__.py",
+    "start": 148,
+    "end": 205,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/template/__init__.py",
+    "start": 171,
+    "end": 177,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/template/__init__.py",
+    "start": 198,
+    "end": 204,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/template/__init__.py",
+    "start": 207,
+    "end": 219,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 76,
+    "end": 82,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 709,
+    "end": 719,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 746,
+    "end": 750,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 1125,
+    "end": 1172,
+    "class": "exact"
+   },
+   {
+    "file": "lib/ansible/utils/display.py",
+    "start": 1175,
+    "end": 1245,
+    "class": "exact"
+   },
+   {
+    "file": "test/integration/targets/test_core/tasks/main.yml",
+    "start": 373,
+    "end": 385,
+    "class": "unresolved",
+    "detail": "test/integration/targets/test_core/tasks/main.yml is not in the corpus"
+   }
+  ],
+  "huggingface__transformers-7078": [
+   {
+    "file": "src/transformers/tokenization_t5.py",
+    "start": 96,
+    "end": 103,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/tokenization_t5.py",
+    "start": 210,
+    "end": 219,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/tokenization_t5.py",
+    "start": 211,
+    "end": 216,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/tokenization_t5.py",
+    "start": 343,
+    "end": 349,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/tokenization_t5.py",
+    "start": 344,
+    "end": 373,
+    "class": "range",
+    "detail": "content verbatim at lines 344-374"
+   },
+   {
+    "file": "src/transformers/tokenization_t5.py",
+    "start": 358,
+    "end": 365,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/tokenization_t5.py",
+    "start": 370,
+    "end": 374,
+    "class": "exact"
+   }
+  ],
+  "huggingface__transformers-24238": [
+   {
+    "file": "src/transformers/generation/configuration_utils.py",
+    "start": 288,
+    "end": 294,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/generation/configuration_utils.py",
+    "start": 569,
+    "end": 577,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/generation/configuration_utils.py",
+    "start": 569,
+    "end": 577,
+    "class": "exact"
+   }
+  ],
+  "huggingface__transformers-29449": [
+   {
+    "file": "src/transformers/models/idefics/processing_idefics.py",
+    "start": 108,
+    "end": 147,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/idefics/processing_idefics.py",
+    "start": 149,
+    "end": 155,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/idefics/processing_idefics.py",
+    "start": 165,
+    "end": 179,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/idefics/processing_idefics.py",
+    "start": 266,
+    "end": 340,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/idefics/processing_idefics.py",
+    "start": 333,
+    "end": 340,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/idefics/processing_idefics.py",
+    "start": 341,
+    "end": 375,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/idefics/processing_idefics.py",
+    "start": 344,
+    "end": 357,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/idefics/processing_idefics.py",
+    "start": 366,
+    "end": 373,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/idefics/processing_idefics.py",
+    "start": 376,
+    "end": 394,
+    "class": "exact"
+   }
+  ],
+  "huggingface__transformers-28071": [
+   {
+    "file": "src/transformers/models/speecht5/modeling_speecht5.py",
+    "start": 64,
+    "end": 76,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/speecht5/modeling_speecht5.py",
+    "start": 78,
+    "end": 84,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/speecht5/modeling_speecht5.py",
+    "start": 2699,
+    "end": 2705,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/speecht5/modeling_speecht5.py",
+    "start": 2700,
+    "end": 2710,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/speecht5/modeling_speecht5.py",
+    "start": 3044,
+    "end": 3050,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/speecht5/modeling_speecht5.py",
+    "start": 3045,
+    "end": 3053,
+    "class": "exact"
+   }
+  ],
+  "huggingface__transformers-22458": [
+   {
+    "file": "src/transformers/image_transforms.py",
+    "start": 118,
+    "end": 123,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/image_transforms.py",
+    "start": 145,
+    "end": 152,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/image_transforms.py",
+    "start": 157,
+    "end": 180,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/image_transforms.py",
+    "start": 159,
+    "end": 183,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/image_transforms.py",
+    "start": 291,
+    "end": 298,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/image_transforms.py",
+    "start": 292,
+    "end": 309,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/image_transforms.py",
+    "start": 306,
+    "end": 311,
+    "class": "exact"
+   }
+  ],
+  "huggingface__transformers-17082": [
+   {
+    "file": "src/transformers/convert_slow_tokenizer.py",
+    "start": 73,
+    "end": 109,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/convert_slow_tokenizer.py",
+    "start": 389,
+    "end": 417,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/convert_slow_tokenizer.py",
+    "start": 407,
+    "end": 413,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/bert/tokenization_bert.py",
+    "start": 301,
+    "end": 328,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/deberta/tokenization_deberta.py",
+    "start": 62,
+    "end": 92,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/deberta/tokenization_deberta.py",
+    "start": 134,
+    "end": 156,
+    "class": "range",
+    "detail": "content verbatim at lines 133-156"
+   },
+   {
+    "file": "src/transformers/models/deberta/tokenization_deberta.py",
+    "start": 185,
+    "end": 213,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/deberta/tokenization_deberta.py",
+    "start": 210,
+    "end": 216,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/deberta/tokenization_deberta_fast.py",
+    "start": 63,
+    "end": 94,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/deberta/tokenization_deberta_fast.py",
+    "start": 164,
+    "end": 176,
+    "class": "drift",
+    "detail": "3 of 19 content lines are not in the file"
+   },
+   {
+    "file": "src/transformers/models/deberta/tokenization_deberta_fast.py",
+    "start": 178,
+    "end": 206,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/deberta/tokenization_deberta_fast.py",
+    "start": 183,
+    "end": 189,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/deberta/tokenization_deberta_fast.py",
+    "start": 203,
+    "end": 206,
+    "class": "exact"
+   }
+  ],
+  "huggingface__transformers-28115": [
+   {
+    "file": "src/transformers/models/mixtral/configuration_mixtral.py",
+    "start": 79,
+    "end": 85,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/mixtral/configuration_mixtral.py",
+    "start": 82,
+    "end": 96,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/mixtral/configuration_mixtral.py",
+    "start": 128,
+    "end": 134,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/mixtral/modeling_mixtral.py",
+    "start": 83,
+    "end": 124,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/mixtral/modeling_mixtral.py",
+    "start": 688,
+    "end": 833,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/mixtral/modeling_mixtral.py",
+    "start": 946,
+    "end": 1133,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/mixtral/modeling_mixtral.py",
+    "start": 1211,
+    "end": 1274,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/models/switch_transformers/modeling_switch_transformers.py",
+    "start": 91,
+    "end": 127,
+    "class": "exact"
+   }
+  ],
+  "huggingface__transformers-5122": [
+   {
+    "file": "src/transformers/data/data_collator.py",
+    "start": 42,
+    "end": 51,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/data/data_collator.py",
+    "start": 42,
+    "end": 64,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/data/processors/glue.py",
+    "start": 129,
+    "end": 149,
+    "class": "exact"
+   },
+   {
+    "file": "src/transformers/data/processors/glue.py",
+    "start": 289,
+    "end": 301,
+    "class": "exact"
+   }
+  ],
+  "instance_internetarchive__openlibrary-6fdbbeee4c0a7e976ff3e46fb1d36f4eb110c428-v08d8e8889ec945ab821fb156c04c7d2e2810debb": [
+   {
+    "file": "openlibrary/accounts/model.py",
+    "start": 8,
+    "end": 13,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/accounts/model.py",
+    "start": 31,
+    "end": 36,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/accounts/model.py",
+    "start": 263,
+    "end": 269,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/helpers.py",
+    "start": 218,
+    "end": 224,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 8,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 11,
+    "end": 18,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 21,
+    "end": 48,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 55,
+    "end": 93,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 95,
+    "end": 104,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 106,
+    "end": 119,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 144,
+    "end": 176,
+    "class": "contained",
+    "detail": "1 of 28 range lines not in the content"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 176,
+    "end": 205,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 215,
+    "end": 221,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 223,
+    "end": 256,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 355,
+    "end": 362,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 370,
+    "end": 384,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 373,
+    "end": 382,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 409,
+    "end": 415,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 416,
+    "end": 422,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 421,
+    "end": 427,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 458,
+    "end": 464,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 478,
+    "end": 484,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 30,
+    "end": 36,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 41,
+    "end": 47,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 51,
+    "end": 80,
+    "class": "drift",
+    "detail": "10 of 23 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 81,
+    "end": 89,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 145,
+    "end": 170,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 167,
+    "end": 180,
+    "class": "revision",
+    "detail": "content is the file after the fix"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 174,
+    "end": 180,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 1026,
+    "end": 1031,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 1033,
+    "end": 1048,
+    "class": "drift",
+    "detail": "5 of 13 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 1048,
+    "end": 1054,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 4,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 13,
+    "end": 19,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 24,
+    "end": 31,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 33,
+    "end": 50,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 93,
+    "end": 101,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 112,
+    "end": 121,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 122,
+    "end": 141,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 259,
+    "end": 265,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 406,
+    "end": 435,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 433,
+    "end": 452,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 535,
+    "end": 541,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 545,
+    "end": 576,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 566,
+    "end": 573,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 650,
+    "end": 656,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 697,
+    "end": 703,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 737,
+    "end": 779,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 792,
+    "end": 796,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 799,
+    "end": 805,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 867,
+    "end": 880,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/models.py",
+    "start": 31,
+    "end": 42,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/models.py",
+    "start": 712,
+    "end": 718,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/models.py",
+    "start": 800,
+    "end": 804,
+    "class": "exact"
+   }
+  ],
+  "instance_internetarchive__openlibrary-5de7de19211e71b29b2f2ba3b1dff2fe065d660f-v08d8e8889ec945ab821fb156c04c7d2e2810debb": [
+   {
+    "file": "openlibrary/catalog/utils/__init__.py",
+    "start": 342,
+    "end": 350,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/imports.py",
+    "start": 27,
+    "end": 27,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/imports.py",
+    "start": 156,
+    "end": 168,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 30,
+    "end": 30,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 220,
+    "end": 221,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 373,
+    "end": 382,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 386,
+    "end": 424,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 430,
+    "end": 448,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 635,
+    "end": 647,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/vendors.py",
+    "start": 245,
+    "end": 246,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/vendors.py",
+    "start": 298,
+    "end": 317,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/books/dynlinks.py",
+    "start": 477,
+    "end": 483,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/code.py",
+    "start": 485,
+    "end": 488,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/code.py",
+    "start": 499,
+    "end": 505,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/utils/isbn.py",
+    "start": 1,
+    "end": 2,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/utils/isbn.py",
+    "start": 40,
+    "end": 49,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/utils/isbn.py",
+    "start": 52,
+    "end": 61,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/utils/isbn.py",
+    "start": 64,
+    "end": 69,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/utils/isbn.py",
+    "start": 79,
+    "end": 85,
+    "class": "exact"
+   }
+  ],
+  "instance_internetarchive__openlibrary-25858f9f0c165df25742acf8309ce909773f0cdd-v13642507b4fc1f8d234172bf8129942da2c2ca26": [
+   {
+    "file": "openlibrary/solr/update_edition.py",
+    "start": 1,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_edition.py",
+    "start": 186,
+    "end": 239,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_edition.py",
+    "start": 191,
+    "end": 197,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 1,
+    "end": 11,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 1,
+    "end": 91,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 14,
+    "end": 28,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 32,
+    "end": 41,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 48,
+    "end": 95,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 826,
+    "end": 842,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 919,
+    "end": 948,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 1007,
+    "end": 1079,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 1147,
+    "end": 1153,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 1246,
+    "end": 1298,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 1400,
+    "end": 1407,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 1418,
+    "end": 1424,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 1430,
+    "end": 1436,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 1506,
+    "end": 1517,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 1509,
+    "end": 1576,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/index_subjects.py",
+    "start": 1,
+    "end": 53,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/index_subjects.py",
+    "start": 5,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/solr_builder.py",
+    "start": 403,
+    "end": 411,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_updater.py",
+    "start": 279,
+    "end": 291,
+    "class": "exact"
+   }
+  ],
+  "instance_internetarchive__openlibrary-910b08570210509f3bcfebf35c093a48243fe754-v0f5aece3601a5b4419f7ccec1dbda2071be28ee4": [
+   {
+    "file": "openlibrary/core/imports.py",
+    "start": 23,
+    "end": 29,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/imports.py",
+    "start": 110,
+    "end": 136,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/imports.py",
+    "start": 151,
+    "end": 174,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/imports.py",
+    "start": 255,
+    "end": 276,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/vendors.py",
+    "start": 297,
+    "end": 320,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/vendors.py",
+    "start": 333,
+    "end": 382,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/vendors.py",
+    "start": 382,
+    "end": 387,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/vendors.py",
+    "start": 402,
+    "end": 442,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/i18n/messages.pot",
+    "start": 626,
+    "end": 636,
+    "class": "unresolved",
+    "detail": "openlibrary/i18n/messages.pot is not in the corpus"
+   },
+   {
+    "file": "openlibrary/plugins/importapi/code.py",
+    "start": 19,
+    "end": 26,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/importapi/code.py",
+    "start": 110,
+    "end": 123,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/importapi/code.py",
+    "start": 141,
+    "end": 168,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/importapi/code.py",
+    "start": 151,
+    "end": 156,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/importapi/code.py",
+    "start": 158,
+    "end": 168,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/templates/history/sources.html",
+    "start": 28,
+    "end": 55,
+    "class": "unresolved",
+    "detail": "openlibrary/templates/history/sources.html is not in the corpus"
+   },
+   {
+    "file": "openlibrary/templates/history/sources.html",
+    "start": 43,
+    "end": 48,
+    "class": "unresolved",
+    "detail": "openlibrary/templates/history/sources.html is not in the corpus"
+   },
+   {
+    "file": "openlibrary/utils/isbn.py",
+    "start": 88,
+    "end": 100,
+    "class": "drift",
+    "detail": "3 of 12 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/utils/isbn.py",
+    "start": 103,
+    "end": 111,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/views/showmarc.py",
+    "start": 88,
+    "end": 93,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 42,
+    "end": 53,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 61,
+    "end": 68,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 78,
+    "end": 83,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 160,
+    "end": 172,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 264,
+    "end": 317,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 309,
+    "end": 315,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 338,
+    "end": 343,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 395,
+    "end": 401,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 420,
+    "end": 429,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 431,
+    "end": 436,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/affiliate_server.py",
+    "start": 481,
+    "end": 486,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/promise_batch_imports.py",
+    "start": 29,
+    "end": 35,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/promise_batch_imports.py",
+    "start": 97,
+    "end": 103,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/promise_batch_imports.py",
+    "start": 108,
+    "end": 133,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/promise_batch_imports.py",
+    "start": 108,
+    "end": 139,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/promise_batch_imports.py",
+    "start": 159,
+    "end": 169,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/promise_batch_imports.py",
+    "start": 159,
+    "end": 169,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/providers/isbndb.py",
+    "start": 36,
+    "end": 84,
+    "class": "exact"
+   }
+  ],
+  "instance_internetarchive__openlibrary-757fcf46c70530739c150c57b37d6375f155dc97-ve8c8d62a2b60610a3c4631f5f23ed866bada9818": [
+   {
+    "file": "openlibrary/catalog/add_book/__init__.py",
+    "start": 36,
+    "end": 45,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/add_book/__init__.py",
+    "start": 532,
+    "end": 538,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/add_book/__init__.py",
+    "start": 728,
+    "end": 734,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/add_book/match.py",
+    "start": 1,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/add_book/match.py",
+    "start": 1,
+    "end": 67,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/add_book/match.py",
+    "start": 30,
+    "end": 36,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/add_book/match.py",
+    "start": 63,
+    "end": 67,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/add_book/tests/test_match.py",
+    "start": 1,
+    "end": 23,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/merge/merge.py",
+    "start": 1,
+    "end": 47,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/merge/merge_marc.py",
+    "start": 1,
+    "end": 57,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/merge/merge_marc.py",
+    "start": 175,
+    "end": 182,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/merge/merge_marc.py",
+    "start": 308,
+    "end": 348,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/merge/tests/test_merge_marc.py",
+    "start": 1,
+    "end": 144,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/utils/__init__.py",
+    "start": 2,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/utils/__init__.py",
+    "start": 234,
+    "end": 287,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/catalog/utils/__init__.py",
+    "start": 284,
+    "end": 286,
+    "class": "exact"
+   }
+  ],
+  "instance_internetarchive__openlibrary-798a582540019363d14b2090755cc7b89a350788-v430f20c722405e462d9ef44dee7d34c41e76fe7a": [
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 1,
+    "end": 76,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 11,
+    "end": 16,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 28,
+    "end": 34,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 129,
+    "end": 226,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 281,
+    "end": 321,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 323,
+    "end": 447,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/core/lists/model.py",
+    "start": 444,
+    "end": 446,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 1,
+    "end": 42,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 27,
+    "end": 34,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 957,
+    "end": 1048,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 960,
+    "end": 1045,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 1217,
+    "end": 1226,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/core/models.py",
+    "start": 1220,
+    "end": 1226,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/code.py",
+    "start": 63,
+    "end": 82,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/code.py",
+    "start": 70,
+    "end": 75,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 1,
+    "end": 25,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 13,
+    "end": 19,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 682,
+    "end": 765,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/lists.py",
+    "start": 720,
+    "end": 726,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/models.py",
+    "start": 994,
+    "end": 1020,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/models.py",
+    "start": 997,
+    "end": 1044,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/models.py",
+    "start": 1040,
+    "end": 1044,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/utils.py",
+    "start": 46,
+    "end": 53,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/utils.py",
+    "start": 47,
+    "end": 55,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/utils.py",
+    "start": 412,
+    "end": 418,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/utils.py",
+    "start": 413,
+    "end": 451,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/utils.py",
+    "start": 447,
+    "end": 451,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/tests/core/test_models.py",
+    "start": 86,
+    "end": 113,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/tests/core/test_processors.py",
+    "start": 50,
+    "end": 62,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "openlibrary/tests/core/test_processors.py",
+    "start": 110,
+    "end": 128,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   }
+  ],
+  "instance_internetarchive__openlibrary-09865f5fb549694d969f0a8e49b9d204ef1853ca-ve8c8d62a2b60610a3c4631f5f23ed866bada9818": [
+   {
+    "file": "openlibrary/i18n/messages.pot",
+    "start": 3890,
+    "end": 3895,
+    "class": "unresolved",
+    "detail": "openlibrary/i18n/messages.pot is not in the corpus"
+   },
+   {
+    "file": "openlibrary/macros/TableOfContents.html",
+    "start": 1,
+    "end": 12,
+    "class": "unresolved",
+    "detail": "openlibrary/macros/TableOfContents.html is not in the corpus"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/models.py",
+    "start": 423,
+    "end": 427,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 10,
+    "end": 15,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 43,
+    "end": 49,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 54,
+    "end": 63,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 62,
+    "end": 67,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 65,
+    "end": 75,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 77,
+    "end": 78,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 100,
+    "end": 115,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 101,
+    "end": 121,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 117,
+    "end": 118,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 120,
+    "end": 125,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 131,
+    "end": 139,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/table_of_contents.py",
+    "start": 137,
+    "end": 139,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/tests/test_table_of_contents.py",
+    "start": 96,
+    "end": 117,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/upstream/tests/test_table_of_contents.py",
+    "start": 165,
+    "end": 174,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/templates/books/edit/edition.html",
+    "start": 22,
+    "end": 28,
+    "class": "unresolved",
+    "detail": "openlibrary/templates/books/edit/edition.html is not in the corpus"
+   },
+   {
+    "file": "openlibrary/templates/books/edit/edition.html",
+    "start": 335,
+    "end": 340,
+    "class": "unresolved",
+    "detail": "openlibrary/templates/books/edit/edition.html is not in the corpus"
+   },
+   {
+    "file": "openlibrary/templates/books/edit/edition.html",
+    "start": 338,
+    "end": 347,
+    "class": "unresolved",
+    "detail": "openlibrary/templates/books/edit/edition.html is not in the corpus"
+   },
+   {
+    "file": "static/css/page-user.less",
+    "start": 224,
+    "end": 229,
+    "class": "unresolved",
+    "detail": "static/css/page-user.less is not in the corpus"
+   }
+  ],
+  "instance_internetarchive__openlibrary-7bf3238533070f2d24bafbb26eedf675d51941f6-v08d8e8889ec945ab821fb156c04c7d2e2810debb": [
+   {
+    "file": "conf/solr/conf/managed-schema",
+    "start": 195,
+    "end": 203,
+    "class": "unresolved",
+    "detail": "conf/solr/conf/managed-schema is not in the corpus"
+   },
+   {
+    "file": "conf/solr/conf/managed-schema",
+    "start": 203,
+    "end": 208,
+    "class": "unresolved",
+    "detail": "conf/solr/conf/managed-schema is not in the corpus"
+   },
+   {
+    "file": "openlibrary/core/bookshelves.py",
+    "start": 2,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/bookshelves.py",
+    "start": 15,
+    "end": 20,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/bookshelves.py",
+    "start": 21,
+    "end": 28,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/bookshelves.py",
+    "start": 562,
+    "end": 568,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/bookshelves.py",
+    "start": 569,
+    "end": 578,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/bookshelves.py",
+    "start": 577,
+    "end": 582,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/core/ratings.py",
+    "start": 9,
+    "end": 18,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/plugins/openlibrary/api.py",
+    "start": 275,
+    "end": 286,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/data_provider.py",
+    "start": 9,
+    "end": 15,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/data_provider.py",
+    "start": 20,
+    "end": 26,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/data_provider.py",
+    "start": 110,
+    "end": 115,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/data_provider.py",
+    "start": 217,
+    "end": 229,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/data_provider.py",
+    "start": 252,
+    "end": 258,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/data_provider.py",
+    "start": 282,
+    "end": 287,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/data_provider.py",
+    "start": 289,
+    "end": 318,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/data_provider.py",
+    "start": 313,
+    "end": 318,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/data_provider.py",
+    "start": 390,
+    "end": 396,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/data_provider.py",
+    "start": 488,
+    "end": 494,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/solr_types.py",
+    "start": 67,
+    "end": 72,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 79,
+    "end": 89,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/solr/update_work.py",
+    "start": 790,
+    "end": 795,
+    "class": "exact"
+   },
+   {
+    "file": "openlibrary/utils/__init__.py",
+    "start": 165,
+    "end": 178,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/Jenkinsfile",
+    "start": 37,
+    "end": 46,
+    "class": "unresolved",
+    "detail": "scripts/solr_builder/Jenkinsfile is not in the corpus"
+   },
+   {
+    "file": "scripts/solr_builder/Jenkinsfile",
+    "start": 81,
+    "end": 86,
+    "class": "unresolved",
+    "detail": "scripts/solr_builder/Jenkinsfile is not in the corpus"
+   },
+   {
+    "file": "scripts/solr_builder/Jenkinsfile",
+    "start": 100,
+    "end": 105,
+    "class": "unresolved",
+    "detail": "scripts/solr_builder/Jenkinsfile is not in the corpus"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/solr_builder.py",
+    "start": 13,
+    "end": 21,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/solr_builder.py",
+    "start": 67,
+    "end": 72,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/solr_builder.py",
+    "start": 82,
+    "end": 97,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/solr_builder.py",
+    "start": 205,
+    "end": 225,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/solr_builder.py",
+    "start": 224,
+    "end": 229,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/solr_builder.py",
+    "start": 270,
+    "end": 275,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/solr_builder.py",
+    "start": 565,
+    "end": 572,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/solr_builder/solr_builder.py",
+    "start": 595,
+    "end": 600,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/solr_builder/sql/create-dump-table.sql",
+    "start": 11,
+    "end": 14,
+    "class": "unresolved",
+    "detail": "scripts/solr_builder/sql/create-dump-table.sql is not in the corpus"
+   }
+  ],
+  "keras-team__keras-19915": [
+   {
+    "file": "keras/src/export/export_lib.py",
+    "start": 654,
+    "end": 666,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/export/export_lib.py",
+    "start": 654,
+    "end": 666,
+    "class": "exact"
+   }
+  ],
+  "keras-team__keras-19973": [
+   {
+    "file": "keras/src/layers/attention/multi_head_attention.py",
+    "start": 19,
+    "end": 69,
+    "class": "range",
+    "detail": "content verbatim at lines 19-71"
+   },
+   {
+    "file": "keras/src/layers/attention/multi_head_attention.py",
+    "start": 210,
+    "end": 215,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/layers/attention/multi_head_attention.py",
+    "start": 583,
+    "end": 640,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/ops/operation.py",
+    "start": 48,
+    "end": 88,
+    "class": "range",
+    "detail": "content verbatim at lines 48-89"
+   }
+  ],
+  "keras-team__keras-19924": [
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 33,
+    "end": 38,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 77,
+    "end": 103,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 153,
+    "end": 206,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 160,
+    "end": 165,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 168,
+    "end": 173,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 196,
+    "end": 208,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 208,
+    "end": 231,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 301,
+    "end": 357,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 309,
+    "end": 323,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 331,
+    "end": 338,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 346,
+    "end": 352,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 693,
+    "end": 750,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 752,
+    "end": 787,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/saving/saving_lib.py",
+    "start": 906,
+    "end": 910,
+    "class": "exact"
+   }
+  ],
+  "keras-team__keras-18975": [
+   {
+    "file": "keras/trainers/compile_utils.py",
+    "start": 45,
+    "end": 55,
+    "class": "contained",
+    "detail": "1 of 10 range lines not in the content"
+   },
+   {
+    "file": "keras/trainers/compile_utils.py",
+    "start": 460,
+    "end": 480,
+    "class": "contained",
+    "detail": "1 of 19 range lines not in the content"
+   },
+   {
+    "file": "keras/trainers/compile_utils.py",
+    "start": 468,
+    "end": 473,
+    "class": "exact"
+   }
+  ],
+  "keras-team__keras-19641": [
+   {
+    "file": "keras/src/backend/tensorflow/nn.py",
+    "start": 221,
+    "end": 255,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/backend/tensorflow/nn.py",
+    "start": 252,
+    "end": 257,
+    "class": "exact"
+   }
+  ],
+  "keras-team__keras-19937": [
+   {
+    "file": "keras/src/backend/common/dtypes.py",
+    "start": 25,
+    "end": 52,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/backend/common/variables.py",
+    "start": 504,
+    "end": 522,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/backend/jax/core.py",
+    "start": 47,
+    "end": 75,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/backend/numpy/core.py",
+    "start": 31,
+    "end": 48,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/backend/tensorflow/core.py",
+    "start": 102,
+    "end": 121,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/dtype_policies/dtype_policy.py",
+    "start": 9,
+    "end": 95,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/dtype_policies/dtype_policy.py",
+    "start": 184,
+    "end": 204,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/loss.py",
+    "start": 1,
+    "end": 4,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/loss.py",
+    "start": 10,
+    "end": 15,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/loss.py",
+    "start": 27,
+    "end": 33,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 57,
+    "end": 63,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 92,
+    "end": 98,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 127,
+    "end": 133,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 165,
+    "end": 171,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 212,
+    "end": 218,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 261,
+    "end": 267,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 299,
+    "end": 305,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 332,
+    "end": 338,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 365,
+    "end": 371,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 399,
+    "end": 405,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 438,
+    "end": 444,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 470,
+    "end": 476,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 514,
+    "end": 520,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 650,
+    "end": 656,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 807,
+    "end": 813,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 944,
+    "end": 950,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 1048,
+    "end": 1054,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 2020,
+    "end": 2026,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 2095,
+    "end": 2101,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/losses/losses.py",
+    "start": 2206,
+    "end": 2212,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/metrics/metric.py",
+    "start": 1,
+    "end": 4,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/metrics/metric.py",
+    "start": 12,
+    "end": 19,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/metrics/metric.py",
+    "start": 86,
+    "end": 92,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/ops/core.py",
+    "start": 725,
+    "end": 744,
+    "class": "exact"
+   }
+  ],
+  "keras-team__keras-19636": [
+   {
+    "file": "keras/src/dtype_policies/dtype_policy.py",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/dtype_policies/dtype_policy.py",
+    "start": 135,
+    "end": 159,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/dtype_policies/dtype_policy.py",
+    "start": 135,
+    "end": 168,
+    "class": "contained",
+    "detail": "3 of 29 range lines not in the content"
+   },
+   {
+    "file": "keras/src/dtype_policies/dtype_policy.py",
+    "start": 163,
+    "end": 168,
+    "class": "exact"
+   }
+  ],
+  "keras-team__keras-19775": [
+   {
+    "file": "keras/src/backend/tensorflow/numpy.py",
+    "start": 1310,
+    "end": 1315,
+    "class": "exact"
+   },
+   {
+    "file": "keras/src/backend/tensorflow/numpy.py",
+    "start": 1310,
+    "end": 1340,
+    "class": "drift",
+    "detail": "1 of 29 content lines are not in the file"
+   },
+   {
+    "file": "keras/src/backend/tensorflow/numpy.py",
+    "start": 1321,
+    "end": 1339,
+    "class": "exact"
+   }
+  ],
+  "langchain-ai__langchain-5450": [
+   {
+    "file": "langchain/embeddings/huggingface.py",
+    "start": 1,
+    "end": 87,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/embeddings/huggingface.py",
+    "start": 25,
+    "end": 31,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/embeddings/huggingface.py",
+    "start": 100,
+    "end": 107,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/embeddings/huggingface.py",
+    "start": 113,
+    "end": 118,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/embeddings/huggingface.py",
+    "start": 145,
+    "end": 151,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/embeddings/huggingface.py",
+    "start": 158,
+    "end": 162,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/math_utils.py",
+    "start": 1,
+    "end": 56,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/vectorstores/faiss.py",
+    "start": 48,
+    "end": 59,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/vectorstores/faiss.py",
+    "start": 75,
+    "end": 93,
+    "class": "range",
+    "detail": "content verbatim at lines 62-92"
+   },
+   {
+    "file": "langchain/vectorstores/faiss.py",
+    "start": 182,
+    "end": 225,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/vectorstores/faiss.py",
+    "start": 519,
+    "end": 532,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/vectorstores/sklearn.py",
+    "start": 136,
+    "end": 271,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/vectorstores/utils.py",
+    "start": 1,
+    "end": 42,
+    "class": "exact"
+   },
+   {
+    "file": "tests/integration_tests/embeddings/test_huggingface.py",
+    "start": 1,
+    "end": 40,
+    "class": "exact"
+   }
+  ],
+  "langchain-ai__langchain-4009": [
+   {
+    "file": "docs/modules/chains/examples/openai_openapi.yaml",
+    "start": 1546,
+    "end": 1574,
+    "class": "unresolved",
+    "detail": "docs/modules/chains/examples/openai_openapi.yaml is not in the corpus"
+   },
+   {
+    "file": "docs/modules/chains/examples/openai_openapi.yaml",
+    "start": 3235,
+    "end": 3241,
+    "class": "unresolved",
+    "detail": "docs/modules/chains/examples/openai_openapi.yaml is not in the corpus"
+   },
+   {
+    "file": "langchain/callbacks/manager.py",
+    "start": 26,
+    "end": 43,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/callbacks/manager.py",
+    "start": 74,
+    "end": 90,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/callbacks/manager.py",
+    "start": 719,
+    "end": 750,
+    "class": "contained",
+    "detail": "1 of 32 range lines not in the content"
+   },
+   {
+    "file": "langchain/callbacks/openai_info.py",
+    "start": 4,
+    "end": 47,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/callbacks/openai_info.py",
+    "start": 79,
+    "end": 104,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/chat_models/openai.py",
+    "start": 234,
+    "end": 292,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/llms/openai.py",
+    "start": 123,
+    "end": 175,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/llms/openai.py",
+    "start": 375,
+    "end": 395,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/llms/openai.py",
+    "start": 541,
+    "end": 560,
+    "class": "exact"
+   }
+  ],
+  "langchain-ai__langchain-5584": [
+   {
+    "file": "langchain/vectorstores/chroma.py",
+    "start": 156,
+    "end": 159,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/vectorstores/chroma.py",
+    "start": 348,
+    "end": 366,
+    "class": "contained",
+    "detail": "3 of 17 range lines not in the content"
+   },
+   {
+    "file": "langchain/vectorstores/chroma.py",
+    "start": 356,
+    "end": 366,
+    "class": "exact"
+   }
+  ],
+  "langchain-ai__langchain-4420": [
+   {
+    "file": "langchain/document_loaders/whatsapp_chat.py",
+    "start": 9,
+    "end": 11,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/document_loaders/whatsapp_chat.py",
+    "start": 29,
+    "end": 56,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/document_loaders/whatsapp_chat.py",
+    "start": 44,
+    "end": 50,
+    "class": "exact"
+   }
+  ],
+  "langchain-ai__langchain-3367": [
+   {
+    "file": "langchain/agents/mrkl/output_parser.py",
+    "start": 15,
+    "end": 27,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/agents/mrkl/output_parser.py",
+    "start": 18,
+    "end": 24,
+    "class": "exact"
+   }
+  ],
+  "langchain-ai__langchain-4646": [
+   {
+    "file": "langchain/output_parsers/pydantic.py",
+    "start": 15,
+    "end": 30,
+    "class": "drift",
+    "detail": "3 of 13 content lines are not in the file"
+   },
+   {
+    "file": "langchain/output_parsers/pydantic.py",
+    "start": 22,
+    "end": 28,
+    "class": "exact"
+   }
+  ],
+  "langchain-ai__langchain-4579": [
+   {
+    "file": "langchain/document_loaders/web_base.py",
+    "start": 63,
+    "end": 82,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/document_loaders/web_base.py",
+    "start": 68,
+    "end": 84,
+    "class": "exact"
+   }
+  ],
+  "langchain-ai__langchain-6765": [
+   {
+    "file": "langchain/agents/initialize.py",
+    "start": 48,
+    "end": 59,
+    "class": "exact"
+   },
+   {
+    "file": "langchain/agents/initialize.py",
+    "start": 51,
+    "end": 57,
+    "class": "exact"
+   }
+  ],
+  "instance_qutebrowser__qutebrowser-ff1c025ad3210506fc76e1f604d8c8c27637d88e-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d": [
+   {
+    "file": "doc/changelog.asciidoc",
+    "start": 24,
+    "end": 29,
+    "class": "unresolved",
+    "detail": "doc/changelog.asciidoc is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/config.py",
+    "start": 40,
+    "end": 133,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 2512,
+    "end": 2597,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 2525,
+    "end": 2537,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 2546,
+    "end": 2597,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configinit.py",
+    "start": 42,
+    "end": 56,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configinit.py",
+    "start": 116,
+    "end": 131,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configinit.py",
+    "start": 160,
+    "end": 167,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 138,
+    "end": 260,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 364,
+    "end": 375,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 387,
+    "end": 392,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 426,
+    "end": 431,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 440,
+    "end": 446,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 1144,
+    "end": 1339,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 1152,
+    "end": 1157,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 1163,
+    "end": 1179,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 1220,
+    "end": 1225,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 1235,
+    "end": 1241,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 1318,
+    "end": 1323,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/misc/consolewidget.py",
+    "start": 109,
+    "end": 133,
+    "class": "exact"
+   }
+  ],
+  "instance_qutebrowser__qutebrowser-0fc6d1109d041c69a68a896db87cf1b8c194cef7-v2ef375ac784985212b1805e1d0431dc8f1b3c171": [
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 123,
+    "end": 128,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 1760,
+    "end": 1765,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 1779,
+    "end": 1797,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 1788,
+    "end": 1793,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 1795,
+    "end": 1800,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/completion/completer.py",
+    "start": 82,
+    "end": 277,
+    "class": "contained",
+    "detail": "98 of 171 range lines not in the content"
+   },
+   {
+    "file": "qutebrowser/completion/models/completionmodel.py",
+    "start": 20,
+    "end": 235,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/completion/models/histcategory.py",
+    "start": 33,
+    "end": 142,
+    "class": "drift",
+    "detail": "1 of 94 content lines are not in the file"
+   },
+   {
+    "file": "qutebrowser/completion/models/listcategory.py",
+    "start": 33,
+    "end": 75,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/completion/models/urlmodel.py",
+    "start": 20,
+    "end": 100,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/completion/models/urlmodel.py",
+    "start": 23,
+    "end": 30,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/completion/models/urlmodel.py",
+    "start": 93,
+    "end": 98,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 1141,
+    "end": 1151,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 1141,
+    "end": 1155,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 482,
+    "end": 723,
+    "class": "contained",
+    "detail": "60 of 190 range lines not in the content"
+   },
+   {
+    "file": "qutebrowser/utils/urlutils.py",
+    "start": 193,
+    "end": 230,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/urlutils.py",
+    "start": 349,
+    "end": 394,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/urlutils.py",
+    "start": 516,
+    "end": 523,
+    "class": "exact"
+   },
+   {
+    "file": "tests/unit/completion/test_models.py",
+    "start": 94,
+    "end": 174,
+    "class": "exact"
+   },
+   {
+    "file": "tests/unit/completion/test_models.py",
+    "start": 311,
+    "end": 397,
+    "class": "contained",
+    "detail": "39 of 79 range lines not in the content"
+   }
+  ],
+  "instance_qutebrowser__qutebrowser-2e961080a85d660148937ee8f0f6b3445a8f2c01-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d": [
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 303,
+    "end": 308,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 4001,
+    "end": 4006,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 330,
+    "end": 337,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 386,
+    "end": 393,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/qtargs.py",
+    "start": 8,
+    "end": 14,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/qtargs.py",
+    "start": 15,
+    "end": 19,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/qtargs.py",
+    "start": 273,
+    "end": 282,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/qtargs.py",
+    "start": 325,
+    "end": 338,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/qt/machinery.py",
+    "start": 249,
+    "end": 253,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 531,
+    "end": 538,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 621,
+    "end": 627,
+    "class": "exact"
+   }
+  ],
+  "instance_qutebrowser__qutebrowser-52708364b5f91e198defb022d1a5b4b3ebd9b563-v2ef375ac784985212b1805e1d0431dc8f1b3c171": [
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 3970,
+    "end": 3977,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 4607,
+    "end": 4612,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configdata.py",
+    "start": 75,
+    "end": 132,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 1917,
+    "end": 1923,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 1929,
+    "end": 1935,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 89,
+    "end": 269,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 335,
+    "end": 573,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/configtypes.py",
+    "start": 1996,
+    "end": 1998,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/mainwindow/statusbar/bar.py",
+    "start": 165,
+    "end": 260,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/mainwindow/statusbar/bar.py",
+    "start": 200,
+    "end": 205,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/mainwindow/statusbar/bar.py",
+    "start": 219,
+    "end": 231,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/mainwindow/statusbar/bar.py",
+    "start": 257,
+    "end": 262,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/mainwindow/statusbar/textbase.py",
+    "start": 20,
+    "end": 92,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/dev/src2asciidoc.py",
+    "start": 438,
+    "end": 483,
+    "class": "exact"
+   }
+  ],
+  "instance_qutebrowser__qutebrowser-473a15f7908f2bb6d670b0e908ab34a28d8cf7e2-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d": [
+   {
+    "file": "doc/changelog.asciidoc",
+    "start": 97,
+    "end": 102,
+    "class": "unresolved",
+    "detail": "doc/changelog.asciidoc is not in the corpus"
+   },
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 283,
+    "end": 288,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "doc/help/settings.asciidoc",
+    "start": 3666,
+    "end": 3671,
+    "class": "unresolved",
+    "detail": "doc/help/settings.asciidoc is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 301,
+    "end": 313,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/configdata.yml",
+    "start": 311,
+    "end": 316,
+    "class": "unresolved",
+    "detail": "qutebrowser/config/configdata.yml is not in the corpus"
+   },
+   {
+    "file": "qutebrowser/config/qtargs.py",
+    "start": 22,
+    "end": 29,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/qtargs.py",
+    "start": 157,
+    "end": 162,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/qtargs.py",
+    "start": 160,
+    "end": 211,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/qtargs.py",
+    "start": 183,
+    "end": 188,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 76,
+    "end": 79,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 641,
+    "end": 682,
+    "class": "exact"
+   }
+  ],
+  "instance_qutebrowser__qutebrowser-bedc9f7fadf93f83d8dee95feeecb9922b6f063f-v2ef375ac784985212b1805e1d0431dc8f1b3c171": [
+   {
+    "file": "qutebrowser/browser/downloads.py",
+    "start": 39,
+    "end": 40,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/browser/downloads.py",
+    "start": 560,
+    "end": 567,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/mainwindow/tabbedbrowser.py",
+    "start": 37,
+    "end": 38,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/mainwindow/tabbedbrowser.py",
+    "start": 863,
+    "end": 869,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/mainwindow/tabbedbrowser.py",
+    "start": 880,
+    "end": 886,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/qtutils.py",
+    "start": 31,
+    "end": 37,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/qtutils.py",
+    "start": 34,
+    "end": 40,
+    "class": "unresolved",
+    "detail": "content lines present, not in this order"
+   },
+   {
+    "file": "qutebrowser/utils/qtutils.py",
+    "start": 468,
+    "end": 476,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/qtutils.py",
+    "start": 473,
+    "end": 475,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 39,
+    "end": 40,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 40,
+    "end": 46,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 54,
+    "end": 60,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 56,
+    "end": 57,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 233,
+    "end": 313,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 314,
+    "end": 320,
+    "class": "range",
+    "detail": "content verbatim at lines 311-317"
+   }
+  ],
+  "instance_qutebrowser__qutebrowser-46e6839e21d9ff72abb6c5d49d5abaa5a8da8a81-v2ef375ac784985212b1805e1d0431dc8f1b3c171": [
+   {
+    "file": "qutebrowser/misc/crashdialog.py",
+    "start": 30,
+    "end": 36,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/misc/crashdialog.py",
+    "start": 361,
+    "end": 368,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/misc/earlyinit.py",
+    "start": 170,
+    "end": 182,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/tests/unit/utils/test_version.py",
+    "start": 35,
+    "end": 46,
+    "class": "path",
+    "corrected_file": "tests/unit/utils/test_version.py",
+    "detail": "qutebrowser/tests/unit/utils/test_version.py is not in the corpus; tests/unit/utils/test_version.py holds the content at these lines"
+   },
+   {
+    "file": "qutebrowser/tests/unit/utils/test_version.py",
+    "start": 48,
+    "end": 218,
+    "class": "path",
+    "corrected_file": "tests/unit/utils/test_version.py",
+    "detail": "qutebrowser/tests/unit/utils/test_version.py is not in the corpus; tests/unit/utils/test_version.py holds the content at these lines"
+   },
+   {
+    "file": "qutebrowser/utils/qtutils.py",
+    "start": 33,
+    "end": 39,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/qtutils.py",
+    "start": 48,
+    "end": 54,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/qtutils.py",
+    "start": 100,
+    "end": 114,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/qtutils.py",
+    "start": 118,
+    "end": 125,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 38,
+    "end": 44,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 210,
+    "end": 215,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 34,
+    "end": 41,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 84,
+    "end": 90,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 139,
+    "end": 145,
+    "class": "exact"
+   }
+  ],
+  "instance_qutebrowser__qutebrowser-394bfaed6544c952c6b3463751abab3176ad4997-vafb3e8e01b31319c66c4e666b8a3b1d8ba55db24": [
+   {
+    "file": "qutebrowser/browser/webengine/darkmode.py",
+    "start": 77,
+    "end": 90,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/browser/webengine/darkmode.py",
+    "start": 240,
+    "end": 265,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/browser/webengine/webenginesettings.py",
+    "start": 52,
+    "end": 52,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/browser/webengine/webenginesettings.py",
+    "start": 340,
+    "end": 346,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/websettings.py",
+    "start": 46,
+    "end": 51,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/config/websettings.py",
+    "start": 52,
+    "end": 69,
+    "class": "range",
+    "detail": "content verbatim at lines 51-68"
+   },
+   {
+    "file": "qutebrowser/config/websettings.py",
+    "start": 70,
+    "end": 81,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 92,
+    "end": 98,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/utils.py",
+    "start": 280,
+    "end": 284,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 32,
+    "end": 38,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 44,
+    "end": 55,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 356,
+    "end": 371,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 454,
+    "end": 500,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 503,
+    "end": 517,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 517,
+    "end": 520,
+    "class": "exact"
+   },
+   {
+    "file": "qutebrowser/utils/version.py",
+    "start": 521,
+    "end": 527,
+    "class": "exact"
+   },
+   {
+    "file": "scripts/dev/run_vulture.py",
+    "start": 138,
+    "end": 143,
+    "class": "exact"
+   }
+  ],
+  "yt-dlp__yt-dlp-10390": [
+   {
+    "file": "yt_dlp/extractor/youtube.py",
+    "start": 3103,
+    "end": 3106,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/extractor/youtube.py",
+    "start": 3110,
+    "end": 3129,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/extractor/youtube.py",
+    "start": 3130,
+    "end": 3136,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/extractor/youtube.py",
+    "start": 3131,
+    "end": 3140,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/extractor/youtube.py",
+    "start": 3142,
+    "end": 3151,
+    "class": "exact"
+   }
+  ],
+  "yt-dlp__yt-dlp-4841": [
+   {
+    "file": "yt_dlp/utils.py",
+    "start": 2477,
+    "end": 2487,
+    "class": "contained",
+    "detail": "4 of 7 range lines not in the content"
+   },
+   {
+    "file": "yt_dlp/utils.py",
+    "start": 2479,
+    "end": 2485,
+    "class": "exact"
+   }
+  ],
+  "yt-dlp__yt-dlp-9862": [
+   {
+    "file": "README.md",
+    "start": 2219,
+    "end": 2224,
+    "class": "unresolved",
+    "detail": "README.md is not in the corpus"
+   },
+   {
+    "file": "test/test_YoutubeDL.py",
+    "start": 523,
+    "end": 538,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 49,
+    "end": 57,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 617,
+    "end": 624,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 1567,
+    "end": 1583,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 1800,
+    "end": 1807,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 1835,
+    "end": 1837,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 2190,
+    "end": 2198,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 2199,
+    "end": 2201,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 2200,
+    "end": 2206,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 2207,
+    "end": 2216,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 2717,
+    "end": 2718,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/YoutubeDL.py",
+    "start": 2959,
+    "end": 2965,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/postprocessor/ffmpeg.py",
+    "start": 204,
+    "end": 206,
+    "class": "exact"
+   },
+   {
+    "file": "yt_dlp/postprocessor/ffmpeg.py",
+    "start": 844,
+    "end": 857,
+    "class": "drift",
+    "detail": "5 of 14 content lines are not in the file"
+   }
+  ]
+ }
+}

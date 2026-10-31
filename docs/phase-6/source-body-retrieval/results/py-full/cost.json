@@ -1,0 +1,173 @@
+{
+ "index": [
+  {
+   "root": "/home/khoi/Projects/oxide/fixtures/py_repo",
+   "load_s": 0.173,
+   "store_bytes": 7598080,
+   "body_terms_chars": 10138,
+   "index_s": 0.205
+  },
+  {
+   "root": "/home/khoi/.cache/oxide/contextbench/corpora/mwaskom__seaborn@54cab15bdacf",
+   "load_s": 1.212,
+   "store_bytes": 32993280,
+   "body_terms_chars": 2243086,
+   "index_s": 1.745
+  },
+  {
+   "root": "/home/khoi/.cache/oxide/contextbench/corpora/pallets__flask@7ee9ceb71e86",
+   "load_s": 0.516,
+   "store_bytes": 21647360,
+   "body_terms_chars": 695170,
+   "index_s": 0.705
+  },
+  {
+   "root": "/home/khoi/.cache/oxide/contextbench/corpora/psf__requests@0192aac24123",
+   "load_s": 0.385,
+   "store_bytes": 19333120,
+   "body_terms_chars": 442303,
+   "index_s": 0.521
+  },
+  {
+   "root": "/home/khoi/.cache/oxide/contextbench/corpora/psf__requests@091991be0da1",
+   "load_s": 0.417,
+   "store_bytes": 19587072,
+   "body_terms_chars": 509169,
+   "index_s": 0.71
+  },
+  {
+   "root": "/home/khoi/.cache/oxide/contextbench/corpora/psf__requests@22623bd8c265",
+   "load_s": 0.323,
+   "store_bytes": 17563648,
+   "body_terms_chars": 295696,
+   "index_s": 0.59
+  },
+  {
+   "root": "/home/khoi/.cache/oxide/contextbench/corpora/psf__requests@39d0fdd9096f",
+   "load_s": 0.341,
+   "store_bytes": 19329024,
+   "body_terms_chars": 441960,
+   "index_s": 0.45
+  },
+  {
+   "root": "/home/khoi/.cache/oxide/contextbench/corpora/psf__requests@5f7a3a74aab1",
+   "load_s": 0.428,
+   "store_bytes": 20328448,
+   "body_terms_chars": 586012,
+   "index_s": 0.714
+  },
+  {
+   "root": "/home/khoi/.cache/oxide/contextbench/corpora/psf__requests@847735553aed",
+   "load_s": 0.36,
+   "store_bytes": 19185664,
+   "body_terms_chars": 421545,
+   "index_s": 0.614
+  }
+ ],
+ "lexical_s": {
+  "calls": 105,
+  "median_ms": 2.64,
+  "max_ms": 8.71
+ },
+ "score_s": {
+  "py-exact-retrypolicy": 0.077,
+  "py-semantic-http-retries": 0.067,
+  "py-crossfile-token-refresh": 0.055,
+  "py-related-test-gives-up": 0.058,
+  "py-ttl-cache-expiry": 0.028,
+  "py-implementors-notifier": 0.076,
+  "py-callers-should-retry": 0.054,
+  "mwaskom__seaborn-3069": 0.589,
+  "pallets__flask-5014": 0.389,
+  "psf__requests-6028": 0.425,
+  "psf__requests-2317": 0.351,
+  "psf__requests-1142": 0.306,
+  "psf__requests-5414": 0.401,
+  "psf__requests-2931": 0.415,
+  "psf__requests-1766": 0.288
+ },
+ "max_rss_mb": 199,
+ "harness": {
+  "corpora": {
+   "fixture:py_repo": {
+    "py_files": 8,
+    "tree_sha256": "c98e4f589580c8d6444f0898e1dc338f14d40ebdcbb43e919fa1d4b387eeff1f",
+    "snapshot": "sha256:44eb860cfbd65e9a13fb5640aa65223532c0359cebbf085a3e6999c217da9537",
+    "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+    "partial_files": 0
+   },
+   "mwaskom__seaborn@54cab15bdacf": {
+    "url": "https://github.com/mwaskom/seaborn",
+    "commit": "54cab15bdacfaa05a88fbc5502a5b322d99f148e",
+    "py_files": 150,
+    "tree_sha256": "1e233e1492a9a2862a7748afc37a6746aef89eace487c1b817dc7c56adeb0776",
+    "snapshot": "sha256:b8e24d3629aa726bd138ffc6a17c04fbdd79a87c14663c237c9781a2809b9528",
+    "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+    "partial_files": 0
+   },
+   "pallets__flask@7ee9ceb71e86": {
+    "url": "https://github.com/pallets/flask",
+    "commit": "7ee9ceb71e868944a46e1ff00b506772a53a4f1d",
+    "py_files": 80,
+    "tree_sha256": "aef04d8e251e8932294740789b8957626391eb217f61f9a6ac3c151f50506896",
+    "snapshot": "sha256:5ffb2c7cc8fa248665375687f3cfb1f49a68d098cdaf97051c3fea784e6b6b64",
+    "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+    "partial_files": 0
+   },
+   "psf__requests@0192aac24123": {
+    "url": "https://github.com/psf/requests",
+    "commit": "0192aac24123735b3eaf9b08df46429bb770c283",
+    "py_files": 35,
+    "tree_sha256": "46f1aa3adc012fd2e78bd6b1146389dd33acab624d7d7082f357cde93ac58d61",
+    "snapshot": "sha256:4c480332f4d1e3c80c3a871da419b5be0a23b33d973c8fc004ff1392b5c6f378",
+    "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+    "partial_files": 0
+   },
+   "psf__requests@091991be0da1": {
+    "url": "https://github.com/psf/requests",
+    "commit": "091991be0da19de9108dbe5e3752917fea3d7fdc",
+    "py_files": 83,
+    "tree_sha256": "a183fcdf02aab75f8d8a397697889c1c779e230edfb846d7633ed206c843f14f",
+    "snapshot": "sha256:73fe3d50d83d6ee2e75024edccd51dc1ef410794e8eabc3ef248c904941190f8",
+    "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+    "partial_files": 0
+   },
+   "psf__requests@22623bd8c265": {
+    "url": "https://github.com/psf/requests",
+    "commit": "22623bd8c265b78b161542663ee980738441c307",
+    "py_files": 70,
+    "tree_sha256": "98c6b7bcfb2d6d682fbcc75cf549e07f2d01ec01eea18f63be58bc03f9763b9c",
+    "snapshot": "sha256:c17158de09e9b3dd32c0b2928ffe2e221fb43a75e8b6f211e7ad3856dfbeda4e",
+    "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+    "partial_files": 0
+   },
+   "psf__requests@39d0fdd9096f": {
+    "url": "https://github.com/psf/requests",
+    "commit": "39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e",
+    "py_files": 35,
+    "tree_sha256": "5945961ff6ba2ccf3398409ad594c94066493267c7d36940d8c38a74c8287317",
+    "snapshot": "sha256:65688877a9a3c2eb86fa3518c4cdeac783db1fae8e09cb5d2056817a5c0a3a71",
+    "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+    "partial_files": 0
+   },
+   "psf__requests@5f7a3a74aab1": {
+    "url": "https://github.com/psf/requests",
+    "commit": "5f7a3a74aab1625c2bb65f643197ee885e3da576",
+    "py_files": 84,
+    "tree_sha256": "43fad736bcf199b3cd2d963cbb5723637aef734f4f9815598466b68c2e98b232",
+    "snapshot": "sha256:d87e4be4e0b4410a6789587199bcf43ec743e2dd6c311f5ef499e8bc1cd87d82",
+    "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+    "partial_files": 0
+   },
+   "psf__requests@847735553aed": {
+    "url": "https://github.com/psf/requests",
+    "commit": "847735553aeda6e6633f2b32e14ba14ba86887a4",
+    "py_files": 76,
+    "tree_sha256": "7c08d932cdbd699d38d1ee6f06e7a6cf8e2fe713d6346075e5754a51d7ed401f",
+    "snapshot": "sha256:ed084097948051370f590415a69ddafe37a9e74d9493cf7e7edccd46fb653a27",
+    "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+    "partial_files": 0
+   }
+  }
+ }
+}

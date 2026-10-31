@@ -1,0 +1,48 @@
+{
+ "corpus": "vue-core",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/vuejs__core@0275dd329d24",
+ "lang": "typescript",
+ "arms": [
+  "astgrep"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "astgrep": 12
+  },
+  "ts-json-parse-unguarded": {
+   "astgrep": 1
+  },
+  "ts-as-any": {
+   "astgrep": 431
+  },
+  "ts-non-null-member": {
+   "astgrep": 460
+  },
+  "ts-await-in-loop": {
+   "astgrep": 12
+  },
+  "ts-async-promise-executor": {
+   "astgrep": 0
+  },
+  "ts-console-log": {
+   "astgrep": 9
+  },
+  "ts-useeffect-empty-deps": {
+   "astgrep": 0
+  }
+ },
+ "stats": {
+  "files": 464,
+  "bytes": 3425891,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.014,
+  "decode": 0.001,
+  "astgrep_parse": 0.392,
+  "astgrep_query": 0.411
+ },
+ "peak_rss_mib": 55.8
+}

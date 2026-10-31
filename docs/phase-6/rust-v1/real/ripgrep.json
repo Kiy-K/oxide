@@ -1,0 +1,372 @@
+{
+ "repository": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep",
+ "commit": "3fce3b5bb0236da2df6d99672afb8a719642eca7",
+ "snapshot": "sha256:0952030b67cb867a9a16ccfe6c7d210dc95c3495a20e49d775fb8c16af8e6cd3",
+ "files": 236,
+ "rust_files": 110,
+ "coverage": {
+  "complete": 110
+ },
+ "entities": 4292,
+ "rust_symbol_kinds": {
+  "function": 768,
+  "struct": 309,
+  "impl": 445,
+  "method": 2199,
+  "enum": 76,
+  "constant": 50,
+  "variable": 7,
+  "macro": 37,
+  "trait": 7,
+  "type": 7
+ },
+ "graph_sha256": "3f0f71b9684852a80e9d0ad210985a64db2e1ae63d783b0dc68b8fb9652930dd",
+ "relations": 24707,
+ "resolution": {
+  "calls:ambiguous": 66,
+  "calls:resolved": 4213,
+  "calls:unresolved": 4578,
+  "contains:resolved": 4291,
+  "contains_logical:resolved": 239,
+  "defines:resolved": 1703,
+  "imports:ambiguous": 4,
+  "imports:resolved": 611,
+  "imports:unresolved": 438,
+  "references:ambiguous": 4,
+  "references:resolved": 3727,
+  "references:unresolved": 2965,
+  "tested_by:resolved": 1868
+ },
+ "derive_cold_s": 0.7536633669999446,
+ "derive_reused_s": 0.2795654999999897,
+ "facts_reused": 110,
+ "derive_parity": true,
+ "index_cold_s": 2.183972251000114,
+ "index_unchanged_s": 0.052493123999965974,
+ "index_edit_s": 1.483690438999929,
+ "edit_reused": 109,
+ "persisted_edit_parity": true,
+ "peak_rss_mib": 304.8515625,
+ "resolved_import_sample": [
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/decompress.rs",
+   "targets": [
+    "symbol:crates/globset/src/glob.rs#Glob"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/decompress.rs",
+    "start": 128,
+    "end": 132,
+    "digest": "sha256:eaceb58ab4c650f0f9f62de1181fd6611b9e6b5b162816546760d49514045b37"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/decompress.rs",
+   "targets": [
+    "symbol:crates/globset/src/lib.rs#GlobSet"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/decompress.rs",
+    "start": 134,
+    "end": 141,
+    "digest": "sha256:eaceb58ab4c650f0f9f62de1181fd6611b9e6b5b162816546760d49514045b37"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/decompress.rs",
+   "targets": [
+    "symbol:crates/globset/src/lib.rs#GlobSetBuilder"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/decompress.rs",
+    "start": 143,
+    "end": 157,
+    "digest": "sha256:eaceb58ab4c650f0f9f62de1181fd6611b9e6b5b162816546760d49514045b37"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/decompress.rs",
+   "targets": [
+    "symbol:crates/cli/src/process.rs#CommandError"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/decompress.rs",
+    "start": 182,
+    "end": 194,
+    "digest": "sha256:eaceb58ab4c650f0f9f62de1181fd6611b9e6b5b162816546760d49514045b37"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/decompress.rs",
+   "targets": [
+    "symbol:crates/cli/src/process.rs#CommandReader"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/decompress.rs",
+    "start": 196,
+    "end": 209,
+    "digest": "sha256:eaceb58ab4c650f0f9f62de1181fd6611b9e6b5b162816546760d49514045b37"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/decompress.rs",
+   "targets": [
+    "symbol:crates/cli/src/process.rs#CommandReaderBuilder"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/decompress.rs",
+    "start": 211,
+    "end": 231,
+    "digest": "sha256:eaceb58ab4c650f0f9f62de1181fd6611b9e6b5b162816546760d49514045b37"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/escape.rs",
+   "targets": [
+    "symbol:crates/cli/src/escape.rs#escape"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/escape.rs",
+    "start": 2477,
+    "end": 2483,
+    "digest": "sha256:b3ac4121dd2d81be59f22f39bb9e4e473775c2631cc33b063715059ba63ed180"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/escape.rs",
+   "targets": [
+    "symbol:crates/cli/src/escape.rs#unescape"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/escape.rs",
+    "start": 2485,
+    "end": 2493,
+    "digest": "sha256:b3ac4121dd2d81be59f22f39bb9e4e473775c2631cc33b063715059ba63ed180"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/hostname.rs",
+   "targets": [
+    "module:rust:crates/cli/src/lib.rs::hostname"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/hostname.rs",
+    "start": 2883,
+    "end": 2891,
+    "digest": "sha256:3c0eebe1182d54d2caedd4c62515c849bf9e1c4384b79d1181ef7e257b302d07"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/human.rs",
+   "targets": [
+    "symbol:crates/cli/src/human.rs#ParseSizeErrorKind"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/human.rs",
+    "start": 1273,
+    "end": 1300,
+    "digest": "sha256:b85f1391a01ccdfed20951cdf07bd641bf190256c48caccfe83f8ec14e2b1636"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/human.rs",
+   "targets": [
+    "module:rust:crates/cli/src/lib.rs::human"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/human.rs",
+    "start": 3234,
+    "end": 3242,
+    "digest": "sha256:b85f1391a01ccdfed20951cdf07bd641bf190256c48caccfe83f8ec14e2b1636"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/lib.rs",
+   "targets": [
+    "symbol:crates/cli/src/decompress.rs#DecompressionMatcher"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/lib.rs",
+    "start": 5209,
+    "end": 5229,
+    "digest": "sha256:b27d0e7de21515df33714d79d4959b17aa3d28c168b1c5233c21c333a8a8c695"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/lib.rs",
+   "targets": [
+    "symbol:crates/cli/src/decompress.rs#DecompressionMatcherBuilder"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/lib.rs",
+    "start": 5231,
+    "end": 5258,
+    "digest": "sha256:b27d0e7de21515df33714d79d4959b17aa3d28c168b1c5233c21c333a8a8c695"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/lib.rs",
+   "targets": [
+    "symbol:crates/cli/src/decompress.rs#DecompressionReader"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/lib.rs",
+    "start": 5268,
+    "end": 5287,
+    "digest": "sha256:b27d0e7de21515df33714d79d4959b17aa3d28c168b1c5233c21c333a8a8c695"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/lib.rs",
+   "targets": [
+    "symbol:crates/cli/src/decompress.rs#DecompressionReaderBuilder"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/lib.rs",
+    "start": 5289,
+    "end": 5315,
+    "digest": "sha256:b27d0e7de21515df33714d79d4959b17aa3d28c168b1c5233c21c333a8a8c695"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/lib.rs",
+   "targets": [
+    "symbol:crates/cli/src/decompress.rs#resolve_binary"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/lib.rs",
+    "start": 5317,
+    "end": 5331,
+    "digest": "sha256:b27d0e7de21515df33714d79d4959b17aa3d28c168b1c5233c21c333a8a8c695"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/lib.rs",
+   "targets": [
+    "symbol:crates/cli/src/escape.rs#escape"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/lib.rs",
+    "start": 5353,
+    "end": 5359,
+    "digest": "sha256:b27d0e7de21515df33714d79d4959b17aa3d28c168b1c5233c21c333a8a8c695"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/lib.rs",
+   "targets": [
+    "symbol:crates/cli/src/escape.rs#escape_os"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/lib.rs",
+    "start": 5361,
+    "end": 5370,
+    "digest": "sha256:b27d0e7de21515df33714d79d4959b17aa3d28c168b1c5233c21c333a8a8c695"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/lib.rs",
+   "targets": [
+    "symbol:crates/cli/src/escape.rs#unescape"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/lib.rs",
+    "start": 5372,
+    "end": 5380,
+    "digest": "sha256:b27d0e7de21515df33714d79d4959b17aa3d28c168b1c5233c21c333a8a8c695"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:crates/cli/src/lib.rs",
+   "targets": [
+    "symbol:crates/cli/src/escape.rs#unescape_os"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "crates/cli/src/lib.rs",
+    "start": 5382,
+    "end": 5393,
+    "digest": "sha256:b27d0e7de21515df33714d79d4959b17aa3d28c168b1c5233c21c333a8a8c695"
+   }
+  }
+ ]
+}

@@ -1,0 +1,48 @@
+{
+ "corpus": "requests",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/psf__requests@0192aac24123",
+ "lang": "python",
+ "arms": [
+  "treesitter"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "treesitter": 8
+  },
+  "py-bare-except": {
+   "treesitter": 0
+  },
+  "py-isinstance-tuple": {
+   "treesitter": 7
+  },
+  "py-mutable-default": {
+   "treesitter": 0
+  },
+  "py-open-no-encoding": {
+   "treesitter": 14
+  },
+  "py-eq-none": {
+   "treesitter": 0
+  },
+  "py-raise-from-none": {
+   "treesitter": 0
+  },
+  "py-return-in-finally": {
+   "treesitter": 0
+  }
+ },
+ "stats": {
+  "files": 35,
+  "bytes": 351967,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.001,
+  "decode": 0.0,
+  "treesitter_parse": 0.03,
+  "treesitter_query": 0.069
+ },
+ "peak_rss_mib": 40.8
+}

@@ -1,0 +1,6 @@
+python=3.12.15 oxide_site_bytes=93604407
+  with_astgrep_site_bytes=139903713 astgrep_pkg_bytes=46150268 selftest=selftest ok import_ms=9.7
+python=3.13.16 oxide_site_bytes=93577831
+  with_astgrep_site_bytes=139878369 astgrep_pkg_bytes=46151500 selftest=selftest ok import_ms=5.8
+python=3.14.8 oxide_site_bytes=93557655
+  with_astgrep_site_bytes=139864729 astgrep_pkg_bytes=46158036 selftest=selftest ok import_ms=8.4

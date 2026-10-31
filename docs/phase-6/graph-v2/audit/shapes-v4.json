@@ -1,0 +1,225 @@
+[
+ {
+  "corpus": "pallets__flask@7ee9ceb71e86",
+  "unresolved": {
+   "bare": 666,
+   "qualified": 2217,
+   "self.attr.m": 62,
+   "self.m": 143
+  },
+  "linked": {
+   "resolved": 644
+  },
+  "top_receiver": [
+   [
+    "self.record_once",
+    10
+   ],
+   [
+    "self.ensure_sync",
+    9
+   ],
+   [
+    "self.options.get",
+    5
+   ],
+   [
+    "self.serializer.tag",
+    5
+   ],
+   [
+    "self._method_route",
+    5
+   ],
+   [
+    "self.add_command",
+    4
+   ],
+   [
+    "self._copy_environ",
+    4
+   ],
+   [
+    "self.expect_order",
+    4
+   ],
+   [
+    "self._find_error_handler",
+    3
+   ],
+   [
+    "self.dumps",
+    3
+   ]
+  ]
+ },
+ {
+  "corpus": "psf__requests@0192aac24123",
+  "unresolved": {
+   "bare": 670,
+   "cls.m": 1,
+   "qualified": 906,
+   "self.attr.m": 47,
+   "self.m": 82
+  },
+  "linked": {
+   "ambiguous": 16,
+   "resolved": 655
+  },
+  "top_receiver": [
+   [
+    "self.request",
+    7
+   ],
+   [
+    "self._thread_local.chal.get",
+    3
+   ],
+   [
+    "self.iter_content",
+    3
+   ],
+   [
+    "self.init_poolmanager",
+    2
+   ],
+   [
+    "self.build_response",
+    2
+   ],
+   [
+    "self.build_digest_header",
+    2
+   ],
+   [
+    "self.get_host",
+    2
+   ],
+   [
+    "self._r.headers.get",
+    2
+   ],
+   [
+    "self._find_no_duplicates",
+    2
+   ],
+   [
+    "self.set_cookie",
+    2
+   ]
+  ]
+ },
+ {
+  "corpus": "pydata__xarray@1757dffac2fa",
+  "unresolved": {
+   "bare": 5702,
+   "cls.attr.m": 2,
+   "cls.m": 12,
+   "qualified": 8771,
+   "self.attr.m": 400,
+   "self.m": 945
+  },
+  "linked": {
+   "resolved": 8954
+  },
+  "top_receiver": [
+   [
+    "self.roundtrip",
+    120
+   ],
+   [
+    "self.cls",
+    83
+   ],
+   [
+    "self.plotmethod",
+    46
+   ],
+   [
+    "self._apply",
+    33
+   ],
+   [
+    "self._to_temp_dataset",
+    31
+   ],
+   [
+    "self._replace",
+    30
+   ],
+   [
+    "self.assertLazyAndIdentical",
+    27
+   ],
+   [
+    "self._from_temp_dataset",
+    24
+   ],
+   [
+    "self.assertLazyAndAllClose",
+    23
+   ],
+   [
+    "self.copy",
+    21
+   ]
+  ]
+ },
+ {
+  "corpus": "pytest-dev__pytest@19ad5889353c",
+  "unresolved": {
+   "bare": 3090,
+   "cls.attr.m": 6,
+   "cls.m": 11,
+   "qualified": 9920,
+   "self.attr.m": 458,
+   "self.m": 682
+  },
+  "linked": {
+   "ambiguous": 1159,
+   "resolved": 2343
+  },
+  "top_receiver": [
+   [
+    "self.flush",
+    27
+   ],
+   [
+    "self.config.getoption",
+    23
+   ],
+   [
+    "self.Metafunc",
+    22
+   ],
+   [
+    "self._tw.line",
+    18
+   ],
+   [
+    "self.getcapture",
+    16
+   ],
+   [
+    "self._assert_state",
+    14
+   ],
+   [
+    "self._log",
+    14
+   ],
+   [
+    "self.visit",
+    13
+   ],
+   [
+    "self._tw.write",
+    13
+   ],
+   [
+    "self.write_sep",
+    13
+   ]
+  ]
+ }
+]

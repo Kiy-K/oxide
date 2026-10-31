@@ -1,112 +1,126 @@
 # OXIDE development workflow
 
-Commands, verification order and harness details, loaded on demand from the
-root `AGENTS.md` routing table. Older docs and code comments that cite
+Commands and verification for OXIDE v2, loaded on demand from the root
+`AGENTS.md` routing table. Older docs and code comments that cite
 "`AGENTS.md`" for a command or harness detail mean this file.
 
 ## Commands
 
-`mise.toml` pins every non-Rust dev tool (Python 3.11, uv, shellcheck, jq,
-cargo-llvm-cov, Node, pnpm) and wraps the checks below in tasks matching CI's
-current commands step-for-step, so there is one place either can drift from
-once CI itself is migrated to call `mise run` directly (not done yet for the
-Rust jobs — pending verification on a real runner; they still run the raw
-commands below). See
-`mise.toml`'s own comments for why Rust itself stays pinned only in
-`rust-toolchain.toml`. With
-[mise](https://mise.jdx.dev/installing-mise.html) installed (prefer a system
-package, e.g. `pacman -S mise`/`brew install mise`, over piping an installer
-script):
+[Mise](https://mise.jdx.dev/installing-mise.html) is the one entrypoint;
+`mise.toml` pins uv, and `.python-version` pins the development Python (uv
+installs it). CI (`.github/workflows/ci.yml`) runs exactly `mise run verify`;
+`.github/workflows/platforms.yml` runs the suite and an installed-artifact smoke on
+Linux, Windows and both macOS architectures ([docs/platforms.md](../platforms.md)).
 
 ```bash
-mise run bootstrap    # pinned Rust toolchain/components + mise tools + TS workspace install
-mise run lint         # cargo fmt --check + clippy -D warnings
-mise run test         # full unit + integration suite
-mise run bench        # release build + the canonical fixture benchmark
-mise run verify:rust  # lint, lint/test --no-default-features, test, bench, installer checks, in order
-mise run verify:ts    # frozen-lockfile pnpm install, then Turbo lint/typecheck/test/build
-mise run ts:integration  # @oxide/client + @oxide/mcp parity against the real binary ($OXIDE_BIN, default target/release/oxide)
-mise run mcp:compile  # deno compile @oxide/mcp into packages/mcp/dist/oxide-mcp
-mise run native:build # build the @oxide/native addon for this host (Linux x64, macOS arm64); ts:integration runs it
-mise run lint:native  # cargo fmt --check + clippy -D warnings for packages/native
-mise run verify       # verify:rust, verify:ts, then ts:integration — the single full-repo entrypoint
+mise run bootstrap     # uv sync --locked + `oxide prepare` (pinned FTS extension, sha256-checked)
+                       #   + ContextBench corpora at pinned commits (git, cached)
+mise run verify        # everything, in order, stopping at the first failure:
+mise run lint          #   ruff check + ruff format --check
+mise run typecheck     #   mypy --strict over src/ and tests/python/
+mise run test          #   pytest (tests/python/)
 ```
 
-TypeScript workspace (#36): pnpm owns dependencies (`pnpm-workspace.yaml`,
-committed `pnpm-lock.yaml`), Turbo owns the TS task graph (`turbo.json`) and is
-a root devDependency, not a mise tool. `ts:install`/`ts:lint`/`ts:typecheck`/
-`ts:test`/`ts:build` wrap single steps; root `package.json` has no scripts, so
-mise stays the one entrypoint. Turbo never wraps Cargo. Packages:
-`packages/protocol` (`@oxide/protocol`), `packages/client`
-(`@oxide/client`) and `packages/mcp` (`@oxide/mcp`, a reference TS MCP server;
-the Rust `oxide mcp` stays canonical). Shared dev tooling (TypeScript, Biome,
-`@types/node`) is declared once in the root `package.json`. Deno (pinned in
-`mise.toml`) is used only to `deno compile` `@oxide/mcp`; the root
-`package.json` `"workspaces"` exists for Deno and must mirror
-`pnpm-workspace.yaml`. `deno.lock` pins Deno's npm resolution for that compile
-(`--frozen-lockfile`); after any dependency change run
-`deno install --lockfile-only` at the root. `packages/native` (`@oxide/native`)
-is the Node-API addon behind `@oxide/client`'s `backend: "native"`: its own
-Cargo project (not a root workspace member) with its own `Cargo.lock`, seeded
-from the root lock; after a root dependency change, re-sync it (command in
-`packages/native/README.md`) so shared crates stay on the same versions. CI's `typescript` job runs `mise run verify:ts`; its
-`client-integration` job, the only one needing both toolchains, builds the
-release binary, runs `mise run lint:native`, then `mise run ts:integration`. The
-release workflow also ships the addon for x86_64 Linux and Apple Silicon macOS; see
-`packages/native/README.md` for its packaging and smoke scripts. Neither has a `needs` link
-with the Rust jobs, and Turbo never caches the integration task.
+`uv run pyrefly check` is an optional second type checker (`[tool.pyrefly]` in
+`pyproject.toml`). It is not part of `verify` or CI; mypy `--strict` stays the gate.
+On 2026-10-31 it reported 32 errors.
 
-`mise run protocol:fixtures` rewrites `fixtures/protocol/` from the real
-binary (`tests/protocol_fixtures.rs` with `OXIDE_PROTOCOL_FIXTURES=update`).
-Run it only after an intended JSON change, review the diff, then run
-`verify:ts`. See `packages/protocol/README.md`.
+Use `uv run …` for anything else (`uv run oxide index <path>`, `uv run pytest -k name`).
+`uv run oxide mcp --repo <path>` serves the single `oxide_search` tool over stdio (`--http` for
+stateless HTTP on loopback); `docs/public-api.md` § MCP has the contract.
+`uv run python scripts/bench.py <corpus>` is the reproducible latency and
+peak-RSS benchmark: fresh processes and private data, cold and warm definitions
+in its docstring, and a JSON report with the corpus identity and environment.
+Run it under the limits below; recorded runs are in `docs/migration-audit/bench/`.
+`uv run python tests/python/contextbench.py run [--out DIR]` is the context-quality
+harness (entry-point, routing and packing metrics at 256/1,024/4,096 units);
+`tests/python/test_contextbench.py` gates it in `mise run verify` against the latest
+frozen `docs/phase-6/baseline-vN/` (`contextbench.BASELINE`); v1's README is the
+protocol (splits, gate rules, how to freeze a new version) and each later README states
+its amendments. Gold is audited (`gold-audit.json`); only verified gold is gated.
+Develop on the dev split; never tune on held-out.
+`tests/python/contextbench_ts.py` is the same ruler for TypeScript (protocol in
+`docs/phase-6/typescript-v1/`, corpora amendment in `typescript-v2/`, latest frozen
+baseline `typescript-v15/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
+sources-only `corpora/` only reproduces v1). Its scorer cases run in `verify`; the gate
+needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
+`verify`. Run it under the limits below before and after any TypeScript retrieval,
+resolution, routing or packing change.
+Dependencies live in `pyproject.toml` with a committed `uv.lock`; add them
+with `uv add`, never by hand-editing the lock. Keep heavy local runs within
+`CPUQuota=200%`/`MemoryMax=3G` (`systemd-run --user --scope`).
+To verify another supported Python, set `UV_PYTHON` and a separate
+`UV_PROJECT_ENVIRONMENT` for the entire check. `uv sync --python` alone does not
+carry that interpreter choice into a later `uv run`.
 
-Without mise, the same checks run directly — this is what CI's `quality`/
-`test`/`no-default-features`/`retrieval-gate` jobs currently run:
+OXIDE's engine, CLI, MCP server and distribution need no Node.js, Bun or Rust
+toolchain. Native Python dependencies are installed as wheels; the Platforms
+workflow enforces wheel-only third-party installation and runs the installed
+smoke with only the environment's scripts on `PATH`. That smoke also checks
+that MCP advertises exactly `oxide_search`. Optional agent tooling (CodeGraph,
+Context7, archify, external MCP servers) and GitHub Actions have their own runtimes;
+they are not OXIDE dependencies. See the
+[legacy infrastructure audit](../migration-audit/legacy-infrastructure.md) for
+the inventory and process ancestry.
 
-```bash
-cargo test -j 2                 # all tests; keep -j 2 (laptop)
-cargo test -j 2 --lib retrieval # one module
-RUST_TEST_THREADS=2 cargo test -j 2   # if integration tests contend
-cargo fmt && cargo clippy -j 2 --all-targets   # clippy must be warning-free
-cargo build --release -j 2      # CLI used by eval scripts lives here
-./target/release/oxide eval --config fixtures/benchmark.json   # committed fixture benchmark
-scripts/perf.sh 200             # perf harness on synthetic repo (build release first)
-```
-
-Order matters only for commits: fmt → clippy → test → benchmark gate.
-
-`tests/benchmark_gate.rs` is semantic, not mechanical: it fails unless hybrid
-retrieval ≥ vector-only recall@5 on `fixtures/benchmark.json`. If a ranking
-change fails it, fix the ranking or honestly re-baseline both numbers.
+Tests never write to real user data: `tests/python/conftest.py` gives every
+test a private `OXIDE_DATA_DIR` and XDG locations, fails the session if the
+real data location changes, and every subprocess receives explicit private
+locations (`env()` and `python()` there; `env()` refuses any location outside
+the temporary root). Native probes that could crash, and crash injection, run
+only in such subprocesses. Lexical tests need the pinned FTS extension
+(`uv run oxide prepare`, once), and the context-quality gate the corpora
+(`uv run python tests/python/contextbench.py fetch`, once; both are in bootstrap).
 
 ## Commits
 
-Commit only when asked. Local commits go straight to `main`; work from remote
-sessions lands through a PR from its own branch. Messages use a
+Commit only when asked. OXIDE v2 work commits on `rewrite/v2` (or a branch
+from it, merged back by PR); never commit v2 work to `main`, which keeps the
+legacy v1 implementation until the rewrite is merged by explicit decision. Messages use a
 lowercase prefix plus an imperative summary: `fix:`, `feat:`, `refactor:`,
 `docs:`, `harden:`, `bench:`, `tierb:`.
 
-## Local embedder and fixtures
+## Historical reproduction
 
-- Start/stop the local llama.cpp server with `scripts/embedder.sh start|stop`
-  (~0.3 GB RSS with the capped profile; Q4_K_M third-party quants are broken,
-  stick to official Q8_0).
-- `fixtures/py_repo` and `fixtures/ts_repo` are committed benchmark fixtures —
-  they double as manual smoke-test repos (copy to /tmp before indexing).
+Retained `eval-agent/`, `scripts/agent_eval/`, `scripts/perf.sh` and Rust
+regression/conformance fixtures are historical evidence, not current build steps.
+Use the matching pinned tree (`ac985b28` for v1, `f79808a` for the replaced
+Rust/Bun v2 runtime), its manifests and original report commands. The legacy
+ContextBench evaluator requires Python 3.11; old TS/TSX task verification uses Bun.
+See the [infrastructure decision summary](../migration-audit/legacy-infrastructure.md)
+for the retention boundary and pinned original audit. Do not apply v1 CLI,
+embedding or SQLite contracts to the Python engine.
 
-## Eval harnesses (eval-agent/, scripts/agent_eval/)
+## LadybugDB FTS extension
 
-- `eval-agent/.venv` is Python **3.11** (`tree-sitter-languages` has no wheels
-  ≥3.12); recreate with `uv venv --python 3.11`.
-- The ContextBench evaluator is cloned to `eval-agent/third_party/ContextBench`
-  (gitignored) on first run of `scripts/agent_eval/contextbench_run.py`.
-- Tier A (`contextbench_run.py`) scores retrieval vs human gold contexts;
-  results append to `eval-agent/results/cb_results.jsonl` — resumable, keyed by
-  (task, condition). Summarize with `summarize_cb.py`.
-- Tier B (`tierb_agent_run.py`) runs headless `opencode` per condition. It pins
-  `$PWD` to the task-repo copy because opencode trusts PWD over getcwd().
-- Long background runs: launch via a script using `setsid ... &` — plain
-  backgrounded shells die with the parent. When matching processes, prefer
-  `pgrep -fa` + kill-by-PID; `pkill -f somepattern` matches your own command
-  line and kills your own shell.
+LadybugDB comes from its Python wheel (`ladybug==0.21.0`, matched to the FTS build; [docs/platforms.md](../platforms.md)), so there is no
+native build step. Full-text search is a separate native extension: `uv run
+oxide prepare` (part of `mise run bootstrap`) downloads this platform's pinned
+0.21.0 build ([docs/platforms.md](../platforms.md)) over HTTPS and checks its SHA-256 into
+`$XDG_CACHE_HOME/oxide/ladybug-extensions-0.21.0/` (override with
+`OXIDE_FTS_EXTENSION`). It is the only network access OXIDE makes. The
+engine re-verifies the digest before every `LOAD EXTENSION` by path, never
+`INSTALL`; without the file the lexical channel reports `unavailable` and
+structural retrieval and routing continue. No vector extension exists.
+
+## Frozen baselines
+
+`docs/phase-3/baseline-v1/` (Rust retrieval and routing) is a read-only
+oracle: `tests/python/test_baseline.py` asserts the Python engine reproduces
+it exactly. A pin or version bump that changes it is a new baseline
+directory with a recorded comparison, never a regenerated old one.
+Earlier Phase 4/5 reports and DecisionBench/JEV harness instructions are in the
+[retired runtime tree](https://github.com/Kiy-K/oxide/tree/f79808a/docs), not local
+`docs/phase-4/` or `docs/phase-5/` directories. Reproduction requires that tree.
+
+JavaScript/JSX conformance runs in `mise run verify` (`test_javascript.py`). The bounded
+real-repository and ContextBench diagnostic is reproducible via
+`scripts/eval_javascript.py`; protocol and results: `docs/phase-6/javascript-v1/`.
+
+Go conformance runs in `mise run verify` (`test_go.py`). The bounded real-repository
+and ContextBench diagnostic is reproducible via `scripts/eval_go.py`; protocol and
+results: `docs/phase-6/go-v1/`.
+
+Rust conformance runs in `mise run verify` (`test_rust.py`). The bounded real-repository,
+oracle and ContextBench diagnostic is reproducible via `scripts/eval_rust.py`; protocol and
+results: `docs/phase-6/rust-v1/`.

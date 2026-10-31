@@ -1,0 +1,1290 @@
+{
+ "gcc_calls": 4335,
+ "tally": {
+  "ambiguous to a macro, not judged": 334,
+  "ambiguous, gcc resolved": 8,
+  "ambiguous, no gcc call": 2,
+  "resolved to a macro, not judged": 3334,
+  "resolved, agree": 3036,
+  "resolved, no gcc call": 145,
+  "unresolved, gcc external": 376,
+  "unresolved, no gcc call": 60
+ },
+ "disagreements": [],
+ "missed": [
+  {
+   "site": [
+    "src/lmathlib.c",
+    325,
+    16
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    "rotl",
+    [
+     "src/lmathlib.c"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    329,
+    14
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    "rotl",
+    [
+     "src/lmathlib.c"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    568,
+    13
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    "nextrand",
+    [
+     "src/lmathlib.c"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    578,
+    15
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    "nextrand",
+    [
+     "src/lmathlib.c"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    617,
+    5
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    "nextrand",
+    [
+     "src/lmathlib.c"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/loadlib.c",
+    358,
+    5
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    "lsys_unloadlib",
+    [
+     "src/loadlib.c"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/loadlib.c",
+    384,
+    11
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    "lsys_load",
+    [
+     "src/loadlib.c"
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/loadlib.c",
+    393,
+    23
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    "lsys_sym",
+    [
+     "src/loadlib.c"
+    ]
+   ]
+  }
+ ],
+ "unseen": [
+  {
+   "site": [
+    "src/lapi.c",
+    748,
+    26
+   ],
+   "oxide": "symbol:src/ltable.c#luaH_getint"
+  },
+  {
+   "site": [
+    "src/lapi.c",
+    758,
+    26
+   ],
+   "oxide": "symbol:src/ltable.c#luaH_get"
+  },
+  {
+   "site": [
+    "src/lapi.c",
+    1388,
+    22
+   ],
+   "oxide": "symbol:src/lapi.c#index2value"
+  },
+  {
+   "site": [
+    "src/lauxlib.c",
+    209,
+    26
+   ],
+   "oxide": "symbol:src/lapi.c#lua_typename"
+  },
+  {
+   "site": [
+    "src/lauxlib.c",
+    372,
+    24
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushfstring"
+  },
+  {
+   "site": [
+    "src/lauxlib.c",
+    677,
+    16
+   ],
+   "oxide": "symbol:src/lapi.c#lua_isinteger"
+  },
+  {
+   "site": [
+    "src/lauxlib.c",
+    696,
+    16
+   ],
+   "oxide": "symbol:src/lapi.c#lua_isinteger"
+  },
+  {
+   "site": [
+    "src/lauxlib.c",
+    926,
+    44
+   ],
+   "oxide": "symbol:src/lapi.c#lua_topointer"
+  },
+  {
+   "site": [
+    "src/lbaselib.c",
+    152,
+    22
+   ],
+   "oxide": "symbol:src/lapi.c#lua_rawequal"
+  },
+  {
+   "site": [
+    "src/lbaselib.c",
+    239,
+    26
+   ],
+   "oxide": "symbol:src/lapi.c#lua_gc"
+  },
+  {
+   "site": [
+    "src/lbaselib.c",
+    245,
+    26
+   ],
+   "oxide": "symbol:src/lapi.c#lua_gc"
+  },
+  {
+   "site": [
+    "src/lbaselib.c",
+    262,
+    21
+   ],
+   "oxide": "symbol:src/lapi.c#lua_typename"
+  },
+  {
+   "site": [
+    "src/lcode.c",
+    615,
+    17
+   ],
+   "oxide": "symbol:src/lvm.c#luaV_flttointeger"
+  },
+  {
+   "site": [
+    "src/lcode.c",
+    676,
+    25
+   ],
+   "oxide": "symbol:src/lcode.c#luaK_intK"
+  },
+  {
+   "site": [
+    "src/lcode.c",
+    685,
+    25
+   ],
+   "oxide": "symbol:src/lcode.c#luaK_numberK"
+  },
+  {
+   "site": [
+    "src/lcode.c",
+    775,
+    17
+   ],
+   "oxide": "symbol:src/lcode.c#const2val"
+  },
+  {
+   "site": [
+    "src/lcode.c",
+    1288,
+    16
+   ],
+   "oxide": "symbol:src/lcode.c#isKstr"
+  },
+  {
+   "site": [
+    "src/lcode.c",
+    1432,
+    58
+   ],
+   "oxide": "symbol:src/lcode.c#binopr2TM"
+  },
+  {
+   "site": [
+    "src/lcode.c",
+    1624,
+    24
+   ],
+   "oxide": "symbol:src/lcode.c#unopr2op"
+  },
+  {
+   "site": [
+    "src/lcorolib.c",
+    75,
+    28
+   ],
+   "oxide": "symbol:src/lapi.c#lua_gettop"
+  },
+  {
+   "site": [
+    "src/lcorolib.c",
+    113,
+    23
+   ],
+   "oxide": "symbol:src/lapi.c#lua_gettop"
+  },
+  {
+   "site": [
+    "src/lcorolib.c",
+    158,
+    22
+   ],
+   "oxide": "symbol:src/ldo.c#lua_isyieldable"
+  },
+  {
+   "site": [
+    "src/ldblib.c",
+    209,
+    23
+   ],
+   "oxide": "symbol:src/ldebug.c#lua_getlocal"
+  },
+  {
+   "site": [
+    "src/ldblib.c",
+    312,
+    21
+   ],
+   "oxide": "symbol:src/lapi.c#lua_iscfunction"
+  },
+  {
+   "site": [
+    "src/ldblib.c",
+    313,
+    21
+   ],
+   "oxide": "symbol:src/lapi.c#lua_iscfunction"
+  },
+  {
+   "site": [
+    "src/ldblib.c",
+    333,
+    16
+   ],
+   "oxide": "symbol:src/ldebug.c#lua_getinfo"
+  },
+  {
+   "site": [
+    "src/ldblib.c",
+    429,
+    36
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_tolstring"
+  },
+  {
+   "site": [
+    "src/ldebug.c",
+    99,
+    43
+   ],
+   "oxide": "symbol:src/ldebug.c#currentpc"
+  },
+  {
+   "site": [
+    "src/ldebug.c",
+    203,
+    51
+   ],
+   "oxide": "symbol:src/ldebug.c#currentpc"
+  },
+  {
+   "site": [
+    "src/ldebug.c",
+    666,
+    48
+   ],
+   "oxide": "symbol:src/ldebug.c#currentpc"
+  },
+  {
+   "site": [
+    "src/ldebug.c",
+    732,
+    43
+   ],
+   "oxide": "symbol:src/ldebug.c#currentpc"
+  },
+  {
+   "site": [
+    "src/ldebug.c",
+    754,
+    23
+   ],
+   "oxide": "symbol:src/ldebug.c#varinfo"
+  },
+  {
+   "site": [
+    "src/ldebug.c",
+    774,
+    26
+   ],
+   "oxide": "symbol:src/ltm.c#luaT_objtypename"
+  },
+  {
+   "site": [
+    "src/ldebug.c",
+    799,
+    62
+   ],
+   "oxide": "symbol:src/ldebug.c#varinfo"
+  },
+  {
+   "site": [
+    "src/ldebug.c",
+    848,
+    50
+   ],
+   "oxide": "symbol:src/ldebug.c#getcurrentline"
+  },
+  {
+   "site": [
+    "src/liolib.c",
+    274,
+    20
+   ],
+   "oxide": "symbol:src/liolib.c#l_checkmode"
+  },
+  {
+   "site": [
+    "src/liolib.c",
+    621,
+    20
+   ],
+   "oxide": "symbol:src/liolib.c#getiofile"
+  },
+  {
+   "site": [
+    "src/liolib.c",
+    626,
+    20
+   ],
+   "oxide": "symbol:src/liolib.c#tofile"
+  },
+  {
+   "site": [
+    "src/liolib.c",
+    692,
+    21
+   ],
+   "oxide": "symbol:src/liolib.c#getiofile"
+  },
+  {
+   "site": [
+    "src/llex.c",
+    114,
+    48
+   ],
+   "oxide": "symbol:src/llex.c#txtToken"
+  },
+  {
+   "site": [
+    "src/llex.c",
+    363,
+    30
+   ],
+   "oxide": "symbol:src/llex.c#readutf8esc"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    411,
+    10
+   ],
+   "oxide": "symbol:src/lmathlib.c#packI"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    422,
+    19
+   ],
+   "oxide": "symbol:src/lmathlib.c#packI"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    430,
+    10
+   ],
+   "oxide": "symbol:src/lmathlib.c#Iadd"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    430,
+    15
+   ],
+   "oxide": "symbol:src/lmathlib.c#Ishl"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    435,
+    10
+   ],
+   "oxide": "symbol:src/lmathlib.c#Iadd"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    435,
+    15
+   ],
+   "oxide": "symbol:src/lmathlib.c#Ishl"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    441,
+    10
+   ],
+   "oxide": "symbol:src/lmathlib.c#packI"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    449,
+    10
+   ],
+   "oxide": "symbol:src/lmathlib.c#packI"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    457,
+    16
+   ],
+   "oxide": "symbol:src/lmathlib.c#times9"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    457,
+    28
+   ],
+   "oxide": "symbol:src/lmathlib.c#times5"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    458,
+    14
+   ],
+   "oxide": "symbol:src/lmathlib.c#Ishl"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    459,
+    3
+   ],
+   "oxide": "symbol:src/lmathlib.c#Ixor"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    460,
+    3
+   ],
+   "oxide": "symbol:src/lmathlib.c#Ixor"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    461,
+    3
+   ],
+   "oxide": "symbol:src/lmathlib.c#Ixor"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    462,
+    3
+   ],
+   "oxide": "symbol:src/lmathlib.c#Ixor"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    463,
+    3
+   ],
+   "oxide": "symbol:src/lmathlib.c#Ixor"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    464,
+    14
+   ],
+   "oxide": "symbol:src/lmathlib.c#rotl1"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    525,
+    10
+   ],
+   "oxide": "symbol:src/lmathlib.c#packI"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    677,
+    3
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushnumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    677,
+    36
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checknumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    682,
+    3
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushnumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    682,
+    36
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checknumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    687,
+    3
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushnumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    687,
+    36
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checknumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    692,
+    18
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checknumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    693,
+    18
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checknumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    694,
+    3
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushnumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    700,
+    3
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushnumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    700,
+    37
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checknumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    701,
+    3
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushinteger"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    706,
+    18
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checknumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    707,
+    17
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checkinteger"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    708,
+    3
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushnumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    713,
+    3
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushnumber"
+  },
+  {
+   "site": [
+    "src/lmathlib.c",
+    713,
+    37
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checknumber"
+  },
+  {
+   "site": [
+    "src/loadlib.c",
+    174,
+    5
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_error"
+  },
+  {
+   "site": [
+    "src/loadlib.c",
+    177,
+    5
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_gsub"
+  },
+  {
+   "site": [
+    "src/loadlib.c",
+    190,
+    5
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushstring"
+  },
+  {
+   "site": [
+    "src/loadlib.c",
+    192,
+    5
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushfstring"
+  },
+  {
+   "site": [
+    "src/loadlib.c",
+    203,
+    20
+   ],
+   "oxide": "symbol:src/loadlib.c#pusherror"
+  },
+  {
+   "site": [
+    "src/loadlib.c",
+    210,
+    18
+   ],
+   "oxide": "symbol:src/loadlib.c#pusherror"
+  },
+  {
+   "site": [
+    "src/loadlib.c",
+    358,
+    20
+   ],
+   "oxide": "symbol:src/lapi.c#lua_touserdata"
+  },
+  {
+   "site": [
+    "src/lobject.c",
+    175,
+    9
+   ],
+   "oxide": "symbol:src/lobject.c#isneg"
+  },
+  {
+   "site": [
+    "src/lobject.c",
+    187,
+    38
+   ],
+   "oxide": "symbol:src/lobject.c#luaO_hexavalue"
+  },
+  {
+   "site": [
+    "src/lobject.c",
+    201,
+    12
+   ],
+   "oxide": "symbol:src/lobject.c#isneg"
+  },
+  {
+   "site": [
+    "src/loslib.c",
+    214,
+    7
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_error"
+  },
+  {
+   "site": [
+    "src/loslib.c",
+    288,
+    5
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushfstring"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    70,
+    7
+   ],
+   "oxide": "symbol:src/lobject.c#luaO_pushfstring"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    70,
+    46
+   ],
+   "oxide": "symbol:src/llex.c#luaX_token2str"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    135,
+    28
+   ],
+   "oxide": "symbol:src/lobject.c#luaO_pushfstring"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    137,
+    15
+   ],
+   "oxide": "symbol:src/llex.c#luaX_token2str"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    137,
+    41
+   ],
+   "oxide": "symbol:src/llex.c#luaX_token2str"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    167,
+    17
+   ],
+   "oxide": "symbol:src/lparser.c#str_checkname"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    371,
+    28
+   ],
+   "oxide": "symbol:src/lparser.c#getlocalvardesc"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    612,
+    45
+   ],
+   "oxide": "symbol:src/lcode.c#luaK_getlabel"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    618,
+    32
+   ],
+   "oxide": "symbol:src/lparser.c#luaY_nvarstack"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    651,
+    29
+   ],
+   "oxide": "symbol:src/lparser.c#luaY_nvarstack"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    724,
+    23
+   ],
+   "oxide": "symbol:src/lcode.c#luaK_codeABx"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    760,
+    16
+   ],
+   "oxide": "symbol:src/lparser.c#luaY_nvarstack"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    969,
+    28
+   ],
+   "oxide": "symbol:src/lparser.c#str_checkname"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1423,
+    34
+   ],
+   "oxide": "symbol:src/lcode.c#luaK_jump"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1430,
+    24
+   ],
+   "oxide": "symbol:src/lcode.c#luaK_jump"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1441,
+    59
+   ],
+   "oxide": "symbol:src/lcode.c#luaK_jump"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1464,
+    31
+   ],
+   "oxide": "symbol:src/lparser.c#block_follow"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1503,
+    32
+   ],
+   "oxide": "symbol:src/lparser.c#reglevel"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1558,
+    24
+   ],
+   "oxide": "symbol:src/lcode.c#luaK_getlabel"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1607,
+    22
+   ],
+   "oxide": "symbol:src/lparser.c#str_checkname"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1612,
+    24
+   ],
+   "oxide": "symbol:src/lparser.c#explist"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1670,
+    33
+   ],
+   "oxide": "symbol:src/lcode.c#luaK_jump"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1693,
+    20
+   ],
+   "oxide": "symbol:src/lparser.c#str_checkname"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1712,
+    9
+   ],
+   "oxide": "symbol:src/lobject.c#luaO_pushfstring"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1721,
+    30
+   ],
+   "oxide": "symbol:src/lparser.c#reglevel"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1736,
+    29
+   ],
+   "oxide": "symbol:src/lparser.c#str_checkname"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1827,
+    55
+   ],
+   "oxide": "symbol:src/lparser.c#luaY_nvarstack"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1889,
+    21
+   ],
+   "oxide": "symbol:src/lparser.c#str_checkname"
+  },
+  {
+   "site": [
+    "src/lparser.c",
+    1912,
+    33
+   ],
+   "oxide": "symbol:src/lparser.c#luaY_nvarstack"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    103,
+    28
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checkinteger"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    279,
+    18
+   ],
+   "oxide": "symbol:src/lapi.c#lua_type"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    280,
+    19
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_getmetafield"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    777,
+    27
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_optinteger"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    858,
+    27
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_optinteger"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    1041,
+    9
+   ],
+   "oxide": "symbol:src/lstrlib.c#adddigit"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    1046,
+    13
+   ],
+   "oxide": "symbol:src/lstrlib.c#adddigit"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    1058,
+    11
+   ],
+   "oxide": "symbol:src/lstrlib.c#num2straux"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    1065,
+    12
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_error"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    1298,
+    52
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checkinteger"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    1320,
+    35
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_checknumber"
+  },
+  {
+   "site": [
+    "src/lstrlib.c",
+    1759,
+    26
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_optinteger"
+  },
+  {
+   "site": [
+    "src/ltable.c",
+    640,
+    31
+   ],
+   "oxide": "symbol:src/ltable.c#luaH_realasize"
+  },
+  {
+   "site": [
+    "src/ltable.c",
+    977,
+    23
+   ],
+   "oxide": "symbol:src/ltable.c#luaH_realasize"
+  },
+  {
+   "site": [
+    "src/ltable.c",
+    992,
+    10
+   ],
+   "oxide": "symbol:src/ltable.c#mainpositionTV"
+  },
+  {
+   "site": [
+    "src/ltablib.c",
+    197,
+    53
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_len"
+  },
+  {
+   "site": [
+    "src/ltablib.c",
+    201,
+    19
+   ],
+   "oxide": "symbol:src/lapi.c#lua_checkstack"
+  },
+  {
+   "site": [
+    "src/ltm.c",
+    95,
+    47
+   ],
+   "oxide": "symbol:src/lstring.c#luaS_new"
+  },
+  {
+   "site": [
+    "src/ltm.c",
+    209,
+    11
+   ],
+   "oxide": "symbol:src/ltm.c#callbinTM"
+  },
+  {
+   "site": [
+    "src/lua.c",
+    578,
+    14
+   ],
+   "oxide": "symbol:src/lapi.c#lua_gettop"
+  },
+  {
+   "site": [
+    "src/lua.c",
+    593,
+    27
+   ],
+   "oxide": "symbol:src/lapi.c#lua_pushfstring"
+  },
+  {
+   "site": [
+    "src/lundump.c",
+    286,
+    14
+   ],
+   "oxide": "symbol:src/lobject.c#luaO_pushfstring"
+  },
+  {
+   "site": [
+    "src/lutf8lib.c",
+    100,
+    33
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_optinteger"
+  },
+  {
+   "site": [
+    "src/lutf8lib.c",
+    101,
+    33
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_optinteger"
+  },
+  {
+   "site": [
+    "src/lutf8lib.c",
+    129,
+    33
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_optinteger"
+  },
+  {
+   "site": [
+    "src/lutf8lib.c",
+    130,
+    33
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_optinteger"
+  },
+  {
+   "site": [
+    "src/lutf8lib.c",
+    192,
+    21
+   ],
+   "oxide": "symbol:src/lauxlib.c#luaL_optinteger"
+  },
+  {
+   "site": [
+    "src/lvm.c",
+    1175,
+    28
+   ],
+   "oxide": "symbol:src/ldebug.c#luaG_getfuncline"
+  }
+ ]
+}

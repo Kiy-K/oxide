@@ -1,0 +1,57 @@
+# report.py dry run on spent baseline dev: v2's recorded dev judgments in v3 format, with the first
+# two primary requests replaced by synthetic 529s (no judgments) to exercise the fallback assertions.
+# Not a verdict; no call was made. The preregistration digest below is of the pre-freeze draft.
+
+preregistration sha256:d954d3ae087a5ddb1d07d4f60ea090096a0786834a51bd50b35008a9c40081e9
+split dev: 15 tasks with verified gold; validity checks pass
+
+END TO END (every task; a failed request packs production)
+arm                            LR@256  LR@1024  LR@4096  used@256 used@1024 used@4096 AUROC adm fallback
+heuristic                      0.1797   0.5484   0.6586     0.939     0.949     0.661     0.683        0
+oracle_order                   0.4542   0.6821   0.7918     0.947     0.947     0.676     1.000        0
+oracle_pick                    0.4603   0.7762   0.8858     0.953     0.946     0.672     1.000        0
+random~order (mean of 5)       0.1242   0.4161   0.5832     0.960     0.945     0.679     0.534        0
+compact~order                  0.2616   0.6082   0.7678     0.951     0.945     0.676     0.759        2
+compact-repeat~order           0.2620   0.6086   0.7829     0.955     0.944     0.686     0.789        0
+(used@B: mean packed units / budget; AUROC adm: within-task, admitted set only)
+
+per task, compact~order minus heuristic (Δ line_recall @256/1024/4096)
+  = py-exact-retrypolicy                  +0.280  +0.000  +0.000
+  = py-semantic-http-retries              +0.650  +0.000  +0.000
+  = py-crossfile-token-refresh            +0.875  +0.000  +0.000
+  = py-related-test-gives-up              -0.250  -1.000  +0.000
+  = py-ttl-cache-expiry                   +0.176  +0.000  +0.000
+  = py-implementors-notifier              -0.700  +0.000  +0.000
+  = py-callers-should-retry               +0.000  +0.000  +0.000
+  = mwaskom__seaborn-3069                 +0.000  +0.000  +0.000
+  = pallets__flask-5014                   +0.000  +0.000  +0.000
+  + psf__requests-6028                    +0.000  +0.244  +0.244
+  + psf__requests-2317                    +0.161  +0.000  +0.345
+  + psf__requests-1142                    +0.000  +0.000  +0.273
+  + psf__requests-5414                    +0.000  +0.224  +0.776
+  = psf__requests-2931                    +0.036  +0.429  +0.000
+  = psf__requests-1766                    +0.000  +1.000  +0.000
+
+compact~order: Δ@256/1024/4096 +0.0819 +0.0598 +0.1091; Δ@4096 task bootstrap 95% CI +0.0182 … +0.2307, repository-cluster +0.1091 … +0.1091; tasks +4 -0 =11
+  baseline-dev                       n=15  Δ@4096 +0.1091  without it +nan
+  regressions, compact~order (task, budget, Δ < -0.005): [('py-related-test-gives-up', '256', -0.25), ('py-related-test-gives-up', '1024', -1.0), ('py-implementors-notifier', '256', -0.7)]
+  regressions, compact-repeat~order (task, budget, Δ < -0.005): [('py-related-test-gives-up', '256', -0.25), ('py-related-test-gives-up', '1024', -1.0), ('py-implementors-notifier', '256', -0.7)]
+
+CONDITIONAL ON AN ANSWERED REQUEST (reported, not gated)
+compact~order: answered 13/15; Δ@256/1024/4096 +0.0945 +0.0690 +0.1259 (Δ@4096 CI +0.0210 … +0.2639); heuristic @4096 on them 0.7554; the 2 unanswered pack production (validity); answered but fallen back (an admitted candidate unsendable): 0
+compact-repeat~order: answered 15/15; Δ@256/1024/4096 +0.0823 +0.0602 +0.1242 (Δ@4096 CI +0.0325 … +0.2450); heuristic @4096 on them 0.6586; the 0 unanswered pack production (validity); answered but fallen back (an admitted candidate unsendable): 0
+repeat vs primary, 13 tasks both answered: median Spearman (admitted) 0.9919403477650641, ΔΔ {'256': 0.0, '1024': 0.0, '4096': 0.0}
+
+OPERATIONS
+compact: 15 requests, 2 without an answer by 2.0 s (rate 0.133, Wilson 95% 0.037 to 0.379); statuses {'529': 2, '200': 13}; latency, sent: p50 0.82 p95 1.02 max 1.02 s; answered: p50 0.83 p95 1.02 s; billed tokens/request 14066; $0.0000
+compact-repeat: 15 requests, 0 without an answer by 2.0 s (rate 0.000, Wilson 95% 0.000 to 0.204); statuses {'200': 15}; latency, sent: p50 0.83 p95 1.02 max 1.02 s; answered: p50 0.83 p95 1.02 s; billed tokens/request 15110; $0.0000
+spend: this run $0.0000; ledger $0.0000 of $0.2; billed tokens per request per +1 recall point 1289
+  Q1 recall: pass
+  Q2 no harm: pass
+  Q3 random order: pass
+  Q4 regressions: pass
+  Q5 reproducibility: pass
+  O1 failures: FAIL
+  O2 replies: pass
+  O3 spend: pass
+VERDICT: INCONCLUSIVE

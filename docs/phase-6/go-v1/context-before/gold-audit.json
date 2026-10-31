@@ -1,0 +1,2690 @@
+{
+ "cli__cli-10048": [
+  {
+   "file": "pkg/cmd/gist/edit/edit.go",
+   "start": 108,
+   "end": 113,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "pkg/cmd/gist/view/view.go",
+   "start": 89,
+   "end": 94,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "cli__cli-10363": [
+  {
+   "file": "/workspace/cli__cli__0.1/api/queries_repo.go",
+   "start": 1,
+   "end": 276,
+   "class": "path",
+   "corrected_file": "api/queries_repo.go",
+   "detail": "/workspace/cli__cli__0.1/api/queries_repo.go is not in the corpus; api/queries_repo.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/api/queries_repo.go",
+   "start": 1,
+   "end": 624,
+   "class": "path",
+   "corrected_file": "api/queries_repo.go",
+   "detail": "/workspace/cli__cli__0.1/api/queries_repo.go is not in the corpus; api/queries_repo.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/api/queries_repo.go",
+   "start": 28,
+   "end": 135,
+   "class": "path",
+   "corrected_file": "api/queries_repo.go",
+   "detail": "/workspace/cli__cli__0.1/api/queries_repo.go is not in the corpus; api/queries_repo.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/api/queries_repo.go",
+   "start": 664,
+   "end": 731,
+   "class": "path",
+   "corrected_file": "api/queries_repo.go",
+   "detail": "/workspace/cli__cli__0.1/api/queries_repo.go is not in the corpus; api/queries_repo.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/api/query_builder.go",
+   "start": 460,
+   "end": 501,
+   "class": "path",
+   "corrected_file": "api/query_builder.go",
+   "detail": "/workspace/cli__cli__0.1/api/query_builder.go is not in the corpus; api/query_builder.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/api/query_builder.go",
+   "start": 485,
+   "end": 498,
+   "class": "path",
+   "corrected_file": "api/query_builder.go",
+   "detail": "/workspace/cli__cli__0.1/api/query_builder.go is not in the corpus; api/query_builder.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go",
+   "start": 1,
+   "end": 455,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go is not in the corpus; pkg/cmd/repo/edit/edit.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go",
+   "start": 68,
+   "end": 91,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go is not in the corpus; pkg/cmd/repo/edit/edit.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go",
+   "start": 180,
+   "end": 198,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go is not in the corpus; pkg/cmd/repo/edit/edit.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go",
+   "start": 188,
+   "end": 196,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go is not in the corpus; pkg/cmd/repo/edit/edit.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go",
+   "start": 202,
+   "end": 283,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go is not in the corpus; pkg/cmd/repo/edit/edit.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go",
+   "start": 216,
+   "end": 242,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go is not in the corpus; pkg/cmd/repo/edit/edit.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go",
+   "start": 238,
+   "end": 249,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go is not in the corpus; pkg/cmd/repo/edit/edit.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go",
+   "start": 442,
+   "end": 471,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go is not in the corpus; pkg/cmd/repo/edit/edit.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go",
+   "start": 484,
+   "end": 542,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit.go is not in the corpus; pkg/cmd/repo/edit/edit.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit_test.go",
+   "start": 292,
+   "end": 701,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit_test.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit_test.go is not in the corpus; pkg/cmd/repo/edit/edit_test.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit_test.go",
+   "start": 710,
+   "end": 731,
+   "class": "path",
+   "corrected_file": "pkg/cmd/repo/edit/edit_test.go",
+   "detail": "/workspace/cli__cli__0.1/pkg/cmd/repo/edit/edit_test.go is not in the corpus; pkg/cmd/repo/edit/edit_test.go holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "cli__cli-1155": [
+  {
+   "file": "/workspace/cli__cli__0.1/command/pr.go",
+   "start": 1,
+   "end": 592,
+   "class": "path",
+   "corrected_file": "command/pr.go",
+   "detail": "/workspace/cli__cli__0.1/command/pr.go is not in the corpus; command/pr.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/command/pr_lookup.go",
+   "start": 1,
+   "end": 110,
+   "class": "path",
+   "corrected_file": "command/pr_lookup.go",
+   "detail": "/workspace/cli__cli__0.1/command/pr_lookup.go is not in the corpus; command/pr_lookup.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/git/git.go",
+   "start": 50,
+   "end": 71,
+   "class": "path",
+   "corrected_file": "git/git.go",
+   "detail": "/workspace/cli__cli__0.1/git/git.go is not in the corpus; git/git.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/cli__cli__0.1/git/git.go",
+   "start": 190,
+   "end": 221,
+   "class": "path",
+   "corrected_file": "git/git.go",
+   "detail": "/workspace/cli__cli__0.1/git/git.go is not in the corpus; git/git.go holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "grpc__grpc-go-2371": [
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/balancer_conn_wrappers.go",
+   "start": 175,
+   "end": 196,
+   "class": "path",
+   "corrected_file": "balancer_conn_wrappers.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/balancer_conn_wrappers.go is not in the corpus; balancer_conn_wrappers.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 725,
+   "end": 766,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 730,
+   "end": 756,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 745,
+   "end": 756,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 749,
+   "end": 752,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 760,
+   "end": 801,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 805,
+   "end": 841,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 900,
+   "end": 931,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 1030,
+   "end": 1061,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver_conn_wrapper.go",
+   "start": 115,
+   "end": 136,
+   "class": "path",
+   "corrected_file": "resolver_conn_wrapper.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver_conn_wrapper.go is not in the corpus; resolver_conn_wrapper.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver_conn_wrapper.go",
+   "start": 120,
+   "end": 136,
+   "class": "path",
+   "corrected_file": "resolver_conn_wrapper.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver_conn_wrapper.go is not in the corpus; resolver_conn_wrapper.go holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "grpc__grpc-go-2932": [
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/examples/helloworld/helloworld/helloworld.pb.go",
+   "start": 110,
+   "end": 151,
+   "class": "path",
+   "corrected_file": "examples/helloworld/helloworld/helloworld.pb.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/examples/helloworld/helloworld/helloworld.pb.go is not in the corpus; examples/helloworld/helloworld/helloworld.pb.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/rpc_util.go",
+   "start": 1,
+   "end": 526,
+   "class": "path",
+   "corrected_file": "rpc_util.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/rpc_util.go is not in the corpus; rpc_util.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/rpc_util.go",
+   "start": 635,
+   "end": 679,
+   "class": "path",
+   "corrected_file": "rpc_util.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/rpc_util.go is not in the corpus; rpc_util.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/rpc_util.go",
+   "start": 643,
+   "end": 646,
+   "class": "path",
+   "corrected_file": "rpc_util.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/rpc_util.go is not in the corpus; rpc_util.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/rpc_util.go",
+   "start": 675,
+   "end": 736,
+   "class": "path",
+   "corrected_file": "rpc_util.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/rpc_util.go is not in the corpus; rpc_util.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/stats/stats.go",
+   "start": 60,
+   "end": 76,
+   "class": "path",
+   "corrected_file": "stats/stats.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/stats/stats.go is not in the corpus; stats/stats.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/stream.go",
+   "start": 1,
+   "end": 489,
+   "class": "path",
+   "corrected_file": "stream.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/stream.go is not in the corpus; stream.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/stream.go",
+   "start": 875,
+   "end": 896,
+   "class": "path",
+   "corrected_file": "stream.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/stream.go is not in the corpus; stream.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/stream.go",
+   "start": 1220,
+   "end": 1251,
+   "class": "path",
+   "corrected_file": "stream.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/stream.go is not in the corpus; stream.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/stream.go",
+   "start": 1300,
+   "end": 1331,
+   "class": "path",
+   "corrected_file": "stream.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/stream.go is not in the corpus; stream.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/stream.go",
+   "start": 1455,
+   "end": 1481,
+   "class": "path",
+   "corrected_file": "stream.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/stream.go is not in the corpus; stream.go holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "grpc__grpc-go-2951": [
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 1,
+   "end": 474,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 525,
+   "end": 581,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 532,
+   "end": 535,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 533,
+   "end": 535,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 533,
+   "end": 536,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 533,
+   "end": 542,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 533,
+   "end": 550,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 534,
+   "end": 551,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/clientconn.go",
+   "start": 534,
+   "end": 601,
+   "class": "path",
+   "corrected_file": "clientconn.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/clientconn.go is not in the corpus; clientconn.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go",
+   "start": 1,
+   "end": 194,
+   "class": "path",
+   "corrected_file": "resolver/resolver.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go is not in the corpus; resolver/resolver.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go",
+   "start": 105,
+   "end": 116,
+   "class": "path",
+   "corrected_file": "resolver/resolver.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go is not in the corpus; resolver/resolver.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go",
+   "start": 105,
+   "end": 121,
+   "class": "path",
+   "corrected_file": "resolver/resolver.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go is not in the corpus; resolver/resolver.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go",
+   "start": 106,
+   "end": 117,
+   "class": "path",
+   "corrected_file": "resolver/resolver.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go is not in the corpus; resolver/resolver.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go",
+   "start": 110,
+   "end": 118,
+   "class": "path",
+   "corrected_file": "resolver/resolver.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go is not in the corpus; resolver/resolver.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go",
+   "start": 110,
+   "end": 118,
+   "class": "path",
+   "corrected_file": "resolver/resolver.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go is not in the corpus; resolver/resolver.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go",
+   "start": 111,
+   "end": 114,
+   "class": "path",
+   "corrected_file": "resolver/resolver.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go is not in the corpus; resolver/resolver.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go",
+   "start": 118,
+   "end": 140,
+   "class": "path",
+   "corrected_file": "resolver/resolver.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver/resolver.go is not in the corpus; resolver/resolver.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/grpc__grpc-go__0.1/resolver_conn_wrapper.go",
+   "start": 1,
+   "end": 163,
+   "class": "path",
+   "corrected_file": "resolver_conn_wrapper.go",
+   "detail": "/workspace/grpc__grpc-go__0.1/resolver_conn_wrapper.go is not in the corpus; resolver_conn_wrapper.go holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "instance_flipt-io__flipt-05d7234fa582df632f70a7cd10194d61bd7043b9": [
+  {
+   "file": "internal/common/store_mock.go",
+   "start": 17,
+   "end": 24,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/common/store_mock.go",
+   "start": 19,
+   "end": 25,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/ext/common.go",
+   "start": 8,
+   "end": 13,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/ext/common.go",
+   "start": 10,
+   "end": 15,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/evaluation/data/evaluation_store_mock.go",
+   "start": 17,
+   "end": 24,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/evaluation/data/server.go",
+   "start": 19,
+   "end": 23,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/evaluation/data/server.go",
+   "start": 102,
+   "end": 140,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/middleware/http/middleware.go",
+   "start": 12,
+   "end": 36,
+   "class": "range",
+   "detail": "content verbatim at lines 12-37",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/git/store.go",
+   "start": 355,
+   "end": 359,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/local/store.go",
+   "start": 59,
+   "end": 85,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/file.go",
+   "start": 7,
+   "end": 16,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/file.go",
+   "start": 9,
+   "end": 42,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/file.go",
+   "start": 20,
+   "end": 26,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/file.go",
+   "start": 32,
+   "end": 42,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/fileinfo.go",
+   "start": 8,
+   "end": 61,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/fileinfo.go",
+   "start": 16,
+   "end": 21,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/fileinfo.go",
+   "start": 48,
+   "end": 61,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/store.go",
+   "start": 2,
+   "end": 7,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/store.go",
+   "start": 22,
+   "end": 140,
+   "class": "contained",
+   "detail": "12 of 97 range lines not in the content",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/store.go",
+   "start": 133,
+   "end": 138,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/object/store.go",
+   "start": 161,
+   "end": 168,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/oci/store.go",
+   "start": 73,
+   "end": 103,
+   "class": "contained",
+   "detail": "3 of 26 range lines not in the content",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/oci/store.go",
+   "start": 89,
+   "end": 95,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 31,
+   "end": 88,
+   "class": "drift",
+   "detail": "1 of 43 content lines are not in the file",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 46,
+   "end": 51,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 67,
+   "end": 72,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 75,
+   "end": 80,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 110,
+   "end": 145,
+   "class": "drift",
+   "detail": "1 of 32 content lines are not in the file",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 118,
+   "end": 123,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 161,
+   "end": 167,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 179,
+   "end": 233,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 226,
+   "end": 231,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 537,
+   "end": 543,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 854,
+   "end": 866,
+   "class": "drift",
+   "detail": "1 of 11 content lines are not in the file",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/snapshot.go",
+   "start": 860,
+   "end": 866,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/store.go",
+   "start": 73,
+   "end": 120,
+   "class": "contained",
+   "detail": "12 of 41 range lines not in the content",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/store.go",
+   "start": 185,
+   "end": 322,
+   "class": "drift",
+   "detail": "1 of 36 content lines are not in the file",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/fs/store.go",
+   "start": 316,
+   "end": 322,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/storage.go",
+   "start": 156,
+   "end": 183,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/storage.go",
+   "start": 381,
+   "end": 415,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "instance_flipt-io__flipt-3d5a345f94c2adc8a0eaa102c189c08ad4c0f8e8": [
+  {
+   "file": "examples/openfeature/main.go",
+   "start": 25,
+   "end": 31,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/cmd/grpc.go",
+   "start": 10,
+   "end": 15,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/cmd/grpc.go",
+   "start": 39,
+   "end": 45,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/cmd/grpc.go",
+   "start": 151,
+   "end": 157,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/cmd/grpc.go",
+   "start": 373,
+   "end": 379,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/cmd/grpc.go",
+   "start": 551,
+   "end": 553,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/audit.go",
+   "start": 51,
+   "end": 75,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/authentication.go",
+   "start": 148,
+   "end": 193,
+   "class": "range",
+   "detail": "content verbatim at lines 148-194",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/config.go",
+   "start": 556,
+   "end": 563,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/database.go",
+   "start": 73,
+   "end": 120,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/tracing.go",
+   "start": 2,
+   "end": 7,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/tracing.go",
+   "start": 12,
+   "end": 28,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/tracing.go",
+   "start": 38,
+   "end": 43,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/tracing.go",
+   "start": 94,
+   "end": 99,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/ui.go",
+   "start": 5,
+   "end": 27,
+   "class": "range",
+   "detail": "content verbatim at lines 5-28",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/evaluation/evaluation.go",
+   "start": 5,
+   "end": 10,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/evaluation/evaluation.go",
+   "start": 43,
+   "end": 48,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/evaluation/evaluation.go",
+   "start": 111,
+   "end": 116,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/evaluator.go",
+   "start": 47,
+   "end": 52,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/evaluator.go",
+   "start": 55,
+   "end": 60,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/otel/attributes.go",
+   "start": 1,
+   "end": 6,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/otel/attributes.go",
+   "start": 14,
+   "end": 16,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/storage/sql/db.go",
+   "start": 18,
+   "end": 24,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/tracing/tracing.go",
+   "start": 15,
+   "end": 42,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "instance_flipt-io__flipt-56a620b8fc9ef7a0819b47709aa541cdfdbba00b": [
+  {
+   "file": "internal/cmd/grpc.go",
+   "start": 21,
+   "end": 26,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/cmd/grpc.go",
+   "start": 321,
+   "end": 355,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/cmd/grpc.go",
+   "start": 330,
+   "end": 335,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/audit.go",
+   "start": 13,
+   "end": 24,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/audit.go",
+   "start": 25,
+   "end": 57,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/audit.go",
+   "start": 30,
+   "end": 35,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/audit.go",
+   "start": 45,
+   "end": 50,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/audit.go",
+   "start": 59,
+   "end": 78,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/config/audit.go",
+   "start": 61,
+   "end": 66,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/audit/audit.go",
+   "start": 180,
+   "end": 186,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/audit/audit.go",
+   "start": 180,
+   "end": 259,
+   "class": "drift",
+   "detail": "1 of 68 content lines are not in the file",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/audit/audit.go",
+   "start": 195,
+   "end": 201,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/audit/audit.go",
+   "start": 224,
+   "end": 230,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/audit/audit.go",
+   "start": 242,
+   "end": 255,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/audit/checker.go",
+   "start": 9,
+   "end": 90,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/audit/logfile/logfile.go",
+   "start": 1,
+   "end": 6,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/audit/logfile/logfile.go",
+   "start": 1,
+   "end": 62,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "internal/server/audit/logfile/logfile.go",
+   "start": 35,
+   "end": 41,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "instance_future-architect__vuls-1832b4ee3a20177ad313d806983127cb6e53f5cf": [
+  {
+   "file": "config/os.go",
+   "start": 401,
+   "end": 406,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "constant/constant.go",
+   "start": 41,
+   "end": 46,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "detector/cve_client.go",
+   "start": 144,
+   "end": 175,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "detector/detector.go",
+   "start": 4,
+   "end": 13,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "detector/detector.go",
+   "start": 79,
+   "end": 84,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "detector/detector.go",
+   "start": 91,
+   "end": 101,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "detector/detector.go",
+   "start": 262,
+   "end": 268,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "detector/detector.go",
+   "start": 330,
+   "end": 390,
+   "class": "range",
+   "detail": "content verbatim at lines 330-391",
+   "numbered": false
+  },
+  {
+   "file": "detector/detector.go",
+   "start": 431,
+   "end": 437,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "detector/detector.go",
+   "start": 506,
+   "end": 550,
+   "class": "range",
+   "detail": "content verbatim at lines 513-594",
+   "numbered": false
+  },
+  {
+   "file": "detector/detector_test.go",
+   "start": 60,
+   "end": 103,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/cvecontents.go",
+   "start": 361,
+   "end": 437,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/utils.go",
+   "start": 123,
+   "end": 161,
+   "class": "drift",
+   "detail": "10 of 67 content lines are not in the file",
+   "numbered": false
+  },
+  {
+   "file": "models/vulninfos.go",
+   "start": 420,
+   "end": 593,
+   "class": "contained",
+   "detail": "26 of 162 range lines not in the content",
+   "numbered": false
+  },
+  {
+   "file": "models/vulninfos.go",
+   "start": 900,
+   "end": 1033,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/base.go",
+   "start": 343,
+   "end": 348,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/freebsd.go",
+   "start": 3,
+   "end": 9,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/freebsd.go",
+   "start": 93,
+   "end": 122,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/scanner.go",
+   "start": 282,
+   "end": 287,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/scanner.go",
+   "start": 789,
+   "end": 794,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "server/server.go",
+   "start": 72,
+   "end": 82,
+   "class": "range",
+   "detail": "content verbatim at lines 78-89",
+   "numbered": false
+  }
+ ],
+ "instance_future-architect__vuls-4c04acbd9ea5b073efe999e33381fa9f399d6f27": [
+  {
+   "file": "config/config.go",
+   "start": 83,
+   "end": 88,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/scanresults.go",
+   "start": 16,
+   "end": 60,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/scanresults.go",
+   "start": 352,
+   "end": 358,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/vulninfos.go",
+   "start": 14,
+   "end": 54,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/vulninfos.go",
+   "start": 56,
+   "end": 106,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/vulninfos.go",
+   "start": 78,
+   "end": 93,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/vulninfos.go",
+   "start": 105,
+   "end": 110,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/vulninfos.go",
+   "start": 147,
+   "end": 164,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/vulninfos.go",
+   "start": 159,
+   "end": 166,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/vulninfos.go",
+   "start": 236,
+   "end": 241,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/vulninfos.go",
+   "start": 446,
+   "end": 497,
+   "class": "unresolved",
+   "detail": "content lines present, not in this order",
+   "numbered": false
+  },
+  {
+   "file": "report/localfile.go",
+   "start": 31,
+   "end": 43,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/localfile.go",
+   "start": 48,
+   "end": 60,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/localfile.go",
+   "start": 63,
+   "end": 73,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/localfile.go",
+   "start": 78,
+   "end": 86,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/report.go",
+   "start": 121,
+   "end": 136,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/slack.go",
+   "start": 206,
+   "end": 212,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/tui.go",
+   "start": 633,
+   "end": 638,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 149,
+   "end": 155,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 373,
+   "end": 379,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 477,
+   "end": 491,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 520,
+   "end": 526,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 532,
+   "end": 555,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 560,
+   "end": 565,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 575,
+   "end": 585,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 589,
+   "end": 594,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 592,
+   "end": 605,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "subcmds/report.go",
+   "start": 41,
+   "end": 46,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "subcmds/report.go",
+   "start": 95,
+   "end": 102,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "subcmds/report.go",
+   "start": 151,
+   "end": 159,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "subcmds/tui.go",
+   "start": 36,
+   "end": 41,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "subcmds/tui.go",
+   "start": 75,
+   "end": 81,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "subcmds/tui.go",
+   "start": 100,
+   "end": 108,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "wordpress/wordpress.go",
+   "start": 33,
+   "end": 42,
+   "class": "drift",
+   "detail": "1 of 10 content lines are not in the file",
+   "numbered": false
+  },
+  {
+   "file": "wordpress/wordpress.go",
+   "start": 195,
+   "end": 216,
+   "class": "range",
+   "detail": "content verbatim at lines 195-220",
+   "numbered": false
+  }
+ ],
+ "instance_future-architect__vuls-6eff6a9329a65cc412e79b8f82444dfa3d0f0b5a": [
+  {
+   "file": "config/config.go",
+   "start": 24,
+   "end": 84,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "config/config.go",
+   "start": 978,
+   "end": 984,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "config/config.go",
+   "start": 1022,
+   "end": 1028,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "config/config.go",
+   "start": 1126,
+   "end": 1136,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/scanresults.go",
+   "start": 20,
+   "end": 60,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "models/scanresults.go",
+   "start": 344,
+   "end": 360,
+   "class": "range",
+   "detail": "content verbatim at lines 344-361",
+   "numbered": false
+  },
+  {
+   "file": "oval/debian.go",
+   "start": 211,
+   "end": 217,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "oval/util.go",
+   "start": 6,
+   "end": 12,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "oval/util.go",
+   "start": 278,
+   "end": 297,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "oval/util.go",
+   "start": 318,
+   "end": 324,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 53,
+   "end": 60,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "report/util.go",
+   "start": 64,
+   "end": 115,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scan/redhatbase.go",
+   "start": 93,
+   "end": 116,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scan/serverapi.go",
+   "start": 495,
+   "end": 501,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scan/serverapi.go",
+   "start": 631,
+   "end": 680,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scan/serverapi.go",
+   "start": 669,
+   "end": 674,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scan/serverapi.go",
+   "start": 679,
+   "end": 684,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scan/serverapi.go",
+   "start": 686,
+   "end": 692,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "subcmds/scan.go",
+   "start": 200,
+   "end": 206,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "util/util.go",
+   "start": 163,
+   "end": 165,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "instance_gravitational__teleport-8302d467d160f869b77184e262adbe2fbc95d9ba-vce94f93ad1030e3136852817f2423c1b3ac37bc4": [
+  {
+   "file": "lib/auth/touchid/api.go",
+   "start": 25,
+   "end": 30,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/api.go",
+   "start": 43,
+   "end": 49,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/api.go",
+   "start": 59,
+   "end": 64,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/api.go",
+   "start": 72,
+   "end": 91,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/api.go",
+   "start": 86,
+   "end": 210,
+   "class": "range",
+   "detail": "content verbatim at lines 86-236",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/api.go",
+   "start": 303,
+   "end": 309,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/api.go",
+   "start": 385,
+   "end": 391,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/api.go",
+   "start": 408,
+   "end": 413,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/api_darwin.go",
+   "start": 17,
+   "end": 28,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/api_darwin.go",
+   "start": 78,
+   "end": 87,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/api_other.go",
+   "start": 21,
+   "end": 28,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/touchid/attempt.go",
+   "start": 25,
+   "end": 66,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/webauthn/messages.go",
+   "start": 19,
+   "end": 76,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/webauthn/proto.go",
+   "start": 26,
+   "end": 99,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/webauthncli/api.go",
+   "start": 55,
+   "end": 139,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "lib/auth/webauthncli/u2f_register.go",
+   "start": 41,
+   "end": 150,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "tool/tsh/mfa.go",
+   "start": 50,
+   "end": 69,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "tool/tsh/mfa.go",
+   "start": 260,
+   "end": 276,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "tool/tsh/mfa.go",
+   "start": 297,
+   "end": 302,
+   "class": "range",
+   "detail": "content verbatim at lines 298-306",
+   "numbered": false
+  },
+  {
+   "file": "tool/tsh/mfa.go",
+   "start": 399,
+   "end": 417,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "tool/tsh/mfa.go",
+   "start": 495,
+   "end": 519,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "tool/tsh/touchid.go",
+   "start": 27,
+   "end": 42,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "tool/tsh/tsh.go",
+   "start": 46,
+   "end": 52,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "tool/tsh/tsh.go",
+   "start": 698,
+   "end": 707,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "tool/tsh/tsh.go",
+   "start": 876,
+   "end": 887,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "instance_navidrome__navidrome-28389fb05e1523564dfc61fa43ed8eb8a10f938c": [
+  {
+   "file": "cmd/root.go",
+   "start": 27,
+   "end": 52,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "cmd/scan.go",
+   "start": 11,
+   "end": 37,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "cmd/wire_gen.go",
+   "start": 29,
+   "end": 33,
+   "class": "range",
+   "detail": "content verbatim at lines 29-34",
+   "numbered": false
+  },
+  {
+   "file": "cmd/wire_gen.go",
+   "start": 79,
+   "end": 88,
+   "class": "range",
+   "detail": "content verbatim at lines 79-89",
+   "numbered": false
+  },
+  {
+   "file": "conf/configuration.go",
+   "start": 120,
+   "end": 167,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "conf/configuration.go",
+   "start": 125,
+   "end": 136,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "conf/configuration.go",
+   "start": 153,
+   "end": 159,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "conf/configuration.go",
+   "start": 291,
+   "end": 313,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "conf/configuration.go",
+   "start": 307,
+   "end": 314,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/auth/auth.go",
+   "start": 11,
+   "end": 16,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/auth/auth.go",
+   "start": 65,
+   "end": 67,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/playlists.go",
+   "start": 22,
+   "end": 28,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/playlists.go",
+   "start": 23,
+   "end": 43,
+   "class": "range",
+   "detail": "content verbatim at lines 23-53",
+   "numbered": false
+  },
+  {
+   "file": "core/playlists.go",
+   "start": 33,
+   "end": 43,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/playlists.go",
+   "start": 194,
+   "end": 200,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/playlists.go",
+   "start": 205,
+   "end": 222,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/playlists.go",
+   "start": 237,
+   "end": 243,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "log/log.go",
+   "start": 5,
+   "end": 10,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "log/log.go",
+   "start": 40,
+   "end": 46,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "log/log.go",
+   "start": 42,
+   "end": 49,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "log/log.go",
+   "start": 144,
+   "end": 166,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "log/log.go",
+   "start": 145,
+   "end": 150,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "model/mediafile.go",
+   "start": 8,
+   "end": 56,
+   "class": "range",
+   "detail": "content verbatim at lines 8-62",
+   "numbered": false
+  },
+  {
+   "file": "model/playlist.go",
+   "start": 1,
+   "end": 7,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "model/playlist.go",
+   "start": 11,
+   "end": 30,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "model/playlist.go",
+   "start": 43,
+   "end": 66,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "model/playlist.go",
+   "start": 51,
+   "end": 56,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "model/playlist.go",
+   "start": 97,
+   "end": 112,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "model/playlist.go",
+   "start": 122,
+   "end": 124,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/playlist_importer.go",
+   "start": 16,
+   "end": 51,
+   "class": "range",
+   "detail": "content verbatim at lines 16-52",
+   "numbered": false
+  },
+  {
+   "file": "scanner/playlist_importer.go",
+   "start": 34,
+   "end": 40,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/tag_scanner.go",
+   "start": 11,
+   "end": 16,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/tag_scanner.go",
+   "start": 21,
+   "end": 37,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/tag_scanner.go",
+   "start": 55,
+   "end": 75,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/tag_scanner.go",
+   "start": 69,
+   "end": 75,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/tag_scanner.go",
+   "start": 136,
+   "end": 153,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/tag_scanner.go",
+   "start": 393,
+   "end": 414,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/tag_scanner.go",
+   "start": 396,
+   "end": 410,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/walk_dir_tree.go",
+   "start": 10,
+   "end": 17,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/walk_dir_tree.go",
+   "start": 18,
+   "end": 27,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/walk_dir_tree.go",
+   "start": 59,
+   "end": 105,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/walk_dir_tree.go",
+   "start": 96,
+   "end": 102,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "server/nativeapi/playlists.go",
+   "start": 45,
+   "end": 82,
+   "class": "range",
+   "detail": "content verbatim at lines 45-83",
+   "numbered": false
+  },
+  {
+   "file": "server/nativeapi/playlists.go",
+   "start": 64,
+   "end": 83,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "utils/files.go",
+   "start": 14,
+   "end": 23,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "instance_navidrome__navidrome-31799662706fedddf5bcc1a76b50409d1f91d327": [
+  {
+   "file": "cmd/root.go",
+   "start": 11,
+   "end": 23,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "cmd/root.go",
+   "start": 111,
+   "end": 119,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "cmd/wire_gen.go",
+   "start": 64,
+   "end": 70,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "cmd/wire_gen.go",
+   "start": 108,
+   "end": 113,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "cmd/wire_gen.go",
+   "start": 119,
+   "end": 125,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "cmd/wire_gen.go",
+   "start": 132,
+   "end": 135,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "cmd/wire_injectors.go",
+   "start": 33,
+   "end": 38,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "cmd/wire_injectors.go",
+   "start": 77,
+   "end": 82,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "conf/configuration.go",
+   "start": 147,
+   "end": 152,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "conf/configuration.go",
+   "start": 426,
+   "end": 432,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "consts/consts.go",
+   "start": 70,
+   "end": 75,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/metrics/prometheus.go",
+   "start": 3,
+   "end": 34,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/metrics/prometheus.go",
+   "start": 37,
+   "end": 55,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/metrics/prometheus.go",
+   "start": 79,
+   "end": 120,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/scanner.go",
+   "start": 53,
+   "end": 58,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/scanner.go",
+   "start": 62,
+   "end": 68,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/scanner.go",
+   "start": 73,
+   "end": 78,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "scanner/scanner.go",
+   "start": 210,
+   "end": 219,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "server/auth.go",
+   "start": 171,
+   "end": 187,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "server/server.go",
+   "start": 174,
+   "end": 179,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "instance_navidrome__navidrome-5001518260732e36d9a42fb8d4c054b28afab310": [
+  {
+   "file": "core/agents/lastfm/agent.go",
+   "start": 20,
+   "end": 43,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/agent.go",
+   "start": 159,
+   "end": 165,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/agent.go",
+   "start": 161,
+   "end": 209,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/agent.go",
+   "start": 179,
+   "end": 185,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/agent.go",
+   "start": 204,
+   "end": 210,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/agent_test.go",
+   "start": 230,
+   "end": 295,
+   "class": "range",
+   "detail": "content verbatim at lines 230-297",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/auth_router.go",
+   "start": 7,
+   "end": 18,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/auth_router.go",
+   "start": 26,
+   "end": 48,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/auth_router.go",
+   "start": 64,
+   "end": 74,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/auth_router.go",
+   "start": 80,
+   "end": 89,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/auth_router.go",
+   "start": 103,
+   "end": 109,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/agents/lastfm/auth_router.go",
+   "start": 118,
+   "end": 149,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "db/migration/20200130083147_create_schema.go",
+   "start": 141,
+   "end": 177,
+   "class": "unresolved",
+   "detail": "content lines present, not in this order",
+   "numbered": false
+  },
+  {
+   "file": "db/migration/migration.go",
+   "start": 23,
+   "end": 42,
+   "class": "unresolved",
+   "detail": "content lines present, not in this order",
+   "numbered": false
+  },
+  {
+   "file": "model/datastore.go",
+   "start": 22,
+   "end": 40,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "model/datastore.go",
+   "start": 27,
+   "end": 37,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "model/properties.go",
+   "start": 1,
+   "end": 14,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "model/properties.go",
+   "start": 3,
+   "end": 17,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "persistence/persistence.go",
+   "start": 13,
+   "end": 67,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "persistence/persistence.go",
+   "start": 50,
+   "end": 55,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "persistence/property_repository.go",
+   "start": 11,
+   "end": 62,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "persistence/property_repository_test.go",
+   "start": 13,
+   "end": 35,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "tests/mock_persistence.go",
+   "start": 9,
+   "end": 106,
+   "class": "contained",
+   "detail": "51 of 83 range lines not in the content",
+   "numbered": false
+  },
+  {
+   "file": "tests/mock_property_repo.go",
+   "start": 5,
+   "end": 59,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "zeromicro__go-zero-1969": [
+  {
+   "file": "core/mapping/unmarshaler.go",
+   "start": 217,
+   "end": 244,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/mapping/unmarshaler.go",
+   "start": 246,
+   "end": 291,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/mapping/unmarshaler.go",
+   "start": 253,
+   "end": 258,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/mapping/utils.go",
+   "start": 595,
+   "end": 610,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "zeromicro__go-zero-2463": [
+  {
+   "file": "/workspace/reproducer.go",
+   "start": 1,
+   "end": 56,
+   "class": "unresolved",
+   "detail": "/workspace/reproducer.go is not in the corpus",
+   "numbered": false
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/config.go",
+   "start": 1,
+   "end": 27,
+   "class": "path",
+   "corrected_file": "core/logx/config.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/config.go is not in the corpus; core/logx/config.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/config.go",
+   "start": 1,
+   "end": 27,
+   "class": "path",
+   "corrected_file": "core/logx/config.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/config.go is not in the corpus; core/logx/config.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/fields.go",
+   "start": 1,
+   "end": 25,
+   "class": "path",
+   "corrected_file": "core/logx/fields.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/fields.go is not in the corpus; core/logx/fields.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/logger.go",
+   "start": 1,
+   "end": 49,
+   "class": "path",
+   "corrected_file": "core/logx/logger.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/logger.go is not in the corpus; core/logx/logger.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go",
+   "start": 1,
+   "end": 458,
+   "class": "path",
+   "corrected_file": "core/logx/logs.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go is not in the corpus; core/logx/logs.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go",
+   "start": 220,
+   "end": 261,
+   "class": "path",
+   "corrected_file": "core/logx/logs.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go is not in the corpus; core/logx/logs.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go",
+   "start": 230,
+   "end": 256,
+   "class": "path",
+   "corrected_file": "core/logx/logs.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go is not in the corpus; core/logx/logs.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go",
+   "start": 425,
+   "end": 436,
+   "class": "path",
+   "corrected_file": "core/logx/logs.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go is not in the corpus; core/logx/logs.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go",
+   "start": 435,
+   "end": 446,
+   "class": "path",
+   "corrected_file": "core/logx/logs.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go is not in the corpus; core/logx/logs.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go",
+   "start": 445,
+   "end": 456,
+   "class": "path",
+   "corrected_file": "core/logx/logs.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/logs.go is not in the corpus; core/logx/logs.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/richlogger.go",
+   "start": 1,
+   "end": 195,
+   "class": "path",
+   "corrected_file": "core/logx/richlogger.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/richlogger.go is not in the corpus; core/logx/richlogger.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/vars.go",
+   "start": 1,
+   "end": 64,
+   "class": "path",
+   "corrected_file": "core/logx/vars.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/vars.go is not in the corpus; core/logx/vars.go holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/zeromicro__go-zero__0.1/core/logx/writer.go",
+   "start": 1,
+   "end": 381,
+   "class": "path",
+   "corrected_file": "core/logx/writer.go",
+   "detail": "/workspace/zeromicro__go-zero__0.1/core/logx/writer.go is not in the corpus; core/logx/writer.go holds the content at these lines",
+   "numbered": true
+  }
+ ]
+}

@@ -1,0 +1,444 @@
+{
+ "mode": "live",
+ "corpora": {
+  "cpython-stdlib": {
+   "root": "lib/python3.13",
+   "py_files": 1039
+  },
+  "pip": {
+   "root": "site-packages/pip",
+   "py_files": 406
+  },
+  "fastmcp": {
+   "root": "site-packages/fastmcp",
+   "py_files": 260
+  }
+ },
+ "index_and_defaults_s": 13.8,
+ "budget": 4096,
+ "calls": 60,
+ "failures": [],
+ "outcomes": {
+  "judged": 60
+ },
+ "build_context_via_mcp_s": {
+  "judged": {
+   "n": 60,
+   "p50": 1.002,
+   "p95": 1.173,
+   "max": 1.658
+  },
+  "all": {
+   "n": 60,
+   "p50": 1.002,
+   "p95": 1.173,
+   "max": 1.658
+  }
+ },
+ "adapter_call_s": {
+  "n": 60,
+  "p50": 0.853,
+  "p95": 0.966,
+  "max": 1.269
+ },
+ "requests_sent": 60,
+ "statuses": {
+  "200": 60
+ },
+ "candidates": {
+  "n": 60,
+  "p50": 63.5,
+  "p95": 64.0,
+  "max": 64.0
+ },
+ "request_bytes": {
+  "n": 60,
+  "p50": 85814.0,
+  "p95": 94937.0,
+  "max": 100720.0
+ },
+ "billed_input_tokens": {
+  "n": 60,
+  "p50": 21492.5,
+  "p95": 23391.0,
+  "max": 24546.0
+ },
+ "billed_input_tokens_total": 1289562,
+ "usd": 0.054162,
+ "resources": {
+  "before": {
+   "rss_kb": 92868,
+   "threads": 3,
+   "fds": 8,
+   "children": 0
+  },
+  "after": {
+   "rss_kb": 159748,
+   "threads": 3,
+   "fds": 8,
+   "children": 0
+  }
+ },
+ "rows": [
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.658
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.14
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.023
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.049
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.001
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.994
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.015
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.196
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.024
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.067
+  },
+  {
+   "corpus": "pip",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.966
+  },
+  {
+   "corpus": "pip",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.012
+  },
+  {
+   "corpus": "pip",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.05
+  },
+  {
+   "corpus": "pip",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.803
+  },
+  {
+   "corpus": "pip",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.856
+  },
+  {
+   "corpus": "pip",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.926
+  },
+  {
+   "corpus": "pip",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.016
+  },
+  {
+   "corpus": "pip",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.888
+  },
+  {
+   "corpus": "pip",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.087
+  },
+  {
+   "corpus": "pip",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.786
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.078
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.074
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.935
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.912
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.918
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.877
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.958
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.072
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 0,
+   "got": "judged",
+   "s": 0.89
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 0,
+   "got": "judged",
+   "s": 1.185
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.992
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.945
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.853
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.969
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.044
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.873
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.818
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.998
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.025
+  },
+  {
+   "corpus": "cpython-stdlib",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.069
+  },
+  {
+   "corpus": "pip",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.003
+  },
+  {
+   "corpus": "pip",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.011
+  },
+  {
+   "corpus": "pip",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.008
+  },
+  {
+   "corpus": "pip",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.924
+  },
+  {
+   "corpus": "pip",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.899
+  },
+  {
+   "corpus": "pip",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.715
+  },
+  {
+   "corpus": "pip",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.067
+  },
+  {
+   "corpus": "pip",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.99
+  },
+  {
+   "corpus": "pip",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.074
+  },
+  {
+   "corpus": "pip",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.98
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.11
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.961
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.065
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.674
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.021
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.173
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.01
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.936
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 1,
+   "got": "judged",
+   "s": 0.805
+  },
+  {
+   "corpus": "fastmcp",
+   "repeat": 1,
+   "got": "judged",
+   "s": 1.026
+  }
+ ]
+}

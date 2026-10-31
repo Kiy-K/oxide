@@ -1,0 +1,207 @@
+{
+ "mode": "soak",
+ "calls": 429,
+ "provider_requests": 423,
+ "failures": [],
+ "outcomes": {
+  "deadline": 50,
+  "http 429": 25,
+  "http 529": 25,
+  "incomplete": 25,
+  "judged": 222,
+  "no_credential": 1,
+  "not_authorized": 2,
+  "off": 4,
+  "transport": 25,
+  "unparsable": 25,
+  "wrong_model": 25
+ },
+ "latency_s": {
+  "judged": {
+   "n": 222,
+   "p50": 0.074,
+   "p95": 0.086,
+   "max": 0.298
+  },
+  "fault busy": {
+   "n": 25,
+   "p50": 0.074,
+   "p95": 0.083,
+   "max": 0.087
+  },
+  "fault limited": {
+   "n": 25,
+   "p50": 0.075,
+   "p95": 0.086,
+   "max": 0.09
+  },
+  "fault hang": {
+   "n": 25,
+   "p50": 2.035,
+   "p95": 2.063,
+   "max": 2.063
+  },
+  "fault late": {
+   "n": 25,
+   "p50": 2.045,
+   "p95": 2.056,
+   "max": 2.057
+  },
+  "fault garbage": {
+   "n": 25,
+   "p50": 0.075,
+   "p95": 0.079,
+   "max": 0.083
+  },
+  "fault wrong": {
+   "n": 25,
+   "p50": 0.074,
+   "p95": 0.083,
+   "max": 0.085
+  },
+  "fault partial": {
+   "n": 25,
+   "p50": 0.074,
+   "p95": 0.08,
+   "max": 0.109
+  },
+  "fault reset": {
+   "n": 25,
+   "p50": 0.077,
+   "p95": 0.087,
+   "max": 0.088
+  }
+ },
+ "consent": [
+  {
+   "tag": "consent: a served repository never authorized",
+   "expect": "off",
+   "got": "off",
+   "s": 0.033,
+   "sent": 0
+  },
+  {
+   "tag": "consent: revoked by the CLI mid-session",
+   "expect": "off",
+   "got": "off",
+   "s": 0.036,
+   "sent": 0
+  },
+  {
+   "tag": "consent: re-enabled by the CLI mid-session",
+   "expect": "judged",
+   "got": "judged",
+   "s": 0.083,
+   "sent": 1
+  },
+  {
+   "tag": "consent: a record for another manifest",
+   "expect": "not_authorized",
+   "got": "not_authorized",
+   "s": 0.035,
+   "sent": 0
+  },
+  {
+   "tag": "consent: an unreadable record",
+   "expect": "not_authorized",
+   "got": "not_authorized",
+   "s": 0.035,
+   "sent": 0
+  },
+  {
+   "tag": "consent: kept across a re-index mid-session",
+   "expect": "judged",
+   "got": "judged",
+   "s": 0.091,
+   "sent": 1
+  },
+  {
+   "tag": "consent: revoked after the in-flight request",
+   "expect": "off",
+   "got": "off",
+   "s": 0.031,
+   "sent": 0
+  },
+  {
+   "tag": "consent: enabled under another data location only",
+   "expect": "off",
+   "got": "off",
+   "s": 0.03,
+   "sent": 0
+  },
+  {
+   "tag": "consent: enabled, no key in the server",
+   "expect": "no_credential",
+   "got": "no_credential",
+   "s": 0.22,
+   "sent": 0
+  }
+ ],
+ "reindex_exit": 0,
+ "cli_during_inflight": {
+  "exit": 2,
+  "stderr": "error[ownership_conflict]: /home/khoi/Projects/oxide-eval-data/oxide-jev-m3/soak/A: its store is open in another OXIDE"
+ },
+ "cli_after_inflight": {
+  "exit": 0
+ },
+ "resources": [
+  {
+   "after": 0,
+   "rss_kb": 92840,
+   "threads": 3,
+   "fds": 8,
+   "children": 0
+  },
+  {
+   "after": 20,
+   "rss_kb": 151580,
+   "threads": 3,
+   "fds": 8,
+   "children": 0
+  },
+  {
+   "after": 100,
+   "rss_kb": 156716,
+   "threads": 3,
+   "fds": 8,
+   "children": 0
+  },
+  {
+   "after": 180,
+   "rss_kb": 156848,
+   "threads": 3,
+   "fds": 8,
+   "children": 0
+  },
+  {
+   "after": 260,
+   "rss_kb": 156932,
+   "threads": 3,
+   "fds": 8,
+   "children": 0
+  },
+  {
+   "after": 340,
+   "rss_kb": 156948,
+   "threads": 3,
+   "fds": 8,
+   "children": 0
+  },
+  {
+   "after": 420,
+   "rss_kb": 156980,
+   "threads": 3,
+   "fds": 8,
+   "children": 0
+  },
+  {
+   "after": 428,
+   "settled": true,
+   "rss_kb": 157064,
+   "threads": 3,
+   "fds": 8,
+   "children": 0
+  }
+ ]
+}

@@ -1,0 +1,2320 @@
+[
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7",
+  "pattern": "only_relation_agnostic_fields|deconstruction\\[2\\]\\['to'\\]",
+  "paths": [
+   "django/db/migrations/autodetector.py"
+  ],
+  "note": "name; subscript deconstruction[2]['to']",
+  "rg_code_hits": 4,
+  "rg_other_hits": 0,
+  "sg_matches": 4,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__17aff6c5",
+  "pattern": "Pipeline.*len|len\\(.*pipeline|len\\(.*pipe",
+  "paths": [
+   "sklearn/pipeline.py",
+   "sklearn/pipeline/tests"
+  ],
+  "note": "len() over a pipeline object",
+  "rg_code_hits": 0,
+  "rg_other_hits": 0,
+  "sg_matches": 0,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "def _binary_op|keep_attrs|OPTIONS\\[\"keep_attrs\"\\]",
+  "paths": [
+   "xarray/core/dataarray.py",
+   "xarray/core/variable.py",
+   "xarray/core/ops.py"
+  ],
+  "note": "definition; name; OPTIONS['keep_attrs']",
+  "rg_code_hits": 78,
+  "rg_other_hits": 0,
+  "sg_matches": 70,
+  "rg_noise": 17,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 61,
+    "text": "from .options import OPTIONS, _get_keep_attrs"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2539,
+    "text": "keep_attrs : bool, default: True"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2684,
+    "text": "keep_attrs : bool, optional"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 3464,
+    "text": "keep_attrs : bool, optional"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 3545,
+    "text": "keep_attrs : bool, optional"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 4121,
+    "text": "keep_attrs : bool, default: False"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 4217,
+    "text": "keep_attrs : bool, default: False"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 4307,
+    "text": "keep_attrs : bool, optional"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "def where|where\\s*=|apply_ufunc\\(",
+  "paths": [
+   "xarray/core/computation.py",
+   "xarray/core"
+  ],
+  "note": "definition; where= / where = ; apply_ufunc calls",
+  "rg_code_hits": 44,
+  "rg_other_hits": 0,
+  "sg_matches": 30,
+  "rg_noise": 14,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/computation.py",
+    "line": 809,
+    "text": "def apply_ufunc("
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 809,
+    "text": "def apply_ufunc("
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 955,
+    "text": "...     return xr.apply_ufunc(func, a, b)"
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 955,
+    "text": "...     return xr.apply_ufunc(func, a, b)"
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 988,
+    "text": "...     return apply_ufunc("
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 988,
+    "text": "...     return apply_ufunc("
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 1000,
+    "text": "...     return apply_ufunc(_inner, a, b, input_core_dims=[[dim], [dim]])"
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 1000,
+    "text": "...     return apply_ufunc(_inner, a, b, input_core_dims=[[dim], [dim]])"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "keep_attrs=True",
+  "paths": [
+   "xarray/core/computation.py"
+  ],
+  "note": "keep_attrs=True",
+  "rg_code_hits": 0,
+  "rg_other_hits": 0,
+  "sg_matches": 0,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "keep_attrs|OPTIONS\\[.*keep_attrs",
+  "paths": [
+   "xarray/core/computation.py"
+  ],
+  "note": "name; OPTIONS[...keep_attrs]",
+  "rg_code_hits": 22,
+  "rg_other_hits": 0,
+  "sg_matches": 26,
+  "rg_noise": 2,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/computation.py",
+    "line": 32,
+    "text": "from .options import OPTIONS, _get_keep_attrs"
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 903,
+    "text": "keep_attrs : bool, optional"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "xr.where|where\\(.*attrs|keep_attrs.*where",
+  "paths": [
+   "xarray/tests"
+  ],
+  "note": "xr.where; where(..attrs..)",
+  "rg_code_hits": 22,
+  "rg_other_hits": 0,
+  "sg_matches": 88,
+  "rg_noise": 0,
+  "sg_only": 66,
+  "rg_noise_sample": [],
+  "sg_only_sample": [
+   {
+    "path": "xarray/tests/test_computation.py",
+    "line": 1451,
+    "text": "ts1.where"
+   },
+   {
+    "path": "xarray/tests/test_computation.py",
+    "line": 1452,
+    "text": "ts2.where"
+   },
+   {
+    "path": "xarray/tests/test_computation.py",
+    "line": 1474,
+    "text": "ts1.where"
+   },
+   {
+    "path": "xarray/tests/test_computation.py",
+    "line": 1475,
+    "text": "ts2.where"
+   },
+   {
+    "path": "xarray/tests/test_computation.py",
+    "line": 1501,
+    "text": "ts1.where"
+   },
+   {
+    "path": "xarray/tests/test_computation.py",
+    "line": 1502,
+    "text": "ts2.where"
+   },
+   {
+    "path": "xarray/tests/test_computation.py",
+    "line": 1523,
+    "text": "ts1.where"
+   },
+   {
+    "path": "xarray/tests/test_computation.py",
+    "line": 1524,
+    "text": "ts2.where"
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4cac510e",
+  "pattern": "MigrationWriter|imports.*sort|sorted\\(.*import|migration.*import",
+  "paths": [
+   "django/db/migrations"
+  ],
+  "note": "name; sorted(imports); imports assignment",
+  "rg_code_hits": 40,
+  "rg_other_hits": 0,
+  "sg_matches": 40,
+  "rg_noise": 30,
+  "sg_only": 25,
+  "rg_noise_sample": [
+   {
+    "path": "django/db/migrations/__init__.py",
+    "line": 1,
+    "text": "from .migration import Migration, swappable_dependency  # NOQA"
+   },
+   {
+    "path": "django/db/migrations/autodetector.py",
+    "line": 9,
+    "text": "from django.db.migrations import operations"
+   },
+   {
+    "path": "django/db/migrations/autodetector.py",
+    "line": 10,
+    "text": "from django.db.migrations.migration import Migration"
+   },
+   {
+    "path": "django/db/migrations/autodetector.py",
+    "line": 11,
+    "text": "from django.db.migrations.operations.models import AlterModelOptions"
+   },
+   {
+    "path": "django/db/migrations/autodetector.py",
+    "line": 12,
+    "text": "from django.db.migrations.optimizer import MigrationOptimizer"
+   },
+   {
+    "path": "django/db/migrations/autodetector.py",
+    "line": 13,
+    "text": "from django.db.migrations.questioner import MigrationQuestioner"
+   },
+   {
+    "path": "django/db/migrations/autodetector.py",
+    "line": 14,
+    "text": "from django.db.migrations.utils import ("
+   },
+   {
+    "path": "django/db/migrations/graph.py",
+    "line": 3,
+    "text": "from django.db.migrations.state import ProjectState"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "django/db/migrations/serializer.py",
+    "line": 39,
+    "text": "imports = set()"
+   },
+   {
+    "path": "django/db/migrations/serializer.py",
+    "line": 42,
+    "text": "item_string, item_imports = serializer_factory(item).serialize()"
+   },
+   {
+    "path": "django/db/migrations/serializer.py",
+    "line": 72,
+    "text": "imports = [\"import datetime\"]"
+   },
+   {
+    "path": "django/db/migrations/serializer.py",
+    "line": 84,
+    "text": "name, imports = DeconstructableSerializer._serialize_path(path)"
+   },
+   {
+    "path": "django/db/migrations/serializer.py",
+    "line": 87,
+    "text": "arg_string, arg_imports = serializer_factory(arg).serialize()"
+   },
+   {
+    "path": "django/db/migrations/serializer.py",
+    "line": 91,
+    "text": "arg_string, arg_imports = serializer_factory(arg).serialize()"
+   },
+   {
+    "path": "django/db/migrations/serializer.py",
+    "line": 100,
+    "text": "imports = {\"from django.db import models\"}"
+   },
+   {
+    "path": "django/db/migrations/serializer.py",
+    "line": 103,
+    "text": "imports = {\"import %s\" % module}"
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+  "pattern": "def fowlkes_mallows_score|tk / np.sqrt",
+  "paths": [
+   "sklearn"
+  ],
+  "note": "definition; tk / np.sqrt(...)",
+  "rg_code_hits": 2,
+  "rg_other_hits": 0,
+  "sg_matches": 2,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+  "pattern": "fowlkes_mallows_score|tk / np.sqrt",
+  "paths": [
+   "sklearn/metrics/cluster/supervised.py"
+  ],
+  "note": "name; tk / np.sqrt(...)",
+  "rg_code_hits": 7,
+  "rg_other_hits": 0,
+  "sg_matches": 2,
+  "rg_noise": 5,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "sklearn/metrics/cluster/supervised.py",
+    "line": 806,
+    "text": "Read more in the :ref:`User Guide <fowlkes_mallows_scores>`."
+   },
+   {
+    "path": "sklearn/metrics/cluster/supervised.py",
+    "line": 830,
+    "text": ">>> from sklearn.metrics.cluster import fowlkes_mallows_score"
+   },
+   {
+    "path": "sklearn/metrics/cluster/supervised.py",
+    "line": 831,
+    "text": ">>> fowlkes_mallows_score([0, 0, 1, 1], [0, 0, 1, 1])"
+   },
+   {
+    "path": "sklearn/metrics/cluster/supervised.py",
+    "line": 833,
+    "text": ">>> fowlkes_mallows_score([0, 0, 1, 1], [1, 1, 0, 0])"
+   },
+   {
+    "path": "sklearn/metrics/cluster/supervised.py",
+    "line": 839,
+    "text": ">>> fowlkes_mallows_score([0, 0, 0, 0], [0, 1, 2, 3])"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+  "pattern": "sqrt\\(.* / .*\\).*sqrt|np.sqrt\\(.* /",
+  "paths": [
+   "sklearn/metrics"
+  ],
+  "note": "sqrt(a / b): a division inside sqrt",
+  "rg_code_hits": 0,
+  "rg_other_hits": 0,
+  "sg_matches": 0,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "_enforce_prediction_order|isinstance\\(predictions, list\\)|estimators_\\[i_label\\]",
+  "paths": [
+   "sklearn/model_selection/_validation.py",
+   "sklearn"
+  ],
+  "note": "name; literal call; subscript",
+  "rg_code_hits": 10,
+  "rg_other_hits": 0,
+  "sg_matches": 10,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "estimators_\\[i_label\\]\\.classes_|_enforce_prediction_order",
+  "paths": [
+   "sklearn/model_selection/_validation.py"
+  ],
+  "note": "literal attribute chain; name",
+  "rg_code_hits": 3,
+  "rg_other_hits": 0,
+  "sg_matches": 3,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "isinstance\\(predictions, list\\)|_enforce_prediction_order",
+  "paths": [
+   "sklearn/model_selection/_validation.py"
+  ],
+  "note": "literal call; name",
+  "rg_code_hits": 5,
+  "rg_other_hits": 0,
+  "sg_matches": 5,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "predictions = \\[_enforce_prediction_order|isinstance\\(predictions, list\\)",
+  "paths": [
+   "sklearn/model_selection/_validation.py"
+  ],
+  "note": "assignment; literal call",
+  "rg_code_hits": 3,
+  "rg_other_hits": 0,
+  "sg_matches": 3,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "FutureWarning.*stacklevel|stacklevel=2",
+  "paths": [
+   "astropy"
+  ],
+  "note": "warn(..FutureWarning..); stacklevel=2",
+  "rg_code_hits": 5,
+  "rg_other_hits": 0,
+  "sg_matches": 4,
+  "rg_noise": 1,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "astropy/table/column.py",
+    "line": 35,
+    "text": "stacklevel=2 to show the user where the issue occurred in their code."
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "deprecated.*FutureWarning|warn.*FutureWarning|since='5\\.1|version='5\\.1|5\\.2",
+  "paths": [
+   "astropy"
+  ],
+  "note": "deprecated/warn with FutureWarning; since=/version= '5.1'; '5.2'",
+  "rg_code_hits": 93,
+  "rg_other_hits": 133,
+  "sg_matches": 35,
+  "rg_noise": 49,
+  "sg_only": 2,
+  "rg_noise_sample": [
+   {
+    "path": "astropy/constants/codata2018.py",
+    "line": 74,
+    "text": "a0 = CODATA2018('a0', \"Bohr radius\", 5.29177210903e-11,"
+   },
+   {
+    "path": "astropy/coordinates/earth_orientation.py",
+    "line": 202,
+    "text": "theta1 = 20051.12 - 85.29 * t1 - 0.37 * t1 * t1"
+   },
+   {
+    "path": "astropy/coordinates/tests/test_earth.py",
+    "line": 47,
+    "text": "x, y, z = (2e6, 3e6, 5.244e6)"
+   },
+   {
+    "path": "astropy/coordinates/tests/test_geodetic_representations.py",
+    "line": 55,
+    "text": "x, y, z = (2e6, 3e6, 5.244e6)"
+   },
+   {
+    "path": "astropy/coordinates/tests/test_regression.py",
+    "line": 137,
+    "text": "de = SkyCoord(310.35797975*u.deg, 45.28033881*u.deg)"
+   },
+   {
+    "path": "astropy/coordinates/tests/test_solar_system.py",
+    "line": 304,
+    "text": "6.698336823, 6.450150213, 6.207828142, 5.970645962, 5.737565957, 5.507313851, 5.278462034,"
+   },
+   {
+    "path": "astropy/coordinates/tests/test_velocity_corrs.py",
+    "line": 227,
+    "text": "24451.54039956, 11026.26000765, -6968.89336945, -2415.20201758,"
+   },
+   {
+    "path": "astropy/coordinates/tests/test_velocity_corrs.py",
+    "line": 228,
+    "text": "-2121.44599781, 17434.63406085, 17140.87871753, -2415.2018495,"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "astropy/cosmology/parameter.py",
+    "line": 54,
+    "text": "since=\"5.1\""
+   },
+   {
+    "path": "astropy/cosmology/parameter.py",
+    "line": 104,
+    "text": "since=\"5.1\""
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "version =|5\\.1",
+  "paths": [
+   "astropy/__init__.py",
+   "setup.cfg",
+   "pyproject.toml"
+  ],
+  "note": "version assignment; '5.1' (non-.py files unseen)",
+  "rg_code_hits": 3,
+  "rg_other_hits": 1,
+  "sg_matches": 3,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "version =|__version__|5\\.1|5\\.2",
+  "paths": [
+   "astropy/version.py",
+   "setup.cfg",
+   "pyproject.toml",
+   "CHANGES.rst"
+  ],
+  "note": "version assignment; __version__; '5.1'/'5.2'",
+  "rg_code_hits": 1,
+  "rg_other_hits": 18,
+  "sg_matches": 1,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "warnings.warn\\(.*FutureWarning|category=FutureWarning",
+  "paths": [
+   "astropy/table",
+   "astropy"
+  ],
+  "note": "warn(..FutureWarning); category=",
+  "rg_code_hits": 4,
+  "rg_other_hits": 0,
+  "sg_matches": 4,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "warnings\\.warn\\(.*FutureWarning|category=FutureWarning",
+  "paths": [
+   "astropy"
+  ],
+  "note": "warn(..FutureWarning); category=",
+  "rg_code_hits": 3,
+  "rg_other_hits": 0,
+  "sg_matches": 3,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "attrs =|keep_attrs",
+  "paths": [
+   "xarray/core/computation.py"
+  ],
+  "note": "attrs assignment; name",
+  "rg_code_hits": 36,
+  "rg_other_hits": 0,
+  "sg_matches": 42,
+  "rg_noise": 3,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/computation.py",
+    "line": 33,
+    "text": "from .options import OPTIONS, _get_keep_attrs"
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 941,
+    "text": "keep_attrs : bool, optional"
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 1791,
+    "text": "keep_attrs : bool or str or callable, optional"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "combine_attrs.*context|context=",
+  "paths": [
+   "xarray/core/computation.py"
+  ],
+  "note": "combine_attrs(..context..); context=",
+  "rg_code_hits": 0,
+  "rg_other_hits": 0,
+  "sg_matches": 0,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "combine_attrs.*context|context\\[|context=",
+  "paths": [
+   "xarray/core"
+  ],
+  "note": "combine_attrs(..context..); context[...]; context=",
+  "rg_code_hits": 4,
+  "rg_other_hits": 0,
+  "sg_matches": 5,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "context.*coordinate|context=|combine_attrs\\(",
+  "paths": [
+   "xarray/core"
+  ],
+  "note": "combine_attrs calls; context=",
+  "rg_code_hits": 5,
+  "rg_other_hits": 0,
+  "sg_matches": 5,
+  "rg_noise": 1,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/variable.py",
+    "line": 341,
+    "text": "they can use more complete metadata in context of coordinate labels."
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "context=",
+  "paths": [
+   "xarray/core"
+  ],
+  "note": "context=",
+  "rg_code_hits": 4,
+  "rg_other_hits": 0,
+  "sg_matches": 4,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "context=.*variable|context=.*coord|context",
+  "paths": [
+   "xarray/core/merge.py"
+  ],
+  "note": "context= ; name",
+  "rg_code_hits": 4,
+  "rg_other_hits": 0,
+  "sg_matches": 5,
+  "rg_noise": 2,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/merge.py",
+    "line": 237,
+    "text": "If a callable, it must expect a sequence of ``attrs`` dicts and a context object"
+   },
+   {
+    "path": "xarray/core/merge.py",
+    "line": 846,
+    "text": "If a callable, it must expect a sequence of ``attrs`` dicts and a context object"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "keep_attrs.*context|merge_attrs\\(|keep_attrs=",
+  "paths": [
+   "xarray/core/computation.py"
+  ],
+  "note": "merge_attrs calls; keep_attrs=",
+  "rg_code_hits": 14,
+  "rg_other_hits": 0,
+  "sg_matches": 15,
+  "rg_noise": 1,
+  "sg_only": 2,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/computation.py",
+    "line": 1863,
+    "text": "keep_attrs = lambda attrs, context: getattr(x, \"attrs\", {})"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "xarray/core/computation.py",
+    "line": 856,
+    "text": "keep_attrs: bool | str | None = None"
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 2015,
+    "text": "keep_attrs: bool | None = None"
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "merge_attrs\\(|combine_attrs=",
+  "paths": [
+   "xarray/core/merge.py"
+  ],
+  "note": "merge_attrs calls; combine_attrs=",
+  "rg_code_hits": 14,
+  "rg_other_hits": 0,
+  "sg_matches": 14,
+  "rg_noise": 4,
+  "sg_only": 4,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/merge.py",
+    "line": 634,
+    "text": "def merge_attrs(variable_attrs, combine_attrs, context=None):"
+   },
+   {
+    "path": "xarray/core/merge.py",
+    "line": 653,
+    "text": "\"combine_attrs='no_conflicts', but some values are not \""
+   },
+   {
+    "path": "xarray/core/merge.py",
+    "line": 680,
+    "text": "f\"combine_attrs='identical', but attrs differ. First is {str(result)} \""
+   },
+   {
+    "path": "xarray/core/merge.py",
+    "line": 685,
+    "text": "raise ValueError(f\"Unrecognised value for combine_attrs={combine_attrs}\")"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "xarray/core/merge.py",
+    "line": 212,
+    "text": "combine_attrs: CombineAttrsOptions = \"override\""
+   },
+   {
+    "path": "xarray/core/merge.py",
+    "line": 396,
+    "text": "combine_attrs: CombineAttrsOptions = \"override\""
+   },
+   {
+    "path": "xarray/core/merge.py",
+    "line": 700,
+    "text": "combine_attrs: CombineAttrsOptions = \"override\""
+   },
+   {
+    "path": "xarray/core/merge.py",
+    "line": 790,
+    "text": "combine_attrs: CombineAttrsOptions = \"override\""
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "where.*keep_attrs|keep_attrs=True",
+  "paths": [
+   "xarray/tests/test_computation.py",
+   "xarray/tests/test_dataarray.py"
+  ],
+  "note": "where(..keep_attrs..); keep_attrs=True",
+  "rg_code_hits": 24,
+  "rg_other_hits": 0,
+  "sg_matches": 26,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "where\\(.*keep_attrs|keep_attrs=True.*where|where.*attrs",
+  "paths": [
+   "xarray/tests"
+  ],
+  "note": "where(..keep_attrs/attrs..)",
+  "rg_code_hits": 3,
+  "rg_other_hits": 0,
+  "sg_matches": 2,
+  "rg_noise": 1,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/tests/test_computation.py",
+    "line": 1927,
+    "text": "def test_where_attrs() -> None:"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "where\\s*=|where,",
+  "paths": [
+   "xarray/core/computation.py",
+   "xarray/core/dataarray.py"
+  ],
+  "note": "where= ; where = ; where as an argument",
+  "rg_code_hits": 2,
+  "rg_other_hits": 0,
+  "sg_matches": 0,
+  "rg_noise": 2,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/computation.py",
+    "line": 1855,
+    "text": "Dataset.where, DataArray.where :"
+   },
+   {
+    "path": "xarray/core/computation.py",
+    "line": 1867,
+    "text": "duck_array_ops.where,"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "%(distinct)s|template = .*function",
+  "paths": [
+   "django"
+  ],
+  "note": "'%(distinct)s'; template = ...function",
+  "rg_code_hits": 12,
+  "rg_other_hits": 1,
+  "sg_matches": 15,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(%(distinct|function)|%(distinct)s|class Aggregate",
+  "paths": [
+   "django/db/models"
+  ],
+  "note": "SQL text in strings; class Aggregate",
+  "rg_code_hits": 2,
+  "rg_other_hits": 0,
+  "sg_matches": 2,
+  "rg_noise": 1,
+  "sg_only": 1,
+  "rg_noise_sample": [
+   {
+    "path": "django/db/models/sql/subqueries.py",
+    "line": 184,
+    "text": "class AggregateQuery(Query):"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "django/db/models/aggregates.py",
+    "line": 17,
+    "text": "'%(function)s(%(distinct)s%(expressions)s)'"
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(DISTINCT|DISTINCT %\\(expressions\\)|distinct=True",
+  "paths": [
+   "tests",
+   "django/db"
+  ],
+  "note": "SQL text in strings; distinct=True",
+  "rg_code_hits": 13,
+  "rg_other_hits": 0,
+  "sg_matches": 13,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(|Count|distinct=True|class Count|def as_sql",
+  "paths": [
+   "django/db/models",
+   "django/db/backends/base"
+  ],
+  "note": "SQL text; name; distinct=True; class; def",
+  "rg_code_hits": 83,
+  "rg_other_hits": 0,
+  "sg_matches": 58,
+  "rg_noise": 24,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "django/db/models/aggregates.py",
+    "line": 12,
+    "text": "'Aggregate', 'Avg', 'Count', 'Max', 'Min', 'StdDev', 'Sum', 'Variance',"
+   },
+   {
+    "path": "django/db/models/deletion.py",
+    "line": 1,
+    "text": "from collections import Counter, OrderedDict"
+   },
+   {
+    "path": "django/db/models/deletion.py",
+    "line": 273,
+    "text": "deleted_counter = Counter()"
+   },
+   {
+    "path": "django/db/models/expressions.py",
+    "line": 20,
+    "text": "def as_sqlite(self, compiler, connection, **extra_context):"
+   },
+   {
+    "path": "django/db/models/expressions.py",
+    "line": 1157,
+    "text": "def as_sqlite(self, compiler, connection):"
+   },
+   {
+    "path": "django/db/models/fields/related.py",
+    "line": 1240,
+    "text": "# Count foreign keys in intermediate model"
+   },
+   {
+    "path": "django/db/models/fields/related.py",
+    "line": 1262,
+    "text": "# Count foreign keys in relationship model"
+   },
+   {
+    "path": "django/db/models/functions/comparison.py",
+    "line": 17,
+    "text": "def as_sqlite(self, compiler, connection, **extra_context):"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(|DISTINCT|distinct=True|class Count|as_sql\\(",
+  "paths": [
+   "django/db/models",
+   "django/db/backends/base"
+  ],
+  "note": "SQL text; distinct=True; class; as_sql calls",
+  "rg_code_hits": 144,
+  "rg_other_hits": 0,
+  "sg_matches": 79,
+  "rg_noise": 64,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "django/db/backends/base/features.py",
+    "line": 160,
+    "text": "# Support for the DISTINCT ON clause"
+   },
+   {
+    "path": "django/db/models/aggregates.py",
+    "line": 70,
+    "text": "def as_sql(self, compiler, connection, **extra_context):"
+   },
+   {
+    "path": "django/db/models/expressions.py",
+    "line": 183,
+    "text": "def as_sql(self, compiler, connection):"
+   },
+   {
+    "path": "django/db/models/expressions.py",
+    "line": 192,
+    "text": "def override_as_sql(self, compiler, connection):"
+   },
+   {
+    "path": "django/db/models/expressions.py",
+    "line": 194,
+    "text": "return super().as_sql(compiler, connection)"
+   },
+   {
+    "path": "django/db/models/expressions.py",
+    "line": 209,
+    "text": "raise NotImplementedError(\"Subclasses must implement as_sql()\")"
+   },
+   {
+    "path": "django/db/models/expressions.py",
+    "line": 413,
+    "text": "def as_sql(self, compiler, connection):"
+   },
+   {
+    "path": "django/db/models/expressions.py",
+    "line": 464,
+    "text": "def as_sql(self, compiler, connection):"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "distinct.*CASE|COUNT\\(DISTINCT",
+  "paths": [],
+  "note": "SQL text only",
+  "rg_code_hits": 0,
+  "rg_other_hits": 1,
+  "sg_matches": 0,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "extra_context\\['distinct'\\]|DISTINCT ' if",
+  "paths": [
+   "django"
+  ],
+  "note": "extra_context['distinct']; SQL text",
+  "rg_code_hits": 1,
+  "rg_other_hits": 0,
+  "sg_matches": 1,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "template =|%(distinct)s",
+  "paths": [
+   "django/db/models"
+  ],
+  "note": "template = ; '%(distinct)s'",
+  "rg_code_hits": 35,
+  "rg_other_hits": 0,
+  "sg_matches": 33,
+  "rg_noise": 3,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "django/db/models/aggregates.py",
+    "line": 20,
+    "text": "filter_template = '%s FILTER (WHERE %%(filter)s)'"
+   },
+   {
+    "path": "django/db/models/expressions.py",
+    "line": 1078,
+    "text": "if self.template == '(%(subquery)s)':"
+   },
+   {
+    "path": "django/db/models/lookups.py",
+    "line": 471,
+    "text": "sql_template = connection.ops.regex_lookup(self.lookup_name)"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "NotImplemented|except ValueError",
+  "paths": [
+   "astropy/units/quantity.py",
+   "astropy/units/tests"
+  ],
+  "note": "name; except ValueError",
+  "rg_code_hits": 53,
+  "rg_other_hits": 0,
+  "sg_matches": 30,
+  "rg_noise": 23,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 614,
+    "text": "raise NotImplementedError("
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 677,
+    "text": "# NotImplemented, which can happen if other inputs/outputs override"
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 1601,
+    "text": "raise NotImplementedError("
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 1682,
+    "text": "raise NotImplementedError("
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 1688,
+    "text": "raise NotImplementedError("
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 1693,
+    "text": "raise NotImplementedError("
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 1698,
+    "text": "raise NotImplementedError("
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 1703,
+    "text": "raise NotImplementedError("
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "converter\\(input_\\)|__array_ufunc__",
+  "paths": [
+   "astropy/units/tests/test_quantity.py"
+  ],
+  "note": "converter(input_); name",
+  "rg_code_hits": 0,
+  "rg_other_hits": 0,
+  "sg_matches": 0,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "converters_and_unit|except UnitConversionError|def converters",
+  "paths": [
+   "astropy/units"
+  ],
+  "note": "name; except UnitConversionError; def converters*",
+  "rg_code_hits": 16,
+  "rg_other_hits": 0,
+  "sg_matches": 9,
+  "rg_noise": 8,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "astropy/units/quantity_helper/converters.py",
+    "line": 17,
+    "text": "\"converters_and_unit\","
+   },
+   {
+    "path": "astropy/units/quantity_helper/helpers.py",
+    "line": 39,
+    "text": "def get_converters_and_unit(f, unit1, unit2):"
+   },
+   {
+    "path": "astropy/units/quantity_helper/helpers.py",
+    "line": 274,
+    "text": "# This used to be a separate function that just called get_converters_and_unit."
+   },
+   {
+    "path": "astropy/units/quantity_helper/helpers.py",
+    "line": 276,
+    "text": "helper_twoarg_invariant = get_converters_and_unit"
+   },
+   {
+    "path": "astropy/units/quantity_helper/helpers.py",
+    "line": 280,
+    "text": "converters, _ = get_converters_and_unit(f, unit1, unit2)"
+   },
+   {
+    "path": "astropy/units/quantity_helper/helpers.py",
+    "line": 287,
+    "text": "converters, _ = get_converters_and_unit(f, unit1, unit2)"
+   },
+   {
+    "path": "astropy/units/quantity_helper/helpers.py",
+    "line": 292,
+    "text": "converters, _ = get_converters_and_unit(f, unit1, unit2)"
+   },
+   {
+    "path": "astropy/units/quantity_helper/helpers.py",
+    "line": 297,
+    "text": "converters, result_unit = get_converters_and_unit(f, unit1, unit2)"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def __array_ufunc__|converter\\(input_\\)|arrays.append",
+  "paths": [
+   "astropy/units/quantity.py"
+  ],
+  "note": "def; converter(input_); arrays.append calls",
+  "rg_code_hits": 2,
+  "rg_other_hits": 0,
+  "sg_matches": 3,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def __array_ufunc__|converter\\(input_|_condition_arg|NotImplemented",
+  "paths": [
+   "astropy/units/quantity.py",
+   "astropy/units"
+  ],
+  "note": "def; converter(input_); names",
+  "rg_code_hits": 155,
+  "rg_other_hits": 0,
+  "sg_matches": 91,
+  "rg_noise": 61,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "astropy/units/core.py",
+    "line": 1191,
+    "text": "raise NotImplementedError()"
+   },
+   {
+    "path": "astropy/units/core.py",
+    "line": 2073,
+    "text": "except NotImplementedError:"
+   },
+   {
+    "path": "astropy/units/format/base.py",
+    "line": 32,
+    "text": "raise NotImplementedError(f\"Can not parse with {cls.__name__} format\")"
+   },
+   {
+    "path": "astropy/units/format/base.py",
+    "line": 40,
+    "text": "raise NotImplementedError(f\"Can not output in {cls.__name__} format\")"
+   },
+   {
+    "path": "astropy/units/function/core.py",
+    "line": 672,
+    "text": "unit, and returning NotImplemented when there are other errors.\"\"\""
+   },
+   {
+    "path": "astropy/units/physical.py",
+    "line": 379,
+    "text": "Otherwise, return `NotImplemented`."
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 614,
+    "text": "raise NotImplementedError("
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 614,
+    "text": "raise NotImplementedError("
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def converters_and_unit|converter\\(input_|def get_converter",
+  "paths": [
+   "astropy/units/quantity.py",
+   "astropy/units/core.py"
+  ],
+  "note": "defs; converter(input_)",
+  "rg_code_hits": 1,
+  "rg_other_hits": 0,
+  "sg_matches": 1,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def converters_and_unit|def get_converter|__array_ufunc__.*NotImplemented|return NotImplemented",
+  "paths": [
+   "astropy/units/quantity.py",
+   "astropy/units"
+  ],
+  "note": "defs; return NotImplemented; __array_ufunc__ containing NotImplemented",
+  "rg_code_hits": 69,
+  "rg_other_hits": 0,
+  "sg_matches": 66,
+  "rg_noise": 5,
+  "sg_only": 2,
+  "rg_noise_sample": [
+   {
+    "path": "astropy/units/function/core.py",
+    "line": 621,
+    "text": "# And really it should just return NotImplemented, since possibly"
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 1865,
+    "text": "# knows what to do with us, for which we should return NotImplemented."
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 1865,
+    "text": "# knows what to do with us, for which we should return NotImplemented."
+   },
+   {
+    "path": "astropy/units/quantity_helper/function_helpers.py",
+    "line": 93,
+    "text": "# currently return NotImplementedError."
+   },
+   {
+    "path": "astropy/units/quantity_helper/helpers.py",
+    "line": 39,
+    "text": "def get_converters_and_unit(f, unit1, unit2):"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 620,
+    "text": "def __array_ufunc__(self, function, method, *inputs, **kwargs):\n        \"\"\"Wrap numpy ufuncs, taking care of units.\n\n        Parameters\n        ----------\n     "
+   },
+   {
+    "path": "astropy/units/quantity.py",
+    "line": 620,
+    "text": "def __array_ufunc__(self, function, method, *inputs, **kwargs):\n        \"\"\"Wrap numpy ufuncs, taking care of units.\n\n        Parameters\n        ----------\n     "
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+  "pattern": "urllib3.*parse_url|parse_url\\(.*auth|get_auth_from_url",
+  "paths": [
+   "HISTORY.md"
+  ],
+  "note": "parse_url(..auth..); name (HISTORY.md unseen by AST)",
+  "rg_code_hits": 0,
+  "rg_other_hits": 0,
+  "sg_matches": 0,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "Invalid fill method|\\.loc|method=",
+  "paths": [
+   "xarray"
+  ],
+  "note": "message string; .loc; method=",
+  "rg_code_hits": 220,
+  "rg_other_hits": 0,
+  "sg_matches": 180,
+  "rg_noise": 56,
+  "sg_only": 16,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/backends/api.py",
+    "line": 32,
+    "text": "from .locks import _get_scheduler"
+   },
+   {
+    "path": "xarray/backends/cfgrib_.py",
+    "line": 9,
+    "text": "from .locks import SerializableLock, ensure_lock"
+   },
+   {
+    "path": "xarray/backends/cfgrib_.py",
+    "line": 31,
+    "text": "with self.datastore.lock:"
+   },
+   {
+    "path": "xarray/backends/cfgrib_.py",
+    "line": 45,
+    "text": "self.lock = ensure_lock(lock)"
+   },
+   {
+    "path": "xarray/backends/common.py",
+    "line": 134,
+    "text": "self.lock = lock"
+   },
+   {
+    "path": "xarray/backends/common.py",
+    "line": 158,
+    "text": "lock=self.lock,"
+   },
+   {
+    "path": "xarray/backends/file_manager.py",
+    "line": 9,
+    "text": "from .locks import acquire"
+   },
+   {
+    "path": "xarray/backends/h5netcdf_.py",
+    "line": 13,
+    "text": "from .locks import HDF5_LOCK, combine_locks, ensure_lock, get_write_lock"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "xarray/core/alignment.py",
+    "line": 489,
+    "text": "method: Optional[str] = None"
+   },
+   {
+    "path": "xarray/core/coordinates.py",
+    "line": 374,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1121,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1337,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1399,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1472,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1602,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2286,
+    "text": "method: str = \"linear\""
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "Invalid fill method|class .*Loc|\\.loc|method=",
+  "paths": [
+   "xarray/core"
+  ],
+  "note": "message string; class *Loc; .loc; method=",
+  "rg_code_hits": 53,
+  "rg_other_hits": 0,
+  "sg_matches": 51,
+  "rg_noise": 17,
+  "sg_only": 16,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 229,
+    "text": "``x[:10]`` or by label (like pandas): ``x.loc['2014-01-01']`` or"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1547,
+    "text": ">>> da.interp(x=[0, 0.75, 1.25, 1.75], method=\"nearest\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1561,
+    "text": "...     method=\"linear\","
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1575,
+    "text": ">>> da.interp(x=[0, 0.75, 1.25, 1.75], y=[11, 13, 15], method=\"linear\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2308,
+    "text": "``method='polynomial'``, the ``order`` keyword argument must also be"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2375,
+    "text": ">>> da.interpolate_na(dim=\"x\", method=\"linear\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2381,
+    "text": ">>> da.interpolate_na(dim=\"x\", method=\"linear\", fill_value=\"extrapolate\")"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2591,
+    "text": ">>> x.reindex({\"station\": new_index}, method=\"nearest\")"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "xarray/core/alignment.py",
+    "line": 489,
+    "text": "method: Optional[str] = None"
+   },
+   {
+    "path": "xarray/core/coordinates.py",
+    "line": 374,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1121,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1337,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1399,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1472,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1602,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2286,
+    "text": "method: str = \"linear\""
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|LocIndexer|method=",
+  "paths": [
+   "xarray/core",
+   "xarray/tests"
+  ],
+  "note": ".loc; name; method=",
+  "rg_code_hits": 182,
+  "rg_other_hits": 0,
+  "sg_matches": 171,
+  "rg_noise": 27,
+  "sg_only": 16,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 188,
+    "text": "class _LocIndexer:"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 229,
+    "text": "``x[:10]`` or by label (like pandas): ``x.loc['2014-01-01']`` or"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 741,
+    "text": "def loc(self) -> _LocIndexer:"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 743,
+    "text": "return _LocIndexer(self)"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1547,
+    "text": ">>> da.interp(x=[0, 0.75, 1.25, 1.75], method=\"nearest\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1561,
+    "text": "...     method=\"linear\","
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1575,
+    "text": ">>> da.interp(x=[0, 0.75, 1.25, 1.75], y=[11, 13, 15], method=\"linear\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2308,
+    "text": "``method='polynomial'``, the ``order`` keyword argument must also be"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "xarray/core/alignment.py",
+    "line": 489,
+    "text": "method: Optional[str] = None"
+   },
+   {
+    "path": "xarray/core/coordinates.py",
+    "line": 374,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1121,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1337,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1399,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1472,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1602,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2286,
+    "text": "method: str = \"linear\""
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|LocIndexer|method=|fill method|Invalid fill method",
+  "paths": [
+   "xarray"
+  ],
+  "note": ".loc; name; method= ; message string",
+  "rg_code_hits": 226,
+  "rg_other_hits": 0,
+  "sg_matches": 180,
+  "rg_noise": 62,
+  "sg_only": 16,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/backends/api.py",
+    "line": 32,
+    "text": "from .locks import _get_scheduler"
+   },
+   {
+    "path": "xarray/backends/cfgrib_.py",
+    "line": 9,
+    "text": "from .locks import SerializableLock, ensure_lock"
+   },
+   {
+    "path": "xarray/backends/cfgrib_.py",
+    "line": 31,
+    "text": "with self.datastore.lock:"
+   },
+   {
+    "path": "xarray/backends/cfgrib_.py",
+    "line": 45,
+    "text": "self.lock = ensure_lock(lock)"
+   },
+   {
+    "path": "xarray/backends/common.py",
+    "line": 134,
+    "text": "self.lock = lock"
+   },
+   {
+    "path": "xarray/backends/common.py",
+    "line": 158,
+    "text": "lock=self.lock,"
+   },
+   {
+    "path": "xarray/backends/file_manager.py",
+    "line": 9,
+    "text": "from .locks import acquire"
+   },
+   {
+    "path": "xarray/backends/h5netcdf_.py",
+    "line": 13,
+    "text": "from .locks import HDF5_LOCK, combine_locks, ensure_lock, get_write_lock"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "xarray/core/alignment.py",
+    "line": 489,
+    "text": "method: Optional[str] = None"
+   },
+   {
+    "path": "xarray/core/coordinates.py",
+    "line": 374,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1121,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1337,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1399,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1472,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1602,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2286,
+    "text": "method: str = \"linear\""
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|class .*Loc|method=",
+  "paths": [
+   "xarray/core"
+  ],
+  "note": ".loc; class *Loc; method=",
+  "rg_code_hits": 53,
+  "rg_other_hits": 0,
+  "sg_matches": 51,
+  "rg_noise": 17,
+  "sg_only": 16,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 229,
+    "text": "``x[:10]`` or by label (like pandas): ``x.loc['2014-01-01']`` or"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1547,
+    "text": ">>> da.interp(x=[0, 0.75, 1.25, 1.75], method=\"nearest\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1561,
+    "text": "...     method=\"linear\","
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1575,
+    "text": ">>> da.interp(x=[0, 0.75, 1.25, 1.75], y=[11, 13, 15], method=\"linear\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2308,
+    "text": "``method='polynomial'``, the ``order`` keyword argument must also be"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2375,
+    "text": ">>> da.interpolate_na(dim=\"x\", method=\"linear\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2381,
+    "text": ">>> da.interpolate_na(dim=\"x\", method=\"linear\", fill_value=\"extrapolate\")"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2591,
+    "text": ">>> x.reindex({\"station\": new_index}, method=\"nearest\")"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "xarray/core/alignment.py",
+    "line": 489,
+    "text": "method: Optional[str] = None"
+   },
+   {
+    "path": "xarray/core/coordinates.py",
+    "line": 374,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1121,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1337,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1399,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1472,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1602,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2286,
+    "text": "method: str = \"linear\""
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|method=|method\\b",
+  "paths": [
+   "xarray/core"
+  ],
+  "note": ".loc; method= ; name",
+  "rg_code_hits": 374,
+  "rg_other_hits": 0,
+  "sg_matches": 191,
+  "rg_noise": 252,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/accessor_dt.py",
+    "line": 75,
+    "text": "access_method = _access_through_series"
+   },
+   {
+    "path": "xarray/core/accessor_dt.py",
+    "line": 77,
+    "text": "access_method = _access_through_cftimeindex"
+   },
+   {
+    "path": "xarray/core/accessor_dt.py",
+    "line": 89,
+    "text": "access_method, values, name, dtype=dtype, new_axis=new_axis, chunks=chunks"
+   },
+   {
+    "path": "xarray/core/accessor_dt.py",
+    "line": 92,
+    "text": "return access_method(values, name)"
+   },
+   {
+    "path": "xarray/core/accessor_dt.py",
+    "line": 166,
+    "text": "access_method = _strftime_through_series"
+   },
+   {
+    "path": "xarray/core/accessor_dt.py",
+    "line": 168,
+    "text": "access_method = _strftime_through_cftimeindex"
+   },
+   {
+    "path": "xarray/core/accessor_dt.py",
+    "line": 172,
+    "text": "return map_blocks(access_method, values, date_format)"
+   },
+   {
+    "path": "xarray/core/accessor_dt.py",
+    "line": 174,
+    "text": "return access_method(values, date_format)"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class .*Loc|\\.loc|method=|method",
+  "paths": [
+   "xarray/core"
+  ],
+  "note": "class *Loc; .loc; method= ; names containing method",
+  "rg_code_hits": 452,
+  "rg_other_hits": 0,
+  "sg_matches": 334,
+  "rg_noise": 191,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/accessor_str.py",
+    "line": 2,
+    "text": "# pandas string methods source code (see pd.core.strings)"
+   },
+   {
+    "path": "xarray/core/accessor_str.py",
+    "line": 663,
+    "text": "This method has the same keyword parameters and defaults as"
+   },
+   {
+    "path": "xarray/core/alignment.py",
+    "line": 513,
+    "text": "method : {None, 'nearest', 'pad'/'ffill', 'backfill'/'bfill'}, optional"
+   },
+   {
+    "path": "xarray/core/arithmetic.py",
+    "line": 19,
+    "text": "# TODO: implement special methods for arithmetic here rather than injecting"
+   },
+   {
+    "path": "xarray/core/arithmetic.py",
+    "line": 50,
+    "text": "# TODO: support other methods, e.g., reduce and accumulate."
+   },
+   {
+    "path": "xarray/core/arithmetic.py",
+    "line": 52,
+    "text": "\"{} method for ufunc {} is not implemented on xarray objects, \""
+   },
+   {
+    "path": "xarray/core/arithmetic.py",
+    "line": 53,
+    "text": "\"which currently only support the __call__ method. As an \""
+   },
+   {
+    "path": "xarray/core/arithmetic.py",
+    "line": 84,
+    "text": "# methods are defined and don't warn on these operations"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class _LocIndexer|LocIndexer|loc\\[",
+  "paths": [
+   "xarray"
+  ],
+  "note": "class; name; .loc[...]",
+  "rg_code_hits": 77,
+  "rg_other_hits": 0,
+  "sg_matches": 67,
+  "rg_noise": 12,
+  "sg_only": 0,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/coding/cftimeindex.py",
+    "line": 479,
+    "text": "return series.iloc[key]"
+   },
+   {
+    "path": "xarray/coding/cftimeindex.py",
+    "line": 481,
+    "text": "return series.iloc[self.slice_indexer(key.start, key.stop, key.step)]"
+   },
+   {
+    "path": "xarray/coding/cftimeindex.py",
+    "line": 483,
+    "text": "return series.iloc[self.get_loc(key)]"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 229,
+    "text": "``x[:10]`` or by label (like pandas): ``x.loc['2014-01-01']`` or"
+   },
+   {
+    "path": "xarray/tests/test_cftimeindex.py",
+    "line": 650,
+    "text": "assert series.iloc[0] == expected"
+   },
+   {
+    "path": "xarray/tests/test_cftimeindex.py",
+    "line": 653,
+    "text": "assert series.iloc[:2].equals(expected)"
+   },
+   {
+    "path": "xarray/tests/test_cftimeindex.py",
+    "line": 659,
+    "text": "expected = series.iloc[:2]"
+   },
+   {
+    "path": "xarray/tests/test_cftimeindex.py",
+    "line": 680,
+    "text": "result = df.iloc[0]"
+   }
+  ],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class _LocIndexer|def __getitem__\\(self, key\\).*",
+  "paths": [
+   "xarray/core"
+  ],
+  "note": "class; def __getitem__(self, key)",
+  "rg_code_hits": 14,
+  "rg_other_hits": 0,
+  "sg_matches": 14,
+  "rg_noise": 0,
+  "sg_only": 0,
+  "rg_noise_sample": [],
+  "sg_only_sample": []
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class.*Loc|\\.loc|method=|method\\)",
+  "paths": [
+   "xarray/core"
+  ],
+  "note": "class *Loc*; .loc; method= ; method as an argument",
+  "rg_code_hits": 63,
+  "rg_other_hits": 0,
+  "sg_matches": 70,
+  "rg_noise": 22,
+  "sg_only": 30,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 229,
+    "text": "``x[:10]`` or by label (like pandas): ``x.loc['2014-01-01']`` or"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1547,
+    "text": ">>> da.interp(x=[0, 0.75, 1.25, 1.75], method=\"nearest\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1561,
+    "text": "...     method=\"linear\","
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1575,
+    "text": ">>> da.interp(x=[0, 0.75, 1.25, 1.75], y=[11, 13, 15], method=\"linear\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2308,
+    "text": "``method='polynomial'``, the ``order`` keyword argument must also be"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2375,
+    "text": ">>> da.interpolate_na(dim=\"x\", method=\"linear\")"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 2381,
+    "text": ">>> da.interpolate_na(dim=\"x\", method=\"linear\", fill_value=\"extrapolate\")"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2591,
+    "text": ">>> x.reindex({\"station\": new_index}, method=\"nearest\")"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "xarray/core/alignment.py",
+    "line": 489,
+    "text": "method: Optional[str] = None"
+   },
+   {
+    "path": "xarray/core/alignment.py",
+    "line": 570,
+    "text": "(index, target, method, tolerance)"
+   },
+   {
+    "path": "xarray/core/arithmetic.py",
+    "line": 55,
+    "text": "(method, ufunc)"
+   },
+   {
+    "path": "xarray/core/coordinates.py",
+    "line": 374,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1121,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1337,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1399,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataarray.py",
+    "line": 1472,
+    "text": "method: str = \"linear\""
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "method=\"nearest\"|method=",
+  "paths": [
+   "xarray/core/dataset.py"
+  ],
+  "note": "method=\"nearest\"; method=",
+  "rg_code_hits": 11,
+  "rg_other_hits": 0,
+  "sg_matches": 10,
+  "rg_noise": 8,
+  "sg_only": 7,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2591,
+    "text": ">>> x.reindex({\"station\": new_index}, method=\"nearest\")"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2637,
+    "text": ">>> x3 = x2.reindex({\"time\": time_index2}, method=\"bfill\")"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2800,
+    "text": ">>> ds.interp(x=[0, 0.75, 1.25, 1.75], method=\"nearest\")"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2814,
+    "text": "...     method=\"linear\","
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2828,
+    "text": ">>> ds.interp(x=[0, 0.75, 1.25, 1.75], y=[11, 13, 15], method=\"linear\")"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 4307,
+    "text": "``method='polynomial'``, the ``order`` keyword argument must also be"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 4381,
+    "text": ">>> ds.interpolate_na(dim=\"x\", method=\"linear\")"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 4392,
+    "text": ">>> ds.interpolate_na(dim=\"x\", method=\"linear\", fill_value=\"extrapolate\")"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2164,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2411,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2472,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2685,
+    "text": "method: str = None"
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2719,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 2922,
+    "text": "method: str = \"linear\""
+   },
+   {
+    "path": "xarray/core/dataset.py",
+    "line": 4285,
+    "text": "method: str = \"linear\""
+   }
+  ]
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "remap_label_indexers|\\.sel\\(.*method|\\.loc",
+  "paths": [
+   "xarray/tests/test_dataarray.py",
+   "xarray/tests"
+  ],
+  "note": "name; .sel(..method=..); .loc",
+  "rg_code_hits": 106,
+  "rg_other_hits": 0,
+  "sg_matches": 103,
+  "rg_noise": 4,
+  "sg_only": 1,
+  "rg_noise_sample": [
+   {
+    "path": "xarray/tests/test_dask.py",
+    "line": 961,
+    "text": "for get in [dask.threaded.get, dask.multiprocessing.get, dask.local.get_sync, None]:"
+   },
+   {
+    "path": "xarray/tests/test_dataset.py",
+    "line": 4036,
+    "text": "# use .loc to ensure consistent results on Python 3"
+   },
+   {
+    "path": "xarray/tests/test_distributed.py",
+    "line": 15,
+    "text": "from xarray.backends.locks import HDF5_LOCK, CombinedLock"
+   },
+   {
+    "path": "xarray/tests/test_indexing.py",
+    "line": 122,
+    "text": "def test_remap_label_indexers(self):"
+   }
+  ],
+  "sg_only_sample": [
+   {
+    "path": "xarray/tests/test_dataset.py",
+    "line": 1663,
+    "text": "data.sel(\n            x=Variable((\"points\",), [0.1, 1.1, 2.5]),\n            y=Variable((\"points\",), [0, 1.2, 2.0]),\n            method=\"pad\",\n        )"
+   }
+  ]
+ }
+]

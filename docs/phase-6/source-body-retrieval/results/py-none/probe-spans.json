@@ -1,0 +1,709 @@
+[
+ {
+  "task": "py-exact-retrypolicy",
+  "corpus": "fixture:py_repo",
+  "file": "oxidepy/retry.py",
+  "lines": [
+   15,
+   45
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:oxidepy/retry.py#RetryPolicy",
+   "symbol:oxidepy/retry.py#RetryPolicy.__init__",
+   "symbol:oxidepy/retry.py#RetryPolicy.exhausted",
+   "symbol:oxidepy/retry.py#RetryPolicy.should_retry",
+   "symbol:oxidepy/retry.py#RetryPolicy.backoff_ms",
+   "symbol:oxidepy/retry.py#RetryPolicy.wait"
+  ]
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "corpus": "fixture:py_repo",
+  "file": "oxidepy/retry.py",
+  "lines": [
+   31,
+   37
+  ],
+  "rank": 7,
+  "file_rank": 2,
+  "holders": [
+   "symbol:oxidepy/retry.py#RetryPolicy",
+   "symbol:oxidepy/retry.py#RetryPolicy.should_retry"
+  ]
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "corpus": "fixture:py_repo",
+  "file": "oxidepy/http_client.py",
+  "lines": [
+   22,
+   34
+  ],
+  "rank": 2,
+  "file_rank": 1,
+  "holders": [
+   "symbol:oxidepy/http_client.py#HttpClient",
+   "symbol:oxidepy/http_client.py#HttpClient.fetch"
+  ]
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "corpus": "fixture:py_repo",
+  "file": "oxidepy/auth.py",
+  "lines": [
+   40,
+   47
+  ],
+  "rank": 2,
+  "file_rank": 2,
+  "holders": [
+   "symbol:oxidepy/auth.py#AuthService",
+   "symbol:oxidepy/auth.py#AuthService.refresh_token"
+  ]
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "corpus": "fixture:py_repo",
+  "file": "tests/test_retry.py",
+  "lines": [
+   8,
+   11
+  ],
+  "rank": 3,
+  "file_rank": 2,
+  "holders": [
+   "symbol:tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts"
+  ]
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "corpus": "fixture:py_repo",
+  "file": "oxidepy/cache.py",
+  "lines": [
+   6,
+   25
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:oxidepy/cache.py#TTLCache",
+   "symbol:oxidepy/cache.py#TTLCache.__init__",
+   "symbol:oxidepy/cache.py#TTLCache.get_or_set",
+   "symbol:oxidepy/cache.py#TTLCache.invalidate"
+  ]
+ },
+ {
+  "task": "py-implementors-notifier",
+  "corpus": "fixture:py_repo",
+  "file": "oxidepy/notifiers.py",
+  "lines": [
+   13,
+   18
+  ],
+  "rank": 3,
+  "file_rank": 1,
+  "holders": [
+   "symbol:oxidepy/notifiers.py#EmailNotifier",
+   "symbol:oxidepy/notifiers.py#EmailNotifier.__init__",
+   "symbol:oxidepy/notifiers.py#EmailNotifier.notify"
+  ]
+ },
+ {
+  "task": "py-implementors-notifier",
+  "corpus": "fixture:py_repo",
+  "file": "oxidepy/notifiers.py",
+  "lines": [
+   21,
+   26
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:oxidepy/notifiers.py#SlackNotifier",
+   "symbol:oxidepy/notifiers.py#SlackNotifier.__init__",
+   "symbol:oxidepy/notifiers.py#SlackNotifier.notify"
+  ]
+ },
+ {
+  "task": "py-callers-should-retry",
+  "corpus": "fixture:py_repo",
+  "file": "oxidepy/notifiers.py",
+  "lines": [
+   31,
+   33
+  ],
+  "rank": 2,
+  "file_rank": 2,
+  "holders": [
+   "symbol:oxidepy/notifiers.py#notify_after_final_attempt"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/_core/plot.py",
+  "lines": [
+   25,
+   31
+  ],
+  "rank": 525,
+  "file_rank": 1,
+  "holders": [
+   "file:seaborn/_core/plot.py"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/_core/plot.py",
+  "lines": [
+   1188,
+   1288
+  ],
+  "rank": 87,
+  "file_rank": 1,
+  "holders": [
+   "symbol:seaborn/_core/plot.py#Plotter",
+   "symbol:seaborn/_core/plot.py#Plotter._setup_scales"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/_core/plot.py",
+  "lines": [
+   1238,
+   1244
+  ],
+  "rank": 87,
+  "file_rank": 1,
+  "holders": [
+   "symbol:seaborn/_core/plot.py#Plotter",
+   "symbol:seaborn/_core/plot.py#Plotter._setup_scales"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/_core/plot.py",
+  "lines": [
+   1628,
+   1649
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:seaborn/_core/plot.py#Plotter",
+   "symbol:seaborn/_core/plot.py#Plotter._finalize_figure"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/_core/plot.py",
+  "lines": [
+   1631,
+   1636
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:seaborn/_core/plot.py#Plotter",
+   "symbol:seaborn/_core/plot.py#Plotter._finalize_figure"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/_core/plot.py",
+  "lines": [
+   1644,
+   1649
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:seaborn/_core/plot.py#Plotter",
+   "symbol:seaborn/_core/plot.py#Plotter._finalize_figure"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/_core/properties.py",
+  "lines": [
+   62,
+   76
+  ],
+  "rank": 564,
+  "file_rank": 10,
+  "holders": [
+   "symbol:seaborn/_core/properties.py#Property",
+   "symbol:seaborn/_core/properties.py#Property.default_scale"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/_core/properties.py",
+  "lines": [
+   143,
+   152
+  ],
+  "rank": 1263,
+  "file_rank": 10,
+  "holders": [
+   "symbol:seaborn/_core/properties.py#Coordinate",
+   "file:seaborn/_core/properties.py"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/_core/scales.py",
+  "lines": [
+   137,
+   228
+  ],
+  "rank": 35,
+  "file_rank": 13,
+  "holders": [
+   "symbol:seaborn/_core/scales.py#Nominal",
+   "symbol:seaborn/_core/scales.py#Nominal._setup",
+   "symbol:seaborn/_core/scales.py#Nominal._setup.CatScale",
+   "symbol:seaborn/_core/scales.py#Nominal._setup.CatScale.set_default_locators_and_formatters",
+   "symbol:seaborn/_core/scales.py#Nominal._setup.convert_units",
+   "symbol:seaborn/_core/scales.py#Nominal._setup.spacer"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/categorical.py",
+  "lines": [
+   195,
+   224
+  ],
+  "rank": 56,
+  "file_rank": 5,
+  "holders": [
+   "symbol:seaborn/categorical.py#_CategoricalPlotterNew",
+   "symbol:seaborn/categorical.py#_CategoricalPlotterNew._adjust_cat_axis"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "seaborn/distributions.py",
+  "lines": [
+   570,
+   663
+  ],
+  "rank": 233,
+  "file_rank": 11,
+  "holders": [
+   "symbol:seaborn/distributions.py#_DistributionPlotter",
+   "symbol:seaborn/distributions.py#_DistributionPlotter.plot_univariate_histogram"
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "file": "tests/test_distributions.py",
+  "lines": [
+   288,
+   304
+  ],
+  "rank": 353,
+  "file_rank": 6,
+  "holders": [
+   "symbol:tests/test_distributions.py#TestRugPlot",
+   "symbol:tests/test_distributions.py#TestRugPlot.test_expand_margins"
+  ]
+ },
+ {
+  "task": "pallets__flask-5014",
+  "corpus": "pallets__flask@7ee9ceb71e86",
+  "file": "src/flask/blueprints.py",
+  "lines": [
+   190,
+   195
+  ],
+  "rank": 64,
+  "file_rank": 13,
+  "holders": [
+   "symbol:src/flask/blueprints.py#Blueprint",
+   "symbol:src/flask/blueprints.py#Blueprint.__init__"
+  ]
+ },
+ {
+  "task": "pallets__flask-5014",
+  "corpus": "pallets__flask@7ee9ceb71e86",
+  "file": "src/flask/blueprints.py",
+  "lines": [
+   191,
+   207
+  ],
+  "rank": 64,
+  "file_rank": 13,
+  "holders": [
+   "symbol:src/flask/blueprints.py#Blueprint",
+   "symbol:src/flask/blueprints.py#Blueprint.__init__"
+  ]
+ },
+ {
+  "task": "psf__requests-6028",
+  "corpus": "psf__requests@0192aac24123",
+  "file": "requests/adapters.py",
+  "lines": [
+   293,
+   318
+  ],
+  "rank": 125,
+  "file_rank": 7,
+  "holders": [
+   "symbol:requests/adapters.py#HTTPAdapter",
+   "symbol:requests/adapters.py#HTTPAdapter.get_connection"
+  ]
+ },
+ {
+  "task": "psf__requests-6028",
+  "corpus": "psf__requests@0192aac24123",
+  "file": "requests/adapters.py",
+  "lines": [
+   373,
+   393
+  ],
+  "rank": 100,
+  "file_rank": 7,
+  "holders": [
+   "symbol:requests/adapters.py#HTTPAdapter",
+   "symbol:requests/adapters.py#HTTPAdapter.proxy_headers"
+  ]
+ },
+ {
+  "task": "psf__requests-6028",
+  "corpus": "psf__requests@0192aac24123",
+  "file": "requests/utils.py",
+  "lines": [
+   960,
+   983
+  ],
+  "rank": 49,
+  "file_rank": 11,
+  "holders": [
+   "symbol:requests/utils.py#prepend_scheme_if_needed"
+  ]
+ },
+ {
+  "task": "psf__requests-6028",
+  "corpus": "psf__requests@0192aac24123",
+  "file": "requests/utils.py",
+  "lines": [
+   974,
+   979
+  ],
+  "rank": 49,
+  "file_rank": 11,
+  "holders": [
+   "symbol:requests/utils.py#prepend_scheme_if_needed"
+  ]
+ },
+ {
+  "task": "psf__requests-6028",
+  "corpus": "psf__requests@0192aac24123",
+  "file": "requests/utils.py",
+  "lines": [
+   1027,
+   1041
+  ],
+  "rank": 657,
+  "file_rank": 11,
+  "holders": [
+   "symbol:requests/utils.py#urldefragauth"
+  ]
+ },
+ {
+  "task": "psf__requests-6028",
+  "corpus": "psf__requests@0192aac24123",
+  "file": "tests/test_utils.py",
+  "lines": [
+   600,
+   607
+  ],
+  "rank": 20,
+  "file_rank": 9,
+  "holders": [
+   "symbol:tests/test_utils.py#test_prepend_scheme_if_needed"
+  ]
+ },
+ {
+  "task": "psf__requests-2317",
+  "corpus": "psf__requests@091991be0da1",
+  "file": "requests/compat.py",
+  "lines": [
+   87,
+   115
+  ],
+  "rank": 245,
+  "file_rank": 35,
+  "holders": [
+   "file:requests/compat.py"
+  ]
+ },
+ {
+  "task": "psf__requests-2317",
+  "corpus": "psf__requests@091991be0da1",
+  "file": "requests/sessions.py",
+  "lines": [
+   11,
+   23
+  ],
+  "rank": 54,
+  "file_rank": 5,
+  "holders": [
+   "file:requests/sessions.py"
+  ]
+ },
+ {
+  "task": "psf__requests-2317",
+  "corpus": "psf__requests@091991be0da1",
+  "file": "requests/sessions.py",
+  "lines": [
+   13,
+   19
+  ],
+  "rank": 54,
+  "file_rank": 5,
+  "holders": [
+   "file:requests/sessions.py"
+  ]
+ },
+ {
+  "task": "psf__requests-2317",
+  "corpus": "psf__requests@091991be0da1",
+  "file": "requests/sessions.py",
+  "lines": [
+   120,
+   156
+  ],
+  "rank": 60,
+  "file_rank": 5,
+  "holders": [
+   "symbol:requests/sessions.py#SessionRedirectMixin",
+   "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects"
+  ]
+ },
+ {
+  "task": "psf__requests-2317",
+  "corpus": "psf__requests@091991be0da1",
+  "file": "requests/sessions.py",
+  "lines": [
+   425,
+   431
+  ],
+  "rank": 52,
+  "file_rank": 5,
+  "holders": [
+   "symbol:requests/sessions.py#Session",
+   "symbol:requests/sessions.py#Session.request"
+  ]
+ },
+ {
+  "task": "psf__requests-2317",
+  "corpus": "psf__requests@091991be0da1",
+  "file": "requests/utils.py",
+  "lines": [
+   655,
+   671
+  ],
+  "rank": 2,
+  "file_rank": 2,
+  "holders": [
+   "symbol:requests/utils.py#to_native_string"
+  ]
+ },
+ {
+  "task": "psf__requests-1142",
+  "corpus": "psf__requests@22623bd8c265",
+  "file": "requests/models.py",
+  "lines": [
+   386,
+   398
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:requests/models.py#PreparedRequest",
+   "symbol:requests/models.py#PreparedRequest.prepare_body",
+   "symbol:requests/models.py#PreparedRequest.prepare_content_length",
+   "symbol:requests/models.py#PreparedRequest.prepare_auth"
+  ]
+ },
+ {
+  "task": "psf__requests-5414",
+  "corpus": "psf__requests@39d0fdd9096f",
+  "file": "requests/models.py",
+  "lines": [
+   375,
+   420
+  ],
+  "rank": 78,
+  "file_rank": 2,
+  "holders": [
+   "symbol:requests/models.py#PreparedRequest",
+   "symbol:requests/models.py#PreparedRequest.prepare_url"
+  ]
+ },
+ {
+  "task": "psf__requests-5414",
+  "corpus": "psf__requests@39d0fdd9096f",
+  "file": "requests/models.py",
+  "lines": [
+   403,
+   409
+  ],
+  "rank": 78,
+  "file_rank": 2,
+  "holders": [
+   "symbol:requests/models.py#PreparedRequest",
+   "symbol:requests/models.py#PreparedRequest.prepare_url"
+  ]
+ },
+ {
+  "task": "psf__requests-5414",
+  "corpus": "psf__requests@39d0fdd9096f",
+  "file": "tests/test_requests.py",
+  "lines": [
+   77,
+   87
+  ],
+  "rank": 20,
+  "file_rank": 5,
+  "holders": [
+   "symbol:tests/test_requests.py#TestRequests",
+   "symbol:tests/test_requests.py#TestRequests.test_invalid_url"
+  ]
+ },
+ {
+  "task": "psf__requests-2931",
+  "corpus": "psf__requests@5f7a3a74aab1",
+  "file": "requests/models.py",
+  "lines": [
+   74,
+   99
+  ],
+  "rank": 12,
+  "file_rank": 7,
+  "holders": [
+   "symbol:requests/models.py#RequestEncodingMixin",
+   "symbol:requests/models.py#RequestEncodingMixin._encode_params"
+  ]
+ },
+ {
+  "task": "psf__requests-2931",
+  "corpus": "psf__requests@5f7a3a74aab1",
+  "file": "requests/models.py",
+  "lines": [
+   81,
+   87
+  ],
+  "rank": 12,
+  "file_rank": 7,
+  "holders": [
+   "symbol:requests/models.py#RequestEncodingMixin",
+   "symbol:requests/models.py#RequestEncodingMixin._encode_params"
+  ]
+ },
+ {
+  "task": "psf__requests-2931",
+  "corpus": "psf__requests@5f7a3a74aab1",
+  "file": "requests/models.py",
+  "lines": [
+   372,
+   387
+  ],
+  "rank": 104,
+  "file_rank": 7,
+  "holders": [
+   "symbol:requests/models.py#PreparedRequest",
+   "symbol:requests/models.py#PreparedRequest.prepare_url"
+  ]
+ },
+ {
+  "task": "psf__requests-2931",
+  "corpus": "psf__requests@5f7a3a74aab1",
+  "file": "requests/models.py",
+  "lines": [
+   385,
+   390
+  ],
+  "rank": 104,
+  "file_rank": 7,
+  "holders": [
+   "symbol:requests/models.py#PreparedRequest",
+   "symbol:requests/models.py#PreparedRequest.prepare_url"
+  ]
+ },
+ {
+  "task": "psf__requests-2931",
+  "corpus": "psf__requests@5f7a3a74aab1",
+  "file": "requests/utils.py",
+  "lines": [
+   686,
+   704
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:requests/utils.py#to_native_string"
+  ]
+ },
+ {
+  "task": "psf__requests-1766",
+  "corpus": "psf__requests@847735553aed",
+  "file": "requests/auth.py",
+  "lines": [
+   105,
+   111
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:requests/auth.py#HTTPDigestAuth",
+   "symbol:requests/auth.py#HTTPDigestAuth.build_digest_header"
+  ]
+ },
+ {
+  "task": "psf__requests-1766",
+  "corpus": "psf__requests@847735553aed",
+  "file": "requests/auth.py",
+  "lines": [
+   122,
+   149
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:requests/auth.py#HTTPDigestAuth",
+   "symbol:requests/auth.py#HTTPDigestAuth.build_digest_header"
+  ]
+ },
+ {
+  "task": "psf__requests-1766",
+  "corpus": "psf__requests@847735553aed",
+  "file": "requests/auth.py",
+  "lines": [
+   144,
+   150
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:requests/auth.py#HTTPDigestAuth",
+   "symbol:requests/auth.py#HTTPDigestAuth.build_digest_header"
+  ]
+ }
+]

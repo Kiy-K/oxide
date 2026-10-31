@@ -1,0 +1,229 @@
+[
+ {
+  "corpus": "pallets__flask@7ee9ceb71e86",
+  "unresolved": {
+   "bare": 666,
+   "qualified": 2001,
+   "self.attr.m": 62,
+   "self.m": 30,
+   "super().m": 24
+  },
+  "linked": {
+   "ambiguous": 29,
+   "resolved": 968
+  },
+  "top_receiver": [
+   [
+    "self.options.get",
+    5
+   ],
+   [
+    "self.serializer.tag",
+    5
+   ],
+   [
+    "self.add_command",
+    4
+   ],
+   [
+    "self.session_class",
+    3
+   ],
+   [
+    "self.response_class",
+    2
+   ],
+   [
+    "self.__dict__.pop",
+    2
+   ],
+   [
+    "self._cv_tokens.append",
+    2
+   ],
+   [
+    "self._cv_tokens.pop",
+    2
+   ],
+   [
+    "self._app.response_class",
+    2
+   ],
+   [
+    "self.app.iter_blueprints",
+    2
+   ]
+  ]
+ },
+ {
+  "corpus": "psf__requests@0192aac24123",
+  "unresolved": {
+   "bare": 670,
+   "qualified": 769,
+   "self.attr.m": 47,
+   "self.m": 16
+  },
+  "linked": {
+   "ambiguous": 20,
+   "resolved": 857
+  },
+  "top_receiver": [
+   [
+    "self.request",
+    7
+   ],
+   [
+    "self._thread_local.chal.get",
+    3
+   ],
+   [
+    "self.build_response",
+    2
+   ],
+   [
+    "self._r.headers.get",
+    2
+   ],
+   [
+    "self.__dict__.update",
+    2
+   ],
+   [
+    "self.headers.get",
+    2
+   ],
+   [
+    "self.reason.decode",
+    2
+   ],
+   [
+    "self._store.values",
+    2
+   ],
+   [
+    "self.__dict__.get",
+    2
+   ],
+   [
+    "self.ready_event.set",
+    2
+   ]
+  ]
+ },
+ {
+  "corpus": "pydata__xarray@1757dffac2fa",
+  "unresolved": {
+   "bare": 5702,
+   "cls.attr.m": 2,
+   "cls.m": 11,
+   "qualified": 7922,
+   "self.attr.m": 400,
+   "self.m": 226,
+   "super().m": 2
+  },
+  "linked": {
+   "ambiguous": 624,
+   "resolved": 10424
+  },
+  "top_receiver": [
+   [
+    "self.cls",
+    83
+   ],
+   [
+    "self.plotmethod",
+    46
+   ],
+   [
+    "self.darray.plot",
+    21
+   ],
+   [
+    "self.plotfunc",
+    20
+   ],
+   [
+    "self.variables.items",
+    18
+   ],
+   [
+    "self._obj.dtype.type",
+    13
+   ],
+   [
+    "self.create_zarr_target",
+    13
+   ],
+   [
+    "self.darray.plot.line",
+    12
+   ],
+   [
+    "self._variables.items",
+    11
+   ],
+   [
+    "self.reduce",
+    9
+   ]
+  ]
+ },
+ {
+  "corpus": "pytest-dev__pytest@19ad5889353c",
+  "unresolved": {
+   "bare": 3090,
+   "cls.attr.m": 6,
+   "cls.m": 3,
+   "qualified": 9602,
+   "self.attr.m": 458,
+   "self.m": 79,
+   "super().m": 47
+  },
+  "linked": {
+   "ambiguous": 1215,
+   "resolved": 3271
+  },
+  "top_receiver": [
+   [
+    "self.config.getoption",
+    23
+   ],
+   [
+    "self._tw.line",
+    18
+   ],
+   [
+    "self.visit",
+    13
+   ],
+   [
+    "self._tw.write",
+    13
+   ],
+   [
+    "self.stats.get",
+    11
+   ],
+   [
+    "self.log_cli_handler.set_when",
+    9
+   ],
+   [
+    "self.path",
+    8
+   ],
+   [
+    "self.statements.append",
+    7
+   ],
+   [
+    "self.tmpfile.seek",
+    7
+   ],
+   [
+    "self.write",
+    6
+   ]
+  ]
+ }
+]

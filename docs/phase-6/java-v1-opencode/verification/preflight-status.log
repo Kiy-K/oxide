@@ -1,0 +1,43 @@
+ D .agents/skills/jev-model-router/.claude-plugin/plugin.json
+ D .agents/skills/jev-model-router/README.md
+ D .agents/skills/jev-model-router/hooks/hooks.json
+ D .agents/skills/jev-model-router/hooks/jev-model-router.ts
+ D .agents/skills/jev-model-router/hooks/policy.ts
+ D .agents/skills/jev-model-router/tests/policy.test.ts
+ M .codex/config.toml
+ M README.md
+ M docs/phase-6/go-v1/README.md
+ M docs/phase-6/go-v1/verification/README.md
+ M docs/public-api.md
+ D logo.png
+ M pyproject.toml
+ M scripts/smoke_dist.py
+ M skills-lock.json
+ M src/oxide/core/indexing.py
+ M tests/python/contextbench.py
+ M tests/python/contextbench_ts.py
+ M uv.lock
+?? .agents/skills/oxide-eval-freeze/
+?? .agents/skills/security-audit/
+?? .claude/CLAUDE.md
+?? .claude/skills/security-audit
+?? .mcp.json
+?? docs/java.md
+?? docs/oxide-architecture.html
+?? docs/phase-6/baseline-v15/
+?? docs/phase-6/go-v1/oracle/
+?? docs/phase-6/java-v1-opencode/
+?? docs/phase-6/java-v1/
+?? docs/phase-6/rust-v1/real/bench-ripgrep.log
+?? docs/phase-6/rust-v1/real/ripgrep-audit.log
+?? docs/phase-6/rust-v1/real/ripgrep-real.log
+?? docs/phase-6/rust-v1/real/tokio-real.log
+?? docs/phase-6/rust-v1/rust-rows.json
+?? docs/phase-6/typescript-v12/
+?? fixtures/java_repo/
+?? md
+?? opencode.jsonc
+?? scripts/eval_java.py
+?? src/oxide/core/languages/java.py
+?? src/oxide/core/languages/java_resolve.py
+?? tests/python/test_java.py

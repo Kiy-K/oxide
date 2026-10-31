@@ -1,0 +1,372 @@
+{
+ "dev": {
+  "verified": {
+   "tasks": 25,
+   "spans": 115,
+   "lines": 1244,
+   "files": 44,
+   "entry_recall@1": 0.224444,
+   "entry_recall@5": 0.291111,
+   "entry_recall@20": 0.383333,
+   "entry_mrr": 0.326077,
+   "entry_file_recall": 0.456667,
+   "routed_coverage": 0.468333,
+   "span_recall@256": 0.193333,
+   "line_recall@256": 0.195339,
+   "file_recall@256": 0.356667,
+   "utilization@256": 0.915313,
+   "gold_unit_share@256": 0.185286,
+   "span_recall@1024": 0.32,
+   "line_recall@1024": 0.330098,
+   "file_recall@1024": 0.436667,
+   "utilization@1024": 0.905117,
+   "gold_unit_share@1024": 0.128441,
+   "span_recall@4096": 0.357778,
+   "line_recall@4096": 0.369967,
+   "file_recall@4096": 0.456667,
+   "utilization@4096": 0.748809,
+   "gold_unit_share@4096": 0.153081,
+   "classes": {
+    "ast": 11,
+    "contained": 14,
+    "exact": 81,
+    "path": 9
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 24,
+     "complete": 6,
+     "entry": 66,
+     "routing": 9,
+     "selection": 10
+    },
+    "1024": {
+     "budget": 19,
+     "complete": 11,
+     "entry": 66,
+     "routing": 9,
+     "selection": 10
+    },
+    "4096": {
+     "budget": 10,
+     "complete": 22,
+     "entry": 66,
+     "routing": 9,
+     "selection": 8
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 19,
+   "lines": 327,
+   "files": 11,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.0,
+   "entry_recall@20": 0.25,
+   "entry_mrr": 0.026111,
+   "entry_file_recall": 0.3,
+   "routed_coverage": 0.3,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.1,
+   "utilization@256": 0.937109,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.004762,
+   "file_recall@1024": 0.2,
+   "utilization@1024": 0.978711,
+   "gold_unit_share@1024": 0.005258,
+   "span_recall@4096": 0.2,
+   "line_recall@4096": 0.2,
+   "file_recall@4096": 0.3,
+   "utilization@4096": 0.996216,
+   "gold_unit_share@4096": 0.030081,
+   "classes": {
+    "drift": 13,
+    "range": 5,
+    "unresolved": 1
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 2,
+     "entry": 15,
+     "routing": 1,
+     "selection": 1
+    },
+    "1024": {
+     "budget": 2,
+     "entry": 15,
+     "routing": 1,
+     "selection": 1
+    },
+    "4096": {
+     "budget": 1,
+     "complete": 2,
+     "entry": 15,
+     "routing": 1
+    }
+   }
+  },
+  "lost_before_packing": {
+   "partial-file": 0,
+   "router-bound": 46,
+   "unresolved-import": 0,
+   "no-path": 29
+  },
+  "outside": {
+   "spans": 2,
+   "tasks": 2,
+   "by_extension": {
+    ".css": 1,
+    ".json": 1
+   }
+  },
+  "by_repository": {
+   "coder__code-server": {
+    "tasks": 2,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.375,
+    "entry_mrr": 0.145834,
+    "routed_coverage": 0.6875,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.25,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.013889,
+    "line_recall@4096": 0.240741
+   },
+   "darkreader__darkreader": {
+    "tasks": 2,
+    "entry_recall@5": 0.055556,
+    "entry_recall@20": 0.111111,
+    "entry_mrr": 0.1,
+    "routed_coverage": 0.333334,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.055556,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.013699,
+    "line_recall@4096": 0.091324
+   },
+   "fixture:ts_repo": {
+    "tasks": 8,
+    "entry_recall@5": 0.875,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.822115,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.604167,
+    "span_recall@1024": 1.0,
+    "span_recall@4096": 1.0,
+    "line_recall@256": 0.607885,
+    "line_recall@1024": 1.0,
+    "line_recall@4096": 1.0
+   },
+   "microsoft__vscode": {
+    "tasks": 14,
+    "entry_recall@5": 0.012821,
+    "entry_recall@20": 0.047009,
+    "entry_mrr": 0.083333,
+    "routed_coverage": 0.128205,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.025641,
+    "line_recall@256": 0.00157,
+    "line_recall@1024": 0.015175,
+    "line_recall@4096": 0.045003
+   }
+  }
+ },
+ "heldout": {
+  "lost_before_packing": {
+   "partial-file": 0,
+   "router-bound": 0,
+   "unresolved-import": 0,
+   "no-path": 0
+  },
+  "outside": {
+   "spans": 0,
+   "tasks": 0,
+   "by_extension": {}
+  },
+  "by_repository": {}
+ },
+ "all": {
+  "verified": {
+   "tasks": 25,
+   "spans": 115,
+   "lines": 1244,
+   "files": 44,
+   "entry_recall@1": 0.224444,
+   "entry_recall@5": 0.291111,
+   "entry_recall@20": 0.383333,
+   "entry_mrr": 0.326077,
+   "entry_file_recall": 0.456667,
+   "routed_coverage": 0.468333,
+   "span_recall@256": 0.193333,
+   "line_recall@256": 0.195339,
+   "file_recall@256": 0.356667,
+   "utilization@256": 0.915313,
+   "gold_unit_share@256": 0.185286,
+   "span_recall@1024": 0.32,
+   "line_recall@1024": 0.330098,
+   "file_recall@1024": 0.436667,
+   "utilization@1024": 0.905117,
+   "gold_unit_share@1024": 0.128441,
+   "span_recall@4096": 0.357778,
+   "line_recall@4096": 0.369967,
+   "file_recall@4096": 0.456667,
+   "utilization@4096": 0.748809,
+   "gold_unit_share@4096": 0.153081,
+   "classes": {
+    "ast": 11,
+    "contained": 14,
+    "exact": 81,
+    "path": 9
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 24,
+     "complete": 6,
+     "entry": 66,
+     "routing": 9,
+     "selection": 10
+    },
+    "1024": {
+     "budget": 19,
+     "complete": 11,
+     "entry": 66,
+     "routing": 9,
+     "selection": 10
+    },
+    "4096": {
+     "budget": 10,
+     "complete": 22,
+     "entry": 66,
+     "routing": 9,
+     "selection": 8
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 19,
+   "lines": 327,
+   "files": 11,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.0,
+   "entry_recall@20": 0.25,
+   "entry_mrr": 0.026111,
+   "entry_file_recall": 0.3,
+   "routed_coverage": 0.3,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.1,
+   "utilization@256": 0.937109,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.004762,
+   "file_recall@1024": 0.2,
+   "utilization@1024": 0.978711,
+   "gold_unit_share@1024": 0.005258,
+   "span_recall@4096": 0.2,
+   "line_recall@4096": 0.2,
+   "file_recall@4096": 0.3,
+   "utilization@4096": 0.996216,
+   "gold_unit_share@4096": 0.030081,
+   "classes": {
+    "drift": 13,
+    "range": 5,
+    "unresolved": 1
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 2,
+     "entry": 15,
+     "routing": 1,
+     "selection": 1
+    },
+    "1024": {
+     "budget": 2,
+     "entry": 15,
+     "routing": 1,
+     "selection": 1
+    },
+    "4096": {
+     "budget": 1,
+     "complete": 2,
+     "entry": 15,
+     "routing": 1
+    }
+   }
+  },
+  "lost_before_packing": {
+   "partial-file": 0,
+   "router-bound": 46,
+   "unresolved-import": 0,
+   "no-path": 29
+  },
+  "outside": {
+   "spans": 2,
+   "tasks": 2,
+   "by_extension": {
+    ".css": 1,
+    ".json": 1
+   }
+  },
+  "by_repository": {
+   "coder__code-server": {
+    "tasks": 2,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.375,
+    "entry_mrr": 0.145834,
+    "routed_coverage": 0.6875,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.25,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.013889,
+    "line_recall@4096": 0.240741
+   },
+   "darkreader__darkreader": {
+    "tasks": 2,
+    "entry_recall@5": 0.055556,
+    "entry_recall@20": 0.111111,
+    "entry_mrr": 0.1,
+    "routed_coverage": 0.333334,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.055556,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.013699,
+    "line_recall@4096": 0.091324
+   },
+   "fixture:ts_repo": {
+    "tasks": 8,
+    "entry_recall@5": 0.875,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.822115,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.604167,
+    "span_recall@1024": 1.0,
+    "span_recall@4096": 1.0,
+    "line_recall@256": 0.607885,
+    "line_recall@1024": 1.0,
+    "line_recall@4096": 1.0
+   },
+   "microsoft__vscode": {
+    "tasks": 14,
+    "entry_recall@5": 0.012821,
+    "entry_recall@20": 0.047009,
+    "entry_mrr": 0.083333,
+    "routed_coverage": 0.128205,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.025641,
+    "line_recall@256": 0.00157,
+    "line_recall@1024": 0.015175,
+    "line_recall@4096": 0.045003
+   }
+  }
+ }
+}

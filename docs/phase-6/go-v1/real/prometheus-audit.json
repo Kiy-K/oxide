@@ -1,0 +1,146 @@
+{
+ "calls": [
+  {
+   "source": "symbol:tsdb/db_test.go#testChunkQuerierOOOQuery",
+   "target": "symbol:model/labels/matcher.go#MustNewMatcher",
+   "text": "labels.MustNewMatcher",
+   "target_name": "MustNewMatcher",
+   "target_signature": "func MustNewMatcher(mt MatchType, name, val string) *Matcher"
+  },
+  {
+   "source": "symbol:web/api/v1/api_test.go#TestEndpoints",
+   "target": "symbol:model/timestamp/timestamp.go#FromTime",
+   "text": "timestamp.FromTime",
+   "target_name": "FromTime",
+   "target_signature": "func FromTime(t time.Time) int64"
+  },
+  {
+   "source": "symbol:tsdb/chunks/chunks_test.go#TestChunkFromSamplesWithST",
+   "target": "symbol:tsdb/chunks/chunks.go#ChunkFromSamples",
+   "text": "ChunkFromSamples",
+   "target_name": "ChunkFromSamples",
+   "target_signature": "func ChunkFromSamples(s []Sample) (Meta, error)"
+  },
+  {
+   "source": "symbol:model/textparse/protobufparse_test.go#TestProtobufParse",
+   "target": "symbol:model/textparse/openmetricsparse_test.go#int64p",
+   "text": "int64p",
+   "target_name": "int64p",
+   "target_signature": "func int64p(x int64) *int64"
+  },
+  {
+   "source": "symbol:tsdb/head.go#Head.getOrCreateWithOptionalID",
+   "target": "symbol:tsdb/chunks/chunks.go#HeadSeriesRef",
+   "text": "chunks.HeadSeriesRef",
+   "target_name": "HeadSeriesRef",
+   "target_signature": "type HeadSeriesRef uint64"
+  },
+  {
+   "source": "symbol:tsdb/db_append_v2_test.go#TestOOOWALWrite_AppendV2",
+   "target": "symbol:tsdb/tsdbutil/histogram.go#GenerateTestFloatHistogram",
+   "text": "tsdbutil.GenerateTestFloatHistogram",
+   "target_name": "GenerateTestFloatHistogram",
+   "target_signature": "func GenerateTestFloatHistogram(i int64) *histogram.FloatHistogram"
+  },
+  {
+   "source": "symbol:model/relabel/relabel_test.go#TestRelabel",
+   "target": "symbol:model/labels/labels_common.go#FromMap",
+   "text": "labels.FromMap",
+   "target_name": "FromMap",
+   "target_signature": "func FromMap(m map[string]string) Labels"
+  },
+  {
+   "source": "symbol:tsdb/wlog/checkpoint_test.go#TestCheckpoint_MinValidTimeNeverRegressesAcrossRestarts",
+   "target": "symbol:tsdb/wlog/checkpoint.go#ReadMinValidTime",
+   "text": "ReadMinValidTime",
+   "target_name": "ReadMinValidTime",
+   "target_signature": "func ReadMinValidTime(dir string) (mint int64, ok bool, err error)"
+  },
+  {
+   "source": "symbol:promql/engine_test.go#TestQueryStatistics",
+   "target": "symbol:promql/engine.go#NewPrometheusQueryOpts",
+   "text": "promql.NewPrometheusQueryOpts",
+   "target_name": "NewPrometheusQueryOpts",
+   "target_signature": "func NewPrometheusQueryOpts(enablePerStepStats bool, lookbackDelta time.Duration, useStartTimestamps *bool) QueryOpts"
+  },
+  {
+   "source": "symbol:model/textparse/interface.go#New",
+   "target": "symbol:model/textparse/protobufparse.go#NewProtobufParser",
+   "text": "NewProtobufParser",
+   "target_name": "NewProtobufParser",
+   "target_signature": "func NewProtobufParser(\n\tb []byte,\n\tignoreNativeHistograms, parseClassicHistograms, convertClassicHistogramsToNHCB, enableTypeAndUnitLabels bool,\n\tst *labels.SymbolTable,\n) Parser"
+  }
+ ],
+ "imports": [
+  {
+   "source": "file:promql/value_test.go",
+   "target": "module:go:model/labels/labels",
+   "text": "\"github.com/prometheus/prometheus/model/labels\"",
+   "target_name": "github.com/prometheus/prometheus/model/labels",
+   "target_signature": null
+  },
+  {
+   "source": "file:plugins/plugin_puppetdb.go",
+   "target": "module:go:discovery/puppetdb/puppetdb",
+   "text": "_ \"github.com/prometheus/prometheus/discovery/puppetdb\"",
+   "target_name": "github.com/prometheus/prometheus/discovery/puppetdb",
+   "target_signature": null
+  },
+  {
+   "source": "file:storage/remote/write_handler_test.go",
+   "target": "module:go:util/compression/compression",
+   "text": "\"github.com/prometheus/prometheus/util/compression\"",
+   "target_name": "github.com/prometheus/prometheus/util/compression",
+   "target_signature": null
+  },
+  {
+   "source": "file:web/api/v1/search_test.go",
+   "target": "module:go:model/labels/labels",
+   "text": "\"github.com/prometheus/prometheus/model/labels\"",
+   "target_name": "github.com/prometheus/prometheus/model/labels",
+   "target_signature": null
+  },
+  {
+   "source": "file:rules/group.go",
+   "target": "module:go:model/value/value",
+   "text": "\"github.com/prometheus/prometheus/model/value\"",
+   "target_name": "github.com/prometheus/prometheus/model/value",
+   "target_signature": null
+  },
+  {
+   "source": "file:storage/interface.go",
+   "target": "module:go:model/exemplar/exemplar",
+   "text": "\"github.com/prometheus/prometheus/model/exemplar\"",
+   "target_name": "github.com/prometheus/prometheus/model/exemplar",
+   "target_signature": null
+  },
+  {
+   "source": "file:promql/estimate_bench_test.go",
+   "target": "module:go:tsdb/tsdb",
+   "text": "\"github.com/prometheus/prometheus/tsdb\"",
+   "target_name": "github.com/prometheus/prometheus/tsdb",
+   "target_signature": null
+  },
+  {
+   "source": "file:cmd/promtool/rules.go",
+   "target": "module:go:model/timestamp/timestamp",
+   "text": "\"github.com/prometheus/prometheus/model/timestamp\"",
+   "target_name": "github.com/prometheus/prometheus/model/timestamp",
+   "target_signature": null
+  },
+  {
+   "source": "file:prompb/rwcommon/codec_test.go",
+   "target": "module:go:prompb/prompb",
+   "text": "\"github.com/prometheus/prometheus/prompb\"",
+   "target_name": "github.com/prometheus/prometheus/prompb",
+   "target_signature": null
+  },
+  {
+   "source": "file:discovery/nomad/metrics.go",
+   "target": "module:go:discovery/discovery",
+   "text": "\"github.com/prometheus/prometheus/discovery\"",
+   "target_name": "github.com/prometheus/prometheus/discovery",
+   "target_signature": null
+  }
+ ]
+}

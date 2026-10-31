@@ -1,0 +1,6518 @@
+[
+ {
+  "commit": "4ab865a848a1da3d10fb674f857e5fff13094644",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2fde3239ca3cdb9b152870f695cd3401fcaada94",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/cssVars.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/style/cssVars.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "599f35bbb21f3d78b7aa0818342ab4f27442a333",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/readonly.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/arrayInstrumentations.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "243aabccf05fefb3760f2dab1c2d75aa424baad7",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/setupHelpers.test-d.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentProps.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "718f782b14c7e0165d20b6f4dd8664f78054b62c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/shared/__tests__/looseEqual.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/shared/src/looseEqual.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9a1df69b63fecd743919af89a419783dd030b9f7",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/compileScript.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "d6febaab8c0d95a6320e7e37276c00e8159e9cb2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b9456cb40db714a6f573a1713d92e96d4c9e9533",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-dom/__tests__/transforms/transformStyle.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/shared/__tests__/normalizeProp.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/shared/src/normalizeProp.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "d720338d5d29c1fac82abbe6f7066fe703ce624d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/rendererOptimizedMode.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/vnode.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/vue/__tests__/index.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8b44b02167abeb31b18b10a7eb42a03aa18d7f1b",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/vue/__tests__/e2e/TransitionGroup.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "54097087a0918b98f16c84599b1a6d654e952ca7",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/compileScript.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5dda192082afa4985951d90e229324d522e25c22",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "fb9b45ce780f656a23fcb374eb8ea9f7abadc594",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "76d42dc1874e82e62e9650debd68a53472d810e0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "bfcfe9e4d0254f85af452544a058291ef88dce1a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2cde6f754cb3e4695a21fb5719e0c75ee2fc5c61",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "d105e19e914bca6e1140bfec074e055ed0679e21",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/vue/jsx.d.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b8543dcf06eea9b5ca3e4550274d4aa4af21662b",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vBind.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/errors.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/transformVBindShorthand.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "38577161c0cfcd4e1013eec0030b781a32fc3744",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vBind.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/errors.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/transformVBindShorthand.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "31da934fcbe73ab8ed187bf820c80b24ced474be",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/patchStyle.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/modules/style.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "f8d42e1cf2a0ccb43c50fad6e972cb130c53824e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/componentEmits.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentEmits.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "cd1974562357dd73101d048f207a694a4e5310ec",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8654f35118a1165ac30fd398ceaff8849c44d9d5",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/componentPublicInstance.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentPublicInstance.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ef82a26775952a665545d3771788bd23b2efec91",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/directives/vModel.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/shared/__tests__/looseEqual.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/shared/src/looseEqual.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6eaecc14d8151a7d258b80ce0519e5ecc17a2bef",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/directives/vModel.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/directives/vModel.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b535917d46d5c6e28c1d3b9185bfa1665127c73a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/KeepAlive.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "a72036f66bcb9a4f3b3737cda19eeba1bc531e15",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "6e1814aa355aad8dd32a89873e95267297ae0609",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a2b40db9a83b36ed9da3a16403cf8f040262d73f",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/ssrRenderAttrs.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/shared/src/domAttrConfig.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b527b64be31f720ea01c3df5b0db1fb10881ac81",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages-private/sfc-playground/vite.config.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "4e467d7ae2cd7d0af031fac8865dcff73cb1cf16",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-dom/__tests__/transforms/stringifyStatic.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-dom/src/transforms/stringifyStatic.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-ssr/__tests__/ssrElement.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-ssr/src/transforms/ssrTransformElement.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrRenderAttrs.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderAttrs.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/shared/src/domAttrConfig.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "22b53eafecf56a9fb97f00b8e8b69c90a073d2d4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "02421cdbc4da5dd2eaf39e6c51aa790f9310db62",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/transformElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/ast.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/transformElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vFor.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/index.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2468464798a0fc050f86f8fa0bb96a34851bd824",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/directives/vModel.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "684a8defd2fdcba7eafa0c817b97ae1fab2c8b75",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/vnode.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/vnode.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/render.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "2506700b289c5277eb465bf959ce0ea23329094d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/helpers/renderSlot.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/helpers/renderSlot.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrSlot.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderSlot.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/index.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "77061fe88608a5ab77fec705ff65cb81779eb01c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/BaseTransition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentRenderUtils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/BaseTransition.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a4440c01b96798a23bef12cb6f9ada5ffaba0d3a",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/compileScript.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/compileTemplate.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/importUsageCheck.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c04a45d15498ebba0de3ceae674b88ac43cb9e76",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/scheduler.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/scheduler.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "71f9ff58a2a8748b2c1ec26c55c89f7343b86110",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a7513a1a3ed411ccd90bf135c6cba9c9cb2ef10b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b6191cbf95c680e076164a319dd987a14de658c1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrWatch.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0516c43284084f0526032a1cc312fb6916bf04fe",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/setupHelpers.test-d.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiSetupHelpers.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "37bf752bf1ff3df023f38fe43a8f12564db23b85",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/compiler-ssr/src/transforms/ssrVModel.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue-compat/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "20c9d263d3bfafdfbcc1921f259fd8f711e18659",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vFor.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vIf.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/ast.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/utils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/helpers/renderSlot.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/helpers/renderSlot.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7da6334f6162927cd41f9f369145722509540990",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/rendererTemplateRef.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/rendererTemplateRef.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "97f3525551ad06103083eb2cbf9858c5e57cd58e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiAsyncComponent.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "40178ddfc2b80c77db0f25a3d69819c9f5a3b689",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages-private/template-explorer/src/index.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/__tests__/transforms/cacheStatic.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/ast.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/transformElement.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vIf.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vOn.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/compileStyle.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/parse.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/utils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-ssr/src/transforms/ssrTransformElement.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/reactivity/src/ref.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/apiSetupHelpers.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/compat/renderFn.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/componentProps.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/h.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/helpers/createSlots.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/vnode.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-dom/src/components/Transition.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-dom/src/jsx.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/shared/src/typeUtils.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/e2eBrowserUtils.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8801e51ece2bf0c115f3ba31279e0230010d1114",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/ssrRender.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "378f9783248a4a4f20781d665d4f7089f39cae6e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/effectScope.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/effectScope.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "e0d27234ddd2061383cb5dcc475d6b9558ed8e4f",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "474907c0f01d021c564545137051a2b56eb4a769",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/render.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrSuspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/render.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ddc132d7c054ecd2029ddcc95bcba770cd44f022",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/componentRenderContext.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/helpers/renderSlot.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "vitest.config.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "4d35ecadb6f625b0f7407ccee0e357c2dd8084c7",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrCompile.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrGetDirectiveProps.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderComponent.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderList.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderSlot.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderTeleport.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/render.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/renderToStream.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/renderToString.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "bd962bbaca746d8f65775a07723420406ebad0da",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/render.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/shared/__tests__/escapeHtml.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/shared/src/escapeHtml.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "164460a52988c44dc34a541219c88120078372a0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/defineComponent.test-d.tsx",
+    "lang": "tsx",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiDefineComponent.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentPublicInstance.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "eb89e935a771ab7fc3f8e67a82bc8fc7ea28bdaa",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/directives/vModel.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/directives/vModel.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4b659e699925555464ea9ae8fa3e1984609f6dc2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/patchEvents.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/modules/events.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "232f4022e3160b30b11748a6d97ea2c15ed3b74f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/defineComponent.test-d.tsx",
+    "lang": "tsx",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentEmits.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "671997ade74e34880cebe3c340269b8598c3b26c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Teleport.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Teleport.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "164af639a120421194f7afe0e097bdf254c90199",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2f374cda18cbe331ede1a49a324b423c75d0faf3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/h.test-d.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/vnode.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/vnode.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "87b73b64a0d9b4e2dd2dacfe98f2f1c2396d7a61",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/componentEmits.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/componentEmits.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "027da6b2810c4752131439d2645f3d931d07242f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/ssrScopeId.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/render.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "024cf06daa33db4660431f20aa050acb99cff07f",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "be7ce314b96256f1c56f53088d51ed6bc77fde28",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/compat/transformFilter.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "932ddd058d69be9bbd8cd796c89f0d1a4fc128d7",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/rendererOptimizedMode.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "31d0f23757afb410c638a9c29d44d76d0944e18f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/ssrTeleport.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderTeleport.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/renderToString.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "3ac052b6b1e9d3978e98cc30a1a89a9b9b51358b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/rendererTemplateRef.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/rendererTemplateRef.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e450973eabc0038f398344b981acd8759c246c50",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/reactive.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/baseHandlers.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "747f57e9cdb3c5f084f8da5ca7e0e0b7b326b662",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/setupHelpers.test-d.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiSetupHelpers.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "325eb1d9a12e3b90fe36f755291b8f9ba5977820",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/TransitionGroup.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "vitest.config.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "30ba6473858d1f2cd155fb3a338499b680624bd1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "scripts/release.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0ea17e232f9a8f4a9acf57c6addc78cf4f279c13",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/parse.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/parser.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "db3e117025a7193291ed6676180a5a44bbe0ae76",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/compat/global.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/vue/__tests__/index.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5300ead57b3c14942d4c155ef5e485d5409e7f02",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/apiAsyncComponent.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiAsyncComponent.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7f76378b0d178a29113ee07d67faa48b637944e8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/helpers/useModel.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/helpers/useModel.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "c11f6ee644412edf3eef6736991e895e4a3e1dde",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/components/TransitionGroup.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/TransitionGroup.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0dcd225c01f211ebb8ce4dda8c8eac10539abf1a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/defineProps.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "68e978e3e71a8ae40701808e78966f2168c5907c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vMemo.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transform.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/transformExpression.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vFor.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "1f2ca7e4837b1b0de0b91048fffdb03710c0b03e",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/reactivity/src/watch.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/apiWatch.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "450a8a8e45520f30fe8343c5016a777d888e53fc",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/watch.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/watch.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "48ad452dd61926a59e358da3c74c5ef750ae21c4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/definePropsDestructure.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/definePropsDestructure.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "80fc139f90513943f1d0da20d353feec8a9ec894",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/BaseTransition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "bb18dc8e567ce22f1e5dfbc6b16c1003b48c2785",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/patchEvents.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/modules/events.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5734fe97f6e42d7abb1893c8bc38a17f7deb00b1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__benchmarks__/reactiveObject.bench.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/reactive.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "584beb1262d1247d41ed3b463c485c57022fa922",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/components/Teleport.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Teleport.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "34a0ded4d27289a8f227462bd35b6341a4b51831",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vFor.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vMemo.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vFor.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "170fc95eb64b97024dcb3df770557065e2919aa8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "1b7a2cc15c501a4b1e4be61874879381af59b74f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/ssrRenderList.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderList.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "3d077f26e33510f2ba001d14142ba76a1414dfff",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "47609975e294fbcc8017b6d68c9be38fa5508f36",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/ssrSuspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderSuspense.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "1ce598eb0ac7bed5bdc14857244424520498d29d",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/codegen.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "23d4fb5a6a070df3d2d4a043f0f62c141e376095",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/componentProps.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/componentProps.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "090b2e3a5149ec951c5313b270e5400a1fc870ce",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/templateTransformAssetUrl.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/template/transformAssetUrl.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9667e0d498ab39273614682986a666c3e73024d9",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/memory-leak.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c8e2d4adc9112d2529de0434acc1188dfc399bf4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/src/effect.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/reactivity/src/effectScope.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7f46fd411b4e3f75ca755ee1318ea8e9aff43f56",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "acfffe34e7724a84c21bb8e51e8a5bc0da35f350",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "bb9d265d8dcdde2af824fc01b24f9a7b3169f5fa",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileStyle.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/style/pluginScoped.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "11fb2fd4a246e40f6f350701dfea73ec525b4f59",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/patchStyle.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-dom/src/modules/style.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "45990cecf4604b2f39c571ab6aefa49d362af36a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/components/BaseTransition.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6a61f4452ba1a31fc929cadf8abe3337ac4d3a46",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Teleport.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "e7659beafc5407e892fa70f3f4ade80263b0905d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/effectScope.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/effectScope.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrWatch.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "vitest.config.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e168d6239db59531628b639e3a6f7b2ae8c8e804",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/vue/__tests__/e2e/hydrationStrategies.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "32b44f19f67aa30899817a7e79a4510f3b52970a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/components/Teleport.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Teleport.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f1663535a163057788d3285dec54a245c3efb3ad",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/apiSetupHelpers.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "302c47a4994bc8b47b8a2af6693d8cb6bbd4b06b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/reactivity.test-d.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages-private/dts-test/ref.test-d.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/reactive.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/ref.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e20ddb00188e9935884930046fa572eab7c9dcba",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/ref.test-d.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/ref.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "219d83bd305ce6fc052941acaaf02e7bc70616a4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/render.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrWatch.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/server-renderer/src/render.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/renderToStream.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/renderToString.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "3b561db4ab42d06166b002f13c0e97cb2bd4a061",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/reactivity.test-d.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/reactive.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/reactivity/src/ref.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "95c33560c9af369d44a7670d0c3b93fb62323be2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/templateTransformAssetUrl.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/__tests__/templateTransformSrcset.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/template/templateUtils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/template/transformAssetUrl.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/template/transformSrcset.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a2c17004c84e5ce3c4e82e35b806ba381144eed3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentRenderUtils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b39e0329f67354702f4e417e55c15c61d2439657",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/vnode.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/vnode.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "88ed04501555b9257df8d7ad86d844c2c2136e50",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Teleport.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "908c6ad05e1c76ae690d2e50f3bd28278af07e22",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9638524427ab50b420e58102ae79ef3bc6c5ab6f",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "1bb28d011b31bc75c80d2860bc6484cceec1ff20",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/ref.test-d.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/__tests__/ref.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/ref.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "959ded22ab7ea1453f607e0964e1fb6748ece6c7",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/directives/vModel.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/directives/vModel.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "560def426fc38c1710fda7ddd1ac634d67897960",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/transforms/vFor.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/helpers/withMemo.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5725222a6bc5d1dd032318349ce0c540b1d63a49",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/vnode.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/vnode.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "bd7eef0161d69bccd48ac303bc6a56ba8d718e2d",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/defineModel.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/defineModel.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "862f11ee017d51cb9573a8c0642055b3b17cace8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/render.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrWatch.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/server-renderer/src/render.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/renderToStream.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/renderToString.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "be0a2f1a7fc3d81d05638798cc628848cfa62cef",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/components/BaseTransition.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/hmr.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "d61d8031f0d547fdb75ab3525e54ace790a4db82",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/apiSetupHelpers.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "6cda71d48bd45c5e0ed2822866b83c4fafff1be9",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/apiSetupHelpers.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrWatch.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9438cc54506a38038a1bf4b6698025f9a4cafb48",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/helpers/renderList.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/helpers/renderList.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrRenderList.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderList.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "1398bf8dfbfef6b1bca154fc98d37044011a51be",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "d943612e59feb656e16568dea77b97856923c58c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/collections/Set.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/collectionHandlers.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "16ef165415224def18ec8247dabb84d5a1338c17",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/reactiveArray.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/arrayInstrumentations.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5dc27ca68fdbab95b37af15870d91515fc2412b2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/reactive.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/collectionHandlers.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "bbb89775b137eac12b92ae4eb49999a7fd6b52b0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/tsx.test-d.tsx",
+    "lang": "tsx",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentPublicInstance.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "740983e6736255b183ee27a3f8b40e89ad7e3ba3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/patchProp.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f06c81aa3dddbeff8bc2e2e63c0b6b6debcbdc13",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "cea3cf758645c9683db51822590b073ce3069dda",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/defineComponent.test-d.tsx",
+    "lang": "tsx",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiDefineComponent.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "702284f6a7d0dd6d4e648142e7977a3eb02d77f5",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/apiSetupHelpers.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiSetupHelpers.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "da6690cae359ec3576403c18040a1a5f017a63b1",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/ssrRenderAttrs.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderAttrs.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "521157d0c3c56ae685a30164687ed88460f8cedf",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/jsx.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "df059f890460e4c703b62a54f410627ff29c489b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/components/BaseTransition.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e71c26c03d44c9c93569ed7ebfe7dabaf3bbdb06",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "57866b5af1aff7ce1026b529443b81465c56f802",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/rendererComponent.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentRenderUtils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b0a1f0504a67fb1a6a110a5d05cdec0b878dde29",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/defineProps.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/defineProps.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "48b7552cce784725376a4fab078272676ce02d69",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/effectScope.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/effectScope.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "0243a792ac1cf8b0308f552927ed2ecd8627b839",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/components/TransitionGroup.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/TransitionGroup.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "261de547cd6685fc8862679941d93b530d504731",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/directives/vOn.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-dom/src/directives/vOn.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "fc40ca0216a7028f6ec0195344c976423e239ef3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/helpers/useTemplateRef.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/helpers/useTemplateRef.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/rendererTemplateRef.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "67988530f6a3cfdd0d80bf967033cb9abf377174",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/components/BaseTransition.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "4ace79ac4c66a4f96cd330b47474ce117bc851ab",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Teleport.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "d7bcd858883d90a1593b45cdc43f9fa55bc790bc",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Teleport.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c09d41ffe150903b1fcd69a6f6bdeea2d2c6c243",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/context.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4c47256b6d925b6c4257e02a47105e9917e07f06",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/reactiveArray.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/componentPublicInstance.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/components/BaseTransition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/vnodeHooks.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "vitest.config.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e0a2719766cbaa74d6c52394cc1e36bca84979e3",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-dom/src/transforms/Transition.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e1ccd9fde8f57fe7bd40fdf1345692ab3e6a1fa0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "35c360888b76f649fbbeb20c7d4d232fff735c92",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/componentSlots.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/KeepAlive.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/helpers/renderSlot.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7e554bf8975a6522cde00c261e8c6f1bffff1c24",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/componentSlots.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/KeepAlive.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/helpers/renderSlot.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0596a5f59128ed629910e60c80bfc6fbb9d38ebd",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/jsx.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "19cc7e2cd053629f3233cd55dff98951e69f5391",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "c2f5964c47890321cab40fcf0ebc528e6d00337f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/render.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderAttrs.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "3c8b2fc836b2f60c90c2459933e66b2fd9fb8c08",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/collections/Map.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/collectionHandlers.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "e4091fe1f917346a66ffa8d013b3cf4b331b6682",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "6a1bb50594db03904f401fc33ea85afa8fa71cf7",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/definePropsDestructure.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/definePropsDestructure.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "f0f0a21dfaf0f41bb2198106db0f4ff32b97dcd3",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "cde5d8f0efb1644d2f3cc1bfa7489c244f17f5df",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/reactivity/src/computed.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/reactivity/src/reactive.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/reactivity/src/ref.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a4708f324f62ac2122f87c4ee039deb2745f0905",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/server-renderer/__tests__/ssrRenderAttrs.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderAttrs.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "aac7e1898907445c8f89b22047a9bfcf0a6e91b8",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/src/script/defineProps.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/utils.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e857e12c0aff03c0148e3e52d92935918872dc33",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/apiCreateApp.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f33b3081027822136522443395e76bf6c113a091",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages-private/dts-test/setupHelpers.test-d.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/apiSetupHelpers.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "94aeb64ccdf20d541059b533c9780977c14db9cb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/rendererOptimizedMode.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "ed85953e28741ae1913cfc92b7b66e1a8da47f8c",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/modules/attrs.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/vue-compat/__tests__/misc.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "47831189196b62b12dd17f6e909efc51d9d22fd2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-ssr/__tests__/ssrFallthroughAttrs.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-ssr/src/transforms/ssrInjectFallthroughAttrs.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6611dda29817e30506356415456852ba892864d4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e24ff7d302a887ea532571c231a385362fa17279",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vModel.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/errors.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vModel.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-dom/src/errors.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/compileScript.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/importUsageCheck.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "69ce3c7d755db868cfa66d67ab5b3f383a44e053",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hmr.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "1904053f1f7986c2d6dbe858ee1b594b4b229c17",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/tokenizer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f5b3bf264d2e12725381bed1c492069437069b03",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "945a543152e8d80903d4f7a18a84ebe8d36e56f8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/compat/componentVModel.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue-compat/__tests__/componentVModel.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "dfe667c8567d48167c250062483d2d2cfc7bdc03",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/KeepAlive.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/KeepAlive.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "1e348711496d78fa39d9247dbc079923a3bcad12",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/parser.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/tokenizer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "rollup.config.js",
+    "lang": "javascript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f5adc4b8cdf3df1b572ac18a979ff56b1e252dda",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/ast.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/codegen.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/options.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transform.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/rendererAttrsFallthrough.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/rendererFragment.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/apiDefineComponent.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/compat/componentAsync.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/componentOptions.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentPublicInstance.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/jsx.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "edbd5ec81b8d6a0431e1eae41471a2f20dd8cbf7",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "rollup.dts.config.js",
+    "lang": "javascript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "c0f63ddbfa8fa221d66b683b5c26e471851c2b50",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "301020b481e85d03b0c96000f3221372063c41c6",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/readonly.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/arrayInstrumentations.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0d2357e6974678d5484751c869f429dc6ea85582",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/ref.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/baseHandlers.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "packages/reactivity/src/ref.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "247b2c2067afc4dee52f9f7bc194f3aab347ac55",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/apiInject.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiInject.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b50eb68c50f3b94dca2e96f706c3e96ab864df24",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5af3dd9b4546252222bb2e4d80499ba37cead03b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/componentPublicInstance.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2214f7ab2940bcb751cd20130c020d895db6c042",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/transformText.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vIf.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vSlot.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/parser.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vIf.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vSlot.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/utils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-dom/__tests__/transforms/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-dom/src/transforms/Transition.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8f82f238463160284e504d1751d61b72dabb395e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/defineComponent.test-d.tsx",
+    "lang": "tsx",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiDefineComponent.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentOptions.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "83f6ab686d18e0c2edd75fcc7019664fa21a65f3",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-ssr/src/transforms/ssrVModel.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "3942dbe61394526d33e78056028ab09d34581eb3",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/jsx.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f40baa2d506db4d13a17e64401774cb1e138cd33",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/jsx.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e9c676ff2b64724ad74f017bd280d623e8d72e6b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "90ce838a9476b9d5abbc98dea03559dc68228b29",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/src/effect.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "11ec51aa5a7914745fee10ed2b9f9464fab4d02c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/transformExpressions.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/transformExpression.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f411c6604c12c531883aa0d30b81a7f69092f8a6",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "dc4dd594fbecce6ed7f44ffa69dc8b5d022287b6",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/components/TransitionGroup.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/TransitionGroup.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "40c4b2a876ce606973521dfc3024e26bfc10953a",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/apiAsyncComponent.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "e6544ac292b5b473274f87cdb83ebeac3e7e61a4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/transformExpressions.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/transformExpression.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "75d44c718981f91843e197265cc68e82fe2532dd",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/utils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "dcc6f362577ed86ccad31c2623c6cf75137dd27a",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/transforms/transformVBindShorthand.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8fbe48fe396d830999afd07f9413d899157d5f5e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/directives/vModel.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-dom/src/directives/vModel.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6cbdf7823b0c961190bee5b7c117b7f2bbeb832f",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "006a0c1011a224bcbf21195c6df76812c3a7e757",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-ssr/src/transforms/ssrTransformElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrDirectives.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "b8aab3d2097db7c447da0ecc2e36784ba23febde",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/componentPublicInstance.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "84ca349fef73f6f55fc98299fcfa5c1eeef721db",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "8ca2b3fbb7179959d05174ccee6a8d59ba5412c5",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "eslint.config.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/jsx-runtime/index.d.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/vue/jsx.d.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5689884c8e32cda6a802ac36b4d23218f67b38ed",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/patchAttrs.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/patchProp.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b3cca2611c656b85f0c4e737b9ec248d2627dded",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vBind.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/parser.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/transformVBindShorthand.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "8ec7cb12e42948cb0203137367d12fd4ac457ef5",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/apiSetupHelpers.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "c13e674fb9f92ab9339d28a862d18de460faf56e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "1df8990504d524b5eaf365dfbebebfd0d8ac2dbb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/jsx.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "079010a38cfff4c49e0a13e54ebff0c189a4d5dc",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/directives/vModel.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2dbe30177fd3633e06a5e0f243bcf3c238962a57",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/componentOptions.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "c16f8a94c7eda79f51f44b7b3c64c72343df0d38",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/reactivity/src/effect.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "1be5ddfe878c8bfddaa2c50e82105b247f50b9ba",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/components/Transition.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/components/TransitionGroup.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5953c9ff90090e128372f645d377bd99137a5fb4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/transformExpressions.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/babelUtils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "565741a9b2d7d6d2fc8f7bdb1ce7c9ceaa2f4c9f",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vBind.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vFor.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vIf.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/compile.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vBind.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vFor.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/utils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-dom/__tests__/transforms/vModel.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-ssr/__tests__/ssrTransitionGroup.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-ssr/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "47e628df1ce1914c5677010ad5bddd18d037cb3c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "6b68f72673dac5db349f26eeefb2f2e0e342586b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/hmr.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8bb8fb236257c03bfa0bccadcfffe3eb4592f71b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/jsx.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c4a88cdd0dfed3ef46a8aa9be448c01781fdc4f0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e388f1a09fde78cf006450f060813d972ac8c23d",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "fda47ac7024b2065c3a1565a05d514a7a163c9e1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/apiWatch.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentOptions.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5e1e791880238380a1038ae2c505e206ceb34d77",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Teleport.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "95c197560409f5d39a0d376c0a43d89a47a604e8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-dom/__tests__/transforms/stringifyStatic.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-dom/src/transforms/stringifyStatic.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4b7170625d0bc93b26a3343aeda98850c1138f82",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages-private/dts-test/directives.test-d.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiCreateApp.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/directives.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9c279517b9bc1f4c250c555ec9b9eb6104756d56",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/cssVars.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/style/cssVars.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "aba7feda1703e69e5a7c37f784718de0371adadc",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/readonly.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/reactivity/src/baseHandlers.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "ba7f7f90f689f6e7e0417a192d081db542de28ec",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "5358bca4a80cf52d19ed91967eeaa025a786083d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/helpers/renderSlot.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "836b82976ffb7aa0ea9cbe417bef07deae3ca47c",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-ssr/__tests__/ssrVShow.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-ssr/src/transforms/ssrTransformElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "8620a616eb02a64fe32dd52d9be68e360687ef9d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2078f8b7565cf637f47fcd5b0abdfb2b264225bb",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/reactivity/src/arrayInstrumentations.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "abd563822abafe63047f7b599bff266380ee2b64",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileTemplate.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/compileScript.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "75220c7995a13a483ae9599a739075be1c8e17f8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/h.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5d75a170c8d23acd11ef2513173d4cbc4d0b54de",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hmr.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/BaseTransition.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Suspense.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "55922ff3168a1397ad72f18946eb1c4051cdab3b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/compileScript.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/context.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/normalScript.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/utils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "1e8b65aa4934c94ef6142b4f49cdfb13ba5e6ce5",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/transforms/vIf.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vSlot.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-core/src/utils.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-dom/src/transforms/stringifyStatic.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/style/pluginScoped.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/template/templateUtils.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-ssr/src/transforms/ssrVIf.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/compat/global.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-dom/src/components/Transition.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-dom/src/components/TransitionGroup.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-dom/src/index.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-dom/src/modules/style.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/shared/src/general.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f2699a5cb376ffa452a54feb171c14411c67287c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/reactivity/src/watch.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/apiWatch.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "99d54b28b46dbea006205dff71c383a31dd1b87a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vSlot.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vSlot.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "15fc75f4031dea805c3bbb67a75e48a9dc307c11",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/componentEmits.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentEmits.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4810f1489fd3b311eac0265e8f2607fd0cbcbfb4",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/reactivity/src/ref.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/scheduler.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7171defb4572b9c9effa1329bfac6c4420b068ef",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "rollup.config.js",
+    "lang": "javascript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "scripts/release.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "26bce3dc6c1fad787f4ca683b81edf3afb7fd6bb",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/apiAsyncComponent.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/apiDefineComponent.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/devtools.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/shared/src/makeMap.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "842a392ae51132fdb5634ee237fb73d4431515a0",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/jsx.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "1392734ae5d5a3b2be124753e198eafa324f6815",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/hmr.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8696e346b4780d88247464490f1a992cc0c3658c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "93ba10767230872fcdca974a1e19e8bd69b7eb6a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/rendererTemplateRef.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/rendererTemplateRef.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "00978f7d14e85b49d9d334ea92fa8c03733ce64c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/components/Teleport.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ef20b86b36a127e317f8981df970dc8efd277053",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hmr.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/hmr.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "35da3c6dcb30030ef60fa22e30aa83a56e396c60",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "8f6b5050518441a5047d128138da44f798836002",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/h.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e322436887549c129e61eb58a0084167103451bb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-dom/src/apiCustomElement.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "233b1250cea9308b9903380da87b1cba8fe1bbc5",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "vitest.config.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "24fccb4ee4139d41df0e395bce96ce7fbb6a50a9",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/jsx.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "1031e8de08b735059217b1ad0057f62565c99c4f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/directives/vShow.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0f916d8c391ebdceb878fea6d6c1251767697017",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/src/script/defineModel.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "952886e2999960fdf7d8ed466cdc806ff4a2ccae",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/compat/instance.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/compat/renderHelpers.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a48ffdad65d9c97eb0a342a6cd53836a16289afe",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/reactivity/src/collectionHandlers.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "cde15b07bfd869b0dd7278114d21e894f3d44a7f",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/reactivity/src/arrayInstrumentations.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "0a202d890ff2a564b1fab51e4ac621708640818e",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/transforms/vMemo.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-ssr/__tests__/ssrComponent.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "d9dd628800ae32e673bdfabfe79f1988037991d0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4a2953f57b90dfc24e34ff1a87cc1ebb0b97636d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/helpers/useTemplateRef.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/rendererTemplateRef.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a8713159ee24602c7c2b70c5fd52d2e5cd37dca5",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "0562548ab3a040073386021222225e0e9d43c632",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/compileScript.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "d7283f3b7f0631c8b8a4a31a05983dac9f078c4f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/componentPublicInstance.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/componentPublicInstance.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "3190b179b0545a3dc4549737793eec630cf9f0d1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/components/BaseTransition.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7f60ef83e735dbd29d323347acecf69f22b06d53",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/cacheStatic.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/cacheStatic.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/__tests__/componentSlots.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/componentSlots.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "packages/vue/__tests__/e2e/memory-leak.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6e5143d9635dac3f20fb394a827109df30e232ae",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hmr.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/hmr.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "1498821ed9eeb22a0767e53ddc1f6a2840598a29",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/reactivity/__tests__/readonly.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/reactivity/src/baseHandlers.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "439e1a543e62de4dbf7658d78d05c358c9677c86",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/runtime-dom/src/directives/vShow.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8963b7979af1aa26925a8dc87fc7a71a7e14dac5",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/vnode.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "c875019d49b4c36a88d929ccadc31ad414747c7b",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/profiling.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "31f798581c35c28eb294b0acbf8fbcda79f62a86",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/rendererTemplateRef.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "911e67045e2a63e0ecbd198ed4f567530f6d1c17",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/vIf.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vIf.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "7343f7c95fdc08d0fa11a79af81311c6cbfc2282",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/apiSetupHelpers.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8cfc10a80b9cbf5d801ab149e49b8506d192e7e1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrSlot.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderSlot.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "7f2994393dcdb82cacbf62e02b5ba5565f32588b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/components/Suspense.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/renderer.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/vnode.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9b029239edf88558465b941e1e4c085f92b1ebff",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/utils.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/babelUtils.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "d8e40ef7e1c20ee86b294e7cf78e2de60d12830e",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/templateTransformSrcset.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/template/transformSrcset.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "90573b06bf6fb6c14c6bbff6c4e34e0ab108953a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/componentOptions.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-dom/__tests__/customElement.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c5f7db11542bb2246363aef78c88a8e6cef0ee93",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/componentSlots.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentSlots.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a9269c642bf944560bc29adb5dae471c11cd9ee8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/hydration.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/apiAsyncComponent.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "00695a5b41b2d032deaeada83831ff83aa6bfd4e",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/transforms/cacheStatic.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e60edc06f29b32c8f3a44d0ab3558a0569515e8f",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-dom/src/errors.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-ssr/src/errors.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "21b685ad9d9d0e6060fc7d07b719bf35f2d9ae1f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/parser.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/utils.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ce933390ad1c72bed258f7ad959a78f0e8acdf57",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/utils.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "d3af67e878790892f9d34cfea15d13625aabe733",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/transforms/vBind.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "347ef1d3f5a25e21ba0f2b1cc1e9730a5ac27001",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/src/style/pluginScoped.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f97c4d4e6eccba317eed3a8c2eba4890b70e5b14",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/src/compileScript.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a0bd1f518e03818da6bbe7e6c47c4567722290e9",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/apiInject.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c85f1b5a132eb8ec25f71b250e25e65a5c20964f",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript.spec.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/compiler-sfc/src/style/cssVars.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/component.ts",
+    "lang": "typescript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/runtime-core/src/hydration.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/__tests__/helpers/useCssVars.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-dom/src/helpers/useCssVars.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/server-renderer/__tests__/ssrRenderAttrs.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/server-renderer/src/helpers/ssrRenderAttrs.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/shared/src/index.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "15520954f9f1c7f834175938a50dba5d4be0e6c4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-ssr/__tests__/ssrVModel.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-ssr/src/transforms/ssrVModel.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f3479aac9625f4459e650d1c0a70e73863147903",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/defineProps.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/__tests__/compileScript/resolveType.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-sfc/src/script/resolveType.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "919c44744bba1f0c661c87d2059c3b429611aa7e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/__tests__/componentSlots.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/runtime-core/src/componentSlots.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "cb14b860f150c4a83bcd52cd26096b7a5aa3a2bf",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/runtime-core/src/componentEmits.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "packages/vue-compat/__tests__/componentVModel.spec.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6c68421e4ddb5fd1136f9ba51ba1f30c46fedf47",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "scripts/build.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c7d3207cde81e720b83ea949c1fc413e086ba978",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/vue/jsx-runtime/index.d.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "cdffaf6b9efce2c52635714e8e2d7480737c6b50",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/src/parser.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/vFor.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "55dad625acd9e9ddd5a933d5e323ecfdec1a612f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "packages/compiler-core/__tests__/transforms/cacheStatic.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "packages/compiler-core/src/transform.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-core/src/transforms/cacheStatic.ts",
+    "lang": "typescript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "packages/compiler-dom/__tests__/transforms/stringifyStatic.spec.ts",
+    "lang": "typescript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ }
+]

@@ -1,0 +1,131 @@
+{
+ "corpus": "flask",
+ "tool": "ast-grep 0.51.0",
+ "totals": {
+  "files": 80,
+  "compared": 80,
+  "partial": 0
+ },
+ "failures": {},
+ "classes": {
+  "matched, same bytes": 709,
+  "C only: member function": 467,
+  "matched, start differs": 186,
+  "B only: item variable": 129,
+  "C only: member class": 89,
+  "B only: member field": 77,
+  "B only: item constant": 3
+ },
+ "examples": {
+  "B only: item variable": [
+   "docs/conf.py: project L7-7 in None",
+   "docs/conf.py: copyright L8-8 in None",
+   "docs/conf.py: author L9-9 in None",
+   "docs/conf.py: master_doc L14-14 in None",
+   "docs/conf.py: extensions L15-22 in None",
+   "docs/conf.py: autodoc_typehints L23-23 in None",
+   "docs/conf.py: intersphinx_mapping L24-33 in None",
+   "docs/conf.py: issues_github_path L34-34 in None"
+  ],
+  "C only: member function": [
+   "examples/celery/src/task_app/__init__.py: index L19-21 in create_app",
+   "examples/javascript/tests/test_js_example.py: check L15-16 in test_index",
+   "examples/tutorial/flaskr/__init__.py: hello L29-31 in create_app",
+   "examples/tutorial/flaskr/auth.py: wrapped_view L22-27 in login_required",
+   "examples/tutorial/tests/test_db.py: fake_init_db L23-24 in test_init_db_command",
+   "src/flask/cli.py: decorator L351-357 in with_appcontext",
+   "src/flask/cli.py: app L905-906 in run_command",
+   "src/flask/ctx.py: wrapper L180-182 in copy_current_request_context"
+  ],
+  "C only: member class": [
+   "examples/celery/src/task_app/__init__.py: FlaskTask L30-33 in celery_init_app",
+   "examples/tutorial/tests/test_db.py: Recorder L20-21 in test_init_db_command",
+   "src/flask/debughelpers.py: newcls L80-90 in attach_enctype_error_multidict",
+   "tests/conftest.py: LimitedLoader L114-121 in limit_loader",
+   "tests/test_appctx.py: CustomRequestGlobals L158-160 in test_custom_app_ctx_globals_class",
+   "tests/test_basic.py: PrefixPathMiddleware L295-302 in test_session_using_application_root",
+   "tests/test_basic.py: MyException L949-950 in test_user_error_handling",
+   "tests/test_basic.py: ForbiddenSubclass L965-966 in test_http_error_subclass_handling"
+  ],
+  "matched, start differs": [
+   "examples/celery/src/task_app/tasks.py: add B L8 C L7",
+   "examples/celery/src/task_app/tasks.py: block B L13 C L12",
+   "examples/celery/src/task_app/tasks.py: process B L18 C L17",
+   "examples/celery/src/task_app/views.py: result B L11 C L10",
+   "examples/celery/src/task_app/views.py: add B L22 C L21",
+   "examples/celery/src/task_app/views.py: block B L30 C L29",
+   "examples/celery/src/task_app/views.py: process B L36 C L35",
+   "examples/javascript/js_example/views.py: index B L10 C L8"
+  ],
+  "B only: member field": [
+   "src/flask/app.py: request_class L204-204 in Flask",
+   "src/flask/app.py: response_class L208-208 in Flask",
+   "src/flask/app.py: aborter_class L218-218 in Flask",
+   "src/flask/app.py: jinja_environment L223-223 in Flask",
+   "src/flask/app.py: app_ctx_globals_class L239-239 in Flask",
+   "src/flask/app.py: config_class L250-250 in Flask",
+   "src/flask/app.py: testing L262-262 in Flask",
+   "src/flask/app.py: secret_key L270-270 in Flask"
+  ],
+  "B only: item constant": [
+   "src/flask/scaffold.py: F L29-29 in None",
+   "tests/test_config.py: TEST_KEY L10-10 in None",
+   "tests/test_config.py: SECRET_KEY L11-11 in None"
+  ]
+ },
+ "imports": {
+  "B lines": 555,
+  "C lines": 555,
+  "both": 555
+ },
+ "provenance": {
+  "B": {
+   "entries": 1659,
+   "inside": 1659,
+   "named": 1104,
+   "name in range": 1104
+  },
+  "C": {
+   "entries": 1631,
+   "inside": 1631,
+   "named": 1451,
+   "name in range": 1451
+  }
+ },
+ "nondeterministic": {
+  "B": [],
+  "C": []
+ },
+ "seconds": {
+  "B": {
+   "sum": 1.748,
+   "p50": 0.020204,
+   "p95": 0.030071
+  },
+  "C": {
+   "sum": 0.408,
+   "p50": 0.00468,
+   "p95": 0.007797
+  }
+ },
+ "units": {
+  "B": {
+   "sum": 28074,
+   "p50": 216.5
+  },
+  "C": {
+   "sum": 32210,
+   "p50": 176.0
+  },
+  "A": {
+   "sum": 12063,
+   "p50": 75.0
+  },
+  "file": {
+   "sum": 188910,
+   "p50": 943.5
+  }
+ },
+ "index_seconds": 0.544,
+ "astgrep_max_rss_mb": 149
+}

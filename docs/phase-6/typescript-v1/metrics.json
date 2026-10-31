@@ -1,0 +1,527 @@
+{
+ "dev": {
+  "verified": {
+   "tasks": 25,
+   "spans": 115,
+   "lines": 1244,
+   "files": 44,
+   "entry_recall@1": 0.224444,
+   "entry_recall@5": 0.291111,
+   "entry_recall@20": 0.383333,
+   "entry_mrr": 0.326077,
+   "entry_file_recall": 0.456667,
+   "routed_coverage": 0.446111,
+   "span_recall@256": 0.193333,
+   "line_recall@256": 0.195339,
+   "file_recall@256": 0.356667,
+   "utilization@256": 0.906406,
+   "gold_unit_share@256": 0.185286,
+   "span_recall@1024": 0.32,
+   "line_recall@1024": 0.330098,
+   "file_recall@1024": 0.446667,
+   "utilization@1024": 0.88543,
+   "gold_unit_share@1024": 0.15144,
+   "span_recall@4096": 0.357778,
+   "line_recall@4096": 0.369967,
+   "file_recall@4096": 0.466667,
+   "utilization@4096": 0.744766,
+   "gold_unit_share@4096": 0.17703,
+   "classes": {
+    "ast": 11,
+    "contained": 14,
+    "exact": 81,
+    "path": 9
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 26,
+     "complete": 6,
+     "entry": 68,
+     "routing": 9,
+     "selection": 6
+    },
+    "1024": {
+     "budget": 21,
+     "complete": 11,
+     "entry": 68,
+     "routing": 9,
+     "selection": 6
+    },
+    "4096": {
+     "budget": 10,
+     "complete": 22,
+     "entry": 68,
+     "routing": 9,
+     "selection": 6
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 19,
+   "lines": 327,
+   "files": 11,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.0,
+   "entry_recall@20": 0.25,
+   "entry_mrr": 0.026111,
+   "entry_file_recall": 0.3,
+   "routed_coverage": 0.3,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.1,
+   "utilization@256": 0.937109,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.004762,
+   "file_recall@1024": 0.3,
+   "utilization@1024": 0.983008,
+   "gold_unit_share@1024": 0.005258,
+   "span_recall@4096": 0.2,
+   "line_recall@4096": 0.2,
+   "file_recall@4096": 0.3,
+   "utilization@4096": 0.997485,
+   "gold_unit_share@4096": 0.030118,
+   "classes": {
+    "drift": 13,
+    "range": 5,
+    "unresolved": 1
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 3,
+     "entry": 15,
+     "routing": 1
+    },
+    "1024": {
+     "budget": 3,
+     "entry": 15,
+     "routing": 1
+    },
+    "4096": {
+     "budget": 1,
+     "complete": 2,
+     "entry": 15,
+     "routing": 1
+    }
+   }
+  },
+  "lost_before_packing": {
+   "partial-file": 0,
+   "router-bound": 17,
+   "unresolved-import": 27,
+   "no-path": 33
+  },
+  "outside": {
+   "spans": 2,
+   "tasks": 2,
+   "by_extension": {
+    ".css": 1,
+    ".json": 1
+   }
+  },
+  "by_repository": {
+   "coder__code-server": {
+    "tasks": 2,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.375,
+    "entry_mrr": 0.145834,
+    "routed_coverage": 0.6875,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.25,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.013889,
+    "line_recall@4096": 0.240741
+   },
+   "darkreader__darkreader": {
+    "tasks": 2,
+    "entry_recall@5": 0.055556,
+    "entry_recall@20": 0.111111,
+    "entry_mrr": 0.1,
+    "routed_coverage": 0.333334,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.055556,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.013699,
+    "line_recall@4096": 0.091324
+   },
+   "fixture:ts_repo": {
+    "tasks": 8,
+    "entry_recall@5": 0.875,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.822115,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.604167,
+    "span_recall@1024": 1.0,
+    "span_recall@4096": 1.0,
+    "line_recall@256": 0.607885,
+    "line_recall@1024": 1.0,
+    "line_recall@4096": 1.0
+   },
+   "microsoft__vscode": {
+    "tasks": 14,
+    "entry_recall@5": 0.012821,
+    "entry_recall@20": 0.047009,
+    "entry_mrr": 0.083333,
+    "routed_coverage": 0.08547,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.025641,
+    "line_recall@256": 0.00157,
+    "line_recall@1024": 0.015175,
+    "line_recall@4096": 0.045003
+   }
+  }
+ },
+ "heldout": {
+  "verified": {
+   "tasks": 56,
+   "spans": 269,
+   "lines": 10470,
+   "files": 204,
+   "entry_recall@1": 0.124575,
+   "entry_recall@5": 0.178812,
+   "entry_recall@20": 0.333659,
+   "entry_mrr": 0.240068,
+   "entry_file_recall": 0.417387,
+   "routed_coverage": 0.462498,
+   "span_recall@256": 0.017857,
+   "line_recall@256": 0.039722,
+   "file_recall@256": 0.248682,
+   "utilization@256": 0.945243,
+   "gold_unit_share@256": 0.096208,
+   "span_recall@1024": 0.122619,
+   "line_recall@1024": 0.139227,
+   "file_recall@1024": 0.314456,
+   "utilization@1024": 0.985578,
+   "gold_unit_share@1024": 0.110748,
+   "span_recall@4096": 0.19375,
+   "line_recall@4096": 0.236651,
+   "file_recall@4096": 0.404292,
+   "utilization@4096": 0.924975,
+   "gold_unit_share@4096": 0.09013,
+   "classes": {
+    "contained": 1,
+    "exact": 175,
+    "path": 93
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 43,
+     "complete": 1,
+     "entry": 200,
+     "routing": 17,
+     "selection": 8
+    },
+    "1024": {
+     "budget": 34,
+     "complete": 10,
+     "entry": 200,
+     "routing": 17,
+     "selection": 8
+    },
+    "4096": {
+     "budget": 15,
+     "complete": 19,
+     "entry": 200,
+     "routing": 17,
+     "selection": 18
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 23,
+   "spans": 42,
+   "lines": 3726,
+   "files": 32,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.0,
+   "entry_recall@20": 0.0,
+   "entry_mrr": 0.0,
+   "entry_file_recall": 0.0,
+   "routed_coverage": 0.0,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.0,
+   "utilization@256": 0.951087,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.0,
+   "file_recall@1024": 0.0,
+   "utilization@1024": 0.986328,
+   "gold_unit_share@1024": 0.0,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.0,
+   "file_recall@4096": 0.0,
+   "utilization@4096": 0.94613,
+   "gold_unit_share@4096": 0.0,
+   "classes": {
+    "drift": 1,
+    "range": 3,
+    "unresolved": 38
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 42
+    },
+    "1024": {
+     "entry": 42
+    },
+    "4096": {
+     "entry": 42
+    }
+   }
+  },
+  "lost_before_packing": {
+   "partial-file": 0,
+   "router-bound": 47,
+   "unresolved-import": 44,
+   "no-path": 126
+  },
+  "outside": {
+   "spans": 396,
+   "tasks": 49,
+   "by_extension": {
+    ".js": 280,
+    ".json": 71,
+    ".md": 43,
+    ".preview": 2
+   }
+  },
+  "by_repository": {
+   "mui__material-ui": {
+    "tasks": 48,
+    "entry_recall@5": 0.146216,
+    "entry_recall@20": 0.341233,
+    "entry_mrr": 0.213809,
+    "routed_coverage": 0.466387,
+    "span_recall@256": 0.023256,
+    "span_recall@1024": 0.136434,
+    "span_recall@4096": 0.215504,
+    "line_recall@256": 0.05073,
+    "line_recall@1024": 0.154489,
+    "line_recall@4096": 0.259391
+   },
+   "vuejs__core": {
+    "tasks": 15,
+    "entry_recall@5": 0.28663,
+    "entry_recall@20": 0.308608,
+    "entry_mrr": 0.326923,
+    "routed_coverage": 0.449634,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.076923,
+    "span_recall@4096": 0.121795,
+    "line_recall@256": 0.003311,
+    "line_recall@1024": 0.088746,
+    "line_recall@4096": 0.161434
+   }
+  }
+ },
+ "all": {
+  "verified": {
+   "tasks": 81,
+   "spans": 384,
+   "lines": 11714,
+   "files": 248,
+   "entry_recall@1": 0.155399,
+   "entry_recall@5": 0.213472,
+   "entry_recall@20": 0.348991,
+   "entry_mrr": 0.266614,
+   "entry_file_recall": 0.42951,
+   "routed_coverage": 0.45744,
+   "span_recall@256": 0.072016,
+   "line_recall@256": 0.087752,
+   "file_recall@256": 0.282011,
+   "utilization@256": 0.933256,
+   "gold_unit_share@256": 0.123702,
+   "span_recall@1024": 0.183539,
+   "line_recall@1024": 0.198138,
+   "file_recall@1024": 0.355262,
+   "utilization@1024": 0.954668,
+   "gold_unit_share@1024": 0.123307,
+   "span_recall@4096": 0.244376,
+   "line_recall@4096": 0.277798,
+   "file_recall@4096": 0.423543,
+   "utilization@4096": 0.869355,
+   "gold_unit_share@4096": 0.116951,
+   "classes": {
+    "ast": 11,
+    "contained": 15,
+    "exact": 256,
+    "path": 102
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 69,
+     "complete": 7,
+     "entry": 268,
+     "routing": 26,
+     "selection": 14
+    },
+    "1024": {
+     "budget": 55,
+     "complete": 21,
+     "entry": 268,
+     "routing": 26,
+     "selection": 14
+    },
+    "4096": {
+     "budget": 25,
+     "complete": 41,
+     "entry": 268,
+     "routing": 26,
+     "selection": 24
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 33,
+   "spans": 61,
+   "lines": 4053,
+   "files": 43,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.0,
+   "entry_recall@20": 0.075758,
+   "entry_mrr": 0.007912,
+   "entry_file_recall": 0.090909,
+   "routed_coverage": 0.090909,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.030303,
+   "utilization@256": 0.946851,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.001443,
+   "file_recall@1024": 0.090909,
+   "utilization@1024": 0.985322,
+   "gold_unit_share@1024": 0.001593,
+   "span_recall@4096": 0.060606,
+   "line_recall@4096": 0.060606,
+   "file_recall@4096": 0.090909,
+   "utilization@4096": 0.961692,
+   "gold_unit_share@4096": 0.009127,
+   "classes": {
+    "drift": 14,
+    "range": 8,
+    "unresolved": 39
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 3,
+     "entry": 57,
+     "routing": 1
+    },
+    "1024": {
+     "budget": 3,
+     "entry": 57,
+     "routing": 1
+    },
+    "4096": {
+     "budget": 1,
+     "complete": 2,
+     "entry": 57,
+     "routing": 1
+    }
+   }
+  },
+  "lost_before_packing": {
+   "partial-file": 0,
+   "router-bound": 64,
+   "unresolved-import": 71,
+   "no-path": 159
+  },
+  "outside": {
+   "spans": 398,
+   "tasks": 51,
+   "by_extension": {
+    ".css": 1,
+    ".js": 280,
+    ".json": 72,
+    ".md": 43,
+    ".preview": 2
+   }
+  },
+  "by_repository": {
+   "coder__code-server": {
+    "tasks": 2,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.375,
+    "entry_mrr": 0.145834,
+    "routed_coverage": 0.6875,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.25,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.013889,
+    "line_recall@4096": 0.240741
+   },
+   "darkreader__darkreader": {
+    "tasks": 2,
+    "entry_recall@5": 0.055556,
+    "entry_recall@20": 0.111111,
+    "entry_mrr": 0.1,
+    "routed_coverage": 0.333334,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.055556,
+    "line_recall@256": 0.0,
+    "line_recall@1024": 0.013699,
+    "line_recall@4096": 0.091324
+   },
+   "fixture:ts_repo": {
+    "tasks": 8,
+    "entry_recall@5": 0.875,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.822115,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.604167,
+    "span_recall@1024": 1.0,
+    "span_recall@4096": 1.0,
+    "line_recall@256": 0.607885,
+    "line_recall@1024": 1.0,
+    "line_recall@4096": 1.0
+   },
+   "microsoft__vscode": {
+    "tasks": 14,
+    "entry_recall@5": 0.012821,
+    "entry_recall@20": 0.047009,
+    "entry_mrr": 0.083333,
+    "routed_coverage": 0.08547,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.0,
+    "span_recall@4096": 0.025641,
+    "line_recall@256": 0.00157,
+    "line_recall@1024": 0.015175,
+    "line_recall@4096": 0.045003
+   },
+   "mui__material-ui": {
+    "tasks": 48,
+    "entry_recall@5": 0.146216,
+    "entry_recall@20": 0.341233,
+    "entry_mrr": 0.213809,
+    "routed_coverage": 0.466387,
+    "span_recall@256": 0.023256,
+    "span_recall@1024": 0.136434,
+    "span_recall@4096": 0.215504,
+    "line_recall@256": 0.05073,
+    "line_recall@1024": 0.154489,
+    "line_recall@4096": 0.259391
+   },
+   "vuejs__core": {
+    "tasks": 15,
+    "entry_recall@5": 0.28663,
+    "entry_recall@20": 0.308608,
+    "entry_mrr": 0.326923,
+    "routed_coverage": 0.449634,
+    "span_recall@256": 0.0,
+    "span_recall@1024": 0.076923,
+    "span_recall@4096": 0.121795,
+    "line_recall@256": 0.003311,
+    "line_recall@1024": 0.088746,
+    "line_recall@4096": 0.161434
+   }
+  }
+ }
+}

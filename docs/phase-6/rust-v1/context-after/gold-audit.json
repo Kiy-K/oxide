@@ -1,0 +1,1253 @@
+{
+ "BurntSushi__ripgrep-1367": [
+  {
+   "file": "grep-regex/src/literal.rs",
+   "start": 193,
+   "end": 199,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "grep-regex/src/literal.rs",
+   "start": 193,
+   "end": 222,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "grep-regex/src/literal.rs",
+   "start": 214,
+   "end": 222,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "grep-regex/src/literal.rs",
+   "start": 328,
+   "end": 331,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "BurntSushi__ripgrep-2488": [
+  {
+   "file": "/workspace/BurntSushi__ripgrep__0.1/crates/core/args.rs",
+   "start": 1,
+   "end": 452,
+   "class": "path",
+   "corrected_file": "crates/core/args.rs",
+   "detail": "/workspace/BurntSushi__ripgrep__0.1/crates/core/args.rs is not in the corpus; crates/core/args.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/BurntSushi__ripgrep__0.1/crates/core/args.rs",
+   "start": 666,
+   "end": 705,
+   "class": "path",
+   "corrected_file": "crates/core/args.rs",
+   "detail": "/workspace/BurntSushi__ripgrep__0.1/crates/core/args.rs is not in the corpus; crates/core/args.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/BurntSushi__ripgrep__0.1/crates/core/args.rs",
+   "start": 716,
+   "end": 752,
+   "class": "path",
+   "corrected_file": "crates/core/args.rs",
+   "detail": "/workspace/BurntSushi__ripgrep__0.1/crates/core/args.rs is not in the corpus; crates/core/args.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/BurntSushi__ripgrep__0.1/crates/core/main.rs",
+   "start": 1,
+   "end": 345,
+   "class": "path",
+   "corrected_file": "crates/core/main.rs",
+   "detail": "/workspace/BurntSushi__ripgrep__0.1/crates/core/main.rs is not in the corpus; crates/core/main.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/BurntSushi__ripgrep__0.1/crates/core/search.rs",
+   "start": 1,
+   "end": 474,
+   "class": "path",
+   "corrected_file": "crates/core/search.rs",
+   "detail": "/workspace/BurntSushi__ripgrep__0.1/crates/core/search.rs is not in the corpus; crates/core/search.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/BurntSushi__ripgrep__0.1/crates/grep/src/lib.rs",
+   "start": 1,
+   "end": 24,
+   "class": "path",
+   "corrected_file": "crates/grep/src/lib.rs",
+   "detail": "/workspace/BurntSushi__ripgrep__0.1/crates/grep/src/lib.rs is not in the corpus; crates/grep/src/lib.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/BurntSushi__ripgrep__0.1/crates/regex/src/config.rs",
+   "start": 1,
+   "end": 319,
+   "class": "unresolved",
+   "detail": "/workspace/BurntSushi__ripgrep__0.1/crates/regex/src/config.rs is not in the corpus",
+   "numbered": false
+  },
+  {
+   "file": "/workspace/BurntSushi__ripgrep__0.1/crates/regex/src/matcher.rs",
+   "start": 1,
+   "end": 382,
+   "class": "path",
+   "corrected_file": "crates/regex/src/matcher.rs",
+   "detail": "/workspace/BurntSushi__ripgrep__0.1/crates/regex/src/matcher.rs is not in the corpus; crates/regex/src/matcher.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/BurntSushi__ripgrep__0.1/crates/regex/src/multi.rs",
+   "start": 1,
+   "end": 126,
+   "class": "path",
+   "corrected_file": "crates/regex/src/multi.rs",
+   "detail": "/workspace/BurntSushi__ripgrep__0.1/crates/regex/src/multi.rs is not in the corpus; crates/regex/src/multi.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "clap-rs__clap-1869": [
+  {
+   "file": "/workspace/clap-rs__clap__0.1/src/parse/validator.rs",
+   "start": 1,
+   "end": 417,
+   "class": "path",
+   "corrected_file": "src/parse/validator.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/src/parse/validator.rs is not in the corpus; src/parse/validator.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/clap-rs__clap__0.1/tests/conflicts.rs",
+   "start": 1,
+   "end": 207,
+   "class": "unresolved",
+   "detail": "/workspace/clap-rs__clap__0.1/tests/conflicts.rs is not in the corpus",
+   "numbered": false
+  }
+ ],
+ "clap-rs__clap-1975": [
+  {
+   "file": "/workspace/clap-rs__clap__0.1/clap_derive/src/attrs.rs",
+   "start": 1,
+   "end": 484,
+   "class": "path",
+   "corrected_file": "clap_derive/src/attrs.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/clap_derive/src/attrs.rs is not in the corpus; clap_derive/src/attrs.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/clap-rs__clap__0.1/clap_derive/src/attrs.rs",
+   "start": 145,
+   "end": 159,
+   "class": "path",
+   "corrected_file": "clap_derive/src/attrs.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/clap_derive/src/attrs.rs is not in the corpus; clap_derive/src/attrs.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/clap-rs__clap__0.1/clap_derive/src/attrs.rs",
+   "start": 145,
+   "end": 161,
+   "class": "path",
+   "corrected_file": "clap_derive/src/attrs.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/clap_derive/src/attrs.rs is not in the corpus; clap_derive/src/attrs.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/clap-rs__clap__0.1/clap_derive/src/parse.rs",
+   "start": 1,
+   "end": 51,
+   "class": "path",
+   "corrected_file": "clap_derive/src/parse.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/clap_derive/src/parse.rs is not in the corpus; clap_derive/src/parse.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/clap-rs__clap__0.1/clap_derive/src/parse.rs",
+   "start": 50,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "clap_derive/src/parse.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/clap_derive/src/parse.rs is not in the corpus; clap_derive/src/parse.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/clap-rs__clap__0.1/clap_derive/src/parse.rs",
+   "start": 100,
+   "end": 151,
+   "class": "path",
+   "corrected_file": "clap_derive/src/parse.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/clap_derive/src/parse.rs is not in the corpus; clap_derive/src/parse.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/clap-rs__clap__0.1/clap_derive/src/parse.rs",
+   "start": 150,
+   "end": 201,
+   "class": "path",
+   "corrected_file": "clap_derive/src/parse.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/clap_derive/src/parse.rs is not in the corpus; clap_derive/src/parse.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/clap-rs__clap__0.1/src/build/arg/mod.rs",
+   "start": 1,
+   "end": 51,
+   "class": "path",
+   "corrected_file": "src/build/arg/mod.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/src/build/arg/mod.rs is not in the corpus; src/build/arg/mod.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "clap-rs__clap-2008": [
+  {
+   "file": "/workspace/clap-rs__clap__0.1/src/build/app/mod.rs",
+   "start": 1,
+   "end": 473,
+   "class": "path",
+   "corrected_file": "src/build/app/mod.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/src/build/app/mod.rs is not in the corpus; src/build/app/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/clap-rs__clap__0.1/src/output/help.rs",
+   "start": 1,
+   "end": 483,
+   "class": "path",
+   "corrected_file": "src/output/help.rs",
+   "detail": "/workspace/clap-rs__clap__0.1/src/output/help.rs is not in the corpus; src/output/help.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "nushell__nushell-10405": [
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/lex.rs",
+   "start": 310,
+   "end": 351,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/lex.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/lex.rs is not in the corpus; crates/nu-parser/src/lex.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/lex.rs",
+   "start": 344,
+   "end": 361,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/lex.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/lex.rs is not in the corpus; crates/nu-parser/src/lex.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs",
+   "start": 337,
+   "end": 381,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parse_keywords.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs is not in the corpus; crates/nu-parser/src/parse_keywords.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs",
+   "start": 380,
+   "end": 431,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parse_keywords.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs is not in the corpus; crates/nu-parser/src/parse_keywords.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs",
+   "start": 430,
+   "end": 481,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parse_keywords.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs is not in the corpus; crates/nu-parser/src/parse_keywords.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 1,
+   "end": 477,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 776,
+   "end": 821,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 2760,
+   "end": 2887,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 2760,
+   "end": 2887,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 2770,
+   "end": 2851,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 2850,
+   "end": 2901,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 2917,
+   "end": 2936,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 2917,
+   "end": 2944,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 2935,
+   "end": 2951,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 3201,
+   "end": 3265,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 3201,
+   "end": 3271,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 3328,
+   "end": 3371,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 3362,
+   "end": 3401,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "nushell__nushell-10629": [
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs",
+   "start": 359,
+   "end": 401,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parse_keywords.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs is not in the corpus; crates/nu-parser/src/parse_keywords.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs",
+   "start": 400,
+   "end": 501,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parse_keywords.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs is not in the corpus; crates/nu-parser/src/parse_keywords.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs",
+   "start": 500,
+   "end": 601,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parse_keywords.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_keywords.rs is not in the corpus; crates/nu-parser/src/parse_keywords.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_shape_specs.rs",
+   "start": 1,
+   "end": 306,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parse_shape_specs.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_shape_specs.rs is not in the corpus; crates/nu-parser/src/parse_shape_specs.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_shape_specs.rs",
+   "start": 279,
+   "end": 306,
+   "class": "unresolved",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_shape_specs.rs is not in the corpus",
+   "numbered": false
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 1,
+   "end": 51,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 2948,
+   "end": 3051,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 3075,
+   "end": 3151,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs",
+   "start": 3150,
+   "end": 3251,
+   "class": "path",
+   "corrected_file": "crates/nu-parser/src/parser.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parser.rs is not in the corpus; crates/nu-parser/src/parser.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/ty.rs",
+   "start": 1,
+   "end": 246,
+   "class": "path",
+   "corrected_file": "crates/nu-protocol/src/ty.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/ty.rs is not in the corpus; crates/nu-protocol/src/ty.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "nushell__nushell-11292": [
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-cli/src/menus/help_completions.rs",
+   "start": 1,
+   "end": 122,
+   "class": "path",
+   "corrected_file": "crates/nu-cli/src/menus/help_completions.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-cli/src/menus/help_completions.rs is not in the corpus; crates/nu-cli/src/menus/help_completions.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-engine/src/documentation.rs",
+   "start": 1,
+   "end": 454,
+   "class": "path",
+   "corrected_file": "crates/nu-engine/src/documentation.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-engine/src/documentation.rs is not in the corpus; crates/nu-engine/src/documentation.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/value/mod.rs",
+   "start": 1,
+   "end": 477,
+   "class": "path",
+   "corrected_file": "crates/nu-protocol/src/value/mod.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/value/mod.rs is not in the corpus; crates/nu-protocol/src/value/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/value/mod.rs",
+   "start": 650,
+   "end": 701,
+   "class": "path",
+   "corrected_file": "crates/nu-protocol/src/value/mod.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/value/mod.rs is not in the corpus; crates/nu-protocol/src/value/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/value/mod.rs",
+   "start": 700,
+   "end": 751,
+   "class": "path",
+   "corrected_file": "crates/nu-protocol/src/value/mod.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/value/mod.rs is not in the corpus; crates/nu-protocol/src/value/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/value/mod.rs",
+   "start": 750,
+   "end": 826,
+   "class": "path",
+   "corrected_file": "crates/nu-protocol/src/value/mod.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/value/mod.rs is not in the corpus; crates/nu-protocol/src/value/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/value/mod.rs",
+   "start": 825,
+   "end": 851,
+   "class": "path",
+   "corrected_file": "crates/nu-protocol/src/value/mod.rs",
+   "detail": "/workspace/nushell__nushell__0.1/crates/nu-protocol/src/value/mod.rs is not in the corpus; crates/nu-protocol/src/value/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/nushell__nushell__0.1/src/tests/test_help.rs",
+   "start": 1,
+   "end": 28,
+   "class": "unresolved",
+   "detail": "/workspace/nushell__nushell__0.1/src/tests/test_help.rs is not in the corpus",
+   "numbered": false
+  }
+ ],
+ "rayon-rs__rayon-986": [
+  {
+   "file": "src/vec.rs",
+   "start": 91,
+   "end": 150,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/vec.rs",
+   "start": 151,
+   "end": 172,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/vec.rs",
+   "start": 152,
+   "end": 174,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "sharkdp__bat-2896": [
+  {
+   "file": "/workspace/sharkdp__bat__0.1/src/assets.rs",
+   "start": 1,
+   "end": 473,
+   "class": "path",
+   "corrected_file": "src/assets.rs",
+   "detail": "/workspace/sharkdp__bat__0.1/src/assets.rs is not in the corpus; src/assets.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__bat__0.1/src/bin/bat/app.rs",
+   "start": 1,
+   "end": 411,
+   "class": "path",
+   "corrected_file": "src/bin/bat/app.rs",
+   "detail": "/workspace/sharkdp__bat__0.1/src/bin/bat/app.rs is not in the corpus; src/bin/bat/app.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__bat__0.1/src/bin/bat/config.rs",
+   "start": 1,
+   "end": 216,
+   "class": "path",
+   "corrected_file": "src/bin/bat/config.rs",
+   "detail": "/workspace/sharkdp__bat__0.1/src/bin/bat/config.rs is not in the corpus; src/bin/bat/config.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__bat__0.1/src/lib.rs",
+   "start": 1,
+   "end": 63,
+   "class": "path",
+   "corrected_file": "src/lib.rs",
+   "detail": "/workspace/sharkdp__bat__0.1/src/lib.rs is not in the corpus; src/lib.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__bat__0.1/src/terminal.rs",
+   "start": 1,
+   "end": 83,
+   "class": "path",
+   "corrected_file": "src/terminal.rs",
+   "detail": "/workspace/sharkdp__bat__0.1/src/terminal.rs is not in the corpus; src/terminal.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "sharkdp__fd-1162": [
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/cli.rs",
+   "start": 1,
+   "end": 404,
+   "class": "path",
+   "corrected_file": "src/cli.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/cli.rs is not in the corpus; src/cli.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/main.rs",
+   "start": 1,
+   "end": 300,
+   "class": "path",
+   "corrected_file": "src/main.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/main.rs is not in the corpus; src/main.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/tests/testenv/mod.rs",
+   "start": 270,
+   "end": 291,
+   "class": "path",
+   "corrected_file": "tests/testenv/mod.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/tests/testenv/mod.rs is not in the corpus; tests/testenv/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/tests/tests.rs",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "tests/tests.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/tests/tests.rs is not in the corpus; tests/tests.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "sharkdp__fd-1394": [
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/cli.rs",
+   "start": 1,
+   "end": 451,
+   "class": "path",
+   "corrected_file": "src/cli.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/cli.rs is not in the corpus; src/cli.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/cli.rs",
+   "start": 20,
+   "end": 36,
+   "class": "path",
+   "corrected_file": "src/cli.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/cli.rs is not in the corpus; src/cli.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/cli.rs",
+   "start": 450,
+   "end": 551,
+   "class": "path",
+   "corrected_file": "src/cli.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/cli.rs is not in the corpus; src/cli.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/cli.rs",
+   "start": 510,
+   "end": 526,
+   "class": "path",
+   "corrected_file": "src/cli.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/cli.rs is not in the corpus; src/cli.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "sharkdp__fd-555": [
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/app.rs",
+   "start": 1,
+   "end": 428,
+   "class": "path",
+   "corrected_file": "src/app.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/app.rs is not in the corpus; src/app.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/internal/mod.rs",
+   "start": 1,
+   "end": 198,
+   "class": "path",
+   "corrected_file": "src/internal/mod.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/internal/mod.rs is not in the corpus; src/internal/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/internal/opts.rs",
+   "start": 1,
+   "end": 85,
+   "class": "path",
+   "corrected_file": "src/internal/opts.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/internal/opts.rs is not in the corpus; src/internal/opts.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/main.rs",
+   "start": 1,
+   "end": 302,
+   "class": "path",
+   "corrected_file": "src/main.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/main.rs is not in the corpus; src/main.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/output.rs",
+   "start": 1,
+   "end": 108,
+   "class": "unresolved",
+   "detail": "/workspace/sharkdp__fd__0.1/src/output.rs is not in the corpus",
+   "numbered": false
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/walk.rs",
+   "start": 1,
+   "end": 427,
+   "class": "path",
+   "corrected_file": "src/walk.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/walk.rs is not in the corpus; src/walk.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/sharkdp__fd__0.1/src/walk.rs",
+   "start": 400,
+   "end": 441,
+   "class": "path",
+   "corrected_file": "src/walk.rs",
+   "detail": "/workspace/sharkdp__fd__0.1/src/walk.rs is not in the corpus; src/walk.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "tokio-rs__bytes-543": [
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs",
+   "start": 1,
+   "end": 591,
+   "class": "path",
+   "corrected_file": "src/bytes.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs is not in the corpus; src/bytes.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs",
+   "start": 804,
+   "end": 816,
+   "class": "path",
+   "corrected_file": "src/bytes.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs is not in the corpus; src/bytes.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs",
+   "start": 811,
+   "end": 831,
+   "class": "path",
+   "corrected_file": "src/bytes.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs is not in the corpus; src/bytes.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs",
+   "start": 830,
+   "end": 851,
+   "class": "path",
+   "corrected_file": "src/bytes.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs is not in the corpus; src/bytes.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs",
+   "start": 880,
+   "end": 921,
+   "class": "path",
+   "corrected_file": "src/bytes.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs is not in the corpus; src/bytes.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs",
+   "start": 942,
+   "end": 971,
+   "class": "path",
+   "corrected_file": "src/bytes.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs is not in the corpus; src/bytes.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs",
+   "start": 970,
+   "end": 991,
+   "class": "path",
+   "corrected_file": "src/bytes.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs is not in the corpus; src/bytes.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs",
+   "start": 1000,
+   "end": 1041,
+   "class": "path",
+   "corrected_file": "src/bytes.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs is not in the corpus; src/bytes.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs",
+   "start": 1080,
+   "end": 1121,
+   "class": "path",
+   "corrected_file": "src/bytes.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/bytes.rs is not in the corpus; src/bytes.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "tokio-rs__bytes-721": [
+  {
+   "file": "src/bytes_mut.rs",
+   "start": 1780,
+   "end": 1786,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/bytes_mut.rs",
+   "start": 1843,
+   "end": 1848,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "tokio-rs__bytes-732": [
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/buf/buf_impl.rs",
+   "start": 1,
+   "end": 555,
+   "class": "path",
+   "corrected_file": "src/buf/buf_impl.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/buf/buf_impl.rs is not in the corpus; src/buf/buf_impl.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/buf/buf_impl.rs",
+   "start": 40,
+   "end": 68,
+   "class": "path",
+   "corrected_file": "src/buf/buf_impl.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/buf/buf_impl.rs is not in the corpus; src/buf/buf_impl.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/buf/buf_impl.rs",
+   "start": 55,
+   "end": 67,
+   "class": "path",
+   "corrected_file": "src/buf/buf_impl.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/buf/buf_impl.rs is not in the corpus; src/buf/buf_impl.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/buf/buf_impl.rs",
+   "start": 920,
+   "end": 951,
+   "class": "path",
+   "corrected_file": "src/buf/buf_impl.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/buf/buf_impl.rs is not in the corpus; src/buf/buf_impl.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/buf/buf_mut.rs",
+   "start": 1040,
+   "end": 1051,
+   "class": "path",
+   "corrected_file": "src/buf/buf_mut.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/buf/buf_mut.rs is not in the corpus; src/buf/buf_mut.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__bytes__0.1/src/buf/mod.rs",
+   "start": 1,
+   "end": 40,
+   "class": "path",
+   "corrected_file": "src/buf/mod.rs",
+   "detail": "/workspace/tokio-rs__bytes__0.1/src/buf/mod.rs is not in the corpus; src/buf/mod.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "tokio-rs__tokio-4519": [
+  {
+   "file": "tokio/src/macros/select.rs",
+   "start": 391,
+   "end": 454,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "tokio/src/macros/select.rs",
+   "start": 606,
+   "end": 804,
+   "class": "unresolved",
+   "detail": "content lines present, not in this order",
+   "numbered": false
+  },
+  {
+   "file": "tokio/src/macros/select.rs",
+   "start": 801,
+   "end": 806,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "tokio-rs__tokio-5200": [
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/time/mod.rs",
+   "start": 80,
+   "end": 131,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/time/mod.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/time/mod.rs is not in the corpus; tokio/src/runtime/time/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/time/mod.rs",
+   "start": 200,
+   "end": 251,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/time/mod.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/time/mod.rs is not in the corpus; tokio/src/runtime/time/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/time/mod.rs",
+   "start": 250,
+   "end": 301,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/time/mod.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/time/mod.rs is not in the corpus; tokio/src/runtime/time/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/time/mod.rs",
+   "start": 350,
+   "end": 401,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/time/mod.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/time/mod.rs is not in the corpus; tokio/src/runtime/time/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/time/clock.rs",
+   "start": 1,
+   "end": 244,
+   "class": "path",
+   "corrected_file": "tokio/src/time/clock.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/time/clock.rs is not in the corpus; tokio/src/time/clock.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/time/mod.rs",
+   "start": 1,
+   "end": 110,
+   "class": "unresolved",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/time/mod.rs is not in the corpus",
+   "numbered": false
+  }
+ ],
+ "tokio-rs__tokio-6742": [
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/builder.rs",
+   "start": 1,
+   "end": 488,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/builder.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/builder.rs is not in the corpus; tokio/src/runtime/builder.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/builder.rs",
+   "start": 690,
+   "end": 751,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/builder.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/builder.rs is not in the corpus; tokio/src/runtime/builder.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/builder.rs",
+   "start": 1260,
+   "end": 1301,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/builder.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/builder.rs is not in the corpus; tokio/src/runtime/builder.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/config.rs",
+   "start": 1,
+   "end": 44,
+   "class": "unresolved",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/config.rs is not in the corpus",
+   "numbered": false
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/handle.rs",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/handle.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/handle.rs is not in the corpus; tokio/src/runtime/handle.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/mod.rs",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/mod.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/mod.rs is not in the corpus; tokio/src/runtime/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/runtime.rs",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/runtime.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/runtime.rs is not in the corpus; tokio/src/runtime/runtime.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/scheduler/multi_thread/handle.rs",
+   "start": 1,
+   "end": 75,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/scheduler/multi_thread/handle.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/scheduler/multi_thread/handle.rs is not in the corpus; tokio/src/runtime/scheduler/multi_thread/handle.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/scheduler/multi_thread/mod.rs",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/scheduler/multi_thread/mod.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/scheduler/multi_thread/mod.rs is not in the corpus; tokio/src/runtime/scheduler/multi_thread/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/scheduler/multi_thread/worker.rs",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/scheduler/multi_thread/worker.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/scheduler/multi_thread/worker.rs is not in the corpus; tokio/src/runtime/scheduler/multi_thread/worker.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/scheduler/multi_thread/worker.rs",
+   "start": 148,
+   "end": 201,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/scheduler/multi_thread/worker.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/scheduler/multi_thread/worker.rs is not in the corpus; tokio/src/runtime/scheduler/multi_thread/worker.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/task/list.rs",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/task/list.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/task/list.rs is not in the corpus; tokio/src/runtime/task/list.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/task/list.rs",
+   "start": 90,
+   "end": 151,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/task/list.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/task/list.rs is not in the corpus; tokio/src/runtime/task/list.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/task/mod.rs",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "tokio/src/runtime/task/mod.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/task/mod.rs is not in the corpus; tokio/src/runtime/task/mod.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/task/spawn.rs",
+   "start": 1,
+   "end": 208,
+   "class": "path",
+   "corrected_file": "tokio/src/task/spawn.rs",
+   "detail": "/workspace/tokio-rs__tokio__0.1/tokio/src/task/spawn.rs is not in the corpus; tokio/src/task/spawn.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "tokio-rs__tracing-1017": [
+  {
+   "file": "/workspace/reproduce/src/main.rs",
+   "start": 1,
+   "end": 4,
+   "class": "unresolved",
+   "detail": "/workspace/reproduce/src/main.rs is not in the corpus",
+   "numbered": false
+  },
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing-core/src/dispatcher.rs",
+   "start": 1,
+   "end": 445,
+   "class": "unresolved",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing-core/src/dispatcher.rs is not in the corpus",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing/src/dispatcher.rs",
+   "start": 1,
+   "end": 153,
+   "class": "path",
+   "corrected_file": "tracing/src/dispatcher.rs",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing/src/dispatcher.rs is not in the corpus; tracing/src/dispatcher.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "tokio-rs__tracing-1233": [
+  {
+   "file": "/workspace/reproduce_bug/src/main.rs",
+   "start": 1,
+   "end": 4,
+   "class": "unresolved",
+   "detail": "/workspace/reproduce_bug/src/main.rs is not in the corpus",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/src/lib.rs",
+   "start": 1,
+   "end": 476,
+   "class": "unresolved",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/src/lib.rs is not in the corpus",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/src/lib.rs",
+   "start": 465,
+   "end": 486,
+   "class": "path",
+   "corrected_file": "tracing-attributes/src/lib.rs",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/src/lib.rs is not in the corpus; tracing-attributes/src/lib.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/src/lib.rs",
+   "start": 465,
+   "end": 496,
+   "class": "path",
+   "corrected_file": "tracing-attributes/src/lib.rs",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/src/lib.rs is not in the corpus; tracing-attributes/src/lib.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/async_fn.rs",
+   "start": 50,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "tracing-attributes/tests/async_fn.rs",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/async_fn.rs is not in the corpus; tracing-attributes/tests/async_fn.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/async_fn.rs",
+   "start": 69,
+   "end": 152,
+   "class": "unresolved",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/async_fn.rs is not in the corpus",
+   "numbered": false
+  },
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/async_fn.rs",
+   "start": 100,
+   "end": 151,
+   "class": "path",
+   "corrected_file": "tracing-attributes/tests/async_fn.rs",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/async_fn.rs is not in the corpus; tracing-attributes/tests/async_fn.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/async_fn.rs",
+   "start": 150,
+   "end": 201,
+   "class": "path",
+   "corrected_file": "tracing-attributes/tests/async_fn.rs",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/async_fn.rs is not in the corpus; tracing-attributes/tests/async_fn.rs holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/err.rs",
+   "start": 1,
+   "end": 140,
+   "class": "path",
+   "corrected_file": "tracing-attributes/tests/err.rs",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/err.rs is not in the corpus; tracing-attributes/tests/err.rs holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "tokio-rs__tracing-1236": [
+  {
+   "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/src/lib.rs",
+   "start": 653,
+   "end": 666,
+   "class": "path",
+   "corrected_file": "tracing-attributes/src/lib.rs",
+   "detail": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/src/lib.rs is not in the corpus; tracing-attributes/src/lib.rs holds the content at these lines",
+   "numbered": true
+  }
+ ]
+}

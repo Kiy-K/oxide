@@ -1,0 +1,48 @@
+{
+ "corpus": "pytest",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/pytest-dev__pytest@19ad5889353c",
+ "lang": "python",
+ "arms": [
+  "astgrep"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "astgrep": 39
+  },
+  "py-bare-except": {
+   "astgrep": 0
+  },
+  "py-isinstance-tuple": {
+   "astgrep": 17
+  },
+  "py-mutable-default": {
+   "astgrep": 1
+  },
+  "py-open-no-encoding": {
+   "astgrep": 26
+  },
+  "py-eq-none": {
+   "astgrep": 0
+  },
+  "py-raise-from-none": {
+   "astgrep": 4
+  },
+  "py-return-in-finally": {
+   "astgrep": 0
+  }
+ },
+ "stats": {
+  "files": 212,
+  "bytes": 2298272,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.008,
+  "decode": 0.001,
+  "astgrep_parse": 0.24,
+  "astgrep_query": 0.191
+ },
+ "peak_rss_mib": 52.8
+}

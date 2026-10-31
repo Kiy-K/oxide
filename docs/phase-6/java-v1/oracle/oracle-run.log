@@ -1,0 +1,7 @@
+gson: units=208 errors=5989
+extras: units=11 errors=180
+metrics: units=6 errors=192
+proto: units=10 errors=673
+test-graal-native-image: units=2 errors=136
+test-jpms: units=4 errors=132
+test-shrinker: units=19 errors=118

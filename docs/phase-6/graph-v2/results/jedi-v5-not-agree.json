@@ -1,0 +1,424 @@
+[
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.dropna",
+"ev": [
+"xarray/tests/test_dataset.py",
+146941,
+146965
+],
+"res": "resolved",
+"text": "ds.dropna",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.dropna",
+"ev": [
+"xarray/tests/test_dataset.py",
+147067,
+147091
+],
+"res": "resolved",
+"text": "ds.dropna",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.dropna",
+"ev": [
+"xarray/tests/test_dataset.py",
+147248,
+147264
+],
+"res": "resolved",
+"text": "ds.dropna",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.dropna",
+"ev": [
+"xarray/tests/test_dataset.py",
+147331,
+147360
+],
+"res": "resolved",
+"text": "ds.dropna",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.dropna",
+"ev": [
+"xarray/tests/test_dataset.py",
+147441,
+147465
+],
+"res": "resolved",
+"text": "ds.dropna",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.isel",
+"ev": [
+"xarray/tests/test_dataset.py",
+145761,
+145789
+],
+"res": "resolved",
+"text": "ds.isel",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.isel",
+"ev": [
+"xarray/tests/test_dataset.py",
+145885,
+145907
+],
+"res": "resolved",
+"text": "ds.isel",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.isel",
+"ev": [
+"xarray/tests/test_dataset.py",
+146102,
+146127
+],
+"res": "resolved",
+"text": "ds.isel",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.isel",
+"ev": [
+"xarray/tests/test_dataset.py",
+146239,
+146258
+],
+"res": "resolved",
+"text": "ds.isel",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.isel",
+"ev": [
+"xarray/tests/test_dataset.py",
+146677,
+146697
+],
+"res": "resolved",
+"text": "ds.isel",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.isel",
+"ev": [
+"xarray/tests/test_dataset.py",
+146985,
+147005
+],
+"res": "resolved",
+"text": "ds.isel",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_dropna",
+"target": "symbol:xarray/core/dataset.py#Dataset.isel",
+"ev": [
+"xarray/tests/test_dataset.py",
+147111,
+147128
+],
+"res": "resolved",
+"text": "ds.isel",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_filter_by_attrs",
+"target": "symbol:xarray/core/dataset.py#Dataset.filter_by_attrs",
+"ev": [
+"xarray/tests/test_dataset.py",
+180981,
+181081
+],
+"res": "resolved",
+"text": "ds.filter_by_attrs",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pydata__xarray@1757dffac2fa",
+"source": "symbol:xarray/tests/test_dataset.py#TestDataset.test_filter_by_attrs",
+"target": "symbol:xarray/core/dataset.py#Dataset.filter_by_attrs",
+"ev": [
+"xarray/tests/test_dataset.py",
+181373,
+181481
+],
+"res": "resolved",
+"text": "ds.filter_by_attrs",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:src/_pytest/cacheprovider.py#cacheshow",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+"ev": [
+"src/_pytest/cacheprovider.py",
+18514,
+18565
+],
+"res": "resolved",
+"text": "tw.line",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:src/_pytest/cacheprovider.py#cacheshow",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+"ev": [
+"src/_pytest/cacheprovider.py",
+18618,
+18643
+],
+"res": "resolved",
+"text": "tw.line",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:src/_pytest/cacheprovider.py#cacheshow",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+"ev": [
+"src/_pytest/cacheprovider.py",
+19084,
+19148
+],
+"res": "resolved",
+"text": "tw.line",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:src/_pytest/cacheprovider.py#cacheshow",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+"ev": [
+"src/_pytest/cacheprovider.py",
+19175,
+19204
+],
+"res": "resolved",
+"text": "tw.line",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:src/_pytest/cacheprovider.py#cacheshow",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+"ev": [
+"src/_pytest/cacheprovider.py",
+19272,
+19292
+],
+"res": "resolved",
+"text": "tw.line",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:src/_pytest/cacheprovider.py#cacheshow",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+"ev": [
+"src/_pytest/cacheprovider.py",
+19659,
+19727
+],
+"res": "resolved",
+"text": "tw.line",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:src/_pytest/cacheprovider.py#cacheshow",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.sep",
+"ev": [
+"src/_pytest/cacheprovider.py",
+18851,
+18892
+],
+"res": "resolved",
+"text": "tw.sep",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:src/_pytest/cacheprovider.py#cacheshow",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.sep",
+"ev": [
+"src/_pytest/cacheprovider.py",
+19414,
+19460
+],
+"res": "resolved",
+"text": "tw.sep",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:src/_pytest/python.py#Module.collect",
+"target": "symbol:src/_pytest/python.py#PyCollector.collect",
+"ev": [
+"src/_pytest/python.py",
+18343,
+18360
+],
+"res": "resolved",
+"text": "super().collect",
+"jedi": [
+"src/_pytest/nodes.py:453:_pytest.nodes.Collector.collect"
+],
+"class": "disagree"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:testing/io/test_terminalwriter.py#test_attr_hasmarkup",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+"ev": [
+"testing/io/test_terminalwriter.py",
+4640,
+4667
+],
+"res": "resolved",
+"text": "tw.line",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:testing/io/test_terminalwriter.py#test_code_highlight",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter._write_source",
+"ev": [
+"testing/io/test_terminalwriter.py",
+7027,
+7057
+],
+"res": "resolved",
+"text": "tw._write_source",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:testing/io/test_terminalwriter.py#test_code_highlight",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter._write_source",
+"ev": [
+"testing/io/test_terminalwriter.py",
+7284,
+7326
+],
+"res": "resolved",
+"text": "tw._write_source",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:testing/io/test_terminalwriter.py#test_should_do_markup_PY_COLORS_eq_0",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+"ev": [
+"testing/io/test_terminalwriter.py",
+5425,
+5452
+],
+"res": "resolved",
+"text": "tw.line",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:testing/io/test_terminalwriter.py#test_should_do_markup_PY_COLORS_eq_1",
+"target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+"ev": [
+"testing/io/test_terminalwriter.py",
+5009,
+5036
+],
+"res": "resolved",
+"text": "tw.line",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:testing/test_store.py#test_store",
+"target": "symbol:src/_pytest/store.py#Store.setdefault",
+"ev": [
+"testing/test_store.py",
+1031,
+1064
+],
+"res": "resolved",
+"text": "store.setdefault",
+"jedi": [],
+"class": "jedi-none"
+},
+{
+"corpus": "pytest-dev__pytest@19ad5889353c",
+"source": "symbol:testing/test_store.py#test_store",
+"target": "symbol:src/_pytest/store.py#Store.setdefault",
+"ev": [
+"testing/test_store.py",
+1166,
+1210
+],
+"res": "resolved",
+"text": "store.setdefault",
+"jedi": [],
+"class": "jedi-none"
+}
+]

@@ -1,0 +1,104 @@
+{
+  "counts": {
+    "calls": {
+      "agree": 7830,
+      "precision": 1.0
+    },
+    "references": {
+      "agree": 5606,
+      "precision": 1.0
+    },
+    "imports": {
+      "agree": 1042,
+      "precision": 1.0
+    }
+  },
+  "overall": {
+    "agree": 14478,
+    "disagree": 0
+  },
+  "disagreements": 0,
+  "ambiguous": {
+    "calls_hit": 2031,
+    "calls_miss": 47
+  },
+  "no_oracle": {
+    "imports": 43,
+    "calls": 49,
+    "references": 104
+  }
+}
+misses 47 with-type-args 8 oracle-none 47
+('gson/src/test/java/com/google/gson/MixedStreamTest.java', 77, 'gson.<Car>fromJson', 2484, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('gson/src/test/java/com/google/gson/MixedStreamTest.java', 78, 'gson.<Car>fromJson', 2567, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('gson/src/test/java/com/google/gson/MixedStreamTest.java', 79, 'gson.<Car>fromJson', 2647, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('gson/src/test/java/com/google/gson/functional/DefaultTypeAdaptersTest.java', 682, 'gson.<List<Date>>fromJson', 25485, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('gson/src/test/java/com/google/gson/functional/MapAsArrayTypeAdapterTest.java', 47, 'gson.<Map<Point, String>>fromJson', 1649, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('gson/src/test/java/com/google/gson/functional/MapAsArrayTypeAdapterTest.java', 57, 'gson.<Object>fromJson', 2176, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('gson/src/test/java/com/google/gson/functional/MapAsArrayTypeAdapterTest.java', 109, 'gson.<Map<Point, String>>fromJson', 4335, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('gson/src/test/java/com/google/gson/functional/TypeVariableTest.java', 63, 'gson.<Foo<String, Integer>>fromJson', 2023, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 36, 'gson.fromJson', 1208, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 46, 'gson.fromJson', 1487, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 55, 'gson.fromJson', 1722, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 64, 'gson.toJson', 1961, None, ['Gson.toJson', 'Gson.toJson~5'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 73, 'gson.fromJson', 2227, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 76, 'gson.toJson', 2347, None, ['Gson.toJson', 'Gson.toJson~5'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 89, 'gson.fromJson', 2682, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 104, 'gson.toJson', 3020, None, ['Gson.toJson', 'Gson.toJson~5'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 117, 'out.value', 3601, None, ['JsonWriter.value', 'JsonWriter.value~1', 'JsonWriter.value~2', 'JsonWriter.value~3', 'JsonWriter.value~4', 'JsonWriter.value~5', 'JsonWriter.value~6'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 125, 'gson.fromJson', 3752, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 128, 'gson.toJson', 3858, None, ['Gson.toJson', 'Gson.toJson~5'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 141, 'out.value', 4343, None, ['JsonWriter.value', 'JsonWriter.value~1', 'JsonWriter.value~2', 'JsonWriter.value~3', 'JsonWriter.value~4', 'JsonWriter.value~5', 'JsonWriter.value~6'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 149, 'gson.fromJson', 4492, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 152, 'gson.toJson', 4606, None, ['Gson.toJson', 'Gson.toJson~5'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 177, 'gson.fromJson', 5492, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 180, 'gson.toJson', 5597, None, ['Gson.toJson', 'Gson.toJson~5'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/Java17RecordReflectionTest.java', 172, 'out.value', 5368, None, ['JsonWriter.value', 'JsonWriter.value~1', 'JsonWriter.value~2', 'JsonWriter.value~3', 'JsonWriter.value~4', 'JsonWriter.value~5', 'JsonWriter.value~6'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 43, 'gson.fromJson', 1391, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 60, 'gson.fromJson', 1773, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 63, 'gson.fromJson', 1885, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 89, 'gson.fromJson', 2791, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 92, 'gson.fromJson', 2900, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 113, 'gson.fromJson', 3644, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 116, 'gson.fromJson', 3753, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 134, 'gson.fromJson', 4231, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 137, 'gson.fromJson', 4329, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 149, 'gson.fromJson', 4622, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 154, 'gson.toJson', 4793, None, ['Gson.toJson', 'Gson.toJson~5'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 167, 'out.value', 5347, None, ['JsonWriter.value', 'JsonWriter.value~1', 'JsonWriter.value~2', 'JsonWriter.value~3', 'JsonWriter.value~4', 'JsonWriter.value~5', 'JsonWriter.value~6'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 181, 'gson.fromJson', 5591, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 184, 'gson.toJson', 5696, None, ['Gson.toJson', 'Gson.toJson~5'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 196, 'out.value', 6108, None, ['JsonWriter.value', 'JsonWriter.value~1', 'JsonWriter.value~2', 'JsonWriter.value~3', 'JsonWriter.value~4', 'JsonWriter.value~5', 'JsonWriter.value~6'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 215, 'gson.fromJson', 6483, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 218, 'gson.toJson', 6596, None, ['Gson.toJson', 'Gson.toJson~5'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 249, 'gson.fromJson', 7568, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 252, 'gson.toJson', 7672, None, ['Gson.toJson', 'Gson.toJson~5'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 244, 'out.value', 7445, None, ['JsonWriter.value', 'JsonWriter.value~1', 'JsonWriter.value~2', 'JsonWriter.value~3', 'JsonWriter.value~4', 'JsonWriter.value~5', 'JsonWriter.value~6'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 260, 'gson.fromJson', 7855, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+('test-graal-native-image/src/test/java/com/google/gson/native_test/ReflectionTest.java', 267, 'gson.fromJson', 8155, None, ['Gson.fromJson', 'Gson.fromJson~1', 'Gson.fromJson~10', 'Gson.fromJson~2', 'Gson.fromJson~3', 'Gson.fromJson~4', 'Gson.fromJson~5', 'Gson.fromJson~6', 'Gson.fromJson~7', 'Gson.fromJson~8', 'Gson.fromJson~9'])
+no-oracle 196 [(('references', 'test-graal-native-image', 'other'), 104), (('calls', 'test-graal-native-image', 'new'), 34), (('imports', 'gson', 'static'), 22), (('imports', 'test-graal-native-image', 'other'), 16), (('calls', 'test-graal-native-image', 'other'), 8), (('calls', 'test-graal-native-image', '<'), 4), (('imports', 'gson', 'other'), 3), (('calls', 'gson', 'other'), 3), (('imports', 'test-shrinker', 'static'), 2)]
+('imports', 'gson', 'other', 'import com.google.gson.internal.GsonBuildConfig;')
+('imports', 'gson', 'other', 'import com.google.gson.internal.GsonBuildConfig;')
+('calls', 'gson', 'other', 'assertThrowsStackOverflow')
+('calls', 'gson', 'other', 'assertThrowsStackOverflow')
+('calls', 'gson', 'other', 'assertThrowsStackOverflow')
+('imports', 'gson', 'other', 'import com.google.gson.internal.GsonBuildConfig;')
+('imports', 'test-graal-native-image', 'other', 'import com.google.gson.Gson;')
+('imports', 'test-graal-native-image', 'other', 'import com.google.gson.GsonBuilder;')
+('imports', 'test-graal-native-image', 'other', 'import com.google.gson.TypeAdapter;')
+('imports', 'test-graal-native-image', 'other', 'import com.google.gson.annotations.JsonAdapter;')
+('imports', 'test-graal-native-image', 'other', 'import com.google.gson.annotations.SerializedName;')
+('imports', 'test-graal-native-image', 'other', 'import com.google.gson.stream.JsonReader;')
+('imports', 'test-graal-native-image', 'other', 'import com.google.gson.stream.JsonWriter;')
+('references', 'test-graal-native-image', 'other', 'JsonAdapter')
+('references', 'test-graal-native-image', 'other', 'RecordWithCustomClassAdapter.CustomAdapter')
+('references', 'test-graal-native-image', 'other', 'Gson')
+('references', 'test-graal-native-image', 'other', 'PublicRecord')
+('references', 'test-graal-native-image', 'other', 'PublicRecord')
+('references', 'test-graal-native-image', 'other', 'Gson')
+('references', 'test-graal-native-image', 'other', 'PrivateRecord')
+('references', 'test-graal-native-image', 'other', 'PrivateRecord')
+('references', 'test-graal-native-image', 'other', 'Gson')
+('references', 'test-graal-native-image', 'other', 'Gson')
+('references', 'test-graal-native-image', 'other', 'SerializedName')
+('references', 'test-graal-native-image', 'other', 'Gson')

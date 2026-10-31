@@ -1,0 +1,12 @@
+artifact: oxide-0.0.0.tar.gz sha256 af91c8c6845d1225c88fe29c012764a74be96bbc3b878a25f132385b96eb16ed
+ + uvicorn==0.54.0
+ + watchfiles==1.3.0
+ + websockets==17.2
+/home/khoi/.cache/oxide/ladybug-extensions-0.21.0/libfts.lbug_extension
+smoke: oxide at /home/khoi/Projects/oxide-eval-data/oxide-java-eval/venv-sdist/lib/python3.13/site-packages/oxide/__init__.py
+smoke: indexed 65 files, 319 entities
+smoke: search and context ok (381/400 units)
+smoke: mcp stdio ok
+smoke: store lock exclusive and released
+smoke: OK
+exit=0

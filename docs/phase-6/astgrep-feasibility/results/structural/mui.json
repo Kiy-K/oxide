@@ -1,0 +1,336 @@
+{
+ "corpus": "mui",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/mui__material-ui@03b616a1e015",
+ "lang": "typescript",
+ "arms": [
+  "astgrep",
+  "regex",
+  "treesitter"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "treesitter": 18,
+   "astgrep": 18,
+   "regex": 4,
+   "agree": 18,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 4,
+   "regex_precision": 0.75,
+   "regex_recall": 0.16666666666666666,
+   "regex_false_count": 1,
+   "regex_missed_count": 15,
+   "regex_false": [
+    {
+     "path": "packages/mui-system/src/cssVars/getInitColorSchemeScript.tsx",
+     "line": 84,
+     "text": "      } catch (e) {} })();`,"
+    }
+   ],
+   "regex_missed": [
+    {
+     "path": "packages/mui-utils/src/useIsFocusVisible.ts",
+     "line": 106,
+     "text": "  } catch (error) {"
+    },
+    {
+     "path": "docs/src/layouts/AppHeader.tsx",
+     "line": 55,
+     "text": "    } catch (error) {"
+    },
+    {
+     "path": "packages/mui-system/src/cssVars/useCurrentColorScheme.ts",
+     "line": 185,
+     "text": "          } catch (e) {"
+    },
+    {
+     "path": "packages/mui-system/src/cssVars/useCurrentColorScheme.ts",
+     "line": 229,
+     "text": "              } catch (error) {"
+    },
+    {
+     "path": "docs/src/modules/utils/useClipboardCopy.ts",
+     "line": 26,
+     "text": "    } catch (error) {"
+    },
+    {
+     "path": "packages/api-docs-builder/ApiBuilders/ComponentApiBuilder.ts",
+     "line": 320,
+     "text": "      } catch (error) {"
+    },
+    {
+     "path": "packages/typescript-to-proptypes/test/typescript-to-proptypes.test.ts",
+     "line": 60,
+     "text": "        } catch (error) {"
+    },
+    {
+     "path": "packages/typescript-to-proptypes/test/typescript-to-proptypes.test.ts",
+     "line": 50,
+     "text": "      } catch (error) {"
+    },
+    {
+     "path": "packages/mui-system/src/cssVars/useCurrentColorScheme.ts",
+     "line": 104,
+     "text": "  } catch (e) {"
+    },
+    {
+     "path": "packages/api-docs-builder/ApiBuilders/HookApiBuilder.ts",
+     "line": 393,
+     "text": "      } catch (error) {"
+    }
+   ]
+  },
+  "ts-json-parse-unguarded": {
+   "treesitter": 1,
+   "astgrep": 1,
+   "regex": 1,
+   "agree": 1,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 1,
+   "regex_precision": 1.0,
+   "regex_recall": 1.0,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-as-any": {
+   "treesitter": 209,
+   "astgrep": 209,
+   "regex": 213,
+   "agree": 209,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 213,
+   "regex_precision": 0.971830985915493,
+   "regex_recall": 1.0,
+   "regex_false_count": 6,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "packages/typescript-to-proptypes/src/injector.ts",
+     "line": 258,
+     "text": "              // Component.propTypes = {} as any;"
+    },
+    {
+     "path": "test/utils/initMatchers.ts",
+     "line": 488,
+     "text": "    // TODO: Investigate if `as any` can be removed after https://github.com/DefinitelyTyped/DefinitelyTyped/issues/48634 is resolved."
+    },
+    {
+     "path": "packages/typescript-to-proptypes/src/generator.ts",
+     "line": 334,
+     "text": "  const propTypesCasting = disablePropTypesTypeChecking ? ' as any' : '';"
+    },
+    {
+     "path": "test/utils/initMatchers.ts",
+     "line": 497,
+     "text": "      // TODO: Investigate if `as any` can be removed after https://github.com/DefinitelyTyped/DefinitelyTyped/issues/48634 is resolved."
+    },
+    {
+     "path": "test/utils/initMatchers.ts",
+     "line": 482,
+     "text": "    // TODO: Investigate if `as any` can be removed after https://github.com/DefinitelyTyped/DefinitelyTyped/issues/48634 is resolved."
+    },
+    {
+     "path": "packages/typescript-to-proptypes/src/generator.ts",
+     "line": 9,
+     "text": "   * .propTypes = { ... } as any"
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-non-null-member": {
+   "treesitter": 92,
+   "astgrep": 92,
+   "regex": 82,
+   "agree": 92,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 82,
+   "regex_precision": 1.0,
+   "regex_recall": 0.9782608695652174,
+   "regex_false_count": 0,
+   "regex_missed_count": 2,
+   "regex_false": [],
+   "regex_missed": [
+    {
+     "path": "test/utils/createRenderer.tsx",
+     "line": 46,
+     "text": "  const testLines = stack!"
+    },
+    {
+     "path": "scripts/generateProptypes.ts",
+     "line": 235,
+     "text": "        ignoreGenerated &&"
+    }
+   ]
+  },
+  "ts-await-in-loop": {
+   "treesitter": 2,
+   "astgrep": 2,
+   "agree": 2,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": []
+  },
+  "ts-async-promise-executor": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-console-log": {
+   "treesitter": 20,
+   "astgrep": 20,
+   "regex": 24,
+   "agree": 20,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 24,
+   "regex_precision": 0.8333333333333334,
+   "regex_recall": 1.0,
+   "regex_false_count": 4,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "packages/mui-system/src/cssVars/cssVarsParser.ts",
+     "line": 119,
+     "text": " * console.log(css) // { '--foo-fontSize': '12px', '--foo-lineHeight': 1.2, '--foo-palette-primary-500': 'var(--color)' }"
+    },
+    {
+     "path": "packages/mui-system/src/cssVars/cssVarsParser.ts",
+     "line": 15,
+     "text": " * console.log(source) // { palette: { primary: 'var(--palette-primary)' } }"
+    },
+    {
+     "path": "packages/mui-system/src/cssVars/cssVarsParser.ts",
+     "line": 20,
+     "text": " * console.log(source) // { palette: { primary: 'var(--palette-primary)', secondary: 'var(--palette-secondary)' } }"
+    },
+    {
+     "path": "packages/mui-system/src/cssVars/cssVarsParser.ts",
+     "line": 120,
+     "text": " * console.log(vars) // { fontSize: 'var(--foo-fontSize)', lineHeight: 'var(--foo-lineHeight)', palette: { primary: { 500: 'var(--foo-palette-primary-500)' } } }"
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-useeffect-empty-deps": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 63,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 63,
+   "regex_precision": 0.0,
+   "regex_recall": null,
+   "regex_false_count": 63,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "docs/src/modules/utils/useClipboardCopy.ts",
+     "line": 14,
+     "text": "  }, []);"
+    },
+    {
+     "path": "packages/mui-base/src/ClickAwayListener/ClickAwayListener.tsx",
+     "line": 94,
+     "text": "  }, []);"
+    },
+    {
+     "path": "examples/material-remix-ts/app/root.tsx",
+     "line": 31,
+     "text": "  }, []);"
+    },
+    {
+     "path": "packages/mui-base/src/useButton/useButton.ts",
+     "line": 172,
+     "text": "  }, []);"
+    },
+    {
+     "path": "docs/pages/experiments/md3/index.tsx",
+     "line": 22,
+     "text": "  }, []);"
+    },
+    {
+     "path": "packages/mui-material/src/TextField/TextField.spec.tsx",
+     "line": 61,
+     "text": "  }, []);"
+    },
+    {
+     "path": "docs/src/modules/components/DemoEditor.tsx",
+     "line": 79,
+     "text": "  }, []);"
+    },
+    {
+     "path": "packages/mui-base/src/utils/useForcedRerendering.ts",
+     "line": 10,
+     "text": "  }, []);"
+    },
+    {
+     "path": "docs/src/components/header/ThemeModeToggle.tsx",
+     "line": 13,
+     "text": "  }, []);"
+    },
+    {
+     "path": "docs/data/material/experimental-api/css-variables/CssVarsCustomTheme.tsx",
+     "line": 18,
+     "text": "  }, []);"
+    }
+   ],
+   "regex_missed": []
+  }
+ },
+ "stats": {
+  "files": 2905,
+  "bytes": 6555770,
+  "invalid_utf8": 0,
+  "error_trees": 25,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.172,
+  "decode": 0.003,
+  "treesitter_parse": 0.593,
+  "treesitter_query": 1.248,
+  "astgrep_parse": 0.7,
+  "astgrep_query": 0.914,
+  "regex": 0.446
+ },
+ "peak_rss_mib": 73.0
+}

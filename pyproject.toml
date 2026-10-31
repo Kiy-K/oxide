@@ -1,0 +1,90 @@
+# OXIDE v2: Python engine (ADR-0011). `mise run verify` is the one check.
+[project]
+name = "oxide"
+version = "0.0.0"
+description = "OXIDE v2: a structural context engine for agents"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+# ladybug 0.21.0 ships wheels for CPython 3.10-3.14 only.
+requires-python = ">=3.12,<3.15"
+dependencies = [
+    # Not imported: fastmcp needs it, and 49+ ships no Intel macOS wheels (docs/platforms.md).
+    "cryptography<49; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+    "cryptography>=50; sys_platform != 'darwin' or platform_machine != 'x86_64'",
+    "fastmcp==4.1.1",
+    "ladybug==0.21.0",
+    "networkx>=3.4,<4",
+    "pathspec>=0.12",
+    "tree-sitter>=0.25,<0.27",
+    "tree-sitter-c==0.24.2",
+    "tree-sitter-cpp==0.23.4",
+    "tree-sitter-go==0.25.0",
+    "tree-sitter-java==0.23.5",
+    "tree-sitter-javascript==0.23.1",
+    "tree-sitter-python==0.25.0",
+    "tree-sitter-rust==0.24.2",
+    "tree-sitter-typescript==0.23.2",
+]
+
+[project.scripts]
+oxide = "oxide.cli:main"
+
+[tool.pyrefly.errors]
+implicit-any = "error"
+method-assign = "error"
+unannotated-return = "error"
+implicit-any-parameter = "error"
+no-any-return = "error"
+redundant-cast = "warn"
+
+[project.optional-dependencies]
+# Explicit structural search (Repository.structural_search). Optional: it adds 46 MB to a
+# 94 MB install (docs/phase-6/astgrep-feasibility/). Pinned exactly: pre-1.0, own grammars.
+structural = [
+    "ast-grep-py==0.51.0",
+]
+
+[dependency-groups]
+dev = [
+    "ast-grep-py==0.51.0",
+    "mypy>=1.13",
+    "pyrefly>=1.4.0",
+    "pytest>=8.3",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.8",
+    "types-networkx>=3.6.1.20261024",
+]
+
+[build-system]
+requires = ["uv_build>=0.9,<0.13"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests/python"]
+mypy_path = ["src", "tests/python"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/python"]
+addopts = "-ra --strict-markers"
+
+[tool.pyrefly]
+project-includes = [
+    "src",
+    "tests/python",
+]
+search-path = [
+    "src",
+    "tests/python",
+]
+preset = "legacy"
+check-unannotated-defs = true
+infer-return-types = "never"

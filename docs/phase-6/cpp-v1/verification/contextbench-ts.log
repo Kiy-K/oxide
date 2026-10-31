@@ -1,0 +1,14 @@
+Running as unit: run-p68641-i60079.scope; invocation ID: 80c35f61084249d7b32577ec9c3348d5
+[contextbench-ts] $ uv run --locked python tests/python/contextbench_ts.py fetch
+[contextbench-ts] $ OXIDE_CONTEXTBENCH_TS=1 uv run --locked pytest tests/python/test_contextbench_ts.py
+============================= test session starts ==============================
+platform linux -- Python 3.13.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/khoi/Projects/oxide
+configfile: pyproject.toml
+plugins: platformdirs-4.13.3, anyio-4.15.1
+collected 17 items
+
+tests/python/test_contextbench_ts.py .................                   [100%]
+
+======================== 17 passed in 856.50s (0:14:16) ========================
+exit=0

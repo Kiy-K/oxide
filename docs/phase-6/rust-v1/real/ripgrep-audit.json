@@ -1,0 +1,146 @@
+{
+ "calls": [
+  {
+   "source": "symbol:crates/core/flags/hiargs.rs#types",
+   "target": "symbol:crates/ignore/src/types.rs#<impl TypesBuilder>.new",
+   "text": "ignore::types::TypesBuilder::new",
+   "target_name": "new",
+   "target_signature": "pub fn new() -> TypesBuilder"
+  },
+  {
+   "source": "symbol:crates/printer/src/standard.rs#column_number_multi_line",
+   "target": "symbol:crates/searcher/src/searcher/mod.rs#<impl SearcherBuilder>.new",
+   "text": "SearcherBuilder::new",
+   "target_name": "new",
+   "target_signature": "pub fn new() -> SearcherBuilder"
+  },
+  {
+   "source": "symbol:crates/core/flags/hiargs.rs#<impl HiArgs>.printer",
+   "target": "symbol:crates/core/search.rs#Printer",
+   "text": "Printer::Standard",
+   "target_name": "Printer",
+   "target_signature": "pub(crate) enum Printer<W>"
+  },
+  {
+   "source": "symbol:crates/core/flags/defs.rs#test_trace",
+   "target": "symbol:crates/core/flags/parse.rs#parse_low_raw",
+   "text": "parse_low_raw",
+   "target_name": "parse_low_raw",
+   "target_signature": "pub(crate) fn parse_low_raw( rawargs: impl IntoIterator<Item = impl Into<OsString>>, ) -> anyhow::Result<LowArgs>"
+  },
+  {
+   "source": "file:tests/index/disallowed.rs",
+   "target": "symbol:tests/macros.rs#rgtest",
+   "text": "rgtest",
+   "target_name": "rgtest",
+   "target_signature": "macro_rules! rgtest"
+  },
+  {
+   "source": "file:tests/regression.rs",
+   "target": "symbol:tests/macros.rs#rgtest",
+   "text": "rgtest",
+   "target_name": "rgtest",
+   "target_signature": "macro_rules! rgtest"
+  },
+  {
+   "source": "file:tests/regression.rs",
+   "target": "symbol:tests/macros.rs#rgtest",
+   "text": "rgtest",
+   "target_name": "rgtest",
+   "target_signature": "macro_rules! rgtest"
+  },
+  {
+   "source": "symbol:crates/ignore/src/walk.rs#<impl WalkBuilder>.build_matchers",
+   "target": "symbol:crates/ignore/src/incremental.rs#<impl IncrementalIgnore>.new",
+   "text": "IncrementalIgnore::new",
+   "target_name": "new",
+   "target_signature": "pub(crate) fn new( root: PathBuf, ignore: Ignore, options: IncrementalIgnoreOptions, ) -> IncrementalIgnore"
+  },
+  {
+   "source": "symbol:crates/printer/src/standard.rs#invert_context_only_matching",
+   "target": "symbol:crates/regex/src/matcher.rs#<impl RegexMatcher>.new",
+   "text": "RegexMatcher::new",
+   "target_name": "new",
+   "target_signature": "pub fn new(pattern: &str) -> Result<RegexMatcher, Error>"
+  },
+  {
+   "source": "symbol:crates/core/flags/hiargs.rs#take_hyperlink_config",
+   "target": "symbol:crates/printer/src/hyperlink/mod.rs#<impl HyperlinkConfig>.new",
+   "text": "grep::printer::HyperlinkConfig::new",
+   "target_name": "new",
+   "target_signature": "pub fn new( env: HyperlinkEnvironment, format: HyperlinkFormat, ) -> HyperlinkConfig"
+  }
+ ],
+ "imports": [
+  {
+   "source": "file:crates/ignore/src/types.rs",
+   "target": "symbol:crates/globset/src/lib.rs#GlobSetBuilder",
+   "text": "GlobSetBuilder",
+   "target_name": "GlobSetBuilder",
+   "target_signature": "pub struct GlobSetBuilder"
+  },
+  {
+   "source": "file:crates/searcher/src/searcher/glue.rs",
+   "target": "symbol:crates/regex/src/matcher.rs#RegexMatcherBuilder",
+   "text": "grep_regex::RegexMatcherBuilder",
+   "target_name": "RegexMatcherBuilder",
+   "target_signature": "pub struct RegexMatcherBuilder"
+  },
+  {
+   "source": "file:crates/printer/src/lib.rs",
+   "target": "symbol:crates/printer/src/json.rs#JSONSink",
+   "text": "JSONSink",
+   "target_name": "JSONSink",
+   "target_signature": "pub struct JSONSink<'p, 's, M: Matcher, W>"
+  },
+  {
+   "source": "file:crates/ignore/src/gitignore.rs",
+   "target": "symbol:crates/globset/src/lib.rs#Candidate",
+   "text": "Candidate",
+   "target_name": "Candidate",
+   "target_signature": "pub struct Candidate<'a>"
+  },
+  {
+   "source": "file:crates/ignore/tests/gitignore_skip_bom.rs",
+   "target": "symbol:crates/ignore/src/gitignore.rs#GitignoreBuilder",
+   "text": "ignore::gitignore::GitignoreBuilder",
+   "target_name": "GitignoreBuilder",
+   "target_signature": "pub struct GitignoreBuilder"
+  },
+  {
+   "source": "file:crates/ignore/src/incremental.rs",
+   "target": "symbol:crates/ignore/src/lib.rs#Match",
+   "text": "Match",
+   "target_name": "Match",
+   "target_signature": "pub enum Match<T>"
+  },
+  {
+   "source": "file:crates/ignore/src/lib.rs",
+   "target": "symbol:crates/ignore/src/walk.rs#WalkParallel",
+   "text": "WalkParallel",
+   "target_name": "WalkParallel",
+   "target_signature": "pub struct WalkParallel"
+  },
+  {
+   "source": "file:crates/cli/src/decompress.rs",
+   "target": "symbol:crates/globset/src/lib.rs#GlobSet",
+   "text": "GlobSet",
+   "target_name": "GlobSet",
+   "target_signature": "pub struct GlobSet"
+  },
+  {
+   "source": "file:crates/cli/src/pattern.rs",
+   "target": "symbol:crates/cli/src/escape.rs#escape",
+   "text": "escape",
+   "target_name": "escape",
+   "target_signature": "pub fn escape(bytes: &[u8]) -> String"
+  },
+  {
+   "source": "file:crates/core/flags/parse.rs",
+   "target": "symbol:crates/core/flags/lowargs.rs#SpecialMode",
+   "text": "SpecialMode",
+   "target_name": "SpecialMode",
+   "target_signature": "pub(crate) enum SpecialMode"
+  }
+ ]
+}

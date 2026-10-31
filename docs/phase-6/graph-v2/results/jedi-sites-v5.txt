@@ -1,0 +1,9 @@
+pallets__flask@7ee9ceb71e86 ambiguous {'agree': 9}
+pallets__flask@7ee9ceb71e86 resolved {'agree': 324}
+psf__requests@0192aac24123 ambiguous {'agree': 2}
+psf__requests@0192aac24123 resolved {'agree': 202}
+pydata__xarray@1757dffac2fa ambiguous {'agree': 134}
+pydata__xarray@1757dffac2fa resolved {'agree': 1456, 'jedi-none': 14}
+pytest-dev__pytest@19ad5889353c ambiguous {'agree': 15}
+pytest-dev__pytest@19ad5889353c resolved {'agree': 912, 'jedi-none': 15, 'disagree': 1}
+

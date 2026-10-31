@@ -1,0 +1,12 @@
+{
+ "corpus": "requests",
+ "counts": {
+  "matches": 29,
+  "module_level": 3,
+  "symbol": 26
+ },
+ "innermost_kinds": {
+  "method": 22,
+  "function": 4
+ }
+}

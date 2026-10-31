@@ -1,0 +1,490 @@
+{
+ "stage": "stage1",
+ "n_runs": 32,
+ "tasks": [
+  "C1",
+  "C2",
+  "E1",
+  "I1",
+  "I2",
+  "L1",
+  "L2",
+  "O1"
+ ],
+ "arms": {
+  "B": {
+   "runs": 8,
+   "technical_failures": 0,
+   "schema_missing": 0,
+   "success_rate": 0.75,
+   "f1": 0.968,
+   "false_claims": 0.25,
+   "precision": 0.944,
+   "cps": 13446.9,
+   "ratio_cps": 1.0,
+   "ratio_cps_ci95": [
+    1.0,
+    1.0
+   ],
+   "ratio_tokens": 1.0,
+   "ratio_seconds": 1.0,
+   "ratio_calls": 1.0,
+   "grep_calls_mean": 2.875,
+   "read_calls_mean": 1.875,
+   "repeated_reads_mean": 0.5,
+   "oxide_use_rate": 0.0,
+   "nav_use_structural": 0.0,
+   "nav_use_lookup": 0.0,
+   "oxide_use_lookup": 0.0,
+   "oxide_calls_mean": 0.0,
+   "modes_total": {
+    "search": 0,
+    "context": 0,
+    "callers": 0,
+    "callees": 0,
+    "outline": 0
+   },
+   "first_call_oxide": 0,
+   "exposure_first_step_tokens": 0.0,
+   "cost_vs_b_not_invoked": 1.0,
+   "cost_vs_b_invoked": null,
+   "n_invoked": 0,
+   "per_type": {
+    "callees": {
+     "success": 0.0,
+     "false": 1.0,
+     "nav": 0.0
+    },
+    "callers": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0.0
+    },
+    "impact": {
+     "success": 0.5,
+     "false": 0.5,
+     "nav": 0.0
+    },
+    "lookup": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0.0
+    },
+    "overrides": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0.0
+    }
+   },
+   "per_lang": {
+    "python": {
+     "success": 0.6,
+     "false": 0.4
+    },
+    "typescript": {
+     "success": 1.0,
+     "false": 0.0
+    }
+   },
+   "per_task": {
+    "C1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "C2": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "E1": {
+     "success": 0.0,
+     "false": 1.0,
+     "nav": 0
+    },
+    "I1": {
+     "success": 0.0,
+     "false": 1.0,
+     "nav": 0
+    },
+    "I2": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "L1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "L2": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "O1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    }
+   }
+  },
+  "S": {
+   "runs": 8,
+   "technical_failures": 0,
+   "schema_missing": 0,
+   "success_rate": 0.75,
+   "f1": 0.929,
+   "false_claims": 0.25,
+   "precision": 0.938,
+   "cps": 15264.9,
+   "ratio_cps": 1.135,
+   "ratio_cps_ci95": [
+    0.983,
+    1.288
+   ],
+   "ratio_tokens": 1.56,
+   "ratio_seconds": 0.907,
+   "ratio_calls": 1.09,
+   "grep_calls_mean": 1.875,
+   "read_calls_mean": 2.5,
+   "repeated_reads_mean": 0.875,
+   "oxide_use_rate": 0.375,
+   "nav_use_structural": 0.333,
+   "nav_use_lookup": 0.0,
+   "oxide_use_lookup": 0.0,
+   "oxide_calls_mean": 0.75,
+   "modes_total": {
+    "search": 1,
+    "context": 0,
+    "callers": 4,
+    "callees": 0,
+    "outline": 1
+   },
+   "first_call_oxide": 1,
+   "exposure_first_step_tokens": 615.0,
+   "cost_vs_b_not_invoked": 1.032,
+   "cost_vs_b_invoked": 1.369,
+   "n_invoked": 3,
+   "per_type": {
+    "callees": {
+     "success": 0.0,
+     "false": 2.0,
+     "nav": 0.0
+    },
+    "callers": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0.0
+    },
+    "impact": {
+     "success": 0.5,
+     "false": 0.0,
+     "nav": 0.5
+    },
+    "lookup": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0.0
+    },
+    "overrides": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 1.0
+    }
+   },
+   "per_lang": {
+    "python": {
+     "success": 0.6,
+     "false": 0.4
+    },
+    "typescript": {
+     "success": 1.0,
+     "false": 0.0
+    }
+   },
+   "per_task": {
+    "C1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "C2": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "E1": {
+     "success": 0.0,
+     "false": 2.0,
+     "nav": 0
+    },
+    "I1": {
+     "success": 0.0,
+     "false": 0.0,
+     "nav": 1
+    },
+    "I2": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "L1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "L2": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "O1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 1
+    }
+   }
+  },
+  "T": {
+   "runs": 8,
+   "technical_failures": 0,
+   "schema_missing": 0,
+   "success_rate": 0.375,
+   "f1": 0.868,
+   "false_claims": 0.375,
+   "precision": 0.896,
+   "cps": 30425.1,
+   "ratio_cps": 2.263,
+   "ratio_cps_ci95": [
+    1.162,
+    10.375
+   ],
+   "ratio_tokens": 1.386,
+   "ratio_seconds": 0.908,
+   "ratio_calls": 0.918,
+   "grep_calls_mean": 2.125,
+   "read_calls_mean": 1.625,
+   "repeated_reads_mean": 0.25,
+   "oxide_use_rate": 0.25,
+   "nav_use_structural": 0.333,
+   "nav_use_lookup": 0.0,
+   "oxide_use_lookup": 0.0,
+   "oxide_calls_mean": 0.375,
+   "modes_total": {
+    "search": 0,
+    "context": 1,
+    "callers": 1,
+    "callees": 0,
+    "outline": 1
+   },
+   "first_call_oxide": 2,
+   "exposure_first_step_tokens": 702.0,
+   "cost_vs_b_not_invoked": 1.147,
+   "cost_vs_b_invoked": 1.022,
+   "n_invoked": 2,
+   "per_type": {
+    "callees": {
+     "success": 0.0,
+     "false": 1.0,
+     "nav": 1.0
+    },
+    "callers": {
+     "success": 0.0,
+     "false": 0.5,
+     "nav": 0.0
+    },
+    "impact": {
+     "success": 0.0,
+     "false": 0.5,
+     "nav": 0.5
+    },
+    "lookup": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0.0
+    },
+    "overrides": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0.0
+    }
+   },
+   "per_lang": {
+    "python": {
+     "success": 0.4,
+     "false": 0.2
+    },
+    "typescript": {
+     "success": 0.333,
+     "false": 0.667
+    }
+   },
+   "per_task": {
+    "C1": {
+     "success": 0.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "C2": {
+     "success": 0.0,
+     "false": 1.0,
+     "nav": 0
+    },
+    "E1": {
+     "success": 0.0,
+     "false": 1.0,
+     "nav": 1
+    },
+    "I1": {
+     "success": 0.0,
+     "false": 0.0,
+     "nav": 1
+    },
+    "I2": {
+     "success": 0.0,
+     "false": 1.0,
+     "nav": 0
+    },
+    "L1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "L2": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "O1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    }
+   }
+  },
+  "F": {
+   "runs": 8,
+   "technical_failures": 0,
+   "schema_missing": 0,
+   "success_rate": 0.75,
+   "f1": 0.917,
+   "false_claims": 0.25,
+   "precision": 0.964,
+   "cps": 19752.3,
+   "ratio_cps": 1.469,
+   "ratio_cps_ci95": [
+    0.812,
+    2.697
+   ],
+   "ratio_tokens": 2.372,
+   "ratio_seconds": 1.082,
+   "ratio_calls": 1.189,
+   "grep_calls_mean": 1.875,
+   "read_calls_mean": 1.625,
+   "repeated_reads_mean": 0.5,
+   "oxide_use_rate": 1.0,
+   "nav_use_structural": 0.333,
+   "nav_use_lookup": 0.0,
+   "oxide_use_lookup": 1.0,
+   "oxide_calls_mean": 1.875,
+   "modes_total": {
+    "search": 10,
+    "context": 1,
+    "callers": 4,
+    "callees": 0,
+    "outline": 0
+   },
+   "first_call_oxide": 8,
+   "exposure_first_step_tokens": 633.0,
+   "cost_vs_b_not_invoked": null,
+   "cost_vs_b_invoked": 1.503,
+   "n_invoked": 8,
+   "per_type": {
+    "callees": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0.0
+    },
+    "callers": {
+     "success": 0.5,
+     "false": 0.0,
+     "nav": 0.0
+    },
+    "impact": {
+     "success": 0.5,
+     "false": 1.0,
+     "nav": 1.0
+    },
+    "lookup": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0.0
+    },
+    "overrides": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0.0
+    }
+   },
+   "per_lang": {
+    "python": {
+     "success": 0.6,
+     "false": 0.4
+    },
+    "typescript": {
+     "success": 1.0,
+     "false": 0.0
+    }
+   },
+   "per_task": {
+    "C1": {
+     "success": 0.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "C2": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "E1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "I1": {
+     "success": 0.0,
+     "false": 2.0,
+     "nav": 1
+    },
+    "I2": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 1
+    },
+    "L1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "L2": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    },
+    "O1": {
+     "success": 1.0,
+     "false": 0.0,
+     "nav": 0
+    }
+   }
+  }
+ },
+ "valid": true,
+ "signals": {
+  "adoption": false,
+  "utility": false
+ },
+ "decision": "STOP"
+}

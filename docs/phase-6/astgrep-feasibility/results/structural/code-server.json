@@ -1,0 +1,203 @@
+{
+ "corpus": "code-server",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/coder__code-server@5d3c9edce436",
+ "lang": "typescript",
+ "arms": [
+  "astgrep",
+  "regex",
+  "treesitter"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-json-parse-unguarded": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 5,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 5,
+   "regex_precision": 0.0,
+   "regex_recall": null,
+   "regex_false_count": 5,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "src/node/vscodeSocket.ts",
+     "line": 169,
+     "text": "            const obj = JSON.parse(rawData)"
+    },
+    {
+     "path": "src/node/settings.ts",
+     "line": 20,
+     "text": "      return raw ? JSON.parse(raw) : {}"
+    },
+    {
+     "path": "src/node/update.ts",
+     "line": 57,
+     "text": "        const data = JSON.parse(buffer.toString()) as LatestResponse"
+    },
+    {
+     "path": "test/unit/node/routes/health.test.ts",
+     "line": 31,
+     "text": "          const j = JSON.parse(message.toString())"
+    },
+    {
+     "path": "src/node/plugin.ts",
+     "line": 187,
+     "text": "      const packageJSON: PackageJSON = JSON.parse(str)"
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-as-any": {
+   "treesitter": 10,
+   "astgrep": 10,
+   "regex": 10,
+   "agree": 10,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 10,
+   "regex_precision": 1.0,
+   "regex_recall": 1.0,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-non-null-member": {
+   "treesitter": 1,
+   "astgrep": 1,
+   "regex": 1,
+   "agree": 1,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 1,
+   "regex_precision": 1.0,
+   "regex_recall": 1.0,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-await-in-loop": {
+   "treesitter": 20,
+   "astgrep": 20,
+   "agree": 20,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": []
+  },
+  "ts-async-promise-executor": {
+   "treesitter": 1,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 0.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 1,
+   "astgrep_only": [],
+   "treesitter_only": [
+    {
+     "path": "src/node/app.ts",
+     "line": 41,
+     "text": "  await new Promise<void>(async (resolve, reject) => {"
+    }
+   ],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-console-log": {
+   "treesitter": 23,
+   "astgrep": 23,
+   "regex": 24,
+   "agree": 23,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 24,
+   "regex_precision": 0.9583333333333334,
+   "regex_recall": 1.0,
+   "regex_false_count": 1,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "test/unit/node/routes/static.test.ts",
+     "line": 74,
+     "text": "      // console.log(localFileContent)"
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-useeffect-empty-deps": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  }
+ },
+ "stats": {
+  "files": 83,
+  "bytes": 333695,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.013,
+  "decode": 0.0,
+  "treesitter_parse": 0.036,
+  "treesitter_query": 0.108,
+  "astgrep_parse": 0.042,
+  "astgrep_query": 0.047,
+  "regex": 0.022
+ },
+ "peak_rss_mib": 43.8
+}

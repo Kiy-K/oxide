@@ -1,0 +1,27 @@
+{
+ "corpus": "requests",
+ "files": 35,
+ "counts": {
+  "astgrep:garbage:error_trees": 32,
+  "astgrep:garbage:prefix_lost": 0,
+  "astgrep:garbage:prefix_matches": 22,
+  "astgrep:truncate:error_trees": 19,
+  "astgrep:truncate:prefix_lost": 0,
+  "astgrep:truncate:prefix_matches": 22,
+  "astgrep:unclosed:error_trees": 27,
+  "astgrep:unclosed:prefix_lost": 0,
+  "astgrep:unclosed:prefix_matches": 22,
+  "astgrep:variants": 102,
+  "treesitter:garbage:error_trees": 32,
+  "treesitter:garbage:prefix_lost": 0,
+  "treesitter:garbage:prefix_matches": 22,
+  "treesitter:truncate:error_trees": 19,
+  "treesitter:truncate:prefix_lost": 0,
+  "treesitter:truncate:prefix_matches": 22,
+  "treesitter:unclosed:error_trees": 27,
+  "treesitter:unclosed:prefix_lost": 0,
+  "treesitter:unclosed:prefix_matches": 22,
+  "treesitter:variants": 102
+ },
+ "examples": []
+}

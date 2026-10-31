@@ -1,0 +1,21 @@
+
+== prod.H == frozen compat 2/26; deterministic+within True; median build_context 184.5 ms
+  [ALL n=25] span_recall@1024=0.371 line_recall@256=0.207 line_recall@1024=0.380 line_recall@4096=0.626 file_recall@4096=1.000 gold_unit_share@4096=0.268
+  [coder__code-server n=2] span_recall@1024=0.250 line_recall@256=0.028 line_recall@1024=0.319 line_recall@4096=0.579 file_recall@4096=1.000 gold_unit_share@4096=0.490
+  [darkreader__darkreader n=2] span_recall@1024=0.000 line_recall@256=0.027 line_recall@1024=0.055 line_recall@4096=0.795 file_recall@4096=1.000 gold_unit_share@4096=0.541
+  [microsoft__vscode n=13] span_recall@1024=0.059 line_recall@256=0.024 line_recall@1024=0.057 line_recall@4096=0.377 file_recall@4096=1.000 gold_unit_share@4096=0.151
+  [fixture:ts_repo n=8] span_recall@1024=1.000 line_recall@256=0.593 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.334
+
+== prod.N == frozen compat 0/26; deterministic+within True; median build_context 180.5 ms
+  [ALL n=25] span_recall@1024=0.328 line_recall@256=0.174 line_recall@1024=0.342 line_recall@4096=0.472 file_recall@4096=1.000 gold_unit_share@4096=0.203
+  [coder__code-server n=2] span_recall@1024=0.000 line_recall@256=0.028 line_recall@1024=0.097 line_recall@4096=0.449 file_recall@4096=1.000 gold_unit_share@4096=0.392
+  [darkreader__darkreader n=2] span_recall@1024=0.000 line_recall@256=0.027 line_recall@1024=0.043 line_recall@4096=0.747 file_recall@4096=1.000 gold_unit_share@4096=0.501
+  [microsoft__vscode n=13] span_recall@1024=0.015 line_recall@256=0.012 line_recall@1024=0.020 line_recall@4096=0.108 file_recall@4096=1.000 gold_unit_share@4096=0.058
+  [fixture:ts_repo n=8] span_recall@1024=1.000 line_recall@256=0.510 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.318
+
+== prod.U == frozen compat 26/26; deterministic+within True; median build_context 223.5 ms
+  [ALL n=25] span_recall@1024=0.320 line_recall@256=0.195 line_recall@1024=0.330 line_recall@4096=0.370 file_recall@4096=0.467 gold_unit_share@4096=0.177
+  [coder__code-server n=2] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.014 line_recall@4096=0.241 file_recall@4096=0.875 gold_unit_share@4096=0.323
+  [darkreader__darkreader n=2] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.014 line_recall@4096=0.091 file_recall@4096=0.667 gold_unit_share@4096=0.197
+  [microsoft__vscode n=13] span_recall@1024=0.000 line_recall@256=0.002 line_recall@1024=0.015 line_recall@4096=0.045 file_recall@4096=0.045 gold_unit_share@4096=0.042
+  [fixture:ts_repo n=8] span_recall@1024=1.000 line_recall@256=0.608 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.354

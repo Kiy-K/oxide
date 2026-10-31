@@ -1,6 +1,6 @@
 ---
 name: oxide-conventions
-description: Development conventions and patterns for oxide. Rust project with conventional commits.
+description: Development conventions and patterns for oxide. OXIDE v2 - one Python package (src/oxide/, uv, pytest, Ruff, mypy; ADR-0011), conventional commits.
 ---
 
 # Oxide Conventions
@@ -13,9 +13,10 @@ This skill teaches Claude the development patterns and conventions used in oxide
 
 ## Tech Stack
 
-- **Primary Language**: Rust
-- **Architecture**: hybrid module organization
-- **Test Location**: separate
+- **Language**: Python 3.12+ (`src/oxide/`: `api.py`, `models.py`, `core/`, `storage/`, `capture.py`, `cli.py`), managed with uv
+- **Architecture**: modular monolith per `docs/spec/SPEC.md`; boundaries in the root `AGENTS.md`
+- **Tests**: pytest in `tests/python/`; every test and subprocess gets a private data location
+- **Checks**: `mise run verify`
 
 ## When to Use This Skill
 
@@ -61,38 +62,22 @@ This project uses **hybrid** module organization.
 
 ## Code Style
 
-### Language: Rust
+### Language: Python
 
 ### Naming Conventions
 
 | Element | Convention |
 |---------|------------|
-| Files | camelCase |
-| Functions | camelCase |
+| Modules | snake_case |
+| Functions | snake_case |
 | Classes | PascalCase |
 | Constants | SCREAMING_SNAKE_CASE |
 
-### Import Style: Relative Imports
+### Imports and Exports
 
-### Export Style: Named Exports
-
-
-*Preferred import style*
-
-```typescript
-// Use relative imports
-import { Button } from '../components/Button'
-import { useAuth } from './hooks/useAuth'
-```
-
-*Preferred export style*
-
-```typescript
-// Use named exports
-export function calculateTotal() { ... }
-export const TAX_RATE = 0.1
-export interface Order { ... }
-```
+Absolute imports from the package (`from oxide.models import ...`), with
+`from __future__ import annotations` at the top of each module. The public API is
+what `oxide/__init__.py` lists in `__all__` (`docs/public-api.md`).
 
 ## Best Practices
 
@@ -101,8 +86,7 @@ Based on analysis of the codebase, follow these practices:
 ### Do
 
 - Use conventional commit format (feat:, fix:, etc.)
-- Use camelCase for file names
-- Prefer named exports
+- Type everything for `mypy --strict`
 
 ### Don't
 

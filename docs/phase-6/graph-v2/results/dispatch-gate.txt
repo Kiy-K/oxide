@@ -1,0 +1,14 @@
+B reproduces baseline-v13 dev compat on 15 tasks
+metric                           B         T       T-B
+line_recall@256           0.179688  0.179688 +0.000000
+line_recall@1024          0.548437  0.548437 +0.000000
+line_recall@4096          0.658641  0.658641 +0.000000
+span_recall@4096          0.623333  0.623333 +0.000000
+gold_unit_share@4096      0.189075  0.186923 -0.002152
+routed_coverage           0.950000  0.944444 -0.005556
+VERDICT: REJECT
+tasks whose entries/routed/payload changed under T: 14 of 15
+verified spans whose routed status flips B -> T (4096 stage under B -> T):
+  mwaskom__seaborn-3069 seaborn/distributions.py routed True->False stage budget->routing
+verified spans whose 4096 stage changes:
+  mwaskom__seaborn-3069 seaborn/distributions.py budget -> routing

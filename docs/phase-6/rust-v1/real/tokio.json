@@ -1,0 +1,372 @@
+{
+ "repository": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/tokio",
+ "commit": "17638a0df2254515eabc15ae3f6e9538c185a1ce",
+ "snapshot": "sha256:9f5b02a1baf2943d8f504f118ccce845d460f5187a637bca592879dcbc774d9c",
+ "files": 890,
+ "rust_files": 814,
+ "coverage": {
+  "complete": 814
+ },
+ "entities": 13135,
+ "rust_symbol_kinds": {
+  "constant": 214,
+  "struct": 691,
+  "impl": 1985,
+  "method": 4605,
+  "function": 3297,
+  "type": 71,
+  "variable": 21,
+  "enum": 105,
+  "macro": 178,
+  "trait": 67
+ },
+ "graph_sha256": "439cc42f0699c32691b3469578b6a555f6107778cd0f1d048603e410ddbe8db7",
+ "relations": 82384,
+ "resolution": {
+  "calls:ambiguous": 214,
+  "calls:resolved": 8532,
+  "calls:unresolved": 16939,
+  "contains:resolved": 13134,
+  "contains_logical:resolved": 1506,
+  "defines:resolved": 6602,
+  "imports:ambiguous": 103,
+  "imports:resolved": 2683,
+  "imports:unresolved": 4671,
+  "references:ambiguous": 208,
+  "references:resolved": 9014,
+  "references:unresolved": 14148,
+  "tested_by:resolved": 4630
+ },
+ "derive_cold_s": 3.1559248099999877,
+ "derive_reused_s": 1.1184228340000573,
+ "facts_reused": 814,
+ "derive_parity": true,
+ "index_cold_s": 7.844181724000009,
+ "index_unchanged_s": 0.2103206440001486,
+ "index_edit_s": 5.766695306999964,
+ "edit_reused": 813,
+ "persisted_edit_parity": true,
+ "peak_rss_mib": 519.87890625,
+ "resolved_import_sample": [
+  {
+   "kind": "imports",
+   "source": "file:benches/copy.rs",
+   "targets": [
+    "symbol:tokio/src/io/util/copy.rs#copy"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/copy.rs",
+    "start": 139,
+    "end": 143,
+    "digest": "sha256:1ac4008ecad263e7d07e7567b3b0162bce5d5a66e47862db643bc042b9559f1f"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/copy.rs",
+   "targets": [
+    "symbol:tokio/src/io/util/repeat.rs#repeat"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/copy.rs",
+    "start": 145,
+    "end": 151,
+    "digest": "sha256:1ac4008ecad263e7d07e7567b3b0162bce5d5a66e47862db643bc042b9559f1f"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/copy.rs",
+   "targets": [
+    "symbol:tokio/src/io/async_read.rs#AsyncRead"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/copy.rs",
+    "start": 153,
+    "end": 162,
+    "digest": "sha256:1ac4008ecad263e7d07e7567b3b0162bce5d5a66e47862db643bc042b9559f1f"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/copy.rs",
+   "targets": [
+    "symbol:tokio/src/io/util/async_read_ext.rs#AsyncReadExt"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/copy.rs",
+    "start": 164,
+    "end": 176,
+    "digest": "sha256:1ac4008ecad263e7d07e7567b3b0162bce5d5a66e47862db643bc042b9559f1f"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/copy.rs",
+   "targets": [
+    "symbol:tokio/src/io/async_write.rs#AsyncWrite"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/copy.rs",
+    "start": 178,
+    "end": 188,
+    "digest": "sha256:1ac4008ecad263e7d07e7567b3b0162bce5d5a66e47862db643bc042b9559f1f"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/copy.rs",
+   "targets": [
+    "symbol:tokio/src/time/interval.rs#interval"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/copy.rs",
+    "start": 209,
+    "end": 217,
+    "digest": "sha256:1ac4008ecad263e7d07e7567b3b0162bce5d5a66e47862db643bc042b9559f1f"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/copy.rs",
+   "targets": [
+    "symbol:tokio/src/time/interval.rs#Interval"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/copy.rs",
+    "start": 219,
+    "end": 227,
+    "digest": "sha256:1ac4008ecad263e7d07e7567b3b0162bce5d5a66e47862db643bc042b9559f1f"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/copy.rs",
+   "targets": [
+    "symbol:tokio/src/time/interval.rs#MissedTickBehavior"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/copy.rs",
+    "start": 229,
+    "end": 247,
+    "digest": "sha256:1ac4008ecad263e7d07e7567b3b0162bce5d5a66e47862db643bc042b9559f1f"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/fs.rs",
+   "targets": [
+    "symbol:tokio-stream/src/stream_ext.rs#StreamExt"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/fs.rs",
+    "start": 19,
+    "end": 42,
+    "digest": "sha256:2b2b7333882a87631ac7431574a5c407bbdc3fef4b47910b00ba06adf3bc9e4a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/fs.rs",
+   "targets": [
+    "symbol:tokio/src/fs/file.rs#File"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/fs.rs",
+    "start": 49,
+    "end": 64,
+    "digest": "sha256:2b2b7333882a87631ac7431574a5c407bbdc3fef4b47910b00ba06adf3bc9e4a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/fs.rs",
+   "targets": [
+    "symbol:tokio/src/io/util/async_read_ext.rs#AsyncReadExt"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/fs.rs",
+    "start": 70,
+    "end": 93,
+    "digest": "sha256:2b2b7333882a87631ac7431574a5c407bbdc3fef4b47910b00ba06adf3bc9e4a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/fs.rs",
+   "targets": [
+    "symbol:tokio-util/src/codec/bytes_codec.rs#BytesCodec"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/fs.rs",
+    "start": 119,
+    "end": 129,
+    "digest": "sha256:2b2b7333882a87631ac7431574a5c407bbdc3fef4b47910b00ba06adf3bc9e4a"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/net_accept.rs",
+   "targets": [
+    "symbol:tokio/src/io/util/async_read_ext.rs#AsyncReadExt"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/net_accept.rs",
+    "start": 1316,
+    "end": 1328,
+    "digest": "sha256:2c0d738dfd3be3d5ffaf1025a138e85f48dfc937a9839f7ed13e35c60308e1d0"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/net_accept.rs",
+   "targets": [
+    "symbol:tokio/src/io/util/async_write_ext.rs#AsyncWriteExt"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/net_accept.rs",
+    "start": 1330,
+    "end": 1343,
+    "digest": "sha256:2c0d738dfd3be3d5ffaf1025a138e85f48dfc937a9839f7ed13e35c60308e1d0"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/net_accept.rs",
+   "targets": [
+    "symbol:tokio/src/net/tcp/listener.rs#TcpListener"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/net_accept.rs",
+    "start": 1363,
+    "end": 1374,
+    "digest": "sha256:2c0d738dfd3be3d5ffaf1025a138e85f48dfc937a9839f7ed13e35c60308e1d0"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/net_accept.rs",
+   "targets": [
+    "symbol:tokio/src/net/tcp/stream.rs#TcpStream"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/net_accept.rs",
+    "start": 1376,
+    "end": 1385,
+    "digest": "sha256:2c0d738dfd3be3d5ffaf1025a138e85f48dfc937a9839f7ed13e35c60308e1d0"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/net_accept.rs",
+   "targets": [
+    "module:rust:tokio/src/lib.rs::runtime"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/net_accept.rs",
+    "start": 1409,
+    "end": 1413,
+    "digest": "sha256:2c0d738dfd3be3d5ffaf1025a138e85f48dfc937a9839f7ed13e35c60308e1d0"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/net_accept.rs",
+   "targets": [
+    "symbol:tokio/src/runtime/runtime.rs#Runtime"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/net_accept.rs",
+    "start": 1415,
+    "end": 1422,
+    "digest": "sha256:2c0d738dfd3be3d5ffaf1025a138e85f48dfc937a9839f7ed13e35c60308e1d0"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/remote_spawn.rs",
+   "targets": [
+    "module:rust:tokio/src/lib.rs::runtime"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/remote_spawn.rs",
+    "start": 932,
+    "end": 936,
+    "digest": "sha256:9c599775b6718282f1007af1f9b41e02411ff6c37c9929bf1098d26ca36492a0"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:benches/remote_spawn.rs",
+   "targets": [
+    "symbol:tokio/src/runtime/runtime.rs#Runtime"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "benches/remote_spawn.rs",
+    "start": 938,
+    "end": 945,
+    "digest": "sha256:9c599775b6718282f1007af1f9b41e02411ff6c37c9929bf1098d26ca36492a0"
+   }
+  }
+ ]
+}

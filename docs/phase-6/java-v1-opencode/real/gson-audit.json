@@ -1,0 +1,146 @@
+{
+ "calls": [
+  {
+   "source": "symbol:gson/src/test/java/com/google/gson/internal/bind/JsonTreeWriterTest.java#JsonTreeWriterTest.testEndArrayWithPendingNameThrows",
+   "target": "symbol:gson/src/main/java/com/google/gson/internal/bind/JsonTreeWriter.java#JsonTreeWriter.beginObject",
+   "text": "writer.beginObject",
+   "target_name": "beginObject",
+   "target_signature": "public JsonWriter beginObject() throws IOException"
+  },
+  {
+   "source": "symbol:gson/src/test/java/com/google/gson/stream/JsonWriterTest.java#JsonWriterTest.testArraysInObjects",
+   "target": "symbol:gson/src/main/java/com/google/gson/stream/JsonWriter.java#JsonWriter.endArray",
+   "text": "jsonWriter.endArray",
+   "target_name": "endArray",
+   "target_signature": "public JsonWriter endArray() throws IOException"
+  },
+  {
+   "source": "symbol:gson/src/test/java/com/google/gson/stream/JsonReaderTest.java#JsonReaderTest.testMissingValue",
+   "target": "symbol:gson/src/main/java/com/google/gson/stream/JsonReader.java#JsonReader",
+   "text": "new JsonReader",
+   "target_name": "JsonReader",
+   "target_signature": "public class JsonReader implements Closeable"
+  },
+  {
+   "source": "symbol:metrics/src/main/java/com/google/gson/metrics/ParseBenchmark.java#ParseBenchmark.GsonSkipParser.parse",
+   "target": "symbol:gson/src/main/java/com/google/gson/stream/JsonReader.java#JsonReader",
+   "text": "new JsonReader",
+   "target_name": "JsonReader",
+   "target_signature": "public class JsonReader implements Closeable"
+  },
+  {
+   "source": "symbol:gson/src/test/java/com/google/gson/stream/JsonReaderTest.java#JsonReaderTest.testCharacterOffset_chunkedReader",
+   "target": "symbol:gson/src/main/java/com/google/gson/stream/JsonReader.java#JsonReader.beginObject",
+   "text": "reader.beginObject",
+   "target_name": "beginObject",
+   "target_signature": "public void beginObject() throws IOException"
+  },
+  {
+   "source": "symbol:gson/src/test/java/com/google/gson/JsonArrayTest.java#JsonArrayTest.testRemove",
+   "target": "symbol:gson/src/main/java/com/google/gson/JsonArray.java#JsonArray",
+   "text": "new JsonArray",
+   "target_name": "JsonArray",
+   "target_signature": "public final class JsonArray extends JsonElement implements Iterable<JsonElement>"
+  },
+  {
+   "source": "symbol:gson/src/test/java/com/google/gson/stream/JsonWriterTest.java#JsonWriterTest.testClosedWriterThrowsOnValue",
+   "target": "symbol:gson/src/main/java/com/google/gson/stream/JsonWriter.java#JsonWriter.close",
+   "text": "writer.close",
+   "target_name": "close",
+   "target_signature": "public void close() throws IOException"
+  },
+  {
+   "source": "symbol:gson/src/test/java/com/google/gson/JsonArrayAsListTest.java#JsonArrayAsListTest.testAddAll",
+   "target": "symbol:gson/src/main/java/com/google/gson/JsonPrimitive.java#JsonPrimitive",
+   "text": "new JsonPrimitive",
+   "target_name": "JsonPrimitive",
+   "target_signature": "public final class JsonPrimitive extends JsonElement"
+  },
+  {
+   "source": "symbol:gson/src/test/java/com/google/gson/DefaultMapJsonSerializerTest.java#DefaultMapJsonSerializerTest",
+   "target": "symbol:gson/src/main/java/com/google/gson/Gson.java#Gson",
+   "text": "new Gson",
+   "target_name": "Gson",
+   "target_signature": "public final class Gson"
+  },
+  {
+   "source": "symbol:gson/src/test/java/com/google/gson/functional/EscapingTest.java#EscapingTest.setUp",
+   "target": "symbol:gson/src/main/java/com/google/gson/Gson.java#Gson",
+   "text": "new Gson",
+   "target_name": "Gson",
+   "target_signature": "public final class Gson"
+  }
+ ],
+ "imports": [
+  {
+   "source": "file:gson/src/test/java/com/google/gson/functional/SecurityTest.java",
+   "target": "symbol:gson/src/test/java/com/google/gson/common/TestTypes.java#TestTypes.BagOfPrimitives",
+   "text": "import com.google.gson.common.TestTypes.BagOfPrimitives;",
+   "target_name": "BagOfPrimitives",
+   "target_signature": "public static class BagOfPrimitives"
+  },
+  {
+   "source": "file:gson/src/test/java/com/google/gson/functional/DefaultTypeAdaptersTest.java",
+   "target": "symbol:gson/src/main/java/com/google/gson/Gson.java#Gson",
+   "text": "import com.google.gson.Gson;",
+   "target_name": "Gson",
+   "target_signature": "public final class Gson"
+  },
+  {
+   "source": "file:gson/src/test/java/com/google/gson/functional/JsonTreeTest.java",
+   "target": "symbol:gson/src/main/java/com/google/gson/Gson.java#Gson",
+   "text": "import com.google.gson.Gson;",
+   "target_name": "Gson",
+   "target_signature": "public final class Gson"
+  },
+  {
+   "source": "file:gson/src/main/java/com/google/gson/JsonParser.java",
+   "target": "symbol:gson/src/main/java/com/google/gson/stream/JsonToken.java#JsonToken",
+   "text": "import com.google.gson.stream.JsonToken;",
+   "target_name": "JsonToken",
+   "target_signature": "public enum JsonToken"
+  },
+  {
+   "source": "file:metrics/src/main/java/com/google/gson/metrics/BagOfPrimitivesDeserializationBenchmark.java",
+   "target": "symbol:gson/src/main/java/com/google/gson/stream/JsonReader.java#JsonReader",
+   "text": "import com.google.gson.stream.JsonReader;",
+   "target_name": "JsonReader",
+   "target_signature": "public class JsonReader implements Closeable"
+  },
+  {
+   "source": "file:proto/src/main/java/com/google/gson/protobuf/ProtoTypeAdapter.java",
+   "target": "symbol:gson/src/main/java/com/google/gson/JsonDeserializationContext.java#JsonDeserializationContext",
+   "text": "import com.google.gson.JsonDeserializationContext;",
+   "target_name": "JsonDeserializationContext",
+   "target_signature": "public interface JsonDeserializationContext"
+  },
+  {
+   "source": "file:gson/src/test/java/com/google/gson/functional/CustomTypeAdaptersTest.java",
+   "target": "symbol:gson/src/main/java/com/google/gson/reflect/TypeToken.java#TypeToken",
+   "text": "import com.google.gson.reflect.TypeToken;",
+   "target_name": "TypeToken",
+   "target_signature": "public class TypeToken<T>"
+  },
+  {
+   "source": "file:gson/src/test/java/com/google/gson/functional/MapAsArrayTypeAdapterTest.java",
+   "target": "symbol:gson/src/main/java/com/google/gson/reflect/TypeToken.java#TypeToken",
+   "text": "import com.google.gson.reflect.TypeToken;",
+   "target_name": "TypeToken",
+   "target_signature": "public class TypeToken<T>"
+  },
+  {
+   "source": "file:gson/src/main/java/com/google/gson/internal/bind/JsonTreeWriter.java",
+   "target": "symbol:gson/src/main/java/com/google/gson/JsonElement.java#JsonElement",
+   "text": "import com.google.gson.JsonElement;",
+   "target_name": "JsonElement",
+   "target_signature": "public abstract class JsonElement"
+  },
+  {
+   "source": "file:gson/src/test/java/com/google/gson/functional/ParameterizedTypesTest.java",
+   "target": "symbol:gson/src/main/java/com/google/gson/JsonArray.java#JsonArray",
+   "text": "import com.google.gson.JsonArray;",
+   "target_name": "JsonArray",
+   "target_signature": "public final class JsonArray extends JsonElement implements Iterable<JsonElement>"
+  }
+ ]
+}

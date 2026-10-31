@@ -1,0 +1,146 @@
+{
+ "calls": [
+  {
+   "source": "symbol:mockito-core/src/test/java/org/mockitousage/stubbing/StubbingWithAdditionalAnswersTest.java#StubbingWithAdditionalAnswersTest.will_execute_a_void_based_on_strongly_typed_two_parameter_function",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/Mockito.java#Mockito.times",
+   "text": "times",
+   "target_name": "times",
+   "target_signature": "public static VerificationMode times(int wantedNumberOfInvocations)"
+  },
+  {
+   "source": "symbol:mockito-core/src/test/java/org/mockitousage/verification/VerificationWithAfterTest.java#VerificationWithAfterTest.should_verify_with_at_most_and_fail",
+   "target": "symbol:mockito-core/src/testFixtures/java/org/mockitoutil/async/AsyncTesting.java#AsyncTesting.runAfter",
+   "text": "async.runAfter",
+   "target_name": "runAfter",
+   "target_signature": "public void runAfter(final int delayMillis, final Runnable runnable)"
+  },
+  {
+   "source": "symbol:mockito-core/src/test/java/org/mockitousage/verification/VerificationInOrderWithCallsTest.java#VerificationInOrderWithCallsTest.shouldNotVerifySkippedCallsInInOrderWhenFewerCallsForSingleMethod",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/Mockito.java#Mockito.calls",
+   "text": "calls",
+   "target_name": "calls",
+   "target_signature": "public static VerificationMode calls(int wantedNumberOfInvocations)"
+  },
+  {
+   "source": "symbol:mockito-core/src/test/java/org/mockitousage/basicapi/ResetInvocationsTest.java#ResetInvocationsTest.should_reset_invocations_on_multiple_mocks",
+   "target": "symbol:mockito-core/src/testFixtures/java/org/mockitousage/IMethods.java#IMethods.simpleMethod",
+   "text": "moarMethods.simpleMethod",
+   "target_name": "simpleMethod",
+   "target_signature": "String simpleMethod()"
+  },
+  {
+   "source": "symbol:mockito-core/src/test/java/org/mockitousage/basicapi/UsingVarargsTest.java#UsingVarargsTest.shouldStubCorrectlyWhenDoubleStringAndMixedVarargsUsed",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/Mockito.java#Mockito.when",
+   "text": "when",
+   "target_name": "when",
+   "target_signature": "public static <T> OngoingStubbing<T> when(@Nullable T methodCall)"
+  },
+  {
+   "source": "symbol:mockito-core/src/test/java/org/mockitousage/annotation/CaptorAnnotationBasicTest.java#CaptorAnnotationBasicTest.shouldUseAnnotatedCaptor",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/ArgumentCaptor.java#ArgumentCaptor.getValue",
+   "text": "captor.getValue",
+   "target_name": "getValue",
+   "target_signature": "public T getValue()"
+  },
+  {
+   "source": "symbol:mockito-core/src/test/java/org/mockito/internal/invocation/SerializableMethodTest.java#SerializableMethodTest.createMethodToTestWith",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/internal/invocation/SerializableMethod.java#SerializableMethod",
+   "text": "new SerializableMethod",
+   "target_name": "SerializableMethod",
+   "target_signature": "public class SerializableMethod implements Serializable, MockitoMethod"
+  },
+  {
+   "source": "symbol:mockito-core/src/test/java/org/mockito/internal/util/reflection/GenericMetadataSupportTest.java#GenericMetadataSupportTest.can_extract_interface_type_from_bounds_on_terminal_typeVariable",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/internal/util/reflection/GenericMetadataSupport.java#GenericMetadataSupport.inferFrom",
+   "text": "inferFrom",
+   "target_name": "inferFrom",
+   "target_signature": "public static GenericMetadataSupport inferFrom(Type type)"
+  },
+  {
+   "source": "symbol:mockito-core/src/test/java/org/mockito/internal/progress/MockingProgressImplTest.java#MockingProgressImplTest.shouldCheckIfVerificationWasFinished",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/internal/verification/VerificationModeFactory.java#VerificationModeFactory.atLeastOnce",
+   "text": "VerificationModeFactory.atLeastOnce",
+   "target_name": "atLeastOnce",
+   "target_signature": "public static VerificationMode atLeastOnce()"
+  },
+  {
+   "source": "symbol:mockito-integration-tests/inline-mocks-tests/src/test/java/org/mockitoinline/SingletonMockTest.java#SingletonMockTest.testSingletonMockReset",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/Mockito.java#Mockito.when",
+   "text": "when",
+   "target_name": "when",
+   "target_signature": "public static <T> OngoingStubbing<T> when(@Nullable T methodCall)"
+  }
+ ],
+ "imports": [
+  {
+   "source": "file:mockito-core/src/test/java/org/mockitousage/verification/SelectedMocksInOrderVerificationTest.java",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/InOrder.java#InOrder",
+   "text": "import org.mockito.InOrder;",
+   "target_name": "InOrder",
+   "target_signature": "public interface InOrder"
+  },
+  {
+   "source": "file:mockito-core/src/main/java/org/mockito/internal/MockitoCore.java",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/internal/exceptions/Reporter.java#Reporter.notAMockPassedToVerify",
+   "text": "import static org.mockito.internal.exceptions.Reporter.notAMockPassedToVerify;",
+   "target_name": "notAMockPassedToVerify",
+   "target_signature": "public static MockitoException notAMockPassedToVerify(Class<?> type)"
+  },
+  {
+   "source": "file:mockito-core/src/test/java/org/mockitousage/plugins/MockitoPluginsTest.java",
+   "target": "symbol:mockito-core/src/testFixtures/java/org/mockitoutil/TestBase.java#TestBase",
+   "text": "import org.mockitoutil.TestBase;",
+   "target_name": "TestBase",
+   "target_signature": "public class TestBase"
+  },
+  {
+   "source": "file:mockito-extensions/mockito-junit-jupiter/src/test/java/org/mockitousage/InjectMocksTest.java",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/InjectMocks.java#InjectMocks",
+   "text": "import org.mockito.InjectMocks;",
+   "target_name": "InjectMocks",
+   "target_signature": "public @interface InjectMocks"
+  },
+  {
+   "source": "file:mockito-core/src/main/java/org/mockito/internal/framework/DefaultMockitoSession.java",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/internal/junit/UniversalTestListener.java#UniversalTestListener",
+   "text": "import org.mockito.internal.junit.UniversalTestListener;",
+   "target_name": "UniversalTestListener",
+   "target_signature": "public class UniversalTestListener implements MockitoTestListener, AutoCleanableListener"
+  },
+  {
+   "source": "file:mockito-core/src/test/java/org/mockito/internal/matchers/MatchersToStringTest.java",
+   "target": "symbol:mockito-core/src/testFixtures/java/org/mockitoutil/TestBase.java#TestBase",
+   "text": "import org.mockitoutil.TestBase;",
+   "target_name": "TestBase",
+   "target_signature": "public class TestBase"
+  },
+  {
+   "source": "file:mockito-core/src/main/java/org/mockito/internal/stubbing/BaseStubbing.java",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/stubbing/Answer.java#Answer",
+   "text": "import org.mockito.stubbing.Answer;",
+   "target_name": "Answer",
+   "target_signature": "public interface Answer<T>"
+  },
+  {
+   "source": "file:mockito-core/src/main/java/org/mockito/internal/verification/Times.java",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/internal/verification/api/VerificationData.java#VerificationData",
+   "text": "import org.mockito.internal.verification.api.VerificationData;",
+   "target_name": "VerificationData",
+   "target_signature": "public interface VerificationData"
+  },
+  {
+   "source": "file:mockito-core/src/test/java/org/mockito/internal/handler/InvocationNotifierHandlerTest.java",
+   "target": "symbol:mockito-core/src/main/java/org/mockito/Mock.java#Mock",
+   "text": "import org.mockito.Mock;",
+   "target_name": "Mock",
+   "target_signature": "public @interface Mock"
+  },
+  {
+   "source": "file:mockito-core/src/test/java/org/mockitousage/bugs/ArgumentCaptorDontCapturePreviouslyVerifiedTest.java",
+   "target": "symbol:mockito-core/src/testFixtures/java/org/mockitousage/IMethods.java#IMethods",
+   "text": "import org.mockitousage.IMethods;",
+   "target_name": "IMethods",
+   "target_signature": "public interface IMethods"
+  }
+ ]
+}

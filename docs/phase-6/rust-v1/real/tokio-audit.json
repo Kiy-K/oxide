@@ -1,0 +1,146 @@
+{
+ "calls": [
+  {
+   "source": "symbol:tokio/tests/sync_semaphore.rs#stress_test",
+   "target": "symbol:tokio/src/sync/semaphore.rs#<impl Semaphore>.new",
+   "text": "Semaphore::new",
+   "target_name": "new",
+   "target_signature": "pub fn new(permits: usize) -> Self"
+  },
+  {
+   "source": "symbol:tokio/tests/sync_once_cell.rs#set_and_get",
+   "target": "symbol:tokio/src/runtime/builder.rs#<impl Builder>.new_current_thread",
+   "text": "runtime::Builder::new_current_thread",
+   "target_name": "new_current_thread",
+   "target_signature": "pub fn new_current_thread() -> Builder"
+  },
+  {
+   "source": "symbol:tokio/src/runtime/io/driver.rs#<impl Driver>.new",
+   "target": "symbol:tokio/src/runtime/io/driver/uring.rs#<impl UringContext>.new",
+   "text": "UringContext::new",
+   "target_name": "new",
+   "target_signature": "pub(crate) fn new() -> Self"
+  },
+  {
+   "source": "symbol:benches/sync_semaphore.rs#uncontended_concurrent_single",
+   "target": "symbol:tokio/src/sync/semaphore.rs#<impl Semaphore>.new",
+   "text": "Semaphore::new",
+   "target_name": "new",
+   "target_signature": "pub fn new(permits: usize) -> Self"
+  },
+  {
+   "source": "symbol:benches/sync_broadcast.rs#contention_impl",
+   "target": "symbol:tokio/src/sync/broadcast.rs#channel",
+   "text": "broadcast::channel",
+   "target_name": "channel",
+   "target_signature": "pub fn channel<T: Clone>(capacity: usize) -> (Sender<T>, Receiver<T>)"
+  },
+  {
+   "source": "symbol:tokio/tests/sync_rwlock.rs#blocking_write_owned",
+   "target": "symbol:tokio/src/sync/rwlock.rs#<impl RwLock<T>>.new",
+   "text": "RwLock::new",
+   "target_name": "new",
+   "target_signature": "pub fn new(value: T) -> RwLock<T> where T: Sized,"
+  },
+  {
+   "source": "symbol:tokio/src/io/stderr.rs#stderr",
+   "target": "symbol:tokio/src/io/blocking.rs#<impl Blocking<T>>.new_mandatory",
+   "text": "Blocking::new_mandatory",
+   "target_name": "new_mandatory",
+   "target_signature": "pub(crate) unsafe fn new_mandatory(inner: T) -> Blocking<T>"
+  },
+  {
+   "source": "symbol:tokio/src/fs/file.rs#<impl AsyncWrite for File>.poll_write",
+   "target": "symbol:tokio/src/io/blocking.rs#<impl Buf>.with_capacity",
+   "text": "Buf::with_capacity",
+   "target_name": "with_capacity",
+   "target_signature": "pub(crate) fn with_capacity(n: usize) -> Buf"
+  },
+  {
+   "source": "symbol:tokio/tests/time_interval.rs#interval_zero_duration",
+   "target": "symbol:tokio/src/time/instant.rs#<impl Instant>.now",
+   "text": "Instant::now",
+   "target_name": "now",
+   "target_signature": "pub fn now() -> Instant"
+  },
+  {
+   "source": "symbol:tokio/src/runtime/scheduler/multi_thread/stats.rs#<impl Stats>.new",
+   "target": "symbol:tokio/src/runtime/metrics/batch.rs#<impl MetricsBatch>.new",
+   "text": "MetricsBatch::new",
+   "target_name": "new",
+   "target_signature": "pub(crate) fn new(worker_metrics: &WorkerMetrics) -> MetricsBatch"
+  }
+ ],
+ "imports": [
+  {
+   "source": "file:tokio/tests/io_buf_reader.rs",
+   "target": "symbol:tokio/src/io/async_read.rs#AsyncRead",
+   "text": "AsyncRead",
+   "target_name": "AsyncRead",
+   "target_signature": "pub trait AsyncRead"
+  },
+  {
+   "source": "file:tokio/src/fs/mod.rs",
+   "target": "symbol:tokio/src/fs/dir_builder.rs#DirBuilder",
+   "text": "self::dir_builder::DirBuilder",
+   "target_name": "DirBuilder",
+   "target_signature": "pub struct DirBuilder"
+  },
+  {
+   "source": "file:tokio/tests/tracing_sync.rs",
+   "target": "module:rust:tokio/src/lib.rs::sync",
+   "text": "tokio::sync",
+   "target_name": "tokio::sync",
+   "target_signature": null
+  },
+  {
+   "source": "file:tokio/src/fs/remove_dir.rs",
+   "target": "symbol:tokio/src/fs/mod.rs#asyncify",
+   "text": "crate::fs::asyncify",
+   "target_name": "asyncify",
+   "target_signature": "pub(crate) async fn asyncify<F, T>(f: F) -> io::Result<T> where F: FnOnce() -> io::Result<T> + Send + 'static, T: Send + 'static,"
+  },
+  {
+   "source": "file:tokio/tests/task_join_set.rs",
+   "target": "module:rust:tokio/tests/task_join_set.rs::spawn_local_on",
+   "text": "super::*",
+   "target_name": "task_join_set (test)::spawn_local_on",
+   "target_signature": null
+  },
+  {
+   "source": "file:tokio/src/io/util/split.rs",
+   "target": "symbol:tokio/src/io/async_buf_read.rs#AsyncBufRead",
+   "text": "crate::io::AsyncBufRead",
+   "target_name": "AsyncBufRead",
+   "target_signature": "pub trait AsyncBufRead: AsyncRead"
+  },
+  {
+   "source": "file:tokio/src/runtime/local_runtime/runtime.rs",
+   "target": "symbol:tokio/src/runtime/mod.rs#AutoBox",
+   "text": "AutoBox",
+   "target_name": "AutoBox",
+   "target_signature": "pub(crate) struct AutoBox<T>"
+  },
+  {
+   "source": "file:tokio/src/fs/mod.rs",
+   "target": "symbol:tokio/src/fs/read_link.rs#read_link",
+   "text": "self::read_link::read_link",
+   "target_name": "read_link",
+   "target_signature": "pub async fn read_link(path: impl AsRef<Path>) -> io::Result<PathBuf>"
+  },
+  {
+   "source": "file:tokio/src/runtime/task/raw.rs",
+   "target": "symbol:tokio/src/runtime/task/core.rs#Core",
+   "text": "Core",
+   "target_name": "Core",
+   "target_signature": "pub(super) struct Core<T: Future, S>"
+  },
+  {
+   "source": "file:tokio/src/task/builder.rs",
+   "target": "symbol:tokio/src/task/local.rs#LocalSet",
+   "text": "LocalSet",
+   "target_name": "LocalSet",
+   "target_signature": "pub struct LocalSet"
+  }
+ ]
+}

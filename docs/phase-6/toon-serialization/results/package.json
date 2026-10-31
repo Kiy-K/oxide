@@ -1,0 +1,15 @@
+{
+ "version": "1.2.0",
+ "requires": [
+  "pydantic>=2 ; extra == 'pydantic'",
+  "typing-extensions>=4.0 ; python_full_version < '3.11' and extra == 'pydantic'"
+ ],
+ "license": "MIT",
+ "requires_python": ">=3.10",
+ "files": 8,
+ "installed_bytes": 54598,
+ "import_ms_min_of_10": {
+  "json": 5.45,
+  "toon_format": 54.84
+ }
+}

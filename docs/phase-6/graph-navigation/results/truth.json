@@ -1,0 +1,1437 @@
+[
+ {
+  "corpus": "flask",
+  "key": "symbol:src/flask/ctx.py#after_this_request",
+  "kind": "function",
+  "name": "after_this_request",
+  "q1": [
+   "file:src/flask/__init__.py",
+   "symbol:tests/test_basic.py#test_after_request_processing.index.foo"
+  ],
+  "q2": [
+   "file:src/flask/__init__.py",
+   "symbol:tests/test_basic.py#test_after_request_processing.index.foo"
+  ],
+  "sites": [
+   [
+    "src/flask/__init__.py",
+    234,
+    "file:src/flask/__init__.py"
+   ],
+   [
+    "src/flask/__init__.py",
+    256,
+    "file:src/flask/__init__.py"
+   ],
+   [
+    "tests/test_basic.py",
+    20932,
+    "symbol:tests/test_basic.py#test_after_request_processing.index.foo"
+   ]
+  ]
+ },
+ {
+  "corpus": "flask",
+  "key": "symbol:src/flask/signals.py#_FakeSignal.send",
+  "kind": "method",
+  "name": "send",
+  "q1": [
+   "symbol:src/flask/app.py#Flask.do_teardown_appcontext",
+   "symbol:src/flask/app.py#Flask.do_teardown_request",
+   "symbol:src/flask/app.py#Flask.finalize_request",
+   "symbol:src/flask/app.py#Flask.full_dispatch_request",
+   "symbol:src/flask/app.py#Flask.handle_exception",
+   "symbol:src/flask/ctx.py#AppContext.push"
+  ],
+  "q2": [
+   "symbol:src/flask/app.py#Flask.do_teardown_appcontext",
+   "symbol:src/flask/app.py#Flask.do_teardown_request",
+   "symbol:src/flask/app.py#Flask.finalize_request",
+   "symbol:src/flask/app.py#Flask.full_dispatch_request",
+   "symbol:src/flask/app.py#Flask.handle_exception",
+   "symbol:src/flask/app.py#Flask.wsgi_app",
+   "symbol:src/flask/ctx.py#AppContext.__enter__",
+   "symbol:src/flask/ctx.py#AppContext.pop",
+   "symbol:src/flask/ctx.py#AppContext.push",
+   "symbol:src/flask/ctx.py#RequestContext.pop",
+   "symbol:src/flask/ctx.py#RequestContext.push",
+   "symbol:tests/test_reqctx.py#test_bad_environ_raises_bad_request",
+   "symbol:tests/test_reqctx.py#test_environ_for_valid_idna_completes"
+  ],
+  "sites": [
+   [
+    "src/flask/app.py",
+    55101,
+    "symbol:src/flask/app.py#Flask.handle_exception"
+   ],
+   [
+    "src/flask/app.py",
+    59014,
+    "symbol:src/flask/app.py#Flask.full_dispatch_request"
+   ],
+   [
+    "src/flask/app.py",
+    60128,
+    "symbol:src/flask/app.py#Flask.finalize_request"
+   ],
+   [
+    "src/flask/app.py",
+    81375,
+    "symbol:src/flask/app.py#Flask.do_teardown_request"
+   ],
+   [
+    "src/flask/app.py",
+    82201,
+    "symbol:src/flask/app.py#Flask.do_teardown_appcontext"
+   ],
+   [
+    "src/flask/ctx.py",
+    7651,
+    "symbol:src/flask/ctx.py#AppContext.push"
+   ]
+  ]
+ },
+ {
+  "corpus": "flask",
+  "key": "symbol:src/flask/cli.py#prepare_import",
+  "kind": "function",
+  "name": "prepare_import",
+  "q1": [
+   "file:tests/test_cli.py",
+   "symbol:src/flask/cli.py#ScriptInfo.load_app",
+   "symbol:tests/test_cli.py#test_prepare_import"
+  ],
+  "q2": [
+   "file:tests/test_cli.py",
+   "symbol:src/flask/cli.py#ScriptInfo.load_app",
+   "symbol:tests/test_cli.py#test_prepare_import",
+   "symbol:tests/test_cli.py#test_scriptinfo"
+  ],
+  "sites": [
+   [
+    "src/flask/cli.py",
+    9437,
+    "symbol:src/flask/cli.py#ScriptInfo.load_app"
+   ],
+   [
+    "src/flask/cli.py",
+    9613,
+    "symbol:src/flask/cli.py#ScriptInfo.load_app"
+   ],
+   [
+    "tests/test_cli.py",
+    667,
+    "file:tests/test_cli.py"
+   ],
+   [
+    "tests/test_cli.py",
+    4316,
+    "symbol:tests/test_cli.py#test_prepare_import"
+   ]
+  ]
+ },
+ {
+  "corpus": "flask",
+  "key": "symbol:src/flask/logging.py#wsgi_errors_stream",
+  "kind": "function",
+  "name": "wsgi_errors_stream",
+  "q1": [
+   "file:src/flask/logging.py",
+   "file:tests/test_logging.py",
+   "symbol:tests/test_logging.py#test_wsgi_errors_stream"
+  ],
+  "q2": [
+   "file:src/flask/logging.py",
+   "file:tests/test_logging.py",
+   "symbol:tests/test_logging.py#test_wsgi_errors_stream"
+  ],
+  "sites": [
+   [
+    "src/flask/logging.py",
+    1420,
+    "file:src/flask/logging.py"
+   ],
+   [
+    "tests/test_logging.py",
+    178,
+    "file:tests/test_logging.py"
+   ],
+   [
+    "tests/test_logging.py",
+    1577,
+    "symbol:tests/test_logging.py#test_wsgi_errors_stream"
+   ],
+   [
+    "tests/test_logging.py",
+    1705,
+    "symbol:tests/test_logging.py#test_wsgi_errors_stream"
+   ]
+  ]
+ },
+ {
+  "corpus": "flask",
+  "key": "symbol:src/flask/app.py#Flask.full_dispatch_request",
+  "kind": "method",
+  "name": "full_dispatch_request",
+  "q1": [
+   "symbol:src/flask/app.py#Flask.wsgi_app",
+   "symbol:tests/test_reqctx.py#test_bad_environ_raises_bad_request",
+   "symbol:tests/test_reqctx.py#test_environ_for_valid_idna_completes"
+  ],
+  "q2": [
+   "symbol:src/flask/app.py#Flask.__call__",
+   "symbol:src/flask/app.py#Flask.wsgi_app",
+   "symbol:tests/test_reqctx.py#test_bad_environ_raises_bad_request",
+   "symbol:tests/test_reqctx.py#test_environ_for_valid_idna_completes"
+  ],
+  "sites": [
+   [
+    "src/flask/app.py",
+    87111,
+    "symbol:src/flask/app.py#Flask.wsgi_app"
+   ],
+   [
+    "tests/test_reqctx.py",
+    7880,
+    "symbol:tests/test_reqctx.py#test_bad_environ_raises_bad_request"
+   ],
+   [
+    "tests/test_reqctx.py",
+    8370,
+    "symbol:tests/test_reqctx.py#test_environ_for_valid_idna_completes"
+   ]
+  ]
+ },
+ {
+  "corpus": "flask",
+  "key": "symbol:src/flask/json/provider.py#JSONProvider.loads",
+  "kind": "method",
+  "name": "loads",
+  "q1": [
+   "symbol:src/flask/json/__init__.py#loads",
+   "symbol:src/flask/json/provider.py#JSONProvider.load"
+  ],
+  "q2": [
+   "file:src/flask/json/tag.py",
+   "symbol:src/flask/json/__init__.py#load",
+   "symbol:src/flask/json/__init__.py#loads",
+   "symbol:src/flask/json/provider.py#JSONProvider.load",
+   "symbol:src/flask/json/tag.py#TaggedJSONSerializer.loads",
+   "symbol:tests/test_json.py#test_jsonify_arrays",
+   "symbol:tests/test_json.py#test_jsonify_basic_types",
+   "symbol:tests/test_json.py#test_jsonify_dicts",
+   "symbol:tests/test_json.py#test_jsonify_uuid_types"
+  ],
+  "sites": [
+   [
+    "src/flask/json/__init__.py",
+    3180,
+    "symbol:src/flask/json/__init__.py#loads"
+   ],
+   [
+    "src/flask/json/provider.py",
+    2331,
+    "symbol:src/flask/json/provider.py#JSONProvider.load"
+   ]
+  ]
+ },
+ {
+  "corpus": "flask",
+  "key": "symbol:src/flask/ctx.py#_AppCtxGlobals.setdefault",
+  "kind": "method",
+  "name": "setdefault",
+  "q1": [
+   "symbol:tests/test_appctx.py#test_app_ctx_globals_methods",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.app_before1",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.app_before2",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.child_before1",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.child_before2",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.parent_before1",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.parent_before2"
+  ],
+  "q2": [
+   "symbol:tests/test_appctx.py#test_app_ctx_globals_methods",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.app_before1",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.app_before2",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.child_before1",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.child_before2",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.parent_before1",
+   "symbol:tests/test_blueprints.py#test_nested_callback_order.parent_before2"
+  ],
+  "sites": [
+   [
+    "tests/test_appctx.py",
+    3267,
+    "symbol:tests/test_appctx.py#test_app_ctx_globals_methods"
+   ],
+   [
+    "tests/test_appctx.py",
+    3318,
+    "symbol:tests/test_appctx.py#test_app_ctx_globals_methods"
+   ],
+   [
+    "tests/test_blueprints.py",
+    23056,
+    "symbol:tests/test_blueprints.py#test_nested_callback_order.app_before1"
+   ],
+   [
+    "tests/test_blueprints.py",
+    23262,
+    "symbol:tests/test_blueprints.py#test_nested_callback_order.app_before2"
+   ],
+   [
+    "tests/test_blueprints.py",
+    23552,
+    "symbol:tests/test_blueprints.py#test_nested_callback_order.parent_before1"
+   ],
+   [
+    "tests/test_blueprints.py",
+    23776,
+    "symbol:tests/test_blueprints.py#test_nested_callback_order.parent_before2"
+   ],
+   [
+    "tests/test_blueprints.py",
+    24085,
+    "symbol:tests/test_blueprints.py#test_nested_callback_order.child_before1"
+   ],
+   [
+    "tests/test_blueprints.py",
+    24303,
+    "symbol:tests/test_blueprints.py#test_nested_callback_order.child_before2"
+   ]
+  ]
+ },
+ {
+  "corpus": "flask",
+  "key": "symbol:src/flask/helpers.py#redirect",
+  "kind": "function",
+  "name": "redirect",
+  "q1": [
+   "file:examples/tutorial/flaskr/auth.py",
+   "file:examples/tutorial/flaskr/blog.py",
+   "file:src/flask/__init__.py",
+   "symbol:examples/tutorial/flaskr/auth.py#login",
+   "symbol:examples/tutorial/flaskr/auth.py#login_required.wrapped_view",
+   "symbol:examples/tutorial/flaskr/auth.py#logout",
+   "symbol:examples/tutorial/flaskr/auth.py#register",
+   "symbol:examples/tutorial/flaskr/blog.py#create",
+   "symbol:examples/tutorial/flaskr/blog.py#delete",
+   "symbol:examples/tutorial/flaskr/blog.py#update",
+   "symbol:tests/test_helpers.py#test_redirect_no_app",
+   "symbol:tests/test_helpers.py#test_redirect_with_app",
+   "symbol:tests/test_regression.py#test_aborting.index",
+   "symbol:tests/test_signals.py#test_flash_signal.index",
+   "symbol:tests/test_testing.py#test_redirect_keep_session.index"
+  ],
+  "q2": [
+   "file:examples/tutorial/flaskr/auth.py",
+   "file:examples/tutorial/flaskr/blog.py",
+   "file:src/flask/__init__.py",
+   "symbol:examples/tutorial/flaskr/auth.py#login",
+   "symbol:examples/tutorial/flaskr/auth.py#login_required",
+   "symbol:examples/tutorial/flaskr/auth.py#login_required.wrapped_view",
+   "symbol:examples/tutorial/flaskr/auth.py#logout",
+   "symbol:examples/tutorial/flaskr/auth.py#register",
+   "symbol:examples/tutorial/flaskr/blog.py#create",
+   "symbol:examples/tutorial/flaskr/blog.py#delete",
+   "symbol:examples/tutorial/flaskr/blog.py#update",
+   "symbol:tests/test_helpers.py#test_redirect_no_app",
+   "symbol:tests/test_helpers.py#test_redirect_with_app",
+   "symbol:tests/test_regression.py#test_aborting.index",
+   "symbol:tests/test_signals.py#test_flash_signal.index",
+   "symbol:tests/test_testing.py#test_redirect_keep_session.index"
+  ],
+  "sites": [
+   [
+    "examples/tutorial/flaskr/auth.py",
+    108,
+    "file:examples/tutorial/flaskr/auth.py"
+   ],
+   [
+    "examples/tutorial/flaskr/auth.py",
+    625,
+    "symbol:examples/tutorial/flaskr/auth.py#login_required.wrapped_view"
+   ],
+   [
+    "examples/tutorial/flaskr/auth.py",
+    2163,
+    "symbol:examples/tutorial/flaskr/auth.py#register"
+   ],
+   [
+    "examples/tutorial/flaskr/auth.py",
+    3044,
+    "symbol:examples/tutorial/flaskr/auth.py#login"
+   ],
+   [
+    "examples/tutorial/flaskr/auth.py",
+    3275,
+    "symbol:examples/tutorial/flaskr/auth.py#logout"
+   ],
+   [
+    "examples/tutorial/flaskr/blog.py",
+    90,
+    "file:examples/tutorial/flaskr/blog.py"
+   ],
+   [
+    "examples/tutorial/flaskr/blog.py",
+    2163,
+    "symbol:examples/tutorial/flaskr/blog.py#create"
+   ],
+   [
+    "examples/tutorial/flaskr/blog.py",
+    2871,
+    "symbol:examples/tutorial/flaskr/blog.py#update"
+   ],
+   [
+    "examples/tutorial/flaskr/blog.py",
+    3285,
+    "symbol:examples/tutorial/flaskr/blog.py#delete"
+   ],
+   [
+    "src/flask/__init__.py",
+    902,
+    "file:src/flask/__init__.py"
+   ],
+   [
+    "src/flask/__init__.py",
+    914,
+    "file:src/flask/__init__.py"
+   ],
+   [
+    "tests/test_helpers.py",
+    4967,
+    "symbol:tests/test_helpers.py#test_redirect_no_app"
+   ],
+   [
+    "tests/test_helpers.py",
+    5290,
+    "symbol:tests/test_helpers.py#test_redirect_with_app"
+   ],
+   [
+    "tests/test_regression.py",
+    239,
+    "symbol:tests/test_regression.py#test_aborting.index"
+   ],
+   [
+    "tests/test_signals.py",
+    3942,
+    "symbol:tests/test_signals.py#test_flash_signal.index"
+   ],
+   [
+    "tests/test_testing.py",
+    4074,
+    "symbol:tests/test_testing.py#test_redirect_keep_session.index"
+   ]
+  ]
+ },
+ {
+  "corpus": "requests",
+  "key": "symbol:requests/_internal_utils.py#to_native_string",
+  "kind": "function",
+  "name": "to_native_string",
+  "q1": [
+   "file:requests/auth.py",
+   "file:requests/cookies.py",
+   "file:requests/models.py",
+   "file:requests/sessions.py",
+   "file:requests/utils.py",
+   "file:tests/test_utils.py",
+   "symbol:requests/auth.py#_basic_auth_str",
+   "symbol:requests/cookies.py#MockRequest.get_full_url",
+   "symbol:requests/models.py#PreparedRequest.prepare_headers",
+   "symbol:requests/models.py#PreparedRequest.prepare_method",
+   "symbol:requests/models.py#PreparedRequest.prepare_url",
+   "symbol:requests/sessions.py#SessionRedirectMixin.get_redirect_target",
+   "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects",
+   "symbol:tests/test_utils.py#test_to_native_string"
+  ],
+  "q2": [
+   "file:requests/adapters.py",
+   "file:requests/auth.py",
+   "file:requests/cookies.py",
+   "file:requests/models.py",
+   "file:requests/sessions.py",
+   "file:requests/utils.py",
+   "file:tests/test_requests.py",
+   "file:tests/test_utils.py",
+   "symbol:requests/adapters.py#HTTPAdapter.proxy_headers",
+   "symbol:requests/auth.py#HTTPBasicAuth.__call__",
+   "symbol:requests/auth.py#HTTPProxyAuth.__call__",
+   "symbol:requests/auth.py#_basic_auth_str",
+   "symbol:requests/cookies.py#MockRequest.get_full_url",
+   "symbol:requests/models.py#PreparedRequest.prepare",
+   "symbol:requests/models.py#PreparedRequest.prepare_headers",
+   "symbol:requests/models.py#PreparedRequest.prepare_method",
+   "symbol:requests/models.py#PreparedRequest.prepare_url",
+   "symbol:requests/sessions.py#Session.send",
+   "symbol:requests/sessions.py#SessionRedirectMixin.get_redirect_target",
+   "symbol:requests/sessions.py#SessionRedirectMixin.rebuild_proxies",
+   "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects",
+   "symbol:tests/test_requests.py#TestRequests.test_basic_auth_str_is_always_native",
+   "symbol:tests/test_requests.py#TestRequests.test_cookielib_cookiejar_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_header_and_body_removal_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_manual_redirect_with_partial_body_read",
+   "symbol:tests/test_requests.py#TestRequests.test_set_basicauth",
+   "symbol:tests/test_requests.py#TestRequests.test_transfer_enc_removal_on_redirect",
+   "symbol:tests/test_requests.py#test_requests_are_updated_each_time",
+   "symbol:tests/test_utils.py#test_to_native_string"
+  ],
+  "sites": [
+   [
+    "requests/auth.py",
+    356,
+    "file:requests/auth.py"
+   ],
+   [
+    "requests/auth.py",
+    1966,
+    "symbol:requests/auth.py#_basic_auth_str"
+   ],
+   [
+    "requests/cookies.py",
+    276,
+    "file:requests/cookies.py"
+   ],
+   [
+    "requests/cookies.py",
+    1607,
+    "symbol:requests/cookies.py#MockRequest.get_full_url"
+   ],
+   [
+    "requests/models.py",
+    1134,
+    "file:requests/models.py"
+   ],
+   [
+    "requests/models.py",
+    11693,
+    "symbol:requests/models.py#PreparedRequest.prepare_method"
+   ],
+   [
+    "requests/models.py",
+    13193,
+    "symbol:requests/models.py#PreparedRequest.prepare_url"
+   ],
+   [
+    "requests/models.py",
+    14837,
+    "symbol:requests/models.py#PreparedRequest.prepare_url"
+   ],
+   [
+    "requests/models.py",
+    15541,
+    "symbol:requests/models.py#PreparedRequest.prepare_headers"
+   ],
+   [
+    "requests/sessions.py",
+    634,
+    "file:requests/sessions.py"
+   ],
+   [
+    "requests/sessions.py",
+    4216,
+    "symbol:requests/sessions.py#SessionRedirectMixin.get_redirect_target"
+   ],
+   [
+    "requests/sessions.py",
+    6845,
+    "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects"
+   ],
+   [
+    "requests/sessions.py",
+    7681,
+    "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects"
+   ],
+   [
+    "requests/utils.py",
+    606,
+    "file:requests/utils.py"
+   ],
+   [
+    "tests/test_utils.py",
+    749,
+    "file:tests/test_utils.py"
+   ],
+   [
+    "tests/test_utils.py",
+    19697,
+    "symbol:tests/test_utils.py#test_to_native_string"
+   ]
+  ]
+ },
+ {
+  "corpus": "requests",
+  "key": "symbol:requests/utils.py#unquote_header_value",
+  "kind": "function",
+  "name": "unquote_header_value",
+  "q1": [
+   "file:tests/test_utils.py",
+   "symbol:requests/utils.py#parse_dict_header",
+   "symbol:requests/utils.py#parse_list_header",
+   "symbol:tests/test_utils.py#TestUnquoteHeaderValue.test_is_filename",
+   "symbol:tests/test_utils.py#TestUnquoteHeaderValue.test_valid"
+  ],
+  "q2": [
+   "file:requests/auth.py",
+   "file:tests/test_utils.py",
+   "symbol:requests/auth.py#HTTPDigestAuth.handle_401",
+   "symbol:requests/utils.py#parse_dict_header",
+   "symbol:requests/utils.py#parse_list_header",
+   "symbol:tests/test_utils.py#TestUnquoteHeaderValue.test_is_filename",
+   "symbol:tests/test_utils.py#TestUnquoteHeaderValue.test_valid",
+   "symbol:tests/test_utils.py#test_parse_dict_header"
+  ],
+  "sites": [
+   [
+    "requests/utils.py",
+    12697,
+    "symbol:requests/utils.py#parse_list_header"
+   ],
+   [
+    "requests/utils.py",
+    13719,
+    "symbol:requests/utils.py#parse_dict_header"
+   ],
+   [
+    "tests/test_utils.py",
+    771,
+    "file:tests/test_utils.py"
+   ],
+   [
+    "tests/test_utils.py",
+    4988,
+    "symbol:tests/test_utils.py#TestUnquoteHeaderValue.test_valid"
+   ],
+   [
+    "tests/test_utils.py",
+    5076,
+    "symbol:tests/test_utils.py#TestUnquoteHeaderValue.test_is_filename"
+   ]
+  ]
+ },
+ {
+  "corpus": "requests",
+  "key": "symbol:requests/cookies.py#extract_cookies_to_jar",
+  "kind": "function",
+  "name": "extract_cookies_to_jar",
+  "q1": [
+   "file:requests/adapters.py",
+   "file:requests/auth.py",
+   "file:requests/sessions.py",
+   "symbol:requests/adapters.py#HTTPAdapter.build_response",
+   "symbol:requests/auth.py#HTTPDigestAuth.handle_401",
+   "symbol:requests/sessions.py#Session.send",
+   "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects"
+  ],
+  "q2": [
+   "file:requests/adapters.py",
+   "file:requests/auth.py",
+   "file:requests/sessions.py",
+   "symbol:requests/adapters.py#HTTPAdapter.build_response",
+   "symbol:requests/adapters.py#HTTPAdapter.send",
+   "symbol:requests/auth.py#HTTPDigestAuth.__call__",
+   "symbol:requests/auth.py#HTTPDigestAuth.handle_401",
+   "symbol:requests/sessions.py#Session.request",
+   "symbol:requests/sessions.py#Session.send",
+   "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects",
+   "symbol:tests/test_requests.py#TestRequests.test_HTTP_200_OK_GET_ALTERNATIVE",
+   "symbol:tests/test_requests.py#TestRequests.test_cannot_send_unprepared_requests",
+   "symbol:tests/test_requests.py#TestRequests.test_cookielib_cookiejar_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_header_and_body_removal_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_hook_receives_request_arguments",
+   "symbol:tests/test_requests.py#TestRequests.test_manual_redirect_with_partial_body_read",
+   "symbol:tests/test_requests.py#TestRequests.test_mixed_case_scheme_acceptable",
+   "symbol:tests/test_requests.py#TestRequests.test_non_prepared_request_error",
+   "symbol:tests/test_requests.py#TestRequests.test_prepared_from_session",
+   "symbol:tests/test_requests.py#TestRequests.test_prepared_request_hook",
+   "symbol:tests/test_requests.py#TestRequests.test_prepared_request_is_pickleable",
+   "symbol:tests/test_requests.py#TestRequests.test_prepared_request_with_file_is_pickleable",
+   "symbol:tests/test_requests.py#TestRequests.test_prepared_request_with_hook_is_pickleable",
+   "symbol:tests/test_requests.py#TestRequests.test_respect_proxy_env_on_send_self_prepared_request",
+   "symbol:tests/test_requests.py#TestRequests.test_respect_proxy_env_on_send_session_prepared_request",
+   "symbol:tests/test_requests.py#TestRequests.test_respect_proxy_env_on_send_with_redirects",
+   "symbol:tests/test_requests.py#TestRequests.test_transfer_enc_removal_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_unicode_method_name_with_request_object",
+   "symbol:tests/test_requests.py#test_requests_are_updated_each_time"
+  ],
+  "sites": [
+   [
+    "requests/adapters.py",
+    1375,
+    "file:requests/adapters.py"
+   ],
+   [
+    "requests/adapters.py",
+    11435,
+    "symbol:requests/adapters.py#HTTPAdapter.build_response"
+   ],
+   [
+    "requests/auth.py",
+    304,
+    "file:requests/auth.py"
+   ],
+   [
+    "requests/auth.py",
+    8711,
+    "symbol:requests/auth.py#HTTPDigestAuth.handle_401"
+   ],
+   [
+    "requests/sessions.py",
+    430,
+    "file:requests/sessions.py"
+   ],
+   [
+    "requests/sessions.py",
+    8534,
+    "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects"
+   ],
+   [
+    "requests/sessions.py",
+    9971,
+    "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects"
+   ],
+   [
+    "requests/sessions.py",
+    26051,
+    "symbol:requests/sessions.py#Session.send"
+   ],
+   [
+    "requests/sessions.py",
+    26121,
+    "symbol:requests/sessions.py#Session.send"
+   ]
+  ]
+ },
+ {
+  "corpus": "requests",
+  "key": "symbol:requests/utils.py#rewind_body",
+  "kind": "function",
+  "name": "rewind_body",
+  "q1": [
+   "file:requests/sessions.py",
+   "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects",
+   "symbol:tests/test_requests.py#TestRequests.test_rewind_body",
+   "symbol:tests/test_requests.py#TestRequests.test_rewind_body_failed_seek",
+   "symbol:tests/test_requests.py#TestRequests.test_rewind_body_failed_tell",
+   "symbol:tests/test_requests.py#TestRequests.test_rewind_body_no_seek",
+   "symbol:tests/test_requests.py#TestRequests.test_rewind_partially_read_body"
+  ],
+  "q2": [
+   "file:requests/sessions.py",
+   "symbol:requests/sessions.py#Session.send",
+   "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects",
+   "symbol:tests/test_requests.py#TestRequests.test_cookielib_cookiejar_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_header_and_body_removal_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_manual_redirect_with_partial_body_read",
+   "symbol:tests/test_requests.py#TestRequests.test_rewind_body",
+   "symbol:tests/test_requests.py#TestRequests.test_rewind_body_failed_seek",
+   "symbol:tests/test_requests.py#TestRequests.test_rewind_body_failed_tell",
+   "symbol:tests/test_requests.py#TestRequests.test_rewind_body_no_seek",
+   "symbol:tests/test_requests.py#TestRequests.test_rewind_partially_read_body",
+   "symbol:tests/test_requests.py#TestRequests.test_transfer_enc_removal_on_redirect",
+   "symbol:tests/test_requests.py#test_requests_are_updated_each_time"
+  ],
+  "sites": [
+   [
+    "requests/sessions.py",
+    1026,
+    "file:requests/sessions.py"
+   ],
+   [
+    "requests/sessions.py",
+    9434,
+    "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects"
+   ],
+   [
+    "tests/test_requests.py",
+    64015,
+    "symbol:tests/test_requests.py#TestRequests.test_rewind_body"
+   ],
+   [
+    "tests/test_requests.py",
+    64497,
+    "symbol:tests/test_requests.py#TestRequests.test_rewind_partially_read_body"
+   ],
+   [
+    "tests/test_requests.py",
+    65051,
+    "symbol:tests/test_requests.py#TestRequests.test_rewind_body_no_seek"
+   ],
+   [
+    "tests/test_requests.py",
+    65700,
+    "symbol:tests/test_requests.py#TestRequests.test_rewind_body_failed_seek"
+   ],
+   [
+    "tests/test_requests.py",
+    66300,
+    "symbol:tests/test_requests.py#TestRequests.test_rewind_body_failed_tell"
+   ]
+  ]
+ },
+ {
+  "corpus": "requests",
+  "key": "symbol:requests/models.py#Response.iter_content",
+  "kind": "method",
+  "name": "iter_content",
+  "q1": [
+   "symbol:requests/models.py#Response.__iter__",
+   "symbol:requests/models.py#Response.content",
+   "symbol:requests/models.py#Response.iter_lines",
+   "symbol:tests/test_requests.py#TestRequests.test_manual_redirect_with_partial_body_read",
+   "symbol:tests/test_requests.py#TestRequests.test_response_chunk_size_type",
+   "symbol:tests/test_requests.py#TestRequests.test_response_decode_unicode"
+  ],
+  "q2": [
+   "symbol:requests/models.py#Response.__getstate__",
+   "symbol:requests/models.py#Response.__iter__",
+   "symbol:requests/models.py#Response.apparent_encoding",
+   "symbol:requests/models.py#Response.content",
+   "symbol:requests/models.py#Response.iter_lines",
+   "symbol:requests/models.py#Response.json",
+   "symbol:requests/models.py#Response.text",
+   "symbol:requests/sessions.py#Session.send",
+   "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects",
+   "symbol:tests/test_lowlevel.py#test_chunked_upload_doesnt_skip_host_header",
+   "symbol:tests/test_lowlevel.py#test_chunked_upload_uses_only_specified_host_header",
+   "symbol:tests/test_lowlevel.py#test_fragment_not_sent_with_request",
+   "symbol:tests/test_lowlevel.py#test_fragment_update_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_decompress_gzip",
+   "symbol:tests/test_requests.py#TestRequests.test_empty_response_has_content_none",
+   "symbol:tests/test_requests.py#TestRequests.test_http_301_doesnt_change_head_to_get",
+   "symbol:tests/test_requests.py#TestRequests.test_manual_redirect_with_partial_body_read",
+   "symbol:tests/test_requests.py#TestRequests.test_response_chunk_size_type",
+   "symbol:tests/test_requests.py#TestRequests.test_response_decode_unicode",
+   "symbol:tests/test_requests.py#TestRequests.test_response_iter_lines",
+   "symbol:tests/test_requests.py#TestRequests.test_response_iter_lines_reentrant",
+   "symbol:tests/test_requests.py#TestRequests.test_response_json_when_content_is_None"
+  ],
+  "sites": [
+   [
+    "requests/models.py",
+    24805,
+    "symbol:requests/models.py#Response.__iter__"
+   ],
+   [
+    "requests/models.py",
+    28952,
+    "symbol:requests/models.py#Response.iter_lines"
+   ],
+   [
+    "requests/models.py",
+    29980,
+    "symbol:requests/models.py#Response.content"
+   ],
+   [
+    "tests/test_requests.py",
+    46746,
+    "symbol:tests/test_requests.py#TestRequests.test_response_decode_unicode"
+   ],
+   [
+    "tests/test_requests.py",
+    46996,
+    "symbol:tests/test_requests.py#TestRequests.test_response_decode_unicode"
+   ],
+   [
+    "tests/test_requests.py",
+    48114,
+    "symbol:tests/test_requests.py#TestRequests.test_response_chunk_size_type"
+   ],
+   [
+    "tests/test_requests.py",
+    48281,
+    "symbol:tests/test_requests.py#TestRequests.test_response_chunk_size_type"
+   ],
+   [
+    "tests/test_requests.py",
+    48486,
+    "symbol:tests/test_requests.py#TestRequests.test_response_chunk_size_type"
+   ],
+   [
+    "tests/test_requests.py",
+    63176,
+    "symbol:tests/test_requests.py#TestRequests.test_manual_redirect_with_partial_body_read"
+   ],
+   [
+    "tests/test_requests.py",
+    63353,
+    "symbol:tests/test_requests.py#TestRequests.test_manual_redirect_with_partial_body_read"
+   ]
+  ]
+ },
+ {
+  "corpus": "requests",
+  "key": "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects",
+  "kind": "method",
+  "name": "resolve_redirects",
+  "q1": [
+   "symbol:requests/sessions.py#Session.send",
+   "symbol:tests/test_requests.py#TestRequests.test_cookielib_cookiejar_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_header_and_body_removal_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_manual_redirect_with_partial_body_read",
+   "symbol:tests/test_requests.py#TestRequests.test_transfer_enc_removal_on_redirect",
+   "symbol:tests/test_requests.py#test_requests_are_updated_each_time"
+  ],
+  "q2": [
+   "symbol:requests/sessions.py#Session.request",
+   "symbol:requests/sessions.py#Session.send",
+   "symbol:tests/test_requests.py#TestRequests.test_HTTP_200_OK_GET_ALTERNATIVE",
+   "symbol:tests/test_requests.py#TestRequests.test_cannot_send_unprepared_requests",
+   "symbol:tests/test_requests.py#TestRequests.test_cookielib_cookiejar_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_header_and_body_removal_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_hook_receives_request_arguments",
+   "symbol:tests/test_requests.py#TestRequests.test_manual_redirect_with_partial_body_read",
+   "symbol:tests/test_requests.py#TestRequests.test_mixed_case_scheme_acceptable",
+   "symbol:tests/test_requests.py#TestRequests.test_non_prepared_request_error",
+   "symbol:tests/test_requests.py#TestRequests.test_prepared_from_session",
+   "symbol:tests/test_requests.py#TestRequests.test_prepared_request_hook",
+   "symbol:tests/test_requests.py#TestRequests.test_prepared_request_is_pickleable",
+   "symbol:tests/test_requests.py#TestRequests.test_prepared_request_with_file_is_pickleable",
+   "symbol:tests/test_requests.py#TestRequests.test_prepared_request_with_hook_is_pickleable",
+   "symbol:tests/test_requests.py#TestRequests.test_respect_proxy_env_on_send_self_prepared_request",
+   "symbol:tests/test_requests.py#TestRequests.test_respect_proxy_env_on_send_session_prepared_request",
+   "symbol:tests/test_requests.py#TestRequests.test_respect_proxy_env_on_send_with_redirects",
+   "symbol:tests/test_requests.py#TestRequests.test_transfer_enc_removal_on_redirect",
+   "symbol:tests/test_requests.py#TestRequests.test_unicode_method_name_with_request_object",
+   "symbol:tests/test_requests.py#test_requests_are_updated_each_time"
+  ],
+  "sites": [
+   [
+    "requests/sessions.py",
+    26310,
+    "symbol:requests/sessions.py#Session.send"
+   ],
+   [
+    "requests/sessions.py",
+    26892,
+    "symbol:requests/sessions.py#Session.send"
+   ],
+   [
+    "tests/test_requests.py",
+    10509,
+    "symbol:tests/test_requests.py#TestRequests.test_header_and_body_removal_on_redirect"
+   ],
+   [
+    "tests/test_requests.py",
+    11476,
+    "symbol:tests/test_requests.py#TestRequests.test_transfer_enc_removal_on_redirect"
+   ],
+   [
+    "tests/test_requests.py",
+    15792,
+    "symbol:tests/test_requests.py#TestRequests.test_cookielib_cookiejar_on_redirect"
+   ],
+   [
+    "tests/test_requests.py",
+    63018,
+    "symbol:tests/test_requests.py#TestRequests.test_manual_redirect_with_partial_body_read"
+   ],
+   [
+    "tests/test_requests.py",
+    85171,
+    "symbol:tests/test_requests.py#test_requests_are_updated_each_time"
+   ]
+  ]
+ },
+ {
+  "corpus": "requests",
+  "key": "symbol:requests/models.py#PreparedRequest.prepare_auth",
+  "kind": "method",
+  "name": "prepare_auth",
+  "q1": [
+   "symbol:requests/models.py#PreparedRequest.prepare",
+   "symbol:requests/sessions.py#SessionRedirectMixin.rebuild_auth"
+  ],
+  "q2": [
+   "symbol:requests/models.py#PreparedRequest.prepare",
+   "symbol:requests/models.py#Request.prepare",
+   "symbol:requests/sessions.py#Session.prepare_request",
+   "symbol:requests/sessions.py#SessionRedirectMixin.rebuild_auth",
+   "symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects",
+   "symbol:tests/test_requests.py#test_data_argument_accepts_tuples",
+   "symbol:tests/test_requests.py#test_json_encodes_as_bytes",
+   "symbol:tests/test_requests.py#test_prepared_copy",
+   "symbol:tests/test_requests.py#test_proxy_env_vars_override_default"
+  ],
+  "sites": [
+   [
+    "requests/models.py",
+    10803,
+    "symbol:requests/models.py#PreparedRequest.prepare"
+   ],
+   [
+    "requests/sessions.py",
+    11005,
+    "symbol:requests/sessions.py#SessionRedirectMixin.rebuild_auth"
+   ]
+  ]
+ },
+ {
+  "corpus": "requests",
+  "key": "symbol:requests/adapters.py#HTTPAdapter.proxy_headers",
+  "kind": "method",
+  "name": "proxy_headers",
+  "q1": [
+   "symbol:requests/adapters.py#HTTPAdapter.proxy_manager_for",
+   "symbol:tests/test_requests.py#TestRequests.test_proxy_auth",
+   "symbol:tests/test_requests.py#TestRequests.test_proxy_auth_empty_pass"
+  ],
+  "q2": [
+   "symbol:requests/adapters.py#HTTPAdapter.get_connection",
+   "symbol:requests/adapters.py#HTTPAdapter.proxy_manager_for",
+   "symbol:tests/test_requests.py#TestRequests.test_proxy_auth",
+   "symbol:tests/test_requests.py#TestRequests.test_proxy_auth_empty_pass"
+  ],
+  "sites": [
+   [
+    "requests/adapters.py",
+    7798,
+    "symbol:requests/adapters.py#HTTPAdapter.proxy_manager_for"
+   ],
+   [
+    "tests/test_requests.py",
+    69987,
+    "symbol:tests/test_requests.py#TestRequests.test_proxy_auth"
+   ],
+   [
+    "tests/test_requests.py",
+    70206,
+    "symbol:tests/test_requests.py#TestRequests.test_proxy_auth_empty_pass"
+   ]
+  ]
+ },
+ {
+  "corpus": "pytest",
+  "key": "symbol:src/_pytest/nodes.py#FSCollector.from_parent",
+  "kind": "method",
+  "name": "from_parent",
+  "q1": [
+   "symbol:doc/en/example/nonpython/conftest.py#pytest_collect_file",
+   "symbol:src/_pytest/doctest.py#pytest_collect_file",
+   "symbol:src/_pytest/python.py#Package.collect",
+   "symbol:src/_pytest/python.py#pytest_pycollect_makemodule",
+   "symbol:testing/test_collection.py#test_fscollector_from_parent.MyCollector.from_parent"
+  ],
+  "q2": [
+   "symbol:doc/en/example/nonpython/conftest.py#pytest_collect_file",
+   "symbol:src/_pytest/doctest.py#pytest_collect_file",
+   "symbol:src/_pytest/python.py#Package.collect",
+   "symbol:src/_pytest/python.py#pytest_pycollect_makemodule",
+   "symbol:testing/test_collection.py#test_fscollector_from_parent",
+   "symbol:testing/test_collection.py#test_fscollector_from_parent.MyCollector.from_parent"
+  ],
+  "sites": [
+   [
+    "doc/en/example/nonpython/conftest.py",
+    169,
+    "symbol:doc/en/example/nonpython/conftest.py#pytest_collect_file"
+   ],
+   [
+    "src/_pytest/doctest.py",
+    3503,
+    "symbol:src/_pytest/doctest.py#pytest_collect_file"
+   ],
+   [
+    "src/_pytest/doctest.py",
+    3656,
+    "symbol:src/_pytest/doctest.py#pytest_collect_file"
+   ],
+   [
+    "src/_pytest/python.py",
+    7382,
+    "symbol:src/_pytest/python.py#pytest_pycollect_makemodule"
+   ],
+   [
+    "src/_pytest/python.py",
+    7468,
+    "symbol:src/_pytest/python.py#pytest_pycollect_makemodule"
+   ],
+   [
+    "src/_pytest/python.py",
+    24668,
+    "symbol:src/_pytest/python.py#Package.collect"
+   ],
+   [
+    "testing/test_collection.py",
+    45475,
+    "symbol:testing/test_collection.py#test_fscollector_from_parent.MyCollector.from_parent"
+   ]
+  ]
+ },
+ {
+  "corpus": "pytest",
+  "key": "symbol:src/_pytest/_code/code.py#ExceptionInfo.exconly",
+  "kind": "method",
+  "name": "exconly",
+  "q1": [
+   "symbol:src/_pytest/_code/code.py#ExceptionInfo._getreprcrash",
+   "symbol:src/_pytest/_code/code.py#FormattedExcinfo.get_exconly",
+   "symbol:src/_pytest/config/__init__.py#main",
+   "symbol:src/_pytest/python.py#Module._importtestmodule",
+   "symbol:testing/code/test_excinfo.py#test_excinfo_exconly",
+   "symbol:testing/test_runner.py#test_exception_printing_skip",
+   "symbol:testing/test_runner.py#test_pytest_fail"
+  ],
+  "q2": [
+   "file:src/pytest/__init__.py",
+   "symbol:src/_pytest/_code/code.py#ExceptionInfo._getreprcrash",
+   "symbol:src/_pytest/_code/code.py#ExceptionInfo.getrepr",
+   "symbol:src/_pytest/_code/code.py#FormattedExcinfo.get_exconly",
+   "symbol:src/_pytest/_code/code.py#FormattedExcinfo.get_source",
+   "symbol:src/_pytest/_code/code.py#FormattedExcinfo.repr_excinfo",
+   "symbol:src/_pytest/_code/code.py#FormattedExcinfo.repr_traceback_entry",
+   "symbol:src/_pytest/assertion/util.py#assertrepr_compare",
+   "symbol:src/_pytest/config/__init__.py#cmdline",
+   "symbol:src/_pytest/config/__init__.py#console_main",
+   "symbol:src/_pytest/config/__init__.py#main",
+   "symbol:src/_pytest/pytester.py#Testdir.inline_run",
+   "symbol:src/_pytest/python.py#Module._getobj",
+   "symbol:src/_pytest/python.py#Module._importtestmodule",
+   "symbol:testing/acceptance_test.py#TestGeneralUsage.test_plugins_given_as_strings",
+   "symbol:testing/acceptance_test.py#TestInvocationVariants.test_equivalence_pytest_pytest",
+   "symbol:testing/acceptance_test.py#TestInvocationVariants.test_invoke_plugin_api",
+   "symbol:testing/acceptance_test.py#TestInvocationVariants.test_invoke_with_invalid_type",
+   "symbol:testing/acceptance_test.py#TestInvocationVariants.test_invoke_with_path",
+   "symbol:testing/code/test_excinfo.py#test_excinfo_exconly",
+   "symbol:testing/test_collection.py#TestCollectPluginHookRelay.test_pytest_collect_directory",
+   "symbol:testing/test_collection.py#TestCollectPluginHookRelay.test_pytest_collect_file",
+   "symbol:testing/test_config.py#TestConfigCmdlineParsing.test_absolute_win32_path",
+   "symbol:testing/test_runner.py#test_exception_printing_skip",
+   "symbol:testing/test_runner.py#test_pytest_fail"
+  ],
+  "sites": [
+   [
+    "src/_pytest/_code/code.py",
+    18748,
+    "symbol:src/_pytest/_code/code.py#ExceptionInfo._getreprcrash"
+   ],
+   [
+    "src/_pytest/_code/code.py",
+    24360,
+    "symbol:src/_pytest/_code/code.py#FormattedExcinfo.get_exconly"
+   ],
+   [
+    "src/_pytest/config/__init__.py",
+    3382,
+    "symbol:src/_pytest/config/__init__.py#main"
+   ],
+   [
+    "src/_pytest/python.py",
+    21960,
+    "symbol:src/_pytest/python.py#Module._importtestmodule"
+   ],
+   [
+    "testing/code/test_excinfo.py",
+    8609,
+    "symbol:testing/code/test_excinfo.py#test_excinfo_exconly"
+   ],
+   [
+    "testing/code/test_excinfo.py",
+    8750,
+    "symbol:testing/code/test_excinfo.py#test_excinfo_exconly"
+   ],
+   [
+    "testing/test_runner.py",
+    17017,
+    "symbol:testing/test_runner.py#test_pytest_fail"
+   ],
+   [
+    "testing/test_runner.py",
+    20990,
+    "symbol:testing/test_runner.py#test_exception_printing_skip"
+   ]
+  ]
+ },
+ {
+  "corpus": "pytest",
+  "key": "symbol:src/_pytest/pytester.py#RunResult.parseoutcomes",
+  "kind": "method",
+  "name": "parseoutcomes",
+  "q1": [
+   "symbol:src/_pytest/pytester.py#RunResult.assert_outcomes",
+   "symbol:testing/test_capture.py#TestStdCaptureFDinvalidFD.test_stdcapture_fd_invalid_fd",
+   "symbol:testing/test_pytester.py#test_testdir_outcomes_with_multiple_errors"
+  ],
+  "q2": [
+   "symbol:src/_pytest/pytester.py#RunResult.assert_outcomes",
+   "symbol:testing/acceptance_test.py#TestGeneralUsage.test_parametrized_with_null_bytes",
+   "symbol:testing/test_assertion.py#TestAssert_reprcompare_dataclass.test_dataclasses",
+   "symbol:testing/test_assertion.py#TestAssert_reprcompare_dataclass.test_dataclasses_verbose",
+   "symbol:testing/test_assertrewrite.py#TestAssertionRewrite.test_at_operator_issue1290",
+   "symbol:testing/test_assertrewrite.py#TestAssertionRewrite.test_honors_pep_235",
+   "symbol:testing/test_capture.py#TestStdCaptureFDinvalidFD.test_stdcapture_fd_invalid_fd",
+   "symbol:testing/test_capture.py#test_capture_binary_output",
+   "symbol:testing/test_pytester.py#test_testdir_outcomes_with_multiple_errors"
+  ],
+  "sites": [
+   [
+    "src/_pytest/pytester.py",
+    15215,
+    "symbol:src/_pytest/pytester.py#RunResult.assert_outcomes"
+   ],
+   [
+    "testing/test_capture.py",
+    37414,
+    "symbol:testing/test_capture.py#TestStdCaptureFDinvalidFD.test_stdcapture_fd_invalid_fd"
+   ],
+   [
+    "testing/test_pytester.py",
+    24732,
+    "symbol:testing/test_pytester.py#test_testdir_outcomes_with_multiple_errors"
+   ]
+  ]
+ },
+ {
+  "corpus": "pytest",
+  "key": "symbol:src/_pytest/mark/structures.py#normalize_mark_list",
+  "kind": "function",
+  "name": "normalize_mark_list",
+  "q1": [
+   "file:src/_pytest/python.py",
+   "symbol:src/_pytest/mark/structures.py#get_unpacked_marks",
+   "symbol:src/_pytest/python.py#CallSpec2.setmulti2",
+   "symbol:src/_pytest/python.py#Function.__init__"
+  ],
+  "q2": [
+   "file:src/_pytest/python.py",
+   "symbol:src/_pytest/mark/structures.py#get_unpacked_marks",
+   "symbol:src/_pytest/mark/structures.py#store_mark",
+   "symbol:src/_pytest/python.py#CallSpec2.setmulti2",
+   "symbol:src/_pytest/python.py#Function.__init__",
+   "symbol:src/_pytest/python.py#Metafunc.parametrize",
+   "symbol:src/_pytest/python.py#PyobjMixin.obj"
+  ],
+  "sites": [
+   [
+    "src/_pytest/mark/structures.py",
+    12039,
+    "symbol:src/_pytest/mark/structures.py#get_unpacked_marks"
+   ],
+   [
+    "src/_pytest/python.py",
+    1882,
+    "file:src/_pytest/python.py"
+   ],
+   [
+    "src/_pytest/python.py",
+    32905,
+    "symbol:src/_pytest/python.py#CallSpec2.setmulti2"
+   ],
+   [
+    "src/_pytest/python.py",
+    57277,
+    "symbol:src/_pytest/python.py#Function.__init__"
+   ]
+  ]
+ },
+ {
+  "corpus": "pytest",
+  "key": "symbol:src/_pytest/config/__init__.py#Config._getconftest_pathlist",
+  "kind": "method",
+  "name": "_getconftest_pathlist",
+  "q1": [
+   "symbol:src/_pytest/main.py#pytest_ignore_collect",
+   "symbol:testing/test_config.py#TestConfigAPI.test_getconftest_pathlist"
+  ],
+  "q2": [
+   "symbol:src/_pytest/main.py#pytest_ignore_collect",
+   "symbol:testing/test_config.py#TestConfigAPI.test_getconftest_pathlist"
+  ],
+  "sites": [
+   [
+    "src/_pytest/main.py",
+    10055,
+    "symbol:src/_pytest/main.py#pytest_ignore_collect"
+   ],
+   [
+    "src/_pytest/main.py",
+    10377,
+    "symbol:src/_pytest/main.py#pytest_ignore_collect"
+   ],
+   [
+    "testing/test_config.py",
+    9959,
+    "symbol:testing/test_config.py#TestConfigAPI.test_getconftest_pathlist"
+   ],
+   [
+    "testing/test_config.py",
+    10034,
+    "symbol:testing/test_config.py#TestConfigAPI.test_getconftest_pathlist"
+   ]
+  ]
+ },
+ {
+  "corpus": "pytest",
+  "key": "symbol:src/_pytest/warnings.py#_issue_warning_captured",
+  "kind": "function",
+  "name": "_issue_warning_captured",
+  "q1": [
+   "file:src/_pytest/junitxml.py",
+   "symbol:src/_pytest/assertion/rewrite.py#AssertionRewritingHook._warn_already_imported",
+   "symbol:src/_pytest/config/__init__.py#Config._preparse",
+   "symbol:src/_pytest/config/__init__.py#PytestPluginManager.import_plugin",
+   "symbol:src/_pytest/faulthandler.py#pytest_configure",
+   "symbol:src/_pytest/junitxml.py#pytest_configure",
+   "symbol:src/_pytest/resultlog.py#pytest_configure"
+  ],
+  "q2": [
+   "file:src/_pytest/junitxml.py",
+   "file:testing/test_resultlog.py",
+   "symbol:src/_pytest/assertion/rewrite.py#AssertionRewritingHook._warn_already_imported",
+   "symbol:src/_pytest/assertion/rewrite.py#AssertionRewritingHook.mark_rewrite",
+   "symbol:src/_pytest/config/__init__.py#Config._preparse",
+   "symbol:src/_pytest/config/__init__.py#Config.parse",
+   "symbol:src/_pytest/config/__init__.py#PytestPluginManager._import_plugin_specs",
+   "symbol:src/_pytest/config/__init__.py#PytestPluginManager.consider_pluginarg",
+   "symbol:src/_pytest/config/__init__.py#PytestPluginManager.import_plugin",
+   "symbol:src/_pytest/config/__init__.py#get_config",
+   "symbol:src/_pytest/faulthandler.py#pytest_configure",
+   "symbol:src/_pytest/junitxml.py#pytest_configure",
+   "symbol:src/_pytest/resultlog.py#pytest_configure",
+   "symbol:testing/test_config.py#TestOverrideIniArgs.test_addopts_before_initini",
+   "symbol:testing/test_config.py#test_plugin_preparse_prevents_setuptools_loading",
+   "symbol:testing/test_junitxml.py#test_dont_configure_on_slaves",
+   "symbol:testing/test_pluginmanager.py#TestPytestPluginManager.test_canonical_import",
+   "symbol:testing/test_pluginmanager.py#test_importplugin_error_message",
+   "symbol:testing/test_resultlog.py#test_no_resultlog_on_slaves"
+  ],
+  "sites": [
+   [
+    "src/_pytest/assertion/rewrite.py",
+    10290,
+    "symbol:src/_pytest/assertion/rewrite.py#AssertionRewritingHook._warn_already_imported"
+   ],
+   [
+    "src/_pytest/assertion/rewrite.py",
+    10323,
+    "symbol:src/_pytest/assertion/rewrite.py#AssertionRewritingHook._warn_already_imported"
+   ],
+   [
+    "src/_pytest/config/__init__.py",
+    21976,
+    "symbol:src/_pytest/config/__init__.py#PytestPluginManager.import_plugin"
+   ],
+   [
+    "src/_pytest/config/__init__.py",
+    22013,
+    "symbol:src/_pytest/config/__init__.py#PytestPluginManager.import_plugin"
+   ],
+   [
+    "src/_pytest/config/__init__.py",
+    36781,
+    "symbol:src/_pytest/config/__init__.py#Config._preparse"
+   ],
+   [
+    "src/_pytest/config/__init__.py",
+    36822,
+    "symbol:src/_pytest/config/__init__.py#Config._preparse"
+   ],
+   [
+    "src/_pytest/faulthandler.py",
+    915,
+    "symbol:src/_pytest/faulthandler.py#pytest_configure"
+   ],
+   [
+    "src/_pytest/faulthandler.py",
+    1181,
+    "symbol:src/_pytest/faulthandler.py#pytest_configure"
+   ],
+   [
+    "src/_pytest/junitxml.py",
+    985,
+    "file:src/_pytest/junitxml.py"
+   ],
+   [
+    "src/_pytest/junitxml.py",
+    15004,
+    "symbol:src/_pytest/junitxml.py#pytest_configure"
+   ],
+   [
+    "src/_pytest/resultlog.py",
+    1292,
+    "symbol:src/_pytest/resultlog.py#pytest_configure"
+   ],
+   [
+    "src/_pytest/resultlog.py",
+    1325,
+    "symbol:src/_pytest/resultlog.py#pytest_configure"
+   ]
+  ]
+ },
+ {
+  "corpus": "pytest",
+  "key": "symbol:src/_pytest/capture.py#_py36_windowsconsoleio_workaround",
+  "kind": "function",
+  "name": "_py36_windowsconsoleio_workaround",
+  "q1": [
+   "symbol:src/_pytest/capture.py#pytest_load_initial_conftests",
+   "symbol:testing/test_capture.py#test_py36_windowsconsoleio_workaround_non_standard_streams"
+  ],
+  "q2": [
+   "symbol:src/_pytest/capture.py#pytest_load_initial_conftests",
+   "symbol:testing/test_capture.py#test_py36_windowsconsoleio_workaround_non_standard_streams"
+  ],
+  "sites": [
+   [
+    "src/_pytest/capture.py",
+    4838,
+    "symbol:src/_pytest/capture.py#pytest_load_initial_conftests"
+   ],
+   [
+    "testing/test_capture.py",
+    41693,
+    "symbol:testing/test_capture.py#test_py36_windowsconsoleio_workaround_non_standard_streams"
+   ],
+   [
+    "testing/test_capture.py",
+    41842,
+    "symbol:testing/test_capture.py#test_py36_windowsconsoleio_workaround_non_standard_streams"
+   ]
+  ]
+ },
+ {
+  "corpus": "pytest",
+  "key": "symbol:src/_pytest/tmpdir.py#tmp_path",
+  "kind": "function",
+  "name": "tmp_path",
+  "q1": [
+   "symbol:src/_pytest/tmpdir.py#tmpdir",
+   "symbol:testing/test_assertrewrite.py#TestAssertionRewriteHookDetails.test_read_pyc",
+   "symbol:testing/test_pathlib.py#test_access_denied_during_cleanup",
+   "symbol:testing/test_tmpdir.py#TestTempdirHandler.test_mktemp"
+  ],
+  "q2": [
+   "symbol:doc/en/example/multipython.py#python1",
+   "symbol:src/_pytest/tmpdir.py#tmpdir",
+   "symbol:testing/test_argcomplete.py#TestArgComplete.test_compare_with_compgen",
+   "symbol:testing/test_assertrewrite.py#TestAssertionRewriteHookDetails.test_read_pyc",
+   "symbol:testing/test_config.py#TestParseIni.test_getcfg_and_config",
+   "symbol:testing/test_conftest.py#test_conftest_in_nonpkg_with_init",
+   "symbol:testing/test_monkeypatch.py#test_chdir_with_path_local",
+   "symbol:testing/test_pathlib.py#test_access_denied_during_cleanup",
+   "symbol:testing/test_tmpdir.py#TestTempdirHandler.test_mktemp"
+  ],
+  "sites": [
+   [
+    "src/_pytest/tmpdir.py",
+    6520,
+    "symbol:src/_pytest/tmpdir.py#tmpdir"
+   ],
+   [
+    "testing/test_assertrewrite.py",
+    31703,
+    "symbol:testing/test_assertrewrite.py#TestAssertionRewriteHookDetails.test_read_pyc"
+   ],
+   [
+    "testing/test_pathlib.py",
+    2552,
+    "symbol:testing/test_pathlib.py#test_access_denied_during_cleanup"
+   ],
+   [
+    "testing/test_tmpdir.py",
+    1121,
+    "symbol:testing/test_tmpdir.py#TestTempdirHandler.test_mktemp"
+   ]
+  ]
+ }
+]

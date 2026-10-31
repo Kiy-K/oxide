@@ -1,0 +1,53 @@
+tasks with verified gold: 15
+
+1. macro line_recall (verified)
+cf                  1024      4096
+base               0.548     0.659
+inf_capped         0.799     0.799
+inf                0.948     0.948
+nofloor_inf        0.957     0.957
+oracle_order       0.682     0.792
+oracle_pick        0.776     0.886
+noitemcap          0.548     0.659
+routed lines                 0.957  (gold lines with a holder in the pool)
+
+2. candidate classes at 4096
+class                  n  gold   rate  packed  g.pack  mean u
+routed d1 symbol     255     9  0.035      83       3    1121
+lexical r11+         117     9  0.077      98       8     230
+routed d2 symbol     111     3  0.027       3       0     282
+routed file           84     1  0.012       0       0     575
+lexical r1-5          71    14  0.197      71      14     180
+lexical r6-10         67     6  0.090      67       6     209
+container             38     0  0.000       0       0       0
+seed                   2     0  0.000       2       0     117
+
+units packed at 4096 by first entity's basis (units, units in items touching gold)
+  lexical                    31821    4389  0.14
+  prerequisite/header         6039     822  0.14
+  routed                      2687       0  0.00
+  structural seed               82       0  0.00
+
+3. gold holders not fully packed at 4096
+  mwaskom__seaborn-3069          symbol:seaborn/_core/plot.py#Plotter                         g= 86 v=0.45 d=1 rank=None u=9359 pos=25 header ['scope']
+  mwaskom__seaborn-3069          symbol:seaborn/_core/scales.py#Nominal                       g= 73 v=0.45 d=1 rank=None u=1626 pos=27 packing: budget ['calls:out']
+  mwaskom__seaborn-3069          symbol:seaborn/distributions.py#_DistributionPlotter         g= 74 v=0.45 d=1 rank=None u=13502 pos=40 packing: budget ['calls:out', 'child']
+  pallets__flask-5014            symbol:src/flask/blueprints.py#Blueprint.__init__            g= 13 v=0.30 d=2 rank=None u=413 pos=40 selection: value 0.30 below floor ['child']
+  psf__requests-1142             symbol:requests/models.py#PreparedRequest.prepare_auth       g=  2 v=0.30 d=2 rank=None u=167 pos=60 selection: value 0.30 below floor ['child']
+  psf__requests-1142             symbol:requests/models.py#PreparedRequest.prepare_body       g=  1 v=0.30 d=2 rank=None u=514 pos=61 selection: value 0.30 below floor ['child']
+  psf__requests-2317             file:requests/sessions.py                                    g= 12 v=0.20 d=1 rank=None u=389 pos=26 selection: value 0.20 below floor ['imports:in', 'scope']
+  psf__requests-2317             symbol:requests/sessions.py#Session                          g=  5 v=0.45 d=1 rank=None u=4686 pos=50 header ['child', 'scope']
+  psf__requests-2317             :requests/sessions.py#SessionRedirectMixin.resolve_redirects g= 30 v=0.45 d=1 rank=None u=1155 pos=51 packing: budget ['calls:in']
+  psf__requests-2931             symbol:requests/models.py#PreparedRequest.prepare_url        g= 17 v=0.45 d=1 rank=None u=824 pos=37 selection: item cap 24 ['calls:in']
+  psf__requests-5414             symbol:requests/models.py#PreparedRequest.prepare_url        g= 38 v=0.45 d=1 rank=None u=996 pos=39 selection: item cap 24 ['calls:in', 'child']
+  psf__requests-6028             symbol:tests/test_utils.py#test_prepend_scheme_if_needed     g=  8 v=0.50 d=0 rank=20 u=164 pos=19 packing: budget ['calls:in', 'entry']
+  psf__requests-6028             symbol:requests/adapters.py#HTTPAdapter                      g= 40 v=0.45 d=1 rank=None u=5224 pos=29 header ['child', 'references:in', 'scope']
+  psf__requests-6028             symbol:requests/utils.py#prepend_scheme_if_needed            g= 19 v=0.45 d=1 rank=None u=290 pos=49 packing: budget ['calls:out']
+
+4. cap sweep (production policy), macro line_recall@4096; regions median
+  cap   16: 0.644 (-0.015), tasks changed 1, median regions 16
+  cap   32: 0.659 (+0.000), tasks changed 0, median regions 32
+  cap   48: 0.659 (+0.000), tasks changed 0, median regions 48
+  cap   96: 0.659 (+0.000), tasks changed 0, median regions 96
+  cap  128: 0.659 (+0.000), tasks changed 0, median regions 128
+  cap   64: 0.659 (production)

@@ -1,0 +1,48 @@
+{
+ "corpus": "seaborn",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/mwaskom__seaborn@54cab15bdacf",
+ "lang": "python",
+ "arms": [
+  "astgrep"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "astgrep": 9
+  },
+  "py-bare-except": {
+   "astgrep": 0
+  },
+  "py-isinstance-tuple": {
+   "astgrep": 17
+  },
+  "py-mutable-default": {
+   "astgrep": 11
+  },
+  "py-open-no-encoding": {
+   "astgrep": 15
+  },
+  "py-eq-none": {
+   "astgrep": 0
+  },
+  "py-raise-from-none": {
+   "astgrep": 0
+  },
+  "py-return-in-finally": {
+   "astgrep": 0
+  }
+ },
+ "stats": {
+  "files": 150,
+  "bytes": 1801569,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.005,
+  "decode": 0.0,
+  "astgrep_parse": 0.195,
+  "astgrep_query": 0.191
+ },
+ "peak_rss_mib": 51.4
+}

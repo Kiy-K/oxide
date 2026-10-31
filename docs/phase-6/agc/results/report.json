@@ -1,0 +1,651 @@
+{
+ "n_runs": 96,
+ "tasks": [
+  "D1",
+  "D2",
+  "I1",
+  "I2",
+  "I3",
+  "I4",
+  "I5",
+  "L1",
+  "L2",
+  "P1",
+  "P2",
+  "P3"
+ ],
+ "arms": {
+  "B": {
+   "runs": 24,
+   "technical_failures": 0,
+   "used_oxide": 0,
+   "f1": 0.918,
+   "false_claims": 1.083,
+   "tokens_median": 7586.0,
+   "tokens_uncached_median": 6525.5,
+   "calls_median": 4.0,
+   "seconds_median": 20.735,
+   "repeated_reads_mean": 0.79,
+   "graph_calls": 0,
+   "tiers_calls": 0,
+   "cost_usd": 0,
+   "ratio_tokens": 1.0,
+   "ratio_tokens_uncached": 1.0,
+   "ratio_calls": 1.0,
+   "ratio_seconds": 1.0,
+   "f1_delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "per_type_f1": {
+    "callees": 1.0,
+    "chain": 0.74,
+    "impact": 0.959,
+    "locate": 1.0
+   },
+   "per_task": {
+    "D1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 6914.5,
+     "tokens_uncached": 5890.5,
+     "calls": 4.0,
+     "seconds": 18.33,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "D2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 5891.0,
+     "tokens_uncached": 5123.0,
+     "calls": 4.0,
+     "seconds": 20.25,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "I1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 8562.5,
+     "tokens_uncached": 5938.5,
+     "calls": 6.0,
+     "seconds": 20.1,
+     "repeated": 1.0,
+     "oxide": 0.0
+    },
+    "I2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 12032.5,
+     "tokens_uncached": 6336.5,
+     "calls": 6.0,
+     "seconds": 27.42,
+     "repeated": 1.0,
+     "oxide": 0.0
+    },
+    "I3": {
+     "f1": 0.833,
+     "false": 0.0,
+     "tokens": 4138.0,
+     "tokens_uncached": 3626.0,
+     "calls": 2.0,
+     "seconds": 18.925,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "I4": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 17497.0,
+     "tokens_uncached": 14681.0,
+     "calls": 6.5,
+     "seconds": 21.995,
+     "repeated": 1.5,
+     "oxide": 0.0
+    },
+    "I5": {
+     "f1": 0.96,
+     "false": 1.0,
+     "tokens": 20265.5,
+     "tokens_uncached": 8489.5,
+     "calls": 4.5,
+     "seconds": 24.96,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "L1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 4580.0,
+     "tokens_uncached": 3172.0,
+     "calls": 2.0,
+     "seconds": 12.555,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "L2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 5227.5,
+     "tokens_uncached": 5227.5,
+     "calls": 2.0,
+     "seconds": 13.385,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "P1": {
+     "f1": 0.693,
+     "false": 6.0,
+     "tokens": 25539.5,
+     "tokens_uncached": 12099.5,
+     "calls": 6.0,
+     "seconds": 29.225,
+     "repeated": 0.5,
+     "oxide": 0.0
+    },
+    "P2": {
+     "f1": 0.9,
+     "false": 1.0,
+     "tokens": 22076.5,
+     "tokens_uncached": 6972.5,
+     "calls": 5.5,
+     "seconds": 25.105,
+     "repeated": 2.0,
+     "oxide": 0.0
+    },
+    "P3": {
+     "f1": 0.627,
+     "false": 5.0,
+     "tokens": 47535.5,
+     "tokens_uncached": 12847.5,
+     "calls": 12.0,
+     "seconds": 41.16,
+     "repeated": 3.5,
+     "oxide": 0.0
+    }
+   }
+  },
+  "G": {
+   "runs": 24,
+   "technical_failures": 0,
+   "used_oxide": 7,
+   "f1": 0.944,
+   "false_claims": 0.542,
+   "tokens_median": 17824.0,
+   "tokens_uncached_median": 8039.5,
+   "calls_median": 3.5,
+   "seconds_median": 20.155,
+   "repeated_reads_mean": 0.58,
+   "graph_calls": 24,
+   "tiers_calls": 0,
+   "cost_usd": 0,
+   "ratio_tokens": 1.801,
+   "ratio_tokens_uncached": 1.133,
+   "ratio_calls": 0.991,
+   "ratio_seconds": 1.046,
+   "f1_delta_ci95": [
+    -0.041,
+    0.098
+   ],
+   "per_type_f1": {
+    "callees": 0.875,
+    "chain": 0.871,
+    "impact": 0.992,
+    "locate": 1.0
+   },
+   "per_task": {
+    "D1": {
+     "f1": 0.75,
+     "false": 1.0,
+     "tokens": 24080.5,
+     "tokens_uncached": 11024.5,
+     "calls": 4.0,
+     "seconds": 19.925,
+     "repeated": 1.0,
+     "oxide": 0.5
+    },
+    "D2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 14989.0,
+     "tokens_uncached": 5901.0,
+     "calls": 4.0,
+     "seconds": 19.285,
+     "repeated": 0.5,
+     "oxide": 0.5
+    },
+    "I1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 10647.5,
+     "tokens_uncached": 4055.5,
+     "calls": 4.0,
+     "seconds": 17.58,
+     "repeated": 0.5,
+     "oxide": 0.0
+    },
+    "I2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 13557.5,
+     "tokens_uncached": 6965.5,
+     "calls": 6.0,
+     "seconds": 19.79,
+     "repeated": 1.0,
+     "oxide": 0.0
+    },
+    "I3": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 13952.0,
+     "tokens_uncached": 5376.0,
+     "calls": 3.0,
+     "seconds": 18.905,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "I4": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 26108.5,
+     "tokens_uncached": 11004.5,
+     "calls": 3.5,
+     "seconds": 23.43,
+     "repeated": 0.0,
+     "oxide": 0.5
+    },
+    "I5": {
+     "f1": 0.96,
+     "false": 1.0,
+     "tokens": 35304.5,
+     "tokens_uncached": 11304.5,
+     "calls": 5.5,
+     "seconds": 26.935,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "L1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 9109.0,
+     "tokens_uncached": 4053.0,
+     "calls": 2.0,
+     "seconds": 14.065,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "L2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 10441.5,
+     "tokens_uncached": 6345.5,
+     "calls": 2.0,
+     "seconds": 14.65,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "P1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 65667.0,
+     "tokens_uncached": 14147.0,
+     "calls": 11.5,
+     "seconds": 46.99,
+     "repeated": 1.0,
+     "oxide": 6.0
+    },
+    "P2": {
+     "f1": 0.944,
+     "false": 0.5,
+     "tokens": 15137.0,
+     "tokens_uncached": 6881.0,
+     "calls": 3.5,
+     "seconds": 22.115,
+     "repeated": 1.0,
+     "oxide": 0.0
+    },
+    "P3": {
+     "f1": 0.67,
+     "false": 4.0,
+     "tokens": 72482.0,
+     "tokens_uncached": 13410.0,
+     "calls": 13.0,
+     "seconds": 54.395,
+     "repeated": 2.0,
+     "oxide": 4.5
+    }
+   },
+   "tasks_worse_by_0.25": 0,
+   "criteria": {
+    "V": true,
+    "A": false,
+    "C": true,
+    "F": true,
+    "E": false
+   },
+   "passes": false
+  },
+  "T": {
+   "runs": 24,
+   "technical_failures": 0,
+   "used_oxide": 19,
+   "f1": 0.875,
+   "false_claims": 0.875,
+   "tokens_median": 19253.5,
+   "tokens_uncached_median": 8488.0,
+   "calls_median": 5.0,
+   "seconds_median": 25.215,
+   "repeated_reads_mean": 1.46,
+   "graph_calls": 0,
+   "tiers_calls": 70,
+   "cost_usd": 0,
+   "ratio_tokens": 1.846,
+   "ratio_tokens_uncached": 1.138,
+   "ratio_calls": 1.067,
+   "ratio_seconds": 1.192,
+   "f1_delta_ci95": [
+    -0.141,
+    0.035
+   ],
+   "per_type_f1": {
+    "callees": 0.875,
+    "chain": 0.827,
+    "impact": 0.854,
+    "locate": 1.0
+   },
+   "per_task": {
+    "D1": {
+     "f1": 0.75,
+     "false": 1.0,
+     "tokens": 16112.0,
+     "tokens_uncached": 9776.0,
+     "calls": 3.5,
+     "seconds": 18.845,
+     "repeated": 0.5,
+     "oxide": 2.0
+    },
+    "D2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 17633.5,
+     "tokens_uncached": 7329.5,
+     "calls": 4.0,
+     "seconds": 22.905,
+     "repeated": 2.5,
+     "oxide": 3.5
+    },
+    "I1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 12050.5,
+     "tokens_uncached": 5970.5,
+     "calls": 3.0,
+     "seconds": 16.83,
+     "repeated": 0.0,
+     "oxide": 1.5
+    },
+    "I2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 20749.5,
+     "tokens_uncached": 7309.5,
+     "calls": 5.0,
+     "seconds": 26.87,
+     "repeated": 1.0,
+     "oxide": 0.0
+    },
+    "I3": {
+     "f1": 0.833,
+     "false": 0.0,
+     "tokens": 10896.0,
+     "tokens_uncached": 6096.0,
+     "calls": 4.0,
+     "seconds": 21.605,
+     "repeated": 0.0,
+     "oxide": 0.5
+    },
+    "I4": {
+     "f1": 0.5,
+     "false": 1.5,
+     "tokens": 24432.0,
+     "tokens_uncached": 8112.0,
+     "calls": 5.5,
+     "seconds": 30.13,
+     "repeated": 0.0,
+     "oxide": 2.0
+    },
+    "I5": {
+     "f1": 0.938,
+     "false": 1.0,
+     "tokens": 20840.5,
+     "tokens_uncached": 5864.5,
+     "calls": 5.0,
+     "seconds": 29.295,
+     "repeated": 0.5,
+     "oxide": 2.0
+    },
+    "L1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 14677.5,
+     "tokens_uncached": 4437.5,
+     "calls": 4.0,
+     "seconds": 20.595,
+     "repeated": 1.0,
+     "oxide": 3.0
+    },
+    "L2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 15084.5,
+     "tokens_uncached": 8044.5,
+     "calls": 3.5,
+     "seconds": 19.51,
+     "repeated": 0.5,
+     "oxide": 2.5
+    },
+    "P1": {
+     "f1": 0.801,
+     "false": 2.5,
+     "tokens": 63861.5,
+     "tokens_uncached": 11765.5,
+     "calls": 12.0,
+     "seconds": 52.83,
+     "repeated": 7.0,
+     "oxide": 11.5
+    },
+    "P2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 22080.5,
+     "tokens_uncached": 9472.5,
+     "calls": 5.0,
+     "seconds": 25.325,
+     "repeated": 2.0,
+     "oxide": 4.0
+    },
+    "P3": {
+     "f1": 0.68,
+     "false": 4.5,
+     "tokens": 50210.0,
+     "tokens_uncached": 12002.0,
+     "calls": 8.5,
+     "seconds": 44.185,
+     "repeated": 2.5,
+     "oxide": 2.5
+    }
+   },
+   "tasks_worse_by_0.25": 1,
+   "criteria": {
+    "V": true,
+    "A": true,
+    "C": false,
+    "F": true,
+    "E": false
+   },
+   "passes": false
+  },
+  "AGC": {
+   "runs": 24,
+   "technical_failures": 0,
+   "used_oxide": 17,
+   "f1": 0.94,
+   "false_claims": 0.333,
+   "tokens_median": 20719.5,
+   "tokens_uncached_median": 8411.5,
+   "calls_median": 5.0,
+   "seconds_median": 26.975,
+   "repeated_reads_mean": 0.58,
+   "graph_calls": 42,
+   "tiers_calls": 48,
+   "cost_usd": 0,
+   "ratio_tokens": 2.09,
+   "ratio_tokens_uncached": 1.227,
+   "ratio_calls": 1.153,
+   "ratio_seconds": 1.282,
+   "f1_delta_ci95": [
+    -0.092,
+    0.119
+   ],
+   "per_type_f1": {
+    "callees": 1.0,
+    "chain": 0.952,
+    "impact": 0.984,
+    "locate": 0.75
+   },
+   "per_task": {
+    "D1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 25120.5,
+     "tokens_uncached": 6944.5,
+     "calls": 6.5,
+     "seconds": 31.17,
+     "repeated": 1.0,
+     "oxide": 6.0
+    },
+    "D2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 17344.5,
+     "tokens_uncached": 8448.5,
+     "calls": 5.5,
+     "seconds": 26.72,
+     "repeated": 0.5,
+     "oxide": 5.0
+    },
+    "I1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 32262.5,
+     "tokens_uncached": 11078.5,
+     "calls": 6.5,
+     "seconds": 34.19,
+     "repeated": 0.5,
+     "oxide": 2.0
+    },
+    "I2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 30023.0,
+     "tokens_uncached": 8135.0,
+     "calls": 6.0,
+     "seconds": 30.965,
+     "repeated": 0.5,
+     "oxide": 0.0
+    },
+    "I3": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 10875.5,
+     "tokens_uncached": 3195.5,
+     "calls": 2.5,
+     "seconds": 15.51,
+     "repeated": 0.0,
+     "oxide": 0.0
+    },
+    "I4": {
+     "f1": 0.958,
+     "false": 1.0,
+     "tokens": 29866.5,
+     "tokens_uncached": 9194.5,
+     "calls": 6.5,
+     "seconds": 31.625,
+     "repeated": 0.0,
+     "oxide": 4.0
+    },
+    "I5": {
+     "f1": 0.96,
+     "false": 1.0,
+     "tokens": 23533.5,
+     "tokens_uncached": 8813.5,
+     "calls": 4.0,
+     "seconds": 27.755,
+     "repeated": 0.0,
+     "oxide": 1.5
+    },
+    "L1": {
+     "f1": 0.5,
+     "false": 0.0,
+     "tokens": 13564.0,
+     "tokens_uncached": 8380.0,
+     "calls": 3.5,
+     "seconds": 20.675,
+     "repeated": 0.5,
+     "oxide": 2.5
+    },
+    "L2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 16152.5,
+     "tokens_uncached": 7192.5,
+     "calls": 3.5,
+     "seconds": 17.51,
+     "repeated": 0.5,
+     "oxide": 2.5
+    },
+    "P1": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 37018.0,
+     "tokens_uncached": 13978.0,
+     "calls": 8.5,
+     "seconds": 40.665,
+     "repeated": 0.5,
+     "oxide": 8.0
+    },
+    "P2": {
+     "f1": 1.0,
+     "false": 0.0,
+     "tokens": 24387.5,
+     "tokens_uncached": 6531.5,
+     "calls": 5.0,
+     "seconds": 27.3,
+     "repeated": 2.5,
+     "oxide": 3.0
+    },
+    "P3": {
+     "f1": 0.857,
+     "false": 2.0,
+     "tokens": 43134.0,
+     "tokens_uncached": 14270.0,
+     "calls": 10.5,
+     "seconds": 44.055,
+     "repeated": 0.5,
+     "oxide": 10.5
+    }
+   },
+   "tasks_worse_by_0.25": 1,
+   "criteria": {
+    "V": true,
+    "A": true,
+    "C": true,
+    "F": true,
+    "E": false
+   },
+   "passes": false
+  }
+ },
+ "decision": "REJECT"
+}

@@ -1,0 +1,91 @@
+{
+ "mode": "live",
+ "fixture": "fixtures/py_repo",
+ "budget": 1024,
+ "manifest": "sha256:d9ae934c9a6a3650a6f2ca6ef3f3ab919103cc7e9788951a7b8699c354407b1d",
+ "outcomes": {
+  "judged": 10
+ },
+ "build_context_s": {
+  "heuristic": {
+   "n": 10,
+   "p50": 0.01,
+   "p95": 0.019,
+   "max": 0.019
+  },
+  "judged": {
+   "n": 10,
+   "p50": 0.702,
+   "p95": 1.197,
+   "max": 1.197
+  }
+ },
+ "adapter_call_s": {
+  "n": 10,
+  "p50": 0.691,
+  "p95": 1.175,
+  "max": 1.175
+ },
+ "request_bytes": {
+  "n": 14,
+  "p50": 22334.0,
+  "p95": 43709.0,
+  "max": 43709.0
+ },
+ "statuses": [
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  401,
+  401,
+  "killed",
+  "killed"
+ ],
+ "requests_sent": 14,
+ "billed_input_tokens": [
+  11641,
+  6016,
+  3345,
+  3065,
+  9700,
+  11641,
+  6016,
+  3345,
+  3065,
+  9700
+ ],
+ "usd": 0.002836,
+ "fallback_checks": {
+  "invalid_key": [
+   {
+    "degradation": "judge typesafe/jev-1.14.0@oxide-capsule-v1 fell back: http 401",
+    "seconds": 0.726,
+    "judge_threads_left": 0
+   },
+   {
+    "degradation": "judge typesafe/jev-1.14.0@oxide-capsule-v1 fell back: http 401",
+    "seconds": 0.501,
+    "judge_threads_left": 0
+   }
+  ],
+  "deadline_0.3s": [
+   {
+    "degradation": "judge typesafe/jev-1.14.0@oxide-capsule-v1 fell back: deadline",
+    "seconds": 0.329,
+    "judge_threads_left": 0
+   },
+   {
+    "degradation": "judge typesafe/jev-1.14.0@oxide-capsule-v1 fell back: deadline",
+    "seconds": 0.316,
+    "judge_threads_left": 0
+   }
+  ]
+ }
+}

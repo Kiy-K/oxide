@@ -1,0 +1,244 @@
+{
+ "dev": {
+  "id": "dev",
+  "type": "lookup",
+  "repo": "requests",
+  "question": "Which function parses a `Link` response header into a list of dicts? Report its definition line.",
+  "truth": ["requests/utils.py#parse_header_links"],
+  "neutral": ["requests/models.py#Response.links"]
+ },
+ "tasks": [
+  {
+   "id": "L1",
+   "type": "lookup",
+   "repo": "requests",
+   "question": "Which function produces the default value of the `User-Agent` header that requests sends? Report its definition line.",
+   "truth": ["requests/utils.py#default_user_agent"],
+   "neutral": ["requests/utils.py#default_headers"]
+  },
+  {
+   "id": "L2",
+   "type": "lookup",
+   "repo": "flask",
+   "question": "Which method builds the Werkzeug URL adapter (the `MapAdapter`) that Flask uses to match a request's URL, including the decision about subdomain matching? Report its definition line.",
+   "truth": ["src/flask/app.py#Flask.create_url_adapter"],
+   "neutral": ["src/flask/ctx.py#RequestContext.__init__", "src/flask/ctx.py#RequestContext.match_request", "src/flask/ctx.py#AppContext.__init__"]
+  },
+  {
+   "id": "L3",
+   "type": "lookup",
+   "repo": "pytest",
+   "question": "With `--last-failed`, which function removes the previously passed tests from the collected items? Report its definition line.",
+   "truth": ["src/_pytest/cacheprovider.py#LFPlugin.pytest_collection_modifyitems"],
+   "neutral": ["src/_pytest/cacheprovider.py#LFPlugin", "src/_pytest/cacheprovider.py#LFPluginCollWrapper.pytest_make_collect_report", "src/_pytest/cacheprovider.py#LFPluginCollSkipfiles.pytest_make_collect_report"]
+  },
+  {
+   "id": "L4",
+   "type": "lookup",
+   "repo": "requests",
+   "question": "Which function decides, from the `no_proxy` setting, whether a URL should bypass proxies? Report its definition line.",
+   "truth": ["requests/utils.py#should_bypass_proxies"],
+   "neutral": ["requests/utils.py#get_environ_proxies", "requests/utils.py#resolve_proxies", "requests/utils.py#set_environ"]
+  },
+  {
+   "id": "R1",
+   "type": "callers",
+   "repo": "requests",
+   "question": "I am about to change `get_auth_from_url` (requests/utils.py). List every function or method in the library package `requests/` (not the tests) that calls it directly. An import alone is not a call. Report the line of each call.",
+   "truth": [
+    "requests/adapters.py#HTTPAdapter.proxy_manager_for",
+    "requests/adapters.py#HTTPAdapter.proxy_headers",
+    "requests/sessions.py#SessionRedirectMixin.rebuild_proxies",
+    "requests/models.py#PreparedRequest.prepare_auth"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "R2",
+   "type": "callers",
+   "repo": "flask",
+   "question": "I am about to change `Flask.ensure_sync` (src/flask/app.py). List every function or method in the library package `src/flask/` (not the tests) that calls it directly, whether through `self`, `current_app` or another reference to the app. Report the line of each call.",
+   "truth": [
+    "src/flask/views.py#View.as_view",
+    "src/flask/views.py#MethodView.dispatch_request",
+    "src/flask/ctx.py#copy_current_request_context",
+    "src/flask/app.py#Flask.handle_http_exception",
+    "src/flask/app.py#Flask.handle_user_exception",
+    "src/flask/app.py#Flask.handle_exception",
+    "src/flask/app.py#Flask.dispatch_request",
+    "src/flask/app.py#Flask.preprocess_request",
+    "src/flask/app.py#Flask.process_response",
+    "src/flask/app.py#Flask.do_teardown_request",
+    "src/flask/app.py#Flask.do_teardown_appcontext"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "R3",
+   "type": "chain",
+   "repo": "pytest",
+   "question": "Trace the call chain from the runner's implementation of `pytest_runtest_protocol` (src/_pytest/runner.py) down to the function that finally calls the test function itself for the \"call\" phase of a plain Python test. List, in order, every function or method of this repository on that chain, including hook implementations reached through `ihook`. Report the definition line of each.",
+   "truth": [
+    "src/_pytest/runner.py#pytest_runtest_protocol",
+    "src/_pytest/runner.py#runtestprotocol",
+    "src/_pytest/runner.py#call_and_report",
+    "src/_pytest/runner.py#call_runtest_hook",
+    "src/_pytest/runner.py#CallInfo.from_call",
+    "src/_pytest/runner.py#pytest_runtest_call",
+    "src/_pytest/python.py#Function.runtest",
+    "src/_pytest/python.py#pytest_pyfunc_call"
+   ],
+   "neutral": [
+    "src/_pytest/runner.py#CallInfo",
+    "src/_pytest/runner.py#show_test_item",
+    "src/_pytest/runner.py#check_interactive_exception",
+    "src/_pytest/runner.py#_update_current_test_var",
+    "src/_pytest/main.py#pytest_runtestloop",
+    "src/_pytest/nodes.py#Item.runtest",
+    "src/_pytest/hookspec.py#pytest_runtest_protocol",
+    "src/_pytest/hookspec.py#pytest_runtest_call",
+    "src/_pytest/hookspec.py#pytest_pyfunc_call",
+    "src/_pytest/assertion/__init__.py#pytest_runtest_protocol",
+    "src/_pytest/warnings.py#pytest_runtest_protocol",
+    "src/_pytest/unittest.py#pytest_runtest_protocol",
+    "src/_pytest/faulthandler.py#FaultHandlerHooks.pytest_runtest_protocol",
+    "src/_pytest/capture.py#CaptureManager.pytest_runtest_call",
+    "src/_pytest/logging.py#LoggingPlugin.pytest_runtest_call",
+    "src/_pytest/skipping.py#pytest_pyfunc_call",
+    "src/_pytest/debugging.py#PdbTrace.pytest_pyfunc_call"
+   ]
+  },
+  {
+   "id": "R4",
+   "type": "callees",
+   "repo": "requests",
+   "question": "List every function or method of this repository that `Session.send` (requests/sessions.py) calls directly in its own body, resolving `adapter.send` to the adapter class requests uses by default. Leave out classes used only in `isinstance` checks, attribute or property reads, and standard-library functions. Report the definition line of each.",
+   "truth": [
+    "requests/utils.py#resolve_proxies",
+    "requests/sessions.py#Session.get_adapter",
+    "requests/adapters.py#HTTPAdapter.send",
+    "requests/hooks.py#dispatch_hook",
+    "requests/cookies.py#extract_cookies_to_jar",
+    "requests/sessions.py#SessionRedirectMixin.resolve_redirects"
+   ],
+   "neutral": [
+    "requests/adapters.py#BaseAdapter.send",
+    "requests/models.py#Response.content",
+    "requests/models.py#Request",
+    "requests/sessions.py#Session.send",
+    "file:requests/compat.py"
+   ]
+  },
+  {
+   "id": "R5",
+   "type": "callers",
+   "repo": "pytest",
+   "question": "I am about to change `Node.iter_markers` (src/_pytest/nodes.py). List every function or method in the library package `src/_pytest/` (not the tests in `testing/`) that calls it directly, on any node or item object. Report the line of each call.",
+   "truth": [
+    "src/_pytest/warnings.py#catch_warnings_for_item",
+    "src/_pytest/fixtures.py#FixtureManager._get_direct_parametrize_args",
+    "src/_pytest/fixtures.py#FixtureManager.getfixtureinfo",
+    "src/_pytest/fixtures.py#FixtureManager.pytest_generate_tests",
+    "src/_pytest/nodes.py#Node.get_closest_marker",
+    "src/_pytest/skipping.py#pytest_runtest_setup",
+    "src/_pytest/mark/__init__.py#KeywordMatcher.from_item",
+    "src/_pytest/mark/__init__.py#MarkMatcher.from_item",
+    "src/_pytest/mark/evaluate.py#MarkEvaluator._get_marks",
+    "src/_pytest/pytester.py#Testdir.copy_example",
+    "src/_pytest/python.py#pytest_generate_tests",
+    "src/_pytest/python.py#Function.__init__"
+   ],
+   "neutral": [
+    "src/_pytest/nodes.py#Node.get_closest_marker~1",
+    "src/_pytest/nodes.py#Node.get_closest_marker~2"
+   ]
+  },
+  {
+   "id": "A1",
+   "type": "architecture",
+   "repo": "flask",
+   "question": "Give an architectural overview of Flask's session machinery: the classes that define the session interface, its default signed-cookie implementation and the session objects it produces, plus the places in request handling where the session is opened and where it is saved. Cite each component.",
+   "truth": [
+    "src/flask/sessions.py#SessionInterface",
+    "src/flask/sessions.py#SecureCookieSessionInterface",
+    "src/flask/sessions.py#SecureCookieSession",
+    "src/flask/sessions.py#NullSession",
+    "src/flask/ctx.py#RequestContext.push",
+    "src/flask/app.py#Flask.process_response"
+   ],
+   "neutral": [
+    "src/flask/sessions.py#SessionMixin",
+    "file:src/flask/sessions.py",
+    "src/flask/app.py#Flask",
+    "src/flask/testing.py#FlaskClient.session_transaction",
+    "src/flask/json/tag.py#TaggedJSONSerializer",
+    "file:src/flask/globals.py",
+    "src/flask/ctx.py#RequestContext"
+   ]
+  },
+  {
+   "id": "A2",
+   "type": "architecture",
+   "repo": "requests",
+   "question": "Give an architectural overview of authentication in requests: the auth handler classes, where a prepared request's auth is set up and applied, and where session-level and netrc credentials are merged in or looked up. Cite each component.",
+   "truth": [
+    "requests/auth.py#AuthBase",
+    "requests/auth.py#HTTPBasicAuth",
+    "requests/auth.py#HTTPProxyAuth",
+    "requests/auth.py#HTTPDigestAuth",
+    "requests/models.py#PreparedRequest.prepare_auth",
+    "requests/sessions.py#Session.prepare_request",
+    "requests/utils.py#get_netrc_auth"
+   ],
+   "neutral": [
+    "requests/auth.py#_basic_auth_str",
+    "file:requests/auth.py",
+    "requests/sessions.py#SessionRedirectMixin.rebuild_auth",
+    "requests/sessions.py#SessionRedirectMixin.should_strip_auth",
+    "requests/sessions.py#SessionRedirectMixin.rebuild_proxies",
+    "requests/utils.py#get_auth_from_url",
+    "requests/adapters.py#HTTPAdapter.proxy_headers",
+    "requests/models.py#PreparedRequest.prepare",
+    "requests/models.py#Request",
+    "requests/sessions.py#Session",
+    "requests/sessions.py#Session.request",
+    "requests/api.py#request"
+   ]
+  },
+  {
+   "id": "A3",
+   "type": "architecture",
+   "repo": "pytest",
+   "question": "Give an architectural overview of how pytest rewrites `assert` statements: the components that form the pipeline from deciding to install the import hook, through the hook itself, to rewriting a test module's AST. Cite each component.",
+   "truth": [
+    "src/_pytest/config/__init__.py#Config._consider_importhook",
+    "src/_pytest/assertion/__init__.py#install_importhook",
+    "src/_pytest/assertion/rewrite.py#AssertionRewritingHook",
+    "src/_pytest/assertion/rewrite.py#_rewrite_test",
+    "src/_pytest/assertion/rewrite.py#rewrite_asserts",
+    "src/_pytest/assertion/rewrite.py#AssertionRewriter"
+   ],
+   "neutral": [
+    "file:src/_pytest/assertion/rewrite.py",
+    "file:src/_pytest/assertion/__init__.py",
+    "src/_pytest/assertion/__init__.py#register_assert_rewrite",
+    "src/_pytest/assertion/__init__.py#AssertionState",
+    "src/_pytest/assertion/__init__.py#DummyRewriteHook",
+    "src/_pytest/assertion/__init__.py#pytest_addoption",
+    "src/_pytest/assertion/__init__.py#pytest_collection",
+    "src/_pytest/assertion/__init__.py#pytest_runtest_protocol",
+    "src/_pytest/assertion/__init__.py#pytest_sessionfinish",
+    "src/_pytest/assertion/rewrite.py#_read_pyc",
+    "src/_pytest/assertion/rewrite.py#_write_pyc",
+    "src/_pytest/assertion/rewrite.py#_write_pyc~1",
+    "src/_pytest/assertion/rewrite.py#_write_pyc_fp",
+    "src/_pytest/assertion/rewrite.py#get_cache_dir",
+    "src/_pytest/assertion/rewrite.py#try_makedirs",
+    "src/_pytest/assertion/rewrite.py#_get_assertion_exprs",
+    "src/_pytest/config/__init__.py#Config._mark_plugins_for_rewrite",
+    "src/_pytest/config/__init__.py#Config._preparse",
+    "src/_pytest/config/__init__.py#Config"
+   ]
+  }
+ ]
+}

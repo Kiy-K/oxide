@@ -1,0 +1,366 @@
+{
+ "repository": "/tmp/oxide-js/preact",
+ "commit": "630a87e468fc14eca5a5fd617288b4a606763d9d",
+ "snapshot": "sha256:77d87865c90b3cdff9ce66d01bbd885147f43acd9bc7084bd38de5010bfe1ccf",
+ "files": 303,
+ "js_files": 202,
+ "coverage": {
+  "complete": 202
+ },
+ "entities": 4239,
+ "js_symbol_kinds": {
+  "function": 1241,
+  "variable": 55,
+  "method": 1183,
+  "class": 517
+ },
+ "graph_sha256": "89372edd12a5e84c0fb429b5d1c253facca2436bbdb84254eb4e768dc54a81a0",
+ "relations": 28556,
+ "resolution": {
+  "calls:ambiguous": 1,
+  "calls:resolved": 1660,
+  "calls:unresolved": 16766,
+  "contains:resolved": 4238,
+  "contains_logical:resolved": 243,
+  "defines:resolved": 2251,
+  "imports:ambiguous": 6,
+  "imports:resolved": 539,
+  "imports:unresolved": 944,
+  "references:ambiguous": 4,
+  "references:resolved": 163,
+  "references:unresolved": 558,
+  "tested_by:resolved": 1183
+ },
+ "derive_cold_s": 0.5147372879946488,
+ "derive_reused_s": 0.15685421399393817,
+ "facts_reused": 243,
+ "derive_parity": true,
+ "index_cold_s": 1.1841076410055393,
+ "index_unchanged_s": 0.020552916001179256,
+ "index_edit_s": 0.7462625919943093,
+ "edit_reused": 242,
+ "persisted_edit_parity": true,
+ "peak_rss_mib": 292.5234375,
+ "resolved_import_sample": [
+  {
+   "kind": "imports",
+   "source": "file:compat/client.d.ts",
+   "targets": [
+    "module:typescript:src"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/client.d.ts",
+    "start": 7,
+    "end": 18,
+    "digest": "sha256:7fc600ae6bfc7f5a3db69ca744efd573ecc2c3e442dd3b688d2b9836a9cc22ea"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/PureComponent.js",
+   "targets": [
+    "symbol:compat/src/util.js#shallowDiffers"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/PureComponent.js",
+    "start": 45,
+    "end": 59,
+    "digest": "sha256:ebee5d9fc972043e2610e96944abf2c2097ed50e133ff7d00e3dace20bf457c3"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/forwardRef.js",
+   "targets": [
+    "symbol:compat/src/util.js#assign"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/forwardRef.js",
+    "start": 9,
+    "end": 15,
+    "digest": "sha256:3f7e9655228f20790b35cfcff8e11290e2413bbac133fa89759e6b813b3119f1"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.d.ts",
+   "targets": [
+    "module:typescript:src"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.d.ts",
+    "start": 7,
+    "end": 19,
+    "digest": "sha256:7cfc2b0789f435af1d2c78d86722d433aacdf4516daa73291e1440ee2eabaae6"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.d.ts",
+   "targets": [
+    "symbol:src/jsx.d.ts#JSXInternal"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.d.ts",
+    "start": 53,
+    "end": 64,
+    "digest": "sha256:7cfc2b0789f435af1d2c78d86722d433aacdf4516daa73291e1440ee2eabaae6"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.d.ts",
+   "targets": [
+    "module:typescript:compat/src/suspense"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.d.ts",
+    "start": 135,
+    "end": 149,
+    "digest": "sha256:7cfc2b0789f435af1d2c78d86722d433aacdf4516daa73291e1440ee2eabaae6"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/Children.js#Children"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 350,
+    "end": 358,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/PureComponent.js#PureComponent"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 389,
+    "end": 402,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/forwardRef.js#forwardRef"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 438,
+    "end": 448,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/hooks.js#startTransition"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 482,
+    "end": 497,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/hooks.js#useDeferredValue"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 500,
+    "end": 516,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/hooks.js#useEffectEvent"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 519,
+    "end": 533,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/hooks.js#useInsertionEffect"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 536,
+    "end": 554,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/hooks.js#useTransition"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 557,
+    "end": 570,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/memo.js#memo"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 598,
+    "end": 602,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/portals.js#createPortal"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 629,
+    "end": 641,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/render.js#REACT_ELEMENT_TYPE"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 672,
+    "end": 690,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/render.js#__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 693,
+    "end": 743,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/render.js#hydrate"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 746,
+    "end": 753,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:compat/src/index.js",
+   "targets": [
+    "symbol:compat/src/render.js#render"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "compat/src/index.js",
+    "start": 756,
+    "end": 762,
+    "digest": "sha256:46ef68f277c3de830b921490e559c5e3a1742b5a4f95516aae828a3bf0104ebc"
+   }
+  }
+ ]
+}

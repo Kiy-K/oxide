@@ -1,0 +1,41 @@
+{
+ "source_sha256": "2f56535bdc73eb8a68bf4ebb49789d8e9cd4f219ea60df6290b85278aee61ca8",
+ "historical_tasks_sha256": "5fc16fa6b0b68542caeb4a5a98a28dc404da1266bec08466c5a97e8e9f1589e2",
+ "selection": [
+  "mui__material-ui-11858",
+  "mui__material-ui-11987",
+  "mui__material-ui-12236"
+ ],
+ "corpora": {
+  "mui__material-ui@4acfb8da9fb5": {
+   "snapshot": "sha256:0ab38362d6555f9d742d576cd21553f5030223284c5a6b291b7cd204be5db6f6",
+   "commit": "4acfb8da9fb5fc258871aa5a55788fa37208babc",
+   "files": 2376,
+   "entities": 3144,
+   "relations": 5474,
+   "partial": []
+  },
+  "mui__material-ui@09896d42e620": {
+   "snapshot": "sha256:7655c264829c5bf077d1f11e6d662206734562098a972f9de972ea30c31b78d3",
+   "commit": "09896d42e6206984a54272cc2059c49a7aa9d54f",
+   "files": 2388,
+   "entities": 3161,
+   "relations": 5507,
+   "partial": []
+  },
+  "mui__material-ui@18aa6293ad8b": {
+   "snapshot": "sha256:ed9a550610d7c371c1ca6581fb452add3d342e4095c35748f750b0cad898f08e",
+   "commit": "18aa6293ad8b67dc8a323db19117c93efa966c7c",
+   "files": 6686,
+   "entities": 7472,
+   "relations": 9857,
+   "partial": []
+  }
+ },
+ "budgets": [
+  256,
+  1024,
+  4096
+ ],
+ "scorer": "contextbench-py-scorer with native-JS module projection v1"
+}

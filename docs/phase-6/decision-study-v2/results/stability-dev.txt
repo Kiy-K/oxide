@@ -1,0 +1,41 @@
+(1) judgment variability vs compact, per candidate (707 asked, 15 dev requests)
+other call          same   p50   p90   p99   max floor x  admitted pairs reordered
+compact-repeat      0.55  0.00  0.02  0.04  0.07       3  991 of 10716 (9.2%)
+compact-reversed    0.30  0.01  0.06  0.13  0.23       9  1782 of 10716 (16.6%)
+compact-norank      0.50  0.01  0.02  0.08  0.12       7  986 of 10716 (9.2%)
+exact ties among those admitted pairs in compact: 1137 (JEV returns a 0.01 grid)
+
+(2a) observed drift per task (Δ line_recall @256/1024/4096), recorded calls
+  compact-repeat           |ΔΔ@4096| 0.0150  tasks changed 1: [('psf__requests-5414', [0.0, 0.224, 0.224])]
+      psf__requests-5414 @1024: 6→8 items; out []; in ['symbol:tests/test_requests.py#TestRequests', 'symbol:tests/test_requests.py#TestRequests.test_invalid_url']
+      psf__requests-5414 @4096: 6→8 items; out []; in ['symbol:tests/test_requests.py#TestRequests', 'symbol:tests/test_requests.py#TestRequests.test_invalid_url']
+  compact-reversed         |ΔΔ@4096| 0.0115  tasks changed 2: [('psf__requests-2317', [0.172, 0.172, 0.172]), ('psf__requests-2931', [0.0, -0.393, 0.0])]
+      psf__requests-2317 @256: 1→2 items; out []; in ['symbol:requests/utils.py#to_native_string']
+      psf__requests-2317 @1024: 8→3 items; out ['file:requests/utils.py', 'file:requests/utils.py', 'file:requests/utils.py', 'file:requests/utils.py', 'file:requests/utils.py', 'file:requests/utils.py']; in ['symbol:requests/utils.py#to_native_string']
+      psf__requests-2317 @4096: 8→3 items; out ['file:requests/utils.py', 'file:requests/utils.py', 'file:requests/utils.py', 'file:requests/utils.py', 'file:requests/utils.py', 'file:requests/utils.py']; in ['symbol:requests/utils.py#to_native_string']
+      psf__requests-2931 @1024: 4→9 items; out []; in []
+  compact-norank           |ΔΔ@4096| 0.0265  tasks changed 2: [('psf__requests-2317', [0.172, 0.0, 0.172]), ('psf__requests-5414', [0.0, 0.224, 0.224])]
+      psf__requests-2317 @256: 1→2 items; out []; in ['symbol:requests/utils.py#to_native_string']
+      psf__requests-2317 @4096: 8→10 items; out []; in ['symbol:requests/utils.py#to_native_string', 'file:requests/models.py']
+      psf__requests-5414 @1024: 6→8 items; out []; in ['symbol:tests/test_requests.py#TestRequests', 'symbol:tests/test_requests.py#TestRequests.test_invalid_url']
+      psf__requests-5414 @4096: 6→8 items; out []; in ['symbol:tests/test_requests.py#TestRequests', 'symbol:tests/test_requests.py#TestRequests.test_invalid_url']
+  compact-repeat~order     |ΔΔ@4096| 0.0000  tasks changed 0: []
+  compact-reversed~order   |ΔΔ@4096| 0.0028  tasks changed 3: [('py-related-test-gives-up', [0.0, 0.25, 0.0]), ('psf__requests-2317', [0.0, 0.0, -0.345]), ('psf__requests-2931', [0.0, 0.0, 0.304])]
+      py-related-test-gives-up @1024: 9→12 items; out ['symbol:oxidepy/notifiers.py#notify_after_final_attempt']; in ['symbol:oxidepy/retry.py#RetryPolicy.__init__', 'symbol:oxidepy/retry.py#RetryPolicy.wait', 'symbol:oxidepy/http_client.py#HttpClient.__init__', 'symbol:tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts']
+      psf__requests-2317 @4096: 15→20 items; out []; in ['symbol:requests/utils.py#from_key_val_list', 'symbol:requests/auth.py#HTTPDigestAuth', 'symbol:requests/packages/urllib3/util/request.py#make_headers', 'symbol:requests/adapters.py#HTTPAdapter', 'symbol:requests/adapters.py#HTTPAdapter.build_response']
+      psf__requests-2931 @4096: 20→14 items; out ['symbol:requests/utils.py#to_key_val_list', 'symbol:requests/auth.py#HTTPBasicAuth', 'symbol:requests/auth.py#HTTPBasicAuth.__call__', 'symbol:requests/api.py#put', 'symbol:requests/sessions.py#SessionRedirectMixin', 'symbol:requests/sessions.py#SessionRedirectMixin.resolve_redirects', 'symbol:test_requests.py#TestRequests', 'symbol:test_requests.py#TestRequests.test_unicode_header_name', 'symbol:test_requests.py#TestRequests.test_header_keys_are_native']; in ['symbol:requests/auth.py#AuthBase', 'symbol:requests/sessions.py#Session', 'symbol:requests/sessions.py#Session.put']
+  compact-norank~order     |ΔΔ@4096| 0.0000  tasks changed 1: [('py-callers-should-retry', [0.0, -1.0, 0.0])]
+      py-callers-should-retry @1024: 11→11 items; out ['symbol:oxidepy/notifiers.py#notify_after_final_attempt']; in ['symbol:tests/test_retry.py#test_backoff_delay_increases_with_attempts']
+
+(2b) packing sensitivity: 20 seeded perturbations of the recorded compact judgments
+family                 mean@4096  sd@1024  sd@4096  P(|ΔΔ|>.010) tasks moved  max task |Δ|@4096
+tie~order                 0.7829   0.0000   0.0000          0.00         0.0              0.000
+repeatnoise~order         0.7869   0.0034   0.0081          0.20         0.2              0.304
+reversednoise~order       0.7837   0.0100   0.0081          0.20         1.2              0.304
+repeatnoise               0.5948   0.0060   0.0041          0.15         0.6              0.172
+reversednoise             0.6015   0.0106   0.0083          0.60         1.1              0.500
+reference                LR@256  LR@1024  LR@4096
+  heuristic              0.1797   0.5484   0.6586
+  compact                0.2438   0.5266   0.5930
+  compact~order          0.2620   0.6086   0.7829
+  oracle_order           0.4542   0.6821   0.7918

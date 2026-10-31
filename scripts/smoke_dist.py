@@ -1,0 +1,295 @@
+"""Smoke test of an installed OXIDE distribution (wheel or sdist), not the checkout.
+
+    VENV/python -I scripts/smoke_dist.py FIXTURES_DIR
+    python scripts/smoke_dist.py --environment   # this platform's record, as JSON
+
+Run with the interpreter of a fresh environment that has only the built artifact and
+its locked dependencies installed, after ``oxide prepare``. It drives the installed
+``oxide`` console script in subprocesses against a copy of ``fixtures/py_repo`` and
+``fixtures/ts_repo`` plus a non-ASCII, CRLF file, in a private data location whose
+path has spaces and non-ASCII characters:
+
+- the package is imported from the environment, never the source tree;
+- child processes have only the installed environment's scripts on PATH;
+- ``oxide index`` builds, a second run reopens the persisted store as ``unchanged``,
+  and an edit is published as a new generation;
+- ``search`` runs the FTS lexical channel and finds a non-ASCII declaration, and
+  ``context`` honours a ``--file`` hint within budget;
+- ``oxide mcp`` answers ``initialize`` and ``oxide_search`` over stdio and exits when
+  stdin closes;
+- the store lock is exclusive across processes and released by its owner.
+
+Exits non-zero with a message on the first failure. Stdlib only.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import platform
+import shutil
+import subprocess
+import sys
+import sysconfig
+import tempfile
+from importlib.metadata import version
+from pathlib import Path
+from typing import Any
+
+MESSAGES = [
+    {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+            "protocolVersion": "2025-06-18",
+            "capabilities": {},
+            "clientInfo": {"name": "smoke", "version": "0"},
+        },
+    },
+    {"jsonrpc": "2.0", "method": "notifications/initialized"},
+    {"jsonrpc": "2.0", "id": 3, "method": "tools/list"},
+    {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "tools/call",
+        "params": {
+            "name": "oxide_search",
+            "arguments": {"query": "TTLCache", "symbols": ["TTLCache"]},
+        },
+    },
+]
+HOLD = (
+    "import sys, oxide\n"
+    "with oxide.open_repository(sys.argv[1], data_dir=sys.argv[2]):\n"
+    "    print('held', flush=True); sys.stdin.read()"
+)
+
+
+def check(condition: bool, message: str) -> None:
+    if not condition:
+        sys.exit(f"smoke: FAILED: {message}")
+
+
+def main(fixtures: Path) -> None:
+    scripts = sysconfig.get_path("scripts")
+    exe = shutil.which("oxide", path=scripts)
+    if exe is None:
+        sys.exit(f"smoke: FAILED: no installed oxide console script in {scripts}")
+    where = subprocess.run(
+        [sys.executable, "-I", "-c", "import oxide; print(oxide.__file__)"],
+        capture_output=True,
+        text=True,
+        cwd=tempfile.gettempdir(),
+    )
+    check(where.returncode == 0, f"import oxide failed: {where.stderr}")
+    origin = Path(where.stdout.strip()).resolve()
+    check(
+        not origin.is_relative_to(fixtures.resolve().parent),
+        f"oxide imported from the checkout ({origin}), not the installed artifact",
+    )
+    print(f"smoke: oxide at {origin}")
+
+    accent = "" if sys.platform == "win32" else " é"  # LadybugDB there opens only ASCII
+    with tempfile.TemporaryDirectory(prefix=f"oxide smoke{accent} ") as temp:
+        root, data = Path(temp) / "repo ü", Path(temp) / f"data dir{accent}"
+        shutil.copytree(fixtures / "py_repo", root)
+        shutil.copytree(fixtures / "ts_repo", root / "web")
+        shutil.copytree(fixtures / "js_repo", root / "javascript")
+        shutil.copytree(fixtures / "go_repo", root / "golang")
+        shutil.copytree(fixtures / "rust_repo", root / "rustlang")
+        shutil.copytree(fixtures / "java_repo", root / "javalang")
+        shutil.copytree(fixtures / "c_repo", root / "clang")
+        shutil.copytree(fixtures / "cpp_repo", root / "cpplang")
+        (root / "naïve_ünicode.py").write_bytes(b"def caf\xc3\xa9_total():\r\n    return 1\r\n")
+        # Exclude host toolchains: parsing source must never execute its runtimes.
+        env = {**os.environ, "OXIDE_DATA_DIR": str(data), "PATH": scripts}
+
+        def oxide(*args: str, ok: bool = True) -> subprocess.CompletedProcess[str]:
+            run = subprocess.run(
+                [exe, *args], env=env, capture_output=True, text=True, encoding="utf-8"
+            )
+            if ok:
+                check(run.returncode == 0, f"oxide {' '.join(args)}: {run.stderr}")
+            return run
+
+        def result(*args: str) -> Any:
+            return json.loads(oxide(*args, "--json").stdout)
+
+        from oxide.storage.ladybug import _fts_build
+
+        pinned = _fts_build() is not None  # unpinned platforms run without FTS
+        built = result("index", str(root))
+        check(built["status"] == "built", f"first index: {built['status']}")
+        if pinned:
+            check(built["lexical"] == "available", f"FTS unavailable: {built['lexical']}")
+        check(not built["partial"], f"partial parses: {built['partial']}")
+        check(result("index", str(root))["status"] == "unchanged", "reopened store rebuilt")
+        (root / "oxidepy" / "retry.py").write_text("# emptied\n", encoding="utf-8")
+        edited = result("index", str(root))
+        check(edited["status"] == "built", "an edit was not published")
+        check(edited["modified"] == ["oxidepy/retry.py"], f"modified: {edited['modified']}")
+        print(f"smoke: indexed {edited['files']} files, {edited['entities']} entities")
+
+        found = result("search", str(root), "RetryPolicy")
+        state = "ran" if pinned else "unavailable"
+        check(found["lexical"]["state"] == state, f"lexical channel: {found['lexical']}")
+        keys = [e["entity"]["key"] for e in found["entries"]]
+        check(not any(k.startswith("symbol:oxidepy/retry.py#") for k in keys), "stale search")
+        if pinned:
+            found = result("search", str(root), "café total")
+            keys = [e["entity"]["key"] for e in found["entries"]]
+            check("symbol:naïve_ünicode.py#café_total" in keys, f"non-ASCII entity: {keys}")
+        js = result("search", str(root), "normalize", "--symbol", "normalize")
+        check(
+            any(
+                e["entity"]["key"] == "symbol:javascript/src/use.cjs#normalize"
+                for e in js["entries"]
+            ),
+            "installed JavaScript extraction unavailable",
+        )
+        js_context = result(
+            "context", str(root), "normalize", "--symbol", "normalize", "--budget", "1024"
+        )
+        check("function normalize" in js_context["payload"], "installed JS context unavailable")
+        go = result("search", str(root), "must get", "--symbol", "MustGet")
+        check(
+            go["entries"][0]["entity"]["key"] == "symbol:golang/store/store.go#Store.MustGet",
+            "installed Go extraction unavailable",
+        )
+        go_context = result("context", str(root), "open", "--symbol", "Open", "--budget", "1024")
+        check("func Open(mode int)" in go_context["payload"], "installed Go context unavailable")
+        rust = result("search", str(root), "must get", "--symbol", "must_get")
+        # C++ fixtures also define Store::must_get, so rank among same-named symbols is a tie.
+        check(
+            "symbol:rustlang/crates/shop/src/store/mod.rs#<impl Store>.must_get"
+            in [e["entity"]["key"] for e in rust["entries"]],
+            "installed Rust extraction unavailable",
+        )
+        rust_context = result(
+            "context", str(root), "must get", "--symbol", "must_get", "--budget", "1024"
+        )
+        check(
+            "pub fn must_get(&self, key: &Key) -> String" in rust_context["payload"],
+            "installed Rust context unavailable",
+        )
+        java = result("search", str(root), "must get", "--symbol", "mustGet")
+        check(
+            java["entries"][0]["entity"]["key"]
+            == "symbol:javalang/src/main/java/com/example/shop/store/Store.java#Store.mustGet",
+            "installed Java extraction unavailable",
+        )
+        java_context = result("context", str(root), "open", "--symbol", "open", "--budget", "1024")
+        check(
+            "static Store open(Mode mode)" in java_context["payload"],
+            "installed Java context unavailable",
+        )
+        c = result("search", str(root), "must get", "--symbol", "store_must_get")
+        check(
+            c["entries"][0]["entity"]["key"].startswith("symbol:clang/")
+            and c["entries"][0]["entity"]["name"] == "store_must_get",
+            "installed C extraction unavailable",
+        )
+        c_context = result(
+            "context", str(root), "open", "--symbol", "store_open", "--budget", "1024"
+        )
+        check(
+            "Store *store_open(enum Mode mode)" in c_context["payload"],
+            "installed C context unavailable",
+        )
+        cpp = result("search", str(root), "must get", "--symbol", "Store.must_get")
+        check(
+            cpp["entries"][0]["entity"]["key"].startswith("symbol:cpplang/")
+            and cpp["entries"][0]["entity"]["name"] == "must_get",
+            "installed C++ extraction unavailable",
+        )
+        cpp_context = result(
+            "context", str(root), "open", "--symbol", "Store.open", "--budget", "1024"
+        )
+        check(
+            "Store Store::open(Mode mode)" in cpp_context["payload"],
+            "installed C++ context unavailable",
+        )
+        hint = ("--file", "oxidepy/cache.py", "--budget", "400")
+        context = result("context", str(root), "cache", *hint)
+        check(0 < context["used"] <= 400, f"context used {context['used']} of 400")
+        first = context["items"][0]["source"]["path"]
+        check(first == "oxidepy/cache.py", f"the hinted file did not come first: {first}")
+        print(f"smoke: search and context ok ({context['used']}/400 units)")
+
+        server = subprocess.Popen(
+            [exe, "mcp", "--repo", str(root), "--data-dir", str(data)],
+            env=env,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+        )
+        assert server.stdin is not None and server.stdout is not None
+        server.stdin.write("".join(json.dumps(m) + "\n" for m in MESSAGES))
+        server.stdin.flush()
+        replies = [json.loads(server.stdout.readline()) for _ in range(3)]
+        # Closing stdin is how a host shuts the server down.
+        rest, stderr = server.communicate(timeout=60)
+        check(server.returncode == 0 and rest == "", f"mcp exit {server.returncode}: {stderr}")
+        responses = {r.get("id"): r for r in replies}
+        check(set(responses) == {1, 2, 3}, f"mcp replies: {replies}")
+        tools = responses[3]["result"]["tools"]
+        check([t["name"] for t in tools] == ["oxide_search"], f"mcp tools: {tools}")
+        entries = responses[2]["result"]["structuredContent"]["entries"]
+        check(entries[0]["entity"]["key"].endswith("#TTLCache"), f"mcp search: {entries[:1]}")
+        print("smoke: mcp stdio ok")
+
+        holder = subprocess.Popen(
+            [sys.executable, "-I", "-c", HOLD, str(root), str(data)],
+            env=env,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            text=True,
+        )
+        assert holder.stdout is not None and holder.stdin is not None
+        check(holder.stdout.readline().strip() == "held", "holder could not open the store")
+        blocked = oxide("index", str(root), ok=False)
+        holder.stdin.close()
+        holder.wait(timeout=60)
+        check(
+            blocked.returncode == 2 and "ownership_conflict" in blocked.stderr,
+            f"second owner: exit {blocked.returncode}, {blocked.stderr}",
+        )
+        oxide("index", str(root))  # the lock is released with its owner
+        print("smoke: store lock exclusive and released")
+    print("smoke: OK")
+
+
+def environment() -> dict[str, Any]:
+    from oxide.storage.ladybug import fts_location, fts_unavailable
+
+    return {
+        "platform": f"{sys.platform}-{platform.machine()}",
+        "os": platform.platform(),
+        "python": platform.python_version(),
+        "packages": {
+            p: version(p)
+            for p in (
+                "oxide",
+                "ladybug",
+                "tree-sitter",
+                "tree-sitter-javascript",
+                "tree-sitter-go",
+                "tree-sitter-rust",
+                "tree-sitter-java",
+                "tree-sitter-c",
+                "tree-sitter-cpp",
+                "fastmcp",
+            )
+        },
+        "fts": fts_unavailable(fts_location()) or "available",
+    }
+
+
+if __name__ == "__main__":
+    if sys.argv[1] == "--environment":
+        print(json.dumps(environment(), indent=1))
+    else:
+        main(Path(sys.argv[1]))

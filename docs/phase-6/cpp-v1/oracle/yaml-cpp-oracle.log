@@ -1,0 +1,23 @@
+{
+ "units": 31,
+ "failed_units": [],
+ "gcc_call_sites": 2894,
+ "gcc_calls_to_captured_definitions": {
+  "header": 726,
+  "unit": 1491
+ },
+ "tally": {
+  "ambiguous to a macro, not judged": 81,
+  "ambiguous, gcc captured": 66,
+  "ambiguous, no gcc call (header)": 1229,
+  "resolved to a macro, not judged": 7950,
+  "resolved, agree": 640,
+  "resolved, agree for some": 8,
+  "resolved, no gcc call (header)": 7938,
+  "resolved, no gcc call (unit)": 3,
+  "unresolved, gcc definition not compiled": 1,
+  "unresolved, gcc external": 15,
+  "unresolved, no gcc call (header)": 17596,
+  "unresolved, no gcc call (unit)": 54
+ }
+}

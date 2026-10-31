@@ -1,0 +1,78 @@
+{
+ "corpus": "py-fixture",
+ "tool": "ast-grep 0.51.0",
+ "totals": {
+  "files": 8,
+  "compared": 8,
+  "partial": 0
+ },
+ "failures": {},
+ "classes": {
+  "matched, same bytes": 44,
+  "B only: item variable": 1,
+  "matched, start differs": 1
+ },
+ "examples": {
+  "B only: item variable": [
+   "oxidepy/__init__.py: __all__ L6-6 in None"
+  ],
+  "matched, start differs": [
+   "oxidepy/retry.py: exhausted B L28 C L27"
+  ]
+ },
+ "imports": {
+  "B lines": 19,
+  "C lines": 19,
+  "both": 19
+ },
+ "provenance": {
+  "B": {
+   "entries": 65,
+   "inside": 65,
+   "named": 46,
+   "name in range": 46
+  },
+  "C": {
+   "entries": 56,
+   "inside": 56,
+   "named": 45,
+   "name in range": 45
+  }
+ },
+ "nondeterministic": {
+  "B": [],
+  "C": []
+ },
+ "seconds": {
+  "B": {
+   "sum": 0.159,
+   "p50": 0.019237,
+   "p95": 0.026964
+  },
+  "C": {
+   "sum": 0.029,
+   "p50": 0.002455,
+   "p95": 0.017075
+  }
+ },
+ "units": {
+  "B": {
+   "sum": 1045,
+   "p50": 131.5
+  },
+  "C": {
+   "sum": 1202,
+   "p50": 143.0
+  },
+  "A": {
+   "sum": 546,
+   "p50": 67.0
+  },
+  "file": {
+   "sum": 2888,
+   "p50": 345.5
+  }
+ },
+ "index_seconds": 0.263,
+ "astgrep_max_rss_mb": 134
+}

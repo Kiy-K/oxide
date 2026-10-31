@@ -1,0 +1,12 @@
+{
+ "gcc_calls": 1651,
+ "tally": {
+  "ambiguous, no gcc call": 3,
+  "resolved to a macro, not judged": 533,
+  "resolved, agree": 975,
+  "resolved, no gcc call": 241,
+  "unresolved, gcc external": 185,
+  "unresolved, gcc resolved": 12,
+  "unresolved, no gcc call": 253
+ }
+}

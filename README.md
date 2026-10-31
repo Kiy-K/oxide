@@ -1,598 +1,115 @@
-<p align="center">
-  <img src="logo.png" alt="OXIDE" width="140">
-</p>
+# OXIDE
 
-<h1 align="center">OXIDE</h1>
-<p align="center"><strong>Local-first Context Engine for Agents</strong></p>
+A structural context engine for coding agents.
 
-<p align="center">
-  <a href="#install">Install</a> ·
-  <a href="#quick-start">Quick start</a> ·
-  <a href="#supported-languages">Languages</a> ·
-  <a href="#evidence">Evidence</a> ·
-  <a href="#how-it-works">How it works</a> ·
-  <a href="LICENSE">License</a>
-</p>
+OXIDE captures a repository, derives a typed graph of its files, modules, symbols, and
+relations, persists that graph in LadybugDB, and answers "what code matters for this
+task?" with a bounded, source-backed context bundle. Retrieval is vectorless: BM25 over
+code-aware terms plus structural seeds from typed hints, then TreeRouter and
+deterministic selection and packing. No embeddings, model runners, or network access on
+the query path.
 
----
-
-OXIDE indexes your codebase and gives coding agents a small, task-relevant
-set of definitions, callers, implementations, tests, and related code —
-instead of making them search the repository blindly. It runs entirely on
-your machine, updates incrementally as you edit, and speaks to any agent
-over the CLI, JSON, or MCP.
-
-> Maximize coding-agent utility per context token, not retrieval volume.
-
-- **Local-first** — source code and the index never leave your machine.
-- **Incremental** — unchanged files are not reparsed; unchanged symbols reuse embeddings.
-- **Agent-neutral** — CLI, `--json`, or MCP; use whatever your agent already speaks.
-- **Bounded, token-aware context** — `query` returns a working set sized to the budget you choose.
-- **Lexical + semantic + structural retrieval** — BM25 and embeddings fused, then expanded along real code relationships.
-- **Blast-radius evidence** — an optional, bounded answer to "what else does this touch?"
-- **Broad language support** — ten languages today, more on the way.
-
-## Demo
-
-```text
-$ oxide index
-
-◇ Scanning files... 547 files
-◇ Parsing source... 547/547
-◇ Indexing codebase... 547/547
-◇ Embedding symbols... 7,155/7,155
-◇ Finalizing... done
-
-✓ Indexed 547 files · 7,155 symbols in 5.7s
-  Done!
-```
-
-*(Real numbers from indexing [Tokio](https://github.com/tokio-rs/tokio) with
-the offline hashed embedder — see [Evidence](#evidence).)*
-
-```bash
-oxide query "Where is authentication handled?"
-oxide search AuthService
-oxide search AuthService --blast-radius
-```
-
-`query` and `search` return real source code for an agent to read — they
-never call an LLM or generate an answer themselves:
-
-```text
-$ oxide query "Where is retry behavior implemented?" --budget-tokens 800
-Relevant code for "Where is retry behavior implemented?"
-
-oxidepy/notifiers.py
-  notify_after_final_attempt  31–33  function  ~70 tok
-    ↳ lexical, semantic, calls RetryPolicy.should_retry
-  Notifier.notify             9–10   method    ~32 tok
-    ↳ lexical, semantic
-
-oxidepy/retry.py
-  RetryPolicy.should_retry    31–37  method    ~119 tok
-    ↳ lexical, semantic
- ...
-
-6 items · 429 / 800 context tokens · embedder hashed-bow-256
-```
-
-Output is colored on a terminal and plain everywhere else (`--json`, pipes,
-`NO_COLOR`, `--color never`) — every state is readable without color. This
-example is reproducible from OXIDE's committed Python fixture with the
-offline hashed embedder.
+Status: pre-release, on `main`. Python, TypeScript/TSX, JavaScript/JSX, Go, Rust,
+Java, C and C++ have parser slices ([TypeScript](docs/typescript.md), [JavaScript](docs/javascript.md),
+[Go](docs/go.md), [Rust](docs/rust.md), [Java](docs/java.md), [C](docs/c.md), [C++](docs/cpp.md)); other files are kept as
+unsupported file evidence. The public Python API is the product boundary
+([docs/public-api.md](docs/public-api.md)). The legacy v1 implementation and its README
+are pinned at commit
+[`ac985b28`](https://github.com/Kiy-K/oxide/tree/ac985b28fcff7663aedadf2db5b40aa2dc325580);
+the original documentation remains available in
+[the pinned v1 README](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/README.md).
 
 ## Install
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/Kiy-K/oxide/main/install.sh | sh
-```
-
-The installer downloads a verified release binary for your platform. See
-[Development](#development--contributing) for build-from-source and
-version-pinned installs.
-
-## Quick start
+OXIDE needs CPython 3.12-3.14. Development uses [mise](https://mise.jdx.dev) and
+[uv](https://docs.astral.sh/uv/):
 
 ```bash
-oxide index                               # create or incrementally update the index
-oxide query "fix token refresh"           # build a token-budgeted working set
-oxide search RetryPolicy                  # find ranked symbol matches
-oxide search RetryPolicy --blast-radius   # ... plus who would be affected
-oxide status                              # check freshness and provider compatibility
-oxide watch                               # update the index as files change
-oxide review --diff HEAD~1                # collect context for a git diff
-oxide install                             # connect supported coding agents over MCP
-oxide query "fix token refresh" --git     # also weigh the current diff's changed symbols
+git clone https://github.com/Kiy-K/oxide && cd oxide
+mise run bootstrap        # uv sync --locked + `oxide prepare`
 ```
 
-`query` is for a question or coding task; `search` is for an identifier or
-expression. Reach for `--mode literal` instead of the default hybrid ranking
-when you know the *exact* string you're after — a path, an error message, a
-config value, a partial identifier — rather than a name or phrase you want
-ranked by relevance: it's a deterministic substring scan over all repository
-text (not just indexed source files), needs no index, and can't miss a match
-the way a ranked top-K can.
+Without mise, run `uv sync --locked`, then `uv run oxide prepare`. `oxide prepare` is
+the only network access OXIDE makes. It downloads the pinned LadybugDB FTS extension for
+your platform (Linux x86_64, macOS 15+ x86_64/arm64, Windows x86_64;
+[docs/platforms.md](docs/platforms.md)) and checks its SHA-256. Without that extension,
+the lexical channel reports `unavailable` and structural seeds and routing still work.
+
+OXIDE is not on PyPI yet. To use it outside the checkout, build it with `uv build` and
+install the wheel into any environment (`pip install dist/oxide-*.whl`), then run
+`oxide prepare`. That needs only Python and the native wheels. It does not need Rust,
+Node.js, or a compiler. On Windows, LadybugDB also needs the OpenSSL 3 x64 DLLs in the
+system directory. It opens only ASCII paths there, so with a non-ASCII user name, set
+`OXIDE_DATA_DIR` and `OXIDE_FTS_EXTENSION` ([docs/platforms.md](docs/platforms.md)).
+
+## Use
 
 ```bash
-oxide search "TODO: fix flaky_widget" --mode literal   # exact substring, any text file
+uv run oxide index  path/to/repo                      # built | unchanged
+uv run oxide search path/to/repo "where are failed requests retried" --limit 20
+uv run oxide context path/to/repo "where are failed requests retried" --budget 1024 \
+    --symbol RetryPolicy --file src/http/client.py
 ```
 
-Add `--json` to any command for automation:
+Every command takes `--json` (the typed result) and `--data-dir`. `context` prints
+the payload on stdout and `used/budget units` on stderr. Errors print
+`error[<code>]: <message>` and exit 2.
+
+```python
+import oxide
+
+with oxide.open_repository("path/to/repo") as repo:   # owns the store until closed
+    repo.index()
+    hits = repo.search("where are failed requests retried")
+    bundle = repo.build_context("where are failed requests retried", budget=1024)
+    print(bundle.payload)                             # used <= budget
+```
+
+### MCP
+
+`oxide mcp` serves one read-only tool, `oxide_search`, over stdio (FastMCP). Its
+`mode` is `search` (ranked locations, the default) or `context` (a budgeted source
+bundle); `oxide_context` was folded into it on 2026-10-18. It never indexes: run
+`oxide index` first, and again whenever you want fresher results, even while the
+server runs.
 
 ```bash
-oxide status --json
-oxide query "fix refresh-token validation" --budget-tokens 4096 --json
-oxide search RefreshToken --json
+uv run oxide mcp --repo path/to/repo                      # stdio, for a local agent
+uv run oxide mcp --repo path/to/repo --http --port 8765   # stateless HTTP, loopback only
 ```
 
-Every evidence item includes its repository-relative path, qualified name,
-line range, score, selection reasons, and source snippet. Context packs also
-report their estimated token use and why candidates were omitted.
+For example, in Claude Code: `claude mcp add oxide -- uv run --directory /path/to/oxide
+oxide mcp --repo /path/to/repo`. With `--repo` (repeatable) calls may only name those
+repositories, and with exactly one they may omit `repository`.
 
-## Why OXIDE
+The store lives under `--data-dir`, else `$OXIDE_DATA_DIR`, else
+`$XDG_DATA_HOME/oxide/py` (`~/.local/share/oxide/py`). It is never captured, even
+when it sits inside the repository.
 
-Coding agents do better work when they see the right evidence: the
-definition being changed, its callers, the tests that constrain it, and
-enough surrounding code to understand the contract. More retrieved code is
-often worse — it spends tokens, dilutes the useful evidence, and leaves less
-room for reasoning and generation.
+## Limits
 
-Most retrieval systems are evaluated on how much they can find. OXIDE is
-designed around how much *useful* code it can fit inside a fixed context
-budget. It does not wrap an LLM, edit code, or choose an agent — it prepares
-a small, inspectable working set before the agent starts reading and
-editing.
+- One owner per store, across processes. A `Repository` is not thread-safe.
+- Indexing is a full rebuild per change, and capture holds the captured bytes in
+  memory (at most 1 GiB in scope, 1 MiB per file).
+- Verified on Linux x86_64, macOS 15+ (x86_64, arm64) and Windows x86_64 by the
+  Platforms workflow. Windows needs the OpenSSL 3 DLLs and ASCII store paths; see
+  [docs/platforms.md](docs/platforms.md).
 
-### Blast radius: what else does this touch?
+[docs/public-api.md](docs/public-api.md) has the full list, with errors, bounds and
+recovery behavior.
 
-`--blast-radius` adds one question to `query` or `search`: if I change this,
-what else is involved? It reports a small, bounded neighborhood around the
-top matches — direct callers, implementors and subtypes, related tests, and
-one tightly capped hop past the direct callers.
-
-```text
-src/store.py:1–3  TokenStore  class
-  blast radius
-    · src/handler1.py:4  handler1 calls this
-    · src/cache.py:4     MemoryStore implements this
-    · src/router.py:4    route reaches this
-```
-
-It is deliberately small rather than complete: at most twelve members across
-at most eight files, drawn from at most three seeds. On `search` it is
-attached after ranking and never reorders or rescores a result; on `query`
-its members compete for the same token budget as everything else in the
-pack. With the flag absent, no lookup runs and output is byte-identical to a
-build without the feature.
-
-Blast radius is built on precomputed structural relations matched on bare
-names, without type resolution. Treat a member as a lead worth reading, not
-as proof of impact.
-
-### Git-aware context
-
-`--git` adds evidence from the current diff and recent history: symbols
-touched by uncommitted changes, recently-committed symbols, and files that
-tend to change together. It's opt-in — with the flag absent, output is
-byte-identical to a build without the feature.
+## Develop
 
 ```bash
-oxide query "fix token refresh" --git
+mise run verify           # ruff, mypy --strict, pytest (CI runs exactly this)
+uv run python scripts/bench.py path/to/corpus   # latency and peak RSS, JSON report
 ```
 
-Known limitations: untracked files are excluded (git only sees what's been
-`git add`ed), a pure rename with no content change produces no diff hunk
-and so is invisible to this evidence, and co-change is a heuristic, not a
-guarantee of relatedness. Git-enabled retrieval quality has not been
-validated by any agent-outcome benchmark — only correctness/plumbing tests
-exist today.
-
-Git-aware evidence is evaluated for correctness and determinism; no
-agent-level outcome improvement is claimed.
-
-## Supported languages
-
-| Language | Extensions | Indexed definitions |
-|---|---|---|
-| Python | `.py` | modules, classes, functions, methods, constants |
-| TypeScript / TSX | `.ts`, `.tsx` | functions, classes, methods, interfaces, type aliases, enums, exported declarations |
-| JavaScript / JSX | `.js`, `.jsx`, `.mjs`, `.cjs` | functions, classes, methods, arrow-function assignments, exported declarations, JSX component usage |
-| Rust | `.rs` | modules, structs, enums, traits, impls, functions, methods |
-| Go | `.go` | packages, structs, interfaces, functions, methods, constants |
-| Java | `.java` | classes, interfaces, enums, records, annotation types, methods, constructors |
-| Ruby | `.rb`, `.rake`, `.gemspec`, `Rakefile`, `Gemfile` | classes, modules, methods, functions, constants |
-| PHP | `.php`, `.phtml` | classes, interfaces, traits, enums, namespaces, methods, functions, constants |
-| C | `.c`, `.h` | functions, structs, unions, enums, typedefs, constants |
-| C++ | `.cc`, `.cpp`, `.cxx`, `.hh`, `.hpp`, `.hxx`, `.h` | classes, structs, enums, namespaces, functions |
-
-Every language goes through the same pipeline — a Tree-sitter grammar plus a
-`.scm` query file — so adding one is mostly a grammar and a query set, not a
-bespoke extractor. Java and C++ method/constructor names carry a normalized
-parameter-type signature (e.g. `Store.get(String,String)`), so overloads
-stay distinct symbols instead of collapsing into one.
-
-OXIDE also extracts imports, references, calls, inheritance, and containment
-where the language grammar exposes them. See the
-[language coverage matrix](docs/language-support/README.md) for exact
-behavior and known gaps per language — the committed conformance fixtures
-are the source of truth.
-
-### Documentation indexing
-
-Markdown (`.md`) is indexed too, but not as an eleventh programming
-language: a doc file becomes one whole-file symbol (no heading/section
-parsing, no calls or inheritance — there's no AST to extract them from), so
-it's stored and updated by the same incremental machinery every other file
-already uses — no new indexing code, though it still costs the same one
-embedding and one set of lexical postings any symbol costs. Its **body
-prose is reachable through lexical search** (BM25 indexes the whole file,
-same as any symbol's body); the **embedding covers only path, heading, and
-cross-references, not body text** — the same asymmetry every language's
-module-fallback symbol already has, so a query matching only a paragraph's
-wording, not its heading or a named symbol, ranks the doc lexically but not
-semantically. This makes a README's own prose ("where is X handled", "why
-does Y work this way") findable through `oxide query`/`search` alongside
-the code it describes, without requiring `--mode literal`. Documentation
-still respects
-`.gitignore` and the same generated/vendor/cache denylist as code, plus one
-extra, selective cap: a `.md` file over 64 KB is skipped (`scanner.rs`'s
-`MAX_MARKDOWN_BYTES`) — sized from a survey of this repo's own docs, so
-ordinary READMEs and design notes are indexed while a sprawling changelog
-or an accidentally-vendored doc is not.
-
-### Comment indexing
-
-Developer comments were audited before any new code was written for them,
-and turned out to already be indexed: every file's whole-file module
-symbol (the same fallback markdown uses, present for every language) spans
-line 1 to the file's last line unconditionally, and the lexical index
-slices that span verbatim — so a standalone comment between two functions,
-not just a docstring inside one, is already findable by `oxide search`
-today. Nothing needed building; `tests/comment_indexing.rs` pins the
-property as a regression test instead.
-
-The same reachability split as documentation applies: comments are
-lexically searchable (BM25 covers the whole file); a configured *remote*
-embedding provider only receives `symbol_embed_text` — file/kind/
-qualified_name/signature/imports/references, never full body text — for
-every symbol in every language. Two narrower exceptions to "comments never
-reach a remote provider" follow directly from what's in that payload, not
-from anything comment-specific:
-
-- `signature` is unconditionally the file's first non-empty line for the
-  whole-file module-fallback symbol, so a comment that opens the file (a
-  license header, a leading `# TODO`) is metadata like any declaration's
-  signature would be, and is sent.
-- `references` is the project's existing, pre-existing (not new)
-  identifier-name-intersection heuristic (`docs/agents/invariants.md`): if a comment
-  *mentions* the bare name of an already-declared project symbol —
-  anywhere in the file, not just the first line — that name is extracted
-  as a reference the same way it would be from real code, and `references`
-  is sent. It is the symbol *name* that travels this way, never the
-  comment's surrounding prose, and only for names that already exist as
-  real declarations elsewhere in the project.
-
-Free-form comment prose that isn't the file's first line and doesn't name
-an existing symbol is the only text genuinely confined to the local
-lexical index. `tests/comment_indexing.rs` pins all three cases with real
-fixtures, not just this description.
-
-This is also the actual boundary of "pre-embedding secret filtering": a
-hardcoded secret in a tracked, non-excluded file's comment is locally
-searchable by design (OXIDE surfaces real repository content; it is not a
-secret scanner) regardless of where it sits in the file. It reaches a
-configured remote provider only if it happens to be the file's first line,
-or if it is itself the exact name of another already-declared symbol in
-the project — a narrow, unlikely intersection, but a real one, not
-"never." Secrets are kept out of the index entirely — not just out of the
-remote payload — only by the existing file-level filters (`.gitignore`,
-the generated/vendor/cache denylist, hidden files like `.env*`), which
-apply before a file is scanned at all, regardless of file type or where a
-secret sits within it.
-
-## Coding-agent integrations
-
-`oxide install` detects supported agents, shows the exact configuration
-change, and asks before writing it. It currently integrates with:
-
-- Claude Code
-- Codex
-- OpenCode
-- Antigravity CLI
-
-```bash
-oxide install                              # interactive detection and approval
-oxide install --agent codex --dry-run      # preview without writing
-oxide install --agent claude --agent codex --yes
-oxide uninstall --agent codex
-```
-
-The integration runs `oxide mcp` over stdio. Any other tool can speak to the
-same MCP server, or call the CLI's JSON interface directly. See
-[`docs/agent-usage-policy.md`](docs/agent-usage-policy.md) for the canonical
-guidance on how an agent should use OXIDE.
-
-## Evidence
-
-OXIDE keeps performance and retrieval claims reproducible and scoped. A
-passing fixture is a regression check, not proof that OXIDE beats another
-tool.
-
-### Committed retrieval fixture
-
-Run the same gate used in CI:
-
-```bash
-cargo build --release -j 2
-env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL \
-  OXIDE_EMBED_NATIVE=hashed ./target/release/oxide eval \
-  --config fixtures/benchmark.json
-```
-
-Current result on the 11-query committed fixture:
-
-| Mode | Recall@5 | Precision@5 |
-|---|---:|---:|
-| Vector only | 0.818 | 0.182 |
-| Hybrid | 0.909 | 0.200 |
-
-`tests/benchmark_gate.rs` fails if hybrid retrieval falls below vector-only
-recall on this fixture. It does not establish general retrieval quality.
-
-### Real-repository indexing
-
-Measured per repository at pinned revisions — medians of three release-build
-runs on an Intel i7-13620H laptop under `nice -n 10`, using the offline
-hashed embedder. These describe indexing behavior, not retrieval quality.
-
-| Repository | Language | Files | Symbols | Cold index | No-change update | One-file edit |
-|---|---|---:|---:|---:|---:|---:|
-| Flask | Python | 80 | 1,755 | 865 ms | 31 ms | 180 ms |
-| Dark Reader | TypeScript / TSX | 197 | 1,356 | 1,021 ms | 29 ms | 190 ms |
-| Tokio | Rust | 547 | 7,155 | 5,666 ms | 131 ms | 315 ms |
-| Gin | Go | 99 | 2,076 | 1,338 ms | 38 ms | 520 ms |
-| Tailwind CSS | JavaScript | 133 | 268 | 210 ms | 10 ms | 100 ms |
-| Gson | Java | 264 | 4,388 | 2,010 ms | 80 ms | 270 ms |
-
-Ruby, PHP, C, and C++ support is validated by committed conformance
-fixtures but not yet included in this table. The Tailwind CSS and Gson rows
-were measured in a later session; compare them against each other, not
-against the earlier rows in absolute terms.
-
-Exact revisions, commands, memory use, index sizes, and unsupported
-constructs are in the
-[language support report](docs/language-support/README.md#performance).
-
-### External-task evidence
-
-The research notes include a pinned 21-task ContextBench retrieval sample
-and a four-task same-agent study. The retrieval sample is directional
-because it is small and provider-specific. In the same-agent study, no
-OXIDE condition beat the stock agent on task outcomes. See
-[Context engineering notes](docs/context-engineering-notes.md#evaluation-pivot-contextbench-official)
-for the protocol, results, and caveats.
-
-> [!IMPORTANT]
-> The controlled, agent-level benchmark is not finalized yet. The question
-> it needs to answer: **can the same coding agent solve repository tasks
-> with fewer context tokens, fewer searches, and less waiting when using
-> OXIDE?** OXIDE does not claim to outperform other developer tools here.
-> When the study is finalized, this note will be replaced with pinned tool
-> versions, identical corpora, exact commands, hardware, complete results,
-> and the cases where OXIDE loses.
-
-## How it works
-
-```text
-repository
-    ↓
-incremental symbol index
-    ↓
-lexical + semantic retrieval
-    ↓
-structural relations + optional blast radius
-    ↓
-bounded context allocator
-    ↓
-coding agent
-```
-
-- [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) extracts symbols
-  and syntax-level relationships for each language.
-- SQLite stores files, symbols, embeddings, lexical postings, and
-  precomputed structural relations in `<repo>/.oxide/index.db`.
-- BM25 and embedding similarity run together; reciprocal rank fusion
-  combines their ranked results.
-- Parent, child, import, reference, caller, implementor, and test
-  relationships expand strong direct hits without displacing them.
-- The allocator removes overlaps, applies diversity caps, and stops at the
-  requested token budget.
-
-Stable symbol IDs and content hashes let OXIDE skip unchanged files and
-reuse unchanged embeddings, so a single-file edit re-embeds only what
-changed. Read commands use a consistent SQLite snapshot even while another
-process is updating the index.
-
-## Privacy and offline use
-
-OXIDE runs locally and phones home to nothing by default. Your code, paths,
-queries, index, and MCP traffic never leave the machine. The only optional
-telemetry is crash reporting, off unless you set `OXIDE_TELEMETRY=1`, and
-even then it sends a panic's stack trace and platform details with no
-personal identifiers — see [`TELEMETRY.md`](TELEMETRY.md) for exactly what
-is and is not collected.
-
-The default embedding provider, **arctic-embed-xs-q** (a 384-dimensional
-int8 ONNX model, ~23 MB), downloads its weights from Hugging Face the first
-time a semantic command runs, then caches them under `$HF_HOME`. For a
-zero-download, fully air-gapped setup, use the deterministic hashed
-embedder instead:
-
-```bash
-env -u OXIDE_EMBED_URL OXIDE_EMBED_NATIVE=hashed oxide index
-env -u OXIDE_EMBED_URL OXIDE_EMBED_NATIVE=hashed \
-  oxide query "Where is authentication handled?"
-```
-
-An OpenAI-compatible HTTP embedding endpoint also works, taking precedence
-over the built-in native model:
-
-```bash
-export OXIDE_EMBED_URL=http://127.0.0.1:8191/v1/embeddings
-export OXIDE_EMBED_MODEL=my-model-label
-oxide index
-```
-
-Changing providers clears and recomputes stored vectors, since embedding
-spaces can't be mixed; lexical search stays available throughout
-(`oxide search AuthService --mode lexical`).
-
-### Remote embedding providers
-
-OXIDE also supports Voyage AI, Jina AI, and any OpenAI-compatible remote
-embedding endpoint as an **explicit, consent-gated opt-in** (`oxide setup`).
-Unlike the local/offline paths above, a configured remote provider sends
-each symbol's text (never a whole file) to that provider's API over the
-network — this is the one way OXIDE's default "your code never leaves the
-machine" guarantee changes, and only if you deliberately configure it.
-
-### Embedding speed and memory
-
-The built-in native embedder runs a small pool of ONNX sessions when there
-is enough bulk work to justify it. `OXIDE_EMBED_SESSIONS` controls it:
-
-| Value | Behavior |
-| --- | --- |
-| unset / `auto` (default) | Up to 4 sessions: one per 4 CPU cores, extra sessions using at most a quarter of available memory, and only one session for models over ~400 MB per session. On Linux, available memory is `MemAvailable`, capped by the process's own cgroup v2 `memory.max`; cgroup v1 limits, limits set only on a parent cgroup, and non-Linux systems are not read, so there only the core count applies |
-| `1` | One session on every core — the lowest-memory setting, and OXIDE's behavior before pooling |
-| `2`–`16` | Exactly that many sessions (never more than CPU cores) |
-
-Extra sessions load only after a process has embedded 256 documents, so
-searches, `oxide mcp` queries, and an `oxide index` update of a few hundred
-symbols keep a single session. The count is per process and cumulative: a
-long-running `oxide watch` grows its pool once its batches add up to 256
-documents, and keeps it for the rest of the session. With more than one
-session, even the first runs on its share of the cores (cores ÷ sessions),
-which made single queries slightly faster with the default model. Vectors
-are bit-identical in every setting, so changing it never re-embeds an
-index. Measured on a 16-core machine with
-the default model (httpx, 1,409 symbols): a full index went from 15.1 s to
-6.5 s, peak memory from ~145 MB to ~370 MB; under full CPU load, 57 s to
-16 s. On a 4-core machine `auto` picks one session.
-
-To roll back to single-session embedding, set `OXIDE_EMBED_SESSIONS=1`. An
-invalid value is an error that names the variable and the accepted values.
-
-## Limitations
-
-- OXIDE supports ten languages today. C#, Swift, Kotlin, and Assembly are
-  not indexed.
-- Reference and structural relations use syntax and identifier-name
-  matching, not compiler-grade name or type resolution. Ambiguous names can
-  produce false positives or miss a cross-file relationship.
-- The vector path is a brute-force scan. It is comfortable around 50,000
-  symbols; larger repositories need measurement.
-- Token counts use a `chars / 4` estimate rather than the target model's
-  exact tokenizer.
-- `review` assembles relevant context for a diff. It does not produce a
-  review verdict.
-- v0.1 ships prebuilt artifacts for x86-64 Linux, ARM64 Linux, and Apple
-  Silicon macOS. Windows and Intel macOS binaries are not available.
-
-Per-language extraction gaps (unresolved imports, unsupported constructs,
-metaprogramming that has no static declaration to point at) are documented
-exhaustively in the [language coverage matrix](docs/language-support/README.md#remaining-unsupported-constructs).
-
-## Development & contributing
-
-### Build from source
-
-```bash
-git clone https://github.com/Kiy-K/oxide.git
-cd oxide
-cargo build --release -j 2
-./target/release/oxide --version
-```
-
-OXIDE pins Rust 1.98.0 in `rust-toolchain.toml`. A default build includes
-the native ONNX embedder; `cargo build --release --no-default-features -j 2`
-builds without it and uses the hashed provider unless an HTTP endpoint is
-configured.
-
-### Installer options
-
-```bash
-# Install a specific published version
-curl -fsSL https://raw.githubusercontent.com/Kiy-K/oxide/main/install.sh | \
-  sh -s -- --version v0.1.0
-
-# Choose another directory
-curl -fsSL https://raw.githubusercontent.com/Kiy-K/oxide/main/install.sh | \
-  sh -s -- --install-dir "$HOME/bin"
-```
-
-The installer verifies the downloaded archive against the release's
-`SHA256SUMS`, checks that the binary starts, and replaces an existing
-installation atomically. Re-run it to upgrade; `oxide install` is separate
-and only wires the already-installed binary into coding-agent MCP configs.
-
-### Running the checks
-
-Prerequisites beyond Rust are pinned in [`mise.toml`](mise.toml) (Python
-3.11, uv, shellcheck, jq, cargo-llvm-cov, and Node + pnpm for the TypeScript
-workspace). Install
-[mise](https://mise.jdx.dev/installing-mise.html) — a system package
-(`pacman -S mise`, `brew install mise`, `apt install mise`) is preferred over
-piping an installer script — then:
-
-```bash
-mise run bootstrap  # pinned Rust toolchain/components + every mise-managed tool + TS deps
-mise run verify     # verify:rust (everything below, in commit order), verify:ts, ts:integration
-```
-
-Each Rust mise task's command matches what CI currently runs step-for-step
-(see `.github/workflows/ci.yml`) — the Rust jobs do not yet invoke `mise run`
-directly, pending verification of that migration on a real runner; CI's
-`typescript` job already runs `mise run verify:ts`. A green `mise run verify`
-covers the same checks as CI's `quality`, `test`, `no-default-features`,
-`retrieval-gate`, `typescript` and `client-integration` jobs (fmt, clippy,
-both feature configurations, the benchmark, the installer's shellcheck +
-lifecycle tests, the TS workspace, and the TS client against the binary) —
-it does not run the separate, optional coverage job. Without mise, run the
-underlying Rust commands directly:
-
-```bash
-cargo fmt --check
-cargo clippy -j 2 --all-targets -- -D warnings
-cargo test -j 2
-cargo build --release -j 2
-./target/release/oxide eval --config fixtures/benchmark.json
-```
-
-None of the checks above need network access: every test that exercises a
-real embedder pins `OXIDE_EMBED_NATIVE=hashed` itself
-(`tests/*_e2e.rs` and friends), and `oxide eval` always uses the
-deterministic hashed embedder regardless of environment
-(`src/eval.rs`). The ~23 MB Arctic model download described in
-[Privacy and offline use](#privacy-and-offline-use) only happens the first
-time you run a real `oxide index`/`oxide query`/`oxide watch` against a
-repository without `OXIDE_EMBED_NATIVE=hashed` set. `mise install` itself
-needs network access once, to fetch the pinned tool versions above, and so
-does the first `pnpm install` behind `mise run bootstrap`/`verify:ts`, to
-fill the pnpm store from `pnpm-lock.yaml`; after that, both are offline
-unless a tool version or the lockfile changes.
-
-Language behavior is pinned by golden files under `fixtures/conformance/`.
-Retrieval changes must pass the committed benchmark gate; changing the
-expected baseline requires recording both vector-only and hybrid results
-honestly.
-
-Bug reports and focused pull requests are welcome. Please include a minimal
-reproduction, the command you ran, and the relevant platform or repository
-details. Read [`AGENTS.md`](AGENTS.md) and the
-[review guide](docs/review/README.md) before changing retrieval, indexing,
-storage, or language extraction.
+Architecture: [docs/spec/SPEC.md](docs/spec/SPEC.md), [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md)
+and the decisions in [docs/adr/](docs/adr/), in particular
+[ADR-0011](docs/adr/0011-python-engine-vectorless.md) (Python engine, vectorless
+retrieval). Contributor workflow: [docs/agents/workflow.md](docs/agents/workflow.md).
+Documentation and historical evidence: [docs index](docs/README.md).
 
 ## License
 

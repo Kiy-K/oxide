@@ -1,0 +1,20 @@
+## pallets__flask@7ee9ceb71e86
+  edges 714 -> 1067; index 0.91s -> 0.93s; peak RSS 149 -> 151 MB
+  lost 0; changed {}
+  new {('resolved', 'heuristic'): 324, ('ambiguous', 'heuristic'): 29}
+  new sites 333; candidates per site (6 = 6+) {1: 324, 2: 5, 3: 3, 6: 1}
+## psf__requests@0192aac24123
+  edges 706 -> 912; index 0.65s -> 0.68s; peak RSS 146 -> 147 MB
+  lost 0; changed {}
+  new {('resolved', 'heuristic'): 202, ('ambiguous', 'heuristic'): 4}
+  new sites 204; candidates per site (6 = 6+) {1: 202, 2: 2}
+## pydata__xarray@1757dffac2fa
+  edges 9119 -> 11213; index 2.59s -> 2.89s; peak RSS 182 -> 188 MB
+  lost 0; changed {}
+  new {('resolved', 'heuristic'): 1470, ('ambiguous', 'heuristic'): 624}
+  new sites 1604; candidates per site (6 = 6+) {1: 1470, 2: 37, 3: 27, 5: 3, 6: 67}
+## pytest-dev__pytest@19ad5889353c
+  edges 3580 -> 4564; index 2.2s -> 2.46s; peak RSS 179 -> 185 MB
+  lost 0; changed {}
+  new {('resolved', 'heuristic'): 928, ('ambiguous', 'heuristic'): 56}
+  new sites 943; candidates per site (6 = 6+) {1: 928, 2: 4, 3: 6, 4: 4, 6: 1}

@@ -1,0 +1,664 @@
+{
+ "syntactic": [
+  {
+   "index": 9,
+   "pattern": "def fowlkes_mallows_score|tk / np.sqrt",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 15,
+   "pattern": "deprecated.*FutureWarning|warn.*FutureWarning|since='5\\.1|version='5\\.1|5\\.2",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 18,
+   "pattern": "warnings\\.warn\\(.*FutureWarning|category=FutureWarning",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 23,
+   "pattern": "combine_attrs.*context|context=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 28,
+   "pattern": "extra_context\\['distinct'\\]|DISTINCT ' if",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 32,
+   "pattern": "def __array_ufunc__|_condition_arg|converter\\(input_\\)",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 33,
+   "pattern": "def converters_and_unit|def get_converter|__array_ufunc__.*NotImplemented|return NotImplemented",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 39,
+   "pattern": "\\.loc|method=|method\\b",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 40,
+   "pattern": "class _LocIndexer|LocIndexer|loc\\[",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 54,
+   "pattern": "version =|__version__|5\\.1|5\\.2",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 58,
+   "pattern": "where\\s*=|where,",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 76,
+   "pattern": "remap_label_indexers|\\.sel\\(.*method|\\.loc",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 78,
+   "pattern": "class _LocIndexer|def __getitem__\\(self, key\\).*",
+   "label": "not-syntactic",
+   "note": "definition with signature"
+  },
+  {
+   "index": 83,
+   "pattern": "keep_attrs|OPTIONS\\[.*keep_attrs",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 87,
+   "pattern": "estimators_\\[i_label\\]\\.classes_|_enforce_prediction_order",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 90,
+   "pattern": "warnings.warn\\(.*FutureWarning|category=FutureWarning",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 100,
+   "pattern": "template =|%(distinct)s",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 111,
+   "pattern": "class.*Loc|\\.loc|method=|method\\)",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 117,
+   "pattern": "def where|where\\s*=|apply_ufunc\\(",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 123,
+   "pattern": "sqrt\\(.* / .*\\).*sqrt|np.sqrt\\(.* /",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 131,
+   "pattern": "context=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 132,
+   "pattern": "merge_attrs\\(|combine_attrs=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 133,
+   "pattern": "where.*keep_attrs|keep_attrs=True",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 137,
+   "pattern": "converter\\(input_\\)|__array_ufunc__",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 144,
+   "pattern": "class .*Loc|\\.loc|method=|method",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 148,
+   "pattern": "only_relation_agnostic_fields|deconstruction\\[2\\]\\['to'\\]",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 161,
+   "pattern": "def fowlkes_mallows_score|tk / np.sqrt",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 173,
+   "pattern": "context.*coordinate|context=|combine_attrs\\(",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 177,
+   "pattern": "context=.*variable|context=.*coord|context",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 180,
+   "pattern": "where\\(.*keep_attrs|keep_attrs=True.*where|where.*attrs",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 187,
+   "pattern": "def __array_ufunc__|converter\\(input_\\)|arrays.append",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 188,
+   "pattern": "NotImplemented|except ValueError",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 194,
+   "pattern": "Invalid fill method|\\.loc|method=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 202,
+   "pattern": "keep_attrs=True",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 209,
+   "pattern": "version =|5\\.1",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 219,
+   "pattern": "COUNT\\(DISTINCT|DISTINCT %\\(expressions\\)|distinct=True",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 227,
+   "pattern": "Invalid fill method|class .*Loc|\\.loc|method=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 231,
+   "pattern": "Pipeline.*len|len\\(.*pipeline|len\\(.*pipe",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 242,
+   "pattern": "isinstance\\(predictions, list\\)|_enforce_prediction_order",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 263,
+   "pattern": "\\.loc|LocIndexer|method=|fill method|Invalid fill method",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 275,
+   "pattern": "predictions = \\[_enforce_prediction_order|isinstance\\(predictions, list\\)",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 285,
+   "pattern": "keep_attrs.*context|merge_attrs\\(|keep_attrs=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 288,
+   "pattern": "combine_attrs.*context|context\\[|context=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 292,
+   "pattern": "%(distinct)s|template = .*function",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 296,
+   "pattern": "converters_and_unit|except UnitConversionError|def converters",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 306,
+   "pattern": "\\.loc|class .*Loc|method=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 314,
+   "pattern": "MigrationWriter|imports.*sort|sorted\\(.*import|migration.*import",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 315,
+   "pattern": "fowlkes_mallows_score|tk / np.sqrt",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 333,
+   "pattern": "COUNT\\(%(distinct|function)|%(distinct)s|class Aggregate",
+   "label": "not-syntactic",
+   "note": "SQL text in a template string"
+  },
+  {
+   "index": 337,
+   "pattern": "def __array_ufunc__|converter\\(input_|_condition_arg|NotImplemented",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 342,
+   "pattern": "urllib3.*parse_url|parse_url\\(.*auth|get_auth_from_url",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 352,
+   "pattern": "xr.where|where\\(.*attrs|keep_attrs.*where",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 367,
+   "pattern": "context=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 382,
+   "pattern": "\\.loc|LocIndexer|method=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 400,
+   "pattern": "attrs =|keep_attrs",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 401,
+   "pattern": "COUNT\\(|DISTINCT|distinct=True|class Count|as_sql\\(",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 406,
+   "pattern": "def converters_and_unit|converter\\(input_|def get_converter",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 416,
+   "pattern": "method=\"nearest\"|method=",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 423,
+   "pattern": "def _binary_op|keep_attrs|OPTIONS\\[\"keep_attrs\"\\]",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 426,
+   "pattern": "_enforce_prediction_order|isinstance\\(predictions, list\\)|estimators_\\[i_label\\]",
+   "label": "literal-snippet",
+   "note": ""
+  },
+  {
+   "index": 430,
+   "pattern": "FutureWarning.*stacklevel|stacklevel=2",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 435,
+   "pattern": "COUNT\\(|Count|distinct=True|class Count|def as_sql",
+   "label": "shape",
+   "note": ""
+  },
+  {
+   "index": 436,
+   "pattern": "distinct.*CASE|COUNT\\(DISTINCT",
+   "label": "not-syntactic",
+   "note": "SQL text"
+  }
+ ],
+ "others_sample": [
+  {
+   "index": 0,
+   "pattern": "class Pipeline|def __getitem__|def __len__",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 30,
+   "pattern": "unittest|skip|tearDown|PDB",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 35,
+   "pattern": "proxy.*auth|Proxy-Authorization|proxy_headers|_basic_auth_str",
+   "class": "cooccur",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 41,
+   "pattern": "def sel\\(",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 47,
+   "pattern": "keep_attrs|apply_ufunc\\(",
+   "class": "call",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 48,
+   "pattern": "xr\\.where|computation\\.where|keep_attrs.*where|where.*attrs",
+   "class": "cooccur",
+   "label": "missed-syntactic",
+   "note": "where(... keep_attrs) call intent"
+  },
+  {
+   "index": 60,
+   "pattern": "def apply_dataarray_vfunc|merge_coords|merge_attrs",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 63,
+   "pattern": "keep_attrs.*where|test_where",
+   "class": "cooccur",
+   "label": "missed-syntactic",
+   "note": "where(... keep_attrs) call intent"
+  },
+  {
+   "index": 67,
+   "pattern": "_is_skipped",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 70,
+   "pattern": "saferepr|safe_repr",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 75,
+   "pattern": "\\.loc|LocIndexer|method",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 104,
+   "pattern": "__array_ufunc__|converters_and_unit|NotImplemented",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 113,
+   "pattern": "class Pipeline|def __getitem__|def __len__",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 121,
+   "pattern": "def merge_attrs",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 128,
+   "pattern": "warnings\\.warn\\(",
+   "class": "call",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 136,
+   "pattern": "skip|pdb|addSkip",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 147,
+   "pattern": "remap_label_indexers|map_index_queries",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 157,
+   "pattern": "def apply_dataarray_vfunc|keep_attrs",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 166,
+   "pattern": "Structured ndarray gets viewed|data_is_mixin|FutureWarning",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 201,
+   "pattern": "xr.where|computation.where|def test_where",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 274,
+   "pattern": "sorted_imports|imports|import",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 291,
+   "pattern": "DISTINCT|distinct",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 301,
+   "pattern": "def get_auth_from_url|unquote\\(",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 302,
+   "pattern": "urllib.parse|urlsplit|urlparse",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 305,
+   "pattern": "get_auth_from_url|proxy_headers|Proxy-Authorization|proxy.*auth",
+   "class": "cooccur",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 324,
+   "pattern": "Structured ndarray gets viewed|NdarrayMixin",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 327,
+   "pattern": "class View|def _allowed_methods|async.*dispatch|markcoroutinefunction",
+   "class": "cooccur",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 328,
+   "pattern": "def where|keep_attrs",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 332,
+   "pattern": "DISTINCT|class Count|COUNT\\(",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 345,
+   "pattern": "def sel\\(",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 353,
+   "pattern": "def apply_variable_ufunc|keep_attrs",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 362,
+   "pattern": "FutureWarning.*future|will be.*Column|wrap.*Column|warnings.warn\\(",
+   "class": "cooccur",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 369,
+   "pattern": "caplog_handler|LogCaptureHandler\\(",
+   "class": "call",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 380,
+   "pattern": "proxy_headers",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 404,
+   "pattern": "get_records|clear\\(",
+   "class": "call",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 408,
+   "pattern": "class UnitConversionError|class UnitsError|ValueError",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 409,
+   "pattern": "NotImplemented.*converter|converter.*NotImplemented",
+   "class": "cooccur",
+   "label": "missed-syntactic",
+   "note": "return NotImplemented in converter intent"
+  },
+  {
+   "index": 437,
+   "pattern": "def clear|\\.reset\\(\\)|caplog_records_key",
+   "class": "definition",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 439,
+   "pattern": "_explicit_tearDown|tearDown",
+   "class": "name",
+   "label": "agree",
+   "note": ""
+  },
+  {
+   "index": 448,
+   "pattern": "urllib3.*parse_url|parse_url\\(",
+   "class": "cooccur",
+   "label": "agree",
+   "note": ""
+  }
+ ]
+}

@@ -1,0 +1,2843 @@
+[
+ {
+  "task": "ts-exact-versionedstore",
+  "corpus": "fixture:ts_repo",
+  "entries": 8,
+  "composition": {
+   "d0:entry": 8,
+   "d1:imports": 1,
+   "d2:contains_logical": 1,
+   "d2:imports": 5
+  },
+  "sizes": {
+   "base": 15,
+   "regions_inf": 15,
+   "fanout_inf": 15,
+   "both_inf": 15,
+   "interleave": 15,
+   "cross_first": 15,
+   "no_ambiguous": 15,
+   "ambiguous_last": 15
+  },
+  "spans": [
+   {
+    "file": "src/cache/versioned_store.ts",
+    "lines": [
+     6,
+     25
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   }
+  ]
+ },
+ {
+  "task": "ts-semantic-backoff",
+  "corpus": "fixture:ts_repo",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 1,
+   "d1:child": 1,
+   "d1:imports": 2,
+   "d1:scope": 3,
+   "d2:child": 4,
+   "d2:contains_logical": 3,
+   "d2:imports": 2
+  },
+  "sizes": {
+   "base": 36,
+   "regions_inf": 36,
+   "fanout_inf": 36,
+   "both_inf": 36,
+   "interleave": 36,
+   "cross_first": 36,
+   "no_ambiguous": 36,
+   "ambiguous_last": 36
+  },
+  "spans": [
+   {
+    "file": "src/net/retry.ts",
+    "lines": [
+     11,
+     22
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/net/client.ts",
+    "lines": [
+     12,
+     27
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   }
+  ]
+ },
+ {
+  "task": "ts-crossfile-decode-jwt",
+  "corpus": "fixture:ts_repo",
+  "entries": 4,
+  "composition": {
+   "d0:entry": 4,
+   "d1:scope": 2,
+   "d2:child": 3,
+   "d2:contains_logical": 1,
+   "d2:imports": 1
+  },
+  "sizes": {
+   "base": 11,
+   "regions_inf": 11,
+   "fanout_inf": 11,
+   "both_inf": 11,
+   "interleave": 11,
+   "cross_first": 11,
+   "no_ambiguous": 11,
+   "ambiguous_last": 11
+  },
+  "spans": [
+   {
+    "file": "src/auth/service.ts",
+    "lines": [
+     9,
+     13
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   }
+  ]
+ },
+ {
+  "task": "tsx-button-component",
+  "corpus": "fixture:ts_repo",
+  "entries": 6,
+  "composition": {
+   "d0:entry": 6
+  },
+  "sizes": {
+   "base": 6,
+   "regions_inf": 6,
+   "fanout_inf": 6,
+   "both_inf": 6,
+   "interleave": 6,
+   "cross_first": 6,
+   "no_ambiguous": 6,
+   "ambiguous_last": 6
+  },
+  "spans": [
+   {
+    "file": "src/ui/Button.tsx",
+    "lines": [
+     7,
+     13
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   }
+  ]
+ },
+ {
+  "task": "ts-related-test-button-click",
+  "corpus": "fixture:ts_repo",
+  "entries": 3,
+  "composition": {
+   "d0:entry": 3,
+   "d1:scope": 1,
+   "d2:child": 1,
+   "d2:contains_logical": 1
+  },
+  "sizes": {
+   "base": 6,
+   "regions_inf": 6,
+   "fanout_inf": 6,
+   "both_inf": 6,
+   "interleave": 6,
+   "cross_first": 6,
+   "no_ambiguous": 6,
+   "ambiguous_last": 6
+  },
+  "spans": [
+   {
+    "file": "src/ui/__tests__/Button.test.tsx",
+    "lines": [
+     1,
+     18
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "ts-default-policy-const",
+  "corpus": "fixture:ts_repo",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:child": 6,
+   "d1:imports": 2,
+   "d1:scope": 1,
+   "d2:child": 4,
+   "d2:contains_logical": 1,
+   "d2:imports": 2
+  },
+  "sizes": {
+   "base": 36,
+   "regions_inf": 36,
+   "fanout_inf": 36,
+   "both_inf": 36,
+   "interleave": 36,
+   "cross_first": 36,
+   "no_ambiguous": 36,
+   "ambiguous_last": 36
+  },
+  "spans": [
+   {
+    "file": "src/net/retry.ts",
+    "lines": [
+     24,
+     24
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   }
+  ]
+ },
+ {
+  "task": "ts-implementors-retrypolicy",
+  "corpus": "fixture:ts_repo",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 1,
+   "d1:child": 2,
+   "d1:contains_logical": 1,
+   "d1:imports": 2,
+   "d1:scope": 4,
+   "d2:child": 5,
+   "d2:contains_logical": 3,
+   "d2:imports": 2
+  },
+  "sizes": {
+   "base": 40,
+   "regions_inf": 40,
+   "fanout_inf": 40,
+   "both_inf": 40,
+   "interleave": 40,
+   "cross_first": 40,
+   "no_ambiguous": 40,
+   "ambiguous_last": 40
+  },
+  "spans": [
+   {
+    "file": "src/net/retry.ts",
+    "lines": [
+     11,
+     22
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/net/policies.ts",
+    "lines": [
+     3,
+     13
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/net/policies.ts",
+    "lines": [
+     15,
+     21
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   }
+  ]
+ },
+ {
+  "task": "ts-callers-shouldretry",
+  "corpus": "fixture:ts_repo",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 1,
+   "d1:child": 2,
+   "d1:contains_logical": 1,
+   "d1:imports": 2,
+   "d1:scope": 4,
+   "d2:child": 5,
+   "d2:contains_logical": 3,
+   "d2:imports": 2
+  },
+  "sizes": {
+   "base": 40,
+   "regions_inf": 40,
+   "fanout_inf": 40,
+   "both_inf": 40,
+   "interleave": 40,
+   "cross_first": 40,
+   "no_ambiguous": 40,
+   "ambiguous_last": 40
+  },
+  "spans": [
+   {
+    "file": "src/net/policies.ts",
+    "lines": [
+     29,
+     31
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   }
+  ]
+ },
+ {
+  "task": "coder__code-server-4923",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 21,
+   "d1:child": 1,
+   "d1:imports": 2,
+   "d1:scope": 14,
+   "d2:child": 2,
+   "d2:contains_logical": 1,
+   "d2:imports": 3
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 224,
+   "fanout_inf": 64,
+   "both_inf": 249,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     11,
+     17
+    ],
+    "lost": "routing: not routed",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     22,
+     28
+    ],
+    "lost": "routing: not routed",
+    "cause": "router-bound",
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     31,
+     37
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     130,
+     134
+    ],
+    "lost": "budget: omitted, budget",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/node/cli.ts",
+    "lines": [
+     56,
+     61
+    ],
+    "lost": "routing: not routed",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/node/cli.ts",
+    "lines": [
+     175,
+     177
+    ],
+    "lost": "selection: value N below floor",
+    "cause": null,
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/node/cli.ts",
+    "lines": [
+     175,
+     180
+    ],
+    "lost": "selection: value N below floor",
+    "cause": null,
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/node/cli.ts",
+    "lines": [
+     513,
+     518
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   }
+  ]
+ },
+ {
+  "task": "coder__code-server-6278",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 26,
+   "d1:imports": 5,
+   "d1:scope": 13
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 268,
+   "fanout_inf": 64,
+   "both_inf": 300,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/node/app.ts",
+    "lines": [
+     85,
+     98
+    ],
+    "lost": "budget: reduced view",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/node/main.ts",
+    "lines": [
+     121,
+     132
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/node/main.ts",
+    "lines": [
+     126,
+     132
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/node/util.ts",
+    "lines": [
+     53,
+     88
+    ],
+    "lost": "routing: not routed",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "lines": [
+     1,
+     12
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "lines": [
+     1,
+     14
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "lines": [
+     38,
+     83
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "lines": [
+     78,
+     84
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 26,
+   "d1:child": 6,
+   "d1:contains_logical": 1,
+   "d1:imports": 7,
+   "d1:scope": 4
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 257,
+   "fanout_inf": 64,
+   "both_inf": 292,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/generators/dynamic-theme.ts",
+    "lines": [
+     1,
+     26
+    ],
+    "lost": "selection: value N below floor",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/generators/dynamic-theme.ts",
+    "lines": [
+     1,
+     81
+    ],
+    "lost": "selection: value N below floor",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/generators/dynamic-theme.ts",
+    "lines": [
+     50,
+     71
+    ],
+    "lost": "budget: omitted, budget",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/generators/utils/parse.ts",
+    "lines": [
+     1,
+     41
+    ],
+    "lost": "routing: not routed",
+    "cause": "router-bound",
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/generators/utils/parse.ts",
+    "lines": [
+     140,
+     161
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/utils/url.ts",
+    "lines": [
+     1,
+     21
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/utils/url.ts",
+    "lines": [
+     32,
+     61
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/utils/url.ts",
+    "lines": [
+     90,
+     151
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/utils/url.ts",
+    "lines": [
+     120,
+     141
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-7241",
+  "corpus": "darkreader__darkreader@991883df4d59",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 27,
+   "d1:child": 5,
+   "d1:imports": 9,
+   "d1:scope": 3
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 310,
+   "fanout_inf": 64,
+   "both_inf": 377,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/generators/utils/parse.ts",
+    "lines": [
+     143,
+     149
+    ],
+    "lost": "routing: not routed",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/generators/utils/parse.ts",
+    "lines": [
+     144,
+     162
+    ],
+    "lost": "routing: not routed",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 4,
+   "d1:child": 2,
+   "d1:contains_logical": 1,
+   "d1:scope": 8,
+   "d2:calls": 2,
+   "d2:child": 15,
+   "d2:imports": 11,
+   "d2:scope": 1
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 156,
+   "fanout_inf": 64,
+   "both_inf": 481,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "lines": [
+     56,
+     61
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "lines": [
+     99,
+     104
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "lines": [
+     136,
+     141
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "lines": [
+     164,
+     169
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "lines": [
+     44,
+     49
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "lines": [
+     393,
+     408
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "lines": [
+     550,
+     575
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "lines": [
+     558,
+     564
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "lines": [
+     566,
+     572
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-109750",
+  "corpus": "microsoft__vscode@cf4b5a703f58",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 9,
+   "d1:child": 18,
+   "d1:imports": 4,
+   "d1:references": 2,
+   "d1:scope": 11
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 432,
+   "fanout_inf": 62,
+   "both_inf": 4799,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "lines": [
+     223,
+     250
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "lines": [
+     227,
+     235
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "lines": [
+     240,
+     245
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 15,
+   "d1:child": 3,
+   "d1:imports": 7,
+   "d1:references": 2,
+   "d1:scope": 9,
+   "d2:child": 8
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 286,
+   "fanout_inf": 64,
+   "both_inf": 1145,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/editor/common/controller/cursor.ts",
+    "lines": [
+     531,
+     537
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "lines": [
+     14,
+     20
+    ],
+    "lost": "selection: value N below floor",
+    "cause": null,
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "lines": [
+     75,
+     82
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": 2,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "lines": [
+     136,
+     144
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": 2,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorDeleteOperations.ts",
+    "lines": [
+     122,
+     128
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": 2,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     439,
+     445
+    ],
+    "lost": "budget: reduced view",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     498,
+     528
+    ],
+    "lost": "budget: reduced view",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     524,
+     549
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     548,
+     554
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     560,
+     565
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     570,
+     580
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     612,
+     625
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     617,
+     626
+    ],
+    "lost": "complete",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     794,
+     802
+    ],
+    "lost": "budget: reduced view",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     838,
+     846
+    ],
+    "lost": "budget: reduced view",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorWordOperations.ts",
+    "lines": [
+     384,
+     390
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/modes/languageConfiguration.ts",
+    "lines": [
+     293,
+     311
+    ],
+    "lost": "selection: value N below floor",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   },
+   {
+    "file": "src/vs/editor/common/modes/languageConfiguration.ts",
+    "lines": [
+     294,
+     310
+    ],
+    "lost": "selection: value N below floor",
+    "cause": null,
+    "reached": {
+     "base": 0,
+     "regions_inf": 0,
+     "fanout_inf": 0,
+     "both_inf": 0,
+     "interleave": 0,
+     "cross_first": 0,
+     "no_ambiguous": 0,
+     "ambiguous_last": 0
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-135197",
+  "corpus": "microsoft__vscode@a993ada9300a",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 13,
+   "d1:imports": 7,
+   "d1:references": 1,
+   "d1:scope": 12,
+   "d2:child": 11
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 362,
+   "fanout_inf": 24,
+   "both_inf": 4567,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "lines": [
+     423,
+     425
+    ],
+    "lost": "budget: omitted, budget",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": null,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "lines": [
+     598,
+     604
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-135805",
+  "corpus": "microsoft__vscode@7d8f55ebb1b7",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 11,
+   "d1:child": 5,
+   "d1:imports": 9,
+   "d1:references": 4,
+   "d1:scope": 7,
+   "d2:child": 8
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 363,
+   "fanout_inf": 29,
+   "both_inf": 8036,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": []
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 15,
+   "d1:child": 22,
+   "d1:imports": 1,
+   "d1:scope": 6
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 233,
+   "fanout_inf": 64,
+   "both_inf": 779,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/base/common/charCode.ts",
+    "lines": [
+     1,
+     30
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": null,
+     "cross_first": 1,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/config/editorOptions.ts",
+    "lines": [
+     575,
+     581
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/config/editorOptions.ts",
+    "lines": [
+     4637,
+     4644
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     500,
+     505
+    ],
+    "lost": "routing: not routed",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     621,
+     626
+    ],
+    "lost": "routing: not routed",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     950,
+     998
+    ],
+    "lost": "budget: omitted, budget",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     1005,
+     1010
+    ],
+    "lost": "budget: omitted, budget",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "lines": [
+     1049,
+     1051
+    ],
+    "lost": "budget: omitted, budget",
+    "cause": null,
+    "reached": {
+     "base": 1,
+     "regions_inf": 1,
+     "fanout_inf": 1,
+     "both_inf": 1,
+     "interleave": 1,
+     "cross_first": 1,
+     "no_ambiguous": 1,
+     "ambiguous_last": 1
+    }
+   },
+   {
+    "file": "src/vs/monaco.d.ts",
+    "lines": [
+     3226,
+     3232
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-148971",
+  "corpus": "microsoft__vscode@2dff5deef71f",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 9,
+   "d1:child": 15,
+   "d1:scope": 10,
+   "d2:child": 7,
+   "d2:imports": 1,
+   "d2:scope": 2
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 257,
+   "fanout_inf": 34,
+   "both_inf": 5037,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "lines": [
+     120,
+     160
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "lines": [
+     130,
+     159
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "lines": [
+     265,
+     275
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "lines": [
+     267,
+     272
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-149380",
+  "corpus": "microsoft__vscode@5b8bd1c45ca3",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 23,
+   "d1:imports": 1,
+   "d1:scope": 18,
+   "d2:child": 2
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 428,
+   "fanout_inf": 46,
+   "both_inf": 1938,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/workbench/contrib/debug/node/terminals.ts",
+    "lines": [
+     148,
+     151
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": 2,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153121",
+  "corpus": "microsoft__vscode@1a599e2d1792",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 16,
+   "d1:child": 10,
+   "d1:imports": 1,
+   "d1:references": 1,
+   "d1:scope": 15,
+   "d2:child": 1
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 350,
+   "fanout_inf": 64,
+   "both_inf": 1447,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     59,
+     64
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     66,
+     78
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     411,
+     417
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     411,
+     430
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "lines": [
+     489,
+     497
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153857",
+  "corpus": "microsoft__vscode@88ffbc7a7a81",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 11,
+   "d1:child": 4,
+   "d1:imports": 2,
+   "d1:scope": 10,
+   "d2:child": 16,
+   "d2:contains_logical": 1
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 168,
+   "fanout_inf": 36,
+   "both_inf": 4608,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     146,
+     150
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     221,
+     228
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     258,
+     272
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     271,
+     278
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     287,
+     291
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "lines": [
+     318,
+     325
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-160342",
+  "corpus": "microsoft__vscode@440e61ffab2b",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 12,
+   "d1:child": 16,
+   "d1:scope": 10,
+   "d2:child": 6
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 236,
+   "fanout_inf": 64,
+   "both_inf": 735,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+    "lines": [
+     105,
+     145
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+    "lines": [
+     108,
+     113
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+    "lines": [
+     334,
+     336
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 13,
+   "d1:child": 4,
+   "d1:imports": 1,
+   "d1:scope": 17,
+   "d2:child": 9
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 258,
+   "fanout_inf": 45,
+   "both_inf": 1434,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     765,
+     797
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     770,
+     775
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     789,
+     794
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     812,
+     825
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     814,
+     820
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": 2,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     851,
+     908
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     868,
+     873
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     898,
+     904
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     918,
+     924
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "lines": [
+     918,
+     950
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "router-bound",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-177084",
+  "corpus": "microsoft__vscode@384b03f26310",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 5,
+   "d1:child": 5,
+   "d1:contains_logical": 1,
+   "d1:imports": 2,
+   "d1:scope": 8,
+   "d2:child": 23
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 176,
+   "fanout_inf": 64,
+   "both_inf": 460,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts",
+    "lines": [
+     451,
+     457
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+    "lines": [
+     205,
+     211
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ },
+ {
+  "task": "microsoft__vscode-189223",
+  "corpus": "microsoft__vscode@9a281018181d",
+  "entries": 20,
+  "composition": {
+   "d0:entry": 20,
+   "d1:calls": 17,
+   "d1:child": 6,
+   "d1:contains_logical": 1,
+   "d1:imports": 3,
+   "d1:references": 2,
+   "d1:scope": 12,
+   "d2:contains_logical": 1,
+   "d2:imports": 2
+  },
+  "sizes": {
+   "base": 64,
+   "regions_inf": 290,
+   "fanout_inf": 64,
+   "both_inf": 392,
+   "interleave": 64,
+   "cross_first": 64,
+   "no_ambiguous": 64,
+   "ambiguous_last": 64
+  },
+  "spans": [
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "lines": [
+     1,
+     16
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "lines": [
+     31,
+     53
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "lines": [
+     55,
+     111
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "lines": [
+     113,
+     126
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "lines": [
+     127,
+     132
+    ],
+    "lost": "entry: no entry point in its file",
+    "cause": "no-path",
+    "reached": {
+     "base": null,
+     "regions_inf": null,
+     "fanout_inf": null,
+     "both_inf": null,
+     "interleave": null,
+     "cross_first": null,
+     "no_ambiguous": null,
+     "ambiguous_last": null
+    }
+   }
+  ]
+ }
+]

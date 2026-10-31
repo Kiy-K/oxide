@@ -1,0 +1,177 @@
+{
+ "corpus": "darkreader",
+ "tool": "ast-grep 0.51.0",
+ "totals": {
+  "files": 201,
+  "compared": 201,
+  "partial": 0
+ },
+ "failures": {},
+ "classes": {
+  "matched, same bytes": 824,
+  "B only: member field": 463,
+  "C only: member function": 208,
+  "B only: item constant": 123,
+  "B only: item variable": 27,
+  "C only: member method": 18,
+  "B only: member enumMember": 14,
+  "C only: item function": 7,
+  "matched, start differs": 5,
+  "B only: item module": 4,
+  "C only: member interface": 3,
+  "C only: item method": 3,
+  "C only: item namespace": 1
+ },
+ "examples": {
+  "B only: item module": [
+   "index.d.ts: darkreader L152-154 in None",
+   "src/ui/controls/index.ts: exports L21-41 in None",
+   "src/ui/popup/components/header/index.tsx: exports L96-99 in None",
+   "src/ui/popup/theme/controls/index.tsx: exports L17-33 in None"
+  ],
+  "C only: member function": [
+   "index.d.ts: enable L7-7 in DarkReader",
+   "index.d.ts: disable L12-12 in DarkReader",
+   "index.d.ts: auto L19-19 in DarkReader",
+   "index.d.ts: auto L25-25 in DarkReader",
+   "index.d.ts: setFetchMethod L31-31 in DarkReader",
+   "index.d.ts: exportGeneratedCSS L36-36 in DarkReader",
+   "src/background/index.ts: send L38-38 in listen",
+   "src/background/utils/network.ts: get L172-182 in createFileLoader"
+  ],
+  "C only: member interface": [
+   "index.d.ts: Theme L41-116 in DarkReader",
+   "index.d.ts: DynamicThemeFix L121-149 in DarkReader",
+   "src/inject/dynamic-theme/stylesheet-modifier.ts: ModifySheetOptions L33-40 in createStyleSheetModifier"
+  ],
+  "C only: item namespace": [
+   "index.d.ts: <module> L152-154 in None"
+  ],
+  "B only: item constant": [
+   "src/api/chrome.ts: messageListeners L13-13 in None",
+   "src/api/fetch.ts: fetcher L16-16 in None",
+   "src/api/index.ts: isIFrame L11-18 in None",
+   "src/api/index.ts: darkScheme L39-39 in None",
+   "src/background/config-manager.ts: CONFIG_URLs L8-25 in None",
+   "src/background/config-manager.ts: REMOTE_TIMEOUT_MS L26-26 in None",
+   "src/background/icon-manager.ts: ICON_PATHS L3-8 in None",
+   "src/background/index.ts: extension L8-8 in None"
+  ],
+  "matched, start differs": [
+   "src/api/fetch.ts: throwCORSError B L1 C L1",
+   "src/inject/dynamic-theme/index.ts: cancelRendering B L300 C L300",
+   "src/utils/media-query.ts: matchesMediaQuery B L1 C L1",
+   "src/utils/media-query.ts: matchesDarkTheme B L8 C L8",
+   "src/utils/media-query.ts: matchesLightTheme B L9 C L9"
+  ],
+  "B only: item variable": [
+   "src/api/index.ts: isDarkReaderEnabled L10-10 in None",
+   "src/api/index.ts: store L40-43 in None",
+   "src/background/utils/extension-api.ts: isWriting L40-40 in None",
+   "src/inject/dynamic-theme/image.ts: canvas L66-66 in None",
+   "src/inject/dynamic-theme/image.ts: context L67-67 in None",
+   "src/inject/dynamic-theme/index.ts: loadingStylesCounter L242-242 in None",
+   "src/inject/dynamic-theme/index.ts: didDocumentShowUp L313-313 in None",
+   "src/inject/dynamic-theme/network.ts: counter L11-11 in None"
+  ],
+  "B only: member field": [
+   "src/background/config-manager.ts: name L29-29 in Config",
+   "src/background/config-manager.ts: local L30-30 in Config",
+   "src/background/config-manager.ts: localURL L31-31 in Config",
+   "src/background/config-manager.ts: remoteURL L32-32 in Config",
+   "src/background/config-manager.ts: DARK_SITES L36-36 in ConfigManager",
+   "src/background/config-manager.ts: DYNAMIC_THEME_FIXES_INDEX L37-37 in ConfigManager",
+   "src/background/config-manager.ts: DYNAMIC_THEME_FIXES_RAW L38-38 in ConfigManager",
+   "src/background/config-manager.ts: INVERSION_FIXES_INDEX L39-39 in ConfigManager"
+  ],
+  "C only: item function": [
+   "src/background/index.ts: socketAlarmListener L30-34 in None",
+   "src/background/index.ts: listen L36-72 in None",
+   "src/inject/utils/dom.ts: onReadyStateChange L218-228 in None",
+   "src/ui/popup/index.tsx: respond L70-70 in None",
+   "tests/utils/color.tests.ts: round L90-90 in None",
+   "tests/utils/time.tests.ts: utcDate L59-59 in None",
+   "tests/utils/time.tests.ts: utcDate L95-95 in None"
+  ],
+  "B only: member enumMember": [
+   "src/background/tab-manager.ts: ACTIVE L37-37 in DocumentState",
+   "src/background/tab-manager.ts: PASSIVE L38-38 in DocumentState",
+   "src/background/tab-manager.ts: HIDDEN L39-39 in DocumentState",
+   "src/background/tab-manager.ts: FROZEN L40-40 in DocumentState",
+   "src/background/tab-manager.ts: TERMINATED L41-41 in DocumentState",
+   "src/background/tab-manager.ts: DISCARDED L42-42 in DocumentState",
+   "src/background/utils/state-manager.ts: INITIAL L55-55 in StateManagerState",
+   "src/background/utils/state-manager.ts: DISABLED L56-56 in StateManagerState"
+  ],
+  "C only: item method": [
+   "src/background/utils/extension-api.ts: update L6-6 in None",
+   "src/inject/dynamic-theme/inline-style.ts: disconnect L115-115 in None",
+   "src/inject/dynamic-theme/watch.ts: disconnect L8-8 in None"
+  ],
+  "C only: member method": [
+   "src/generators/utils/matrix.ts: identity L32-40 in Matrix",
+   "src/generators/utils/matrix.ts: invertNHue L42-50 in Matrix",
+   "src/generators/utils/matrix.ts: brightness L52-60 in Matrix",
+   "src/generators/utils/matrix.ts: contrast L62-71 in Matrix",
+   "src/generators/utils/matrix.ts: sepia L73-81 in Matrix",
+   "src/generators/utils/matrix.ts: grayscale L83-91 in Matrix",
+   "src/inject/utils/dom.ts: acceptNode L172-174 in iterateShadowHosts",
+   "src/inject/utils/dom.ts: disconnect L341-351 in createOptimizedTreeObserver"
+  ]
+ },
+ "imports": {
+  "B lines": 785,
+  "C lines": 785,
+  "both": 785
+ },
+ "provenance": {
+  "B": {
+   "entries": 2245,
+   "inside": 2245,
+   "named": 1460,
+   "name in range": 1457
+  },
+  "C": {
+   "entries": 1244,
+   "inside": 1244,
+   "named": 1068,
+   "name in range": 1068
+  }
+ },
+ "nondeterministic": {
+  "B": [],
+  "C": []
+ },
+ "seconds": {
+  "B": {
+   "sum": 4.441,
+   "p50": 0.020979,
+   "p95": 0.030797
+  },
+  "C": {
+   "sum": 1.158,
+   "p50": 0.005297,
+   "p95": 0.009131
+  }
+ },
+ "units": {
+  "B": {
+   "sum": 50530,
+   "p50": 184.0
+  },
+  "C": {
+   "sum": 33612,
+   "p50": 115.0
+  },
+  "A": {
+   "sum": 77561,
+   "p50": 115.0
+  },
+  "file": {
+   "sum": 255216,
+   "p50": 625.0
+  }
+ },
+ "index_seconds": 0.674,
+ "astgrep_max_rss_mb": 150
+}

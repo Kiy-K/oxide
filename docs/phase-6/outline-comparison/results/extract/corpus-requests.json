@@ -1,0 +1,119 @@
+{
+ "corpus": "requests",
+ "tool": "ast-grep 0.51.0",
+ "totals": {
+  "files": 70,
+  "compared": 70,
+  "partial": 0
+ },
+ "failures": {},
+ "classes": {
+  "matched, same bytes": 501,
+  "B only: item variable": 242,
+  "B only: item constant": 72,
+  "B only: member field": 20,
+  "matched, start differs": 15,
+  "C only: member function": 2
+ },
+ "examples": {
+  "B only: member field": [
+   "docs/_themes/flask_theme_support.py: background_color L8-8 in FlaskyStyle",
+   "docs/_themes/flask_theme_support.py: default_style L9-9 in FlaskyStyle",
+   "docs/_themes/flask_theme_support.py: styles L11-86 in FlaskyStyle",
+   "requests/exceptions.py: response L19-19 in HTTPError",
+   "requests/packages/urllib3/_collections.py: ContainerCls L36-36 in RecentlyUsedContainer",
+   "requests/packages/urllib3/connectionpool.py: cert_reqs L79-79 in VerifiedHTTPSConnection",
+   "requests/packages/urllib3/connectionpool.py: ca_certs L80-80 in VerifiedHTTPSConnection",
+   "requests/packages/urllib3/connectionpool.py: ssl_version L81-81 in VerifiedHTTPSConnection"
+  ],
+  "B only: item variable": [
+   "docs/conf.py: extensions L30-30 in None",
+   "docs/conf.py: templates_path L33-33 in None",
+   "docs/conf.py: source_suffix L36-36 in None",
+   "docs/conf.py: master_doc L42-42 in None",
+   "docs/conf.py: project L45-45 in None",
+   "docs/conf.py: copyright L46-46 in None",
+   "docs/conf.py: version L53-53 in None",
+   "docs/conf.py: release L55-55 in None"
+  ],
+  "B only: item constant": [
+   "requests/adapters.py: DEFAULT_POOLSIZE L27-27 in None",
+   "requests/adapters.py: DEFAULT_RETRIES L28-28 in None",
+   "requests/auth.py: CONTENT_TYPE_FORM_URLENCODED L23-23 in None",
+   "requests/auth.py: CONTENT_TYPE_MULTI_PART L24-24 in None",
+   "requests/hooks.py: HOOKS L17-17 in None",
+   "requests/models.py: REDIRECT_STATI L30-30 in None",
+   "requests/models.py: CONTENT_CHUNK_SIZE L31-31 in None",
+   "requests/models.py: ITER_CHUNK_SIZE L32-32 in None"
+  ],
+  "matched, start differs": [
+   "requests/cookies.py: unverifiable B L69 C L68",
+   "requests/models.py: path_url B L39 C L38",
+   "requests/models.py: _encode_params B L60 C L59",
+   "requests/models.py: _encode_files B L87 C L86",
+   "requests/models.py: ok B L484 C L483",
+   "requests/models.py: apparent_encoding B L492 C L491",
+   "requests/models.py: content B L550 C L549",
+   "requests/models.py: text B L574 C L573"
+  ],
+  "C only: member function": [
+   "requests/packages/urllib3/packages/six.py: write L340-343 in print_",
+   "requests/sessions.py: get_original_key L53-60 in merge_kwargs"
+  ]
+ },
+ "imports": {
+  "B lines": 273,
+  "C lines": 306,
+  "both": 273
+ },
+ "provenance": {
+  "B": {
+   "entries": 1122,
+   "inside": 1122,
+   "named": 850,
+   "name in range": 850
+  },
+  "C": {
+   "entries": 637,
+   "inside": 637,
+   "named": 518,
+   "name in range": 518
+  }
+ },
+ "nondeterministic": {
+  "B": [],
+  "C": []
+ },
+ "seconds": {
+  "B": {
+   "sum": 1.67,
+   "p50": 0.021719,
+   "p95": 0.037645
+  },
+  "C": {
+   "sum": 0.243,
+   "p50": 0.003272,
+   "p95": 0.005816
+  }
+ },
+ "units": {
+  "B": {
+   "sum": 17507,
+   "p50": 183.5
+  },
+  "C": {
+   "sum": 13489,
+   "p50": 142.5
+  },
+  "A": {
+   "sum": 219956,
+   "p50": 525.0
+  },
+  "file": {
+   "sum": 285265,
+   "p50": 1446.0
+  }
+ },
+ "index_seconds": 0.509,
+ "astgrep_max_rss_mb": 143
+}
