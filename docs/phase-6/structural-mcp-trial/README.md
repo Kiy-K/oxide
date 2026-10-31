@@ -49,7 +49,7 @@ noise of two repetitions.
 - **Agents never used OXIDE's search or context modes.** There were 0 calls in 48
   runs, in either arm, on any task, controls included. Every task was answered with
   the built-in `Grep` (84 calls) and `Bash` (`rg`, `sed`; 33 calls). This repeats the
-  agent-navigation finding ([../../agent-navigation-eval/](../../agent-navigation-eval/README.md)
+  agent-navigation finding ([../../agent-navigation-eval/](https://github.com/Kiy-K/oxide/blob/f79808a/docs/agent-navigation-eval/README.md)
   in git history) with the schema provably in context.
 - **Structural use was appropriate.** It appeared on 9 of 16 shape runs and on none of
   the 8 control runs. Both errors (S4 r1, S8 r1) had one cause: the agent put a prose

@@ -6,7 +6,7 @@ repository, VS Code in particular? It follows
 [../entry-retrieval-diagnostic](../entry-retrieval-diagnostic/README.md), whose
 in-memory replica predicted gains on Python and small TypeScript repositories and a loss
 on vscode (14 → 6 dev spans in the top 20), and
-[../../lexical-fields-eval](../../lexical-fields-eval/README.md), which made a real-FTS
+[../../lexical-fields-eval](https://github.com/Kiy-K/oxide/blob/f79808a/docs/lexical-fields-eval/README.md), which made a real-FTS
 body field the condition for reopening lexical work.
 
 This section is written and committed before any arm below is run. Results are added

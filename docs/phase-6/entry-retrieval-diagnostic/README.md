@@ -105,7 +105,7 @@ These come from 3 tasks per benchmark.
 4. **Query pruning** by document frequency hurts on both benchmarks. The gold's own
    matches are often exactly the frequent topic terms.
 5. **Entry-rank gains are not context gains.** The previous body experiment
-   ([../../lexical-fields-eval](../../lexical-fields-eval/README.md), Rust/Phase 4, 9
+   ([../../lexical-fields-eval](https://github.com/Kiy-K/oxide/blob/f79808a/docs/lexical-fields-eval/README.md), Rust/Phase 4, 9
    tasks) saw entry gains that did not survive packing at 1,024 units. Nothing here was
    run through `build_context`.
 

@@ -29,9 +29,8 @@ file, they win.
 
 ## Load-bearing invariants
 
-The v2 invariants live in `docs/agents/invariants.md` (legacy v1 reference)
-and, for v2, in `docs/spec/SPEC.md` ("Core invariants", "Engine resources
-and ownership", "Failure contract") and `docs/BOOTSTRAP.md`. Read those
+The v2 invariants live in `docs/spec/SPEC.md` ("Core invariants", "Engine
+resources and ownership", "Failure contract") and `docs/BOOTSTRAP.md`. Read those
 directly rather than relying on this policy's summary; duplicating them risks
 drift. Treat every entry there as **BLOCKER** severity under this policy.
 

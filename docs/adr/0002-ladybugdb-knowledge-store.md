@@ -4,7 +4,7 @@
 
 **Accepted** — 2026-10-07, explicitly approved for Phase 2B. Phase 2A feasibility result. Listed as a candidate
 in [ADR-0001](0001-oxide-v2-rewrite.md) (also Proposed). Evidence:
-[`oxide_kernel/spikes/ladybug/README.md`](../../oxide_kernel/spikes/ladybug/README.md)
+[`oxide_kernel/spikes/ladybug/README.md`](https://github.com/Kiy-K/oxide/blob/f79808a/oxide_kernel/spikes/ladybug/README.md)
 (versions, verified vs documented vs unknown) and its tests. Identity rules come
 from [ADR-0010](0010-domain-identity-and-source-capture.md).
 

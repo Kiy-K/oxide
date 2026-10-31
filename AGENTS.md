@@ -42,13 +42,13 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 | Python engine, storage, removed/retained features | `docs/adr/0011-python-engine-vectorless.md`, `docs/public-api.md` |
 | Build, test, lint, commit format | `docs/agents/workflow.md` |
 | Issues, triage labels, domain docs | `docs/agents/` (`issue-tracker.md`, `triage-labels.md`, `domain.md`) |
-| Legacy v1 reference only (evidence, not instructions) | `docs/agents/invariants.md`, `docs/canonical-baseline.md`, `docs/agent-usage-policy.md`, `skills/oxide-code-context/`, `docs/legacy/README-v1.md`, eval reports under `docs/`. They describe the retired implementation (root Rust crate, SQLite, legacy CLI/MCP); port lessons and semantic assertions, never their layout or APIs |
+| Historical evidence and legacy reproduction | `docs/phase-6/README.md`, `docs/migration-audit/legacy-infrastructure.md` (pinned originals). Port semantic lessons only where current SPEC requires them; legacy layout and APIs are not v2 instructions. |
 | v2 review policy | `docs/review/` — reviewer-facing invariants for the Python engine (public API, storage/generations, core/retrieval, capture/language, evidence/benchmarks). Architecture authority remains `docs/spec/SPEC.md` and `docs/BOOTSTRAP.md`. |
 
 ## Always-on rules
 
 - Legacy code and docs are historical evidence, not a template (SPEC, BOOTSTRAP rule 2). The old implementation is recoverable from `main` / `ac985b28`; don't port it into `src/oxide/` without a stated SPEC requirement.
-- Retrieval, routing and packing changes are evaluated per SPEC § Evaluation against the frozen baselines (`tests/python/test_baseline.py` checks Phase 3 exactly); never regenerate a frozen artifact to make a failure pass. Legacy numbers such as `docs/canonical-baseline.md` are historical comparators, not v2 gates.
+- Retrieval, routing and packing changes are evaluated per SPEC § Evaluation against the frozen baselines (`tests/python/test_baseline.py` checks Phase 3 exactly); never regenerate a frozen artifact to make a failure pass. Legacy numbers in pinned historical reports are historical comparators, not v2 gates.
 - Models judge; deterministic code decides. Keep JEV and learned judges optional; there are no embeddings. The deterministic offline path needs no model or network (only `oxide prepare` fetches the pinned FTS extension, explicitly).
 - Let native libraries do recursive and latency-sensitive work (tree-sitter queries, LadybugDB queries, Networkx for graph algorithms); Python holds bounded policy.
 
