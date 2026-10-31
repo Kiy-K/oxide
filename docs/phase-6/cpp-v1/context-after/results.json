@@ -1,0 +1,3422 @@
+[
+ {
+  "task": "catchorg__Catch2-1422",
+  "split": "heldout",
+  "corpus": "catchorg__Catch2@1faccd601d90",
+  "verified": null,
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 63,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.910156,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.996094,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "/workspace/catchorg__Catch2__0.1/include/internal/catch_session.h",
+    "lines": [
+     1,
+     63
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 63,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 201,
+   "fanout_truncations": 11,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 233,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 56,
+     "packing: too large": 1,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: examples/100-Fix-Section.cpp",
+     "incomplete parse: examples/207-Rpt-TeamCityReporter.cpp",
+     "incomplete parse: include/external/clara.hpp",
+     "incomplete parse: projects/SelfTest/IntrospectiveTests/CmdLine.tests.cpp",
+     "incomplete parse: projects/SelfTest/UsageTests/ToStringWhich.tests.cpp",
+     "incomplete parse: single_include/catch2/catch.hpp"
+    ]
+   },
+   "1024": {
+    "used": 1023,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 18,
+    "header_entities": 11,
+    "omissions": {
+     "packing: budget": 44,
+     "packing: too large": 1,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: examples/100-Fix-Section.cpp",
+     "incomplete parse: examples/207-Rpt-TeamCityReporter.cpp",
+     "incomplete parse: include/external/clara.hpp",
+     "incomplete parse: projects/SelfTest/IntrospectiveTests/CmdLine.tests.cpp",
+     "incomplete parse: projects/SelfTest/UsageTests/ToStringWhich.tests.cpp",
+     "incomplete parse: single_include/catch2/catch.hpp"
+    ]
+   },
+   "4096": {
+    "used": 4080,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 27,
+    "header_entities": 16,
+    "omissions": {
+     "packing: budget": 40,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: examples/100-Fix-Section.cpp",
+     "incomplete parse: examples/207-Rpt-TeamCityReporter.cpp",
+     "incomplete parse: include/external/clara.hpp",
+     "incomplete parse: projects/SelfTest/IntrospectiveTests/CmdLine.tests.cpp",
+     "incomplete parse: projects/SelfTest/UsageTests/ToStringWhich.tests.cpp",
+     "incomplete parse: single_include/catch2/catch.hpp"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "d6eb5ef589bd41a84c0c6b6a288a250cf570b567e0d9855527e35f5c5105da54",
+   "routed": "700b948c9c1d5d763a33d485ce6c9769959699369ebbf4b87348e78c3ad902cd",
+   "payload@256": "6cfe7454e119b05ecf95bc97e3a16142583603d6a619d373c702e55599be439a",
+   "payload@1024": "f64d1cf20f0002f607f11585515413a19a4debcdb21d342e695dcaf46c25dd81",
+   "payload@4096": "4297dd005a23cdcb80495551ffd0af745f69fb7a928b55d7581333a4fca6b413"
+  }
+ },
+ {
+  "task": "catchorg__Catch2-1448",
+  "split": "heldout",
+  "corpus": "catchorg__Catch2@62460fafe6b5",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 362,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 0.75,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.75,
+    "routed_coverage": 0.75,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.01105,
+    "file_recall@256": 0.25,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.589844,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.013812,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.981445,
+    "gold_unit_share@1024": 0.21194,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.179558,
+    "file_recall@4096": 0.5,
+    "utilization@4096": 0.996338,
+    "gold_unit_share@4096": 0.368537
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 121,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.981445,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.996338,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "include/catch.hpp",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 81,
+    "module_lines": 81,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/catchorg__Catch2__0.1/include/catch.hpp",
+    "lines": [
+     300,
+     420
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 121,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/internal/catch_capture.hpp",
+    "lines": [
+     1,
+     154
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 131,
+    "module_lines": 131,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "include/internal/catch_message.cpp",
+    "lines": [
+     1,
+     93
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 74,
+    "module_lines": 17,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/internal/catch_message.h",
+    "lines": [
+     1,
+     97
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 76,
+    "module_lines": 76,
+    "entry_rank": 17,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 201,
+   "fanout_truncations": 10,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 49,
+     "packing: too large": 1,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: examples/100-Fix-Section.cpp",
+     "incomplete parse: examples/110-Fix-ClassFixture.cpp",
+     "incomplete parse: single_include/catch2/catch.hpp"
+    ]
+   },
+   "1024": {
+    "used": 1005,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 45,
+     "packing: too large": 1,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: examples/100-Fix-Section.cpp",
+     "incomplete parse: examples/110-Fix-ClassFixture.cpp",
+     "incomplete parse: single_include/catch2/catch.hpp"
+    ]
+   },
+   "4096": {
+    "used": 4081,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 20,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 33,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: examples/100-Fix-Section.cpp",
+     "incomplete parse: examples/110-Fix-ClassFixture.cpp",
+     "incomplete parse: single_include/catch2/catch.hpp"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "760bd3dbbe24fc176598a809915fee177bbcb0ae454ec204655539bbd07d811b",
+   "routed": "1fadbe09c3856b96b58862e78a0eaae7ef30d3ba626e7acae29de11848bc4b75",
+   "payload@256": "78d2a616ae2bb58ba457ddff2349b29818356237f5957794b1ccbf46764bd2ac",
+   "payload@1024": "ee20132c2dda079665f00a7f37926fc33cb3a7d1f03d0f4dbf36f9912a5b245a",
+   "payload@4096": "b3d17c4df574f32bfb2e0121f1d35f5c1947f1f76a1ecd4b5b81e5a04c9971a7"
+  }
+ },
+ {
+  "task": "catchorg__Catch2-1608",
+  "split": "heldout",
+  "corpus": "catchorg__Catch2@979bbf03bb00",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 48,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.945312,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.982422,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.990479,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "include/internal/catch_message.cpp",
+    "lines": [
+     9,
+     14
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 5,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/internal/catch_message.cpp",
+    "lines": [
+     69,
+     112
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 43,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/internal/catch_message.cpp",
+    "lines": [
+     76,
+     81
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/internal/catch_message.cpp",
+    "lines": [
+     96,
+     101
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 266,
+   "fanout_truncations": 11,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 242,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 57,
+     "packing: too large": 1,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: examples/100-Fix-Section.cpp",
+     "incomplete parse: examples/110-Fix-ClassFixture.cpp",
+     "incomplete parse: single_include/catch2/catch.hpp"
+    ]
+   },
+   "1024": {
+    "used": 1006,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 54,
+     "packing: too large": 1,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: examples/100-Fix-Section.cpp",
+     "incomplete parse: examples/110-Fix-ClassFixture.cpp",
+     "incomplete parse: single_include/catch2/catch.hpp"
+    ]
+   },
+   "4096": {
+    "used": 4057,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 48,
+    "header_entities": 29,
+    "omissions": {
+     "packing: budget": 4,
+     "selection: item cap N": 34,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: examples/100-Fix-Section.cpp",
+     "incomplete parse: examples/110-Fix-ClassFixture.cpp",
+     "incomplete parse: single_include/catch2/catch.hpp"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c44f80a7841d39f7a9495f4adcbde0dd29112a68495d8caff4e25589d2c263c9",
+   "routed": "cd1120646a5b98e02f08ea30695b12345bac5c9034c22670e4f987ac0e900d71",
+   "payload@256": "bd00682d23d0bfc55e2b374a992b982405241ccfb91bb21c3007eab3724338ff",
+   "payload@1024": "bcf7d82563c47eab862ed30550c4441e4129ff92784b6f46dde4f0d68905368f",
+   "payload@4096": "3b3880fe3b370ca0a996f360cb759db70efa4af371235db77f379f9a3d2f8227"
+  }
+ },
+ {
+  "task": "fmtlib__fmt-1361",
+  "split": "heldout",
+  "corpus": "fmtlib__fmt@a5abe5d95cb8",
+  "verified": {
+   "counts": {
+    "spans": 7,
+    "lines": 496,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.142857,
+    "entry_recall@5": 0.285714,
+    "entry_recall@20": 0.571429,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.008065,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.644269,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.032258,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.989258,
+    "gold_unit_share@1024": 0.381046,
+    "span_recall@4096": 0.285714,
+    "line_recall@4096": 0.149194,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998047,
+    "gold_unit_share@4096": 0.356164
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 15,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.989258,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.998047,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "include/fmt/format-inl.h",
+    "lines": [
+     1,
+     434
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 380,
+    "module_lines": 380,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/format-inl.h",
+    "lines": [
+     360,
+     397
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 33,
+    "module_lines": 33,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/format-inl.h",
+    "lines": [
+     375,
+     397
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 21,
+    "module_lines": 21,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/format-inl.h",
+    "lines": [
+     418,
+     426
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 9,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/format-inl.h",
+    "lines": [
+     1017,
+     1034
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 17,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/format-inl.h",
+    "lines": [
+     1017,
+     1076
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 59,
+    "module_lines": 59,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed"
+    }
+   },
+   {
+    "file": "test/grisu-test.cc",
+    "lines": [
+     1,
+     68
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 57,
+    "module_lines": 21,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "/workspace/reproduce.cpp",
+    "lines": [
+     1,
+     15
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 260,
+   "fanout_truncations": 15,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 253,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 53,
+     "selection: value N below floor": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/fmt/core.h",
+     "incomplete parse: include/fmt/format-inl.h",
+     "incomplete parse: include/fmt/format.h",
+     "incomplete parse: test/format-test.cc",
+     "incomplete parse: test/gtest/gtest.h",
+     "incomplete parse: test/printf-test.cc",
+     "incomplete parse: test/util.h"
+    ]
+   },
+   "1024": {
+    "used": 1013,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 15,
+    "header_entities": 8,
+    "omissions": {
+     "packing: budget": 43,
+     "selection: value N below floor": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/fmt/core.h",
+     "incomplete parse: include/fmt/format-inl.h",
+     "incomplete parse: include/fmt/format.h",
+     "incomplete parse: test/format-test.cc",
+     "incomplete parse: test/gtest/gtest.h",
+     "incomplete parse: test/printf-test.cc",
+     "incomplete parse: test/util.h"
+    ]
+   },
+   "4096": {
+    "used": 4088,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 22,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 29,
+     "selection: item cap N": 5,
+     "selection: value N below floor": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/fmt/core.h",
+     "incomplete parse: include/fmt/format-inl.h",
+     "incomplete parse: include/fmt/format.h",
+     "incomplete parse: test/format-test.cc",
+     "incomplete parse: test/gtest/gtest.h",
+     "incomplete parse: test/printf-test.cc",
+     "incomplete parse: test/util.h"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "4c57b931268ea5252a42dcf48b4bdf413ab3226088e908bfec6f6a07dab35408",
+   "routed": "eb8f26d19665cc68e6ebcb68aa804f0dc96dffca4f1c6d09a83e6a38109fdf11",
+   "payload@256": "efbb5deded4e42ecae534d1795790acaebe3c6c5f9c4505e5a7ad3e5088e502e",
+   "payload@1024": "be1da716a2b33f6fe426ca1d7d06fee8d0bdddb9c8687657eaa84c284d827ed5",
+   "payload@4096": "4407c05bf8fa9fc9afccdd84e536441af3bd08b896a64cd09f9808b215d7d8f0"
+  }
+ },
+ {
+  "task": "fmtlib__fmt-1407",
+  "split": "heldout",
+  "corpus": "fmtlib__fmt@1f918159edde",
+  "verified": {
+   "counts": {
+    "spans": 11,
+    "lines": 621,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.272727,
+    "entry_recall@5": 0.272727,
+    "entry_recall@20": 0.454545,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.727273,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.006441,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.921875,
+    "gold_unit_share@256": 0.436441,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.006441,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.100881,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.022544,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.987061,
+    "gold_unit_share@4096": 0.11996
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     540,
+     561
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 18,
+    "module_lines": 18,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     540,
+     651
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 88,
+    "module_lines": 88,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     545,
+     556
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 10,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     830,
+     846
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 14,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     895,
+     906
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 11,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     910,
+     926
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 13,
+    "module_lines": 13,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     1345,
+     1356
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 11,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     1360,
+     1376
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 14,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     1445,
+     1461
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 15,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/fmt/format.h",
+    "lines": [
+     1,
+     511
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 430,
+    "module_lines": 430,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "include/fmt/format.h",
+    "lines": [
+     3025,
+     3051
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 25,
+    "module_lines": 25,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 211,
+   "fanout_truncations": 10,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 236,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 55,
+     "selection: value N below floor": 4
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/fmt/core.h",
+     "incomplete parse: include/fmt/format-inl.h",
+     "incomplete parse: include/fmt/format.h",
+     "incomplete parse: include/fmt/printf.h",
+     "incomplete parse: test/core-test.cc",
+     "incomplete parse: test/format-test.cc",
+     "incomplete parse: test/gtest/gtest.h"
+    ]
+   },
+   "1024": {
+    "used": 1021,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 48,
+     "selection: value N below floor": 4
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/fmt/core.h",
+     "incomplete parse: include/fmt/format-inl.h",
+     "incomplete parse: include/fmt/format.h",
+     "incomplete parse: include/fmt/printf.h",
+     "incomplete parse: test/core-test.cc",
+     "incomplete parse: test/format-test.cc",
+     "incomplete parse: test/gtest/gtest.h"
+    ]
+   },
+   "4096": {
+    "used": 4043,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 31,
+    "header_entities": 10,
+    "omissions": {
+     "selection: item cap N": 36,
+     "selection: value N below floor": 4
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/fmt/core.h",
+     "incomplete parse: include/fmt/format-inl.h",
+     "incomplete parse: include/fmt/format.h",
+     "incomplete parse: include/fmt/printf.h",
+     "incomplete parse: test/core-test.cc",
+     "incomplete parse: test/format-test.cc",
+     "incomplete parse: test/gtest/gtest.h"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "974313261f21a300df1279e7e263e21755034465817745fec594bcab95947101",
+   "routed": "990e9311bb2b66e30c00cdae2f7244db8f4d663c62ddeb1d3e05827af2ae4eab",
+   "payload@256": "237e3f5071621a38e7a9063d495999b4941b51364d3fe78b10857cab31dde3ed",
+   "payload@1024": "95c14a90f20497dd6b3be7887a333d5970c8439837e0619a356902e367041513",
+   "payload@4096": "d8503f6a46a90540a469a25b6958991807f1386487f4779835081cb752a0d5fb"
+  }
+ },
+ {
+  "task": "fmtlib__fmt-1663",
+  "split": "heldout",
+  "corpus": "fmtlib__fmt@8d9d528bf52c",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 721,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.875,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.008322,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.877953,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.019417,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.969727,
+    "gold_unit_share@1024": 0.372608,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.029126,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.923584,
+    "gold_unit_share@4096": 0.141158
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     1370,
+     1501
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 112,
+    "module_lines": 112,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     1433,
+     1517
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 71,
+    "module_lines": 71,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     1500,
+     1601
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 89,
+    "module_lines": 89,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     1528,
+     1541
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 13,
+    "module_lines": 13,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     1560,
+     1571
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 10,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     1599,
+     1611
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 11,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "include/fmt/core.h",
+    "lines": [
+     1662,
+     1746
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 69,
+    "module_lines": 69,
+    "entry_rank": 18,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "include/fmt/format.h",
+    "lines": [
+     1,
+     524
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 444,
+    "module_lines": 444,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 213,
+   "fanout_truncations": 9,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 254,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 59,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/fmt/color.h",
+     "incomplete parse: include/fmt/compile.h",
+     "incomplete parse: include/fmt/core.h",
+     "incomplete parse: include/fmt/format-inl.h",
+     "incomplete parse: include/fmt/format.h",
+     "incomplete parse: include/fmt/os.h",
+     "incomplete parse: include/fmt/printf.h",
+     "incomplete parse: test/gmock/gmock.h",
+     "incomplete parse: test/gtest/gtest.h"
+    ]
+   },
+   "1024": {
+    "used": 993,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 17,
+    "header_entities": 9,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/fmt/color.h",
+     "incomplete parse: include/fmt/compile.h",
+     "incomplete parse: include/fmt/core.h",
+     "incomplete parse: include/fmt/format-inl.h",
+     "incomplete parse: include/fmt/format.h",
+     "incomplete parse: include/fmt/os.h",
+     "incomplete parse: include/fmt/printf.h",
+     "incomplete parse: test/gmock/gmock.h",
+     "incomplete parse: test/gtest/gtest.h"
+    ]
+   },
+   "4096": {
+    "used": 3783,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 36,
+    "header_entities": 14,
+    "omissions": {
+     "selection: item cap N": 39,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/fmt/color.h",
+     "incomplete parse: include/fmt/compile.h",
+     "incomplete parse: include/fmt/core.h",
+     "incomplete parse: include/fmt/format-inl.h",
+     "incomplete parse: include/fmt/format.h",
+     "incomplete parse: include/fmt/os.h",
+     "incomplete parse: include/fmt/printf.h",
+     "incomplete parse: test/gmock/gmock.h",
+     "incomplete parse: test/gtest/gtest.h"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "bd5f36c9fdc8ec8cdeb75885536335adbd18f1efc449fe94ee2e142451b01582",
+   "routed": "7ce78e65d7d5e4ec188a8436387e95c51f934b54c43c97b0b0cc0dd777418001",
+   "payload@256": "81cdc23b5b334824832bd2b431601072c5707a34d641605ae6be9ce5bc55e331",
+   "payload@1024": "d0d12446a44e85c26743887d7a86c8dc86548df112e9343e3ab179137c1ef0ad",
+   "payload@4096": "dee41cd360974e6886dfbc257026db3a5dd853acb1b707332ca359fdacfbf606"
+  }
+ },
+ {
+  "task": "nlohmann__json-1221",
+  "split": "heldout",
+  "corpus": "nlohmann__json@d713727f2277",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 210,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.993164,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.996338,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "include/nlohmann/detail/exceptions.hpp",
+    "lines": [
+     1,
+     253
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 210,
+    "module_lines": 137,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 229,
+   "fanout_truncations": 12,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 255,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 48,
+     "packing: too large": 1,
+     "selection: container": 1,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: benchmarks/thirdparty/benchmark/include/benchmark/benchmark.h",
+     "incomplete parse: include/nlohmann/json.hpp",
+     "incomplete parse: single_include/nlohmann/json.hpp",
+     "incomplete parse: test/thirdparty/Fuzzer/FuzzerUtilWindows.cpp",
+     "incomplete parse: test/thirdparty/Fuzzer/test/no-coverage/CMakeLists.txt",
+     "incomplete parse: test/thirdparty/catch/catch.hpp"
+    ]
+   },
+   "1024": {
+    "used": 1017,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 19,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 35,
+     "packing: too large": 1,
+     "selection: container": 1,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: benchmarks/thirdparty/benchmark/include/benchmark/benchmark.h",
+     "incomplete parse: include/nlohmann/json.hpp",
+     "incomplete parse: single_include/nlohmann/json.hpp",
+     "incomplete parse: test/thirdparty/Fuzzer/FuzzerUtilWindows.cpp",
+     "incomplete parse: test/thirdparty/Fuzzer/test/no-coverage/CMakeLists.txt",
+     "incomplete parse: test/thirdparty/catch/catch.hpp"
+    ]
+   },
+   "4096": {
+    "used": 4081,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 40,
+    "header_entities": 19,
+    "omissions": {
+     "packing: budget": 1,
+     "selection: container": 1,
+     "selection: item cap N": 30,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: benchmarks/thirdparty/benchmark/include/benchmark/benchmark.h",
+     "incomplete parse: include/nlohmann/json.hpp",
+     "incomplete parse: single_include/nlohmann/json.hpp",
+     "incomplete parse: test/thirdparty/Fuzzer/FuzzerUtilWindows.cpp",
+     "incomplete parse: test/thirdparty/Fuzzer/test/no-coverage/CMakeLists.txt",
+     "incomplete parse: test/thirdparty/catch/catch.hpp"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c47f5e50686449f86a5d87a9f64f63c4d2351fa4ed0b08feade692657cc614b3",
+   "routed": "dc398014ec289a990d4695f0af1ffcaa238ecbee98af1a2ae938d529b075a4ec",
+   "payload@256": "4b39eb8c76fa6a6a1e09fddadb9c00f35b9a3729a68d24a8c7e10d9fce171e94",
+   "payload@1024": "5b360ed3573b5a4d3767a119182886a4a4a0dc77a7ba3246c4bc34360c7bf050",
+   "payload@4096": "6dd35fc3f4cd7f6795cb6f5e942bf75128a44c613545ea341b004d5a4130a2a7"
+  }
+ },
+ {
+  "task": "nlohmann__json-1301",
+  "split": "heldout",
+  "corpus": "nlohmann__json@dd672939a0dc",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 335,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.972656,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.993164,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.384033,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "include/nlohmann/detail/conversions/from_json.hpp",
+    "lines": [
+     1,
+     371
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 335,
+    "module_lines": 38,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/nlohmann/detail/conversions/from_json.hpp",
+    "lines": [
+     313,
+     331
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 18,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "include/nlohmann/detail/conversions/from_json.hpp",
+    "lines": [
+     313,
+     350
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 36,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 155,
+   "fanout_truncations": 12,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 249,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 34,
+     "selection: value N below floor": 26
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: include/nlohmann/detail/conversions/from_json.hpp",
+     "incomplete parse: include/nlohmann/detail/conversions/to_json.hpp",
+     "incomplete parse: include/nlohmann/json.hpp",
+     "incomplete parse: single_include/nlohmann/json.hpp"
+    ]
+   },
+   "1024": {
+    "used": 1017,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 26,
+     "selection: value N below floor": 26
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: include/nlohmann/detail/conversions/from_json.hpp",
+     "incomplete parse: include/nlohmann/detail/conversions/to_json.hpp",
+     "incomplete parse: include/nlohmann/json.hpp",
+     "incomplete parse: single_include/nlohmann/json.hpp"
+    ]
+   },
+   "4096": {
+    "used": 1573,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 3,
+    "omissions": {
+     "selection: item cap N": 14,
+     "selection: value N below floor": 26
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: include/nlohmann/detail/conversions/from_json.hpp",
+     "incomplete parse: include/nlohmann/detail/conversions/to_json.hpp",
+     "incomplete parse: include/nlohmann/json.hpp",
+     "incomplete parse: single_include/nlohmann/json.hpp"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "5dff086bc8ed6c8349ba95523b9e2629eedfd997f8094259c8fd4195b185ccc2",
+   "routed": "be8dec3ced77d6bac69a245ba3fb867487b4f8f5b5e69eaee4fdff7119787e22",
+   "payload@256": "05e6925df26e60d56fadbbec533f7639b4b93dfa4f70237012831293a092921b",
+   "payload@1024": "b674b60826e8fdf1947b14e1877db34235e1ce489edfb43fec399997863bea35",
+   "payload@4096": "d8254b228a6a70aeef80bcbfcb6be522b9eb42209981f30e1b7bc2548451e806"
+  }
+ },
+ {
+  "task": "nlohmann__json-1314",
+  "split": "heldout",
+  "corpus": "nlohmann__json@9294e25c98f9",
+  "verified": {
+   "counts": {
+    "spans": 7,
+    "lines": 577,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.25,
+    "routed_coverage": 0.428571,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.978516,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.006932,
+    "file_recall@4096": 0.25,
+    "utilization@4096": 0.998535,
+    "gold_unit_share@4096": 0.032274
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "include/nlohmann/detail/exceptions.hpp",
+    "lines": [
+     1,
+     247
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 205,
+    "module_lines": 131,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/nlohmann/detail/exceptions.hpp",
+    "lines": [
+     213,
+     346
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 111,
+    "module_lines": 78,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/nlohmann/detail/output/serializer.hpp",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 89,
+    "module_lines": 26,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/nlohmann/detail/output/serializer.hpp",
+    "lines": [
+     270,
+     431
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 143,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "include/nlohmann/detail/output/serializer.hpp",
+    "lines": [
+     380,
+     431
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 46,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "include/nlohmann/json.hpp",
+    "lines": [
+     1950,
+     1971
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 19,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "test/src/unit-regression.cpp",
+    "lines": [
+     1,
+     51
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 40,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 178,
+   "fanout_truncations": 7,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 254,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 50,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: benchmarks/thirdparty/benchmark/include/benchmark/benchmark.h",
+     "incomplete parse: single_include/nlohmann/json.hpp",
+     "incomplete parse: test/thirdparty/Fuzzer/FuzzerUtilWindows.cpp",
+     "incomplete parse: test/thirdparty/catch/catch.hpp"
+    ]
+   },
+   "1024": {
+    "used": 1002,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: benchmarks/thirdparty/benchmark/include/benchmark/benchmark.h",
+     "incomplete parse: single_include/nlohmann/json.hpp",
+     "incomplete parse: test/thirdparty/Fuzzer/FuzzerUtilWindows.cpp",
+     "incomplete parse: test/thirdparty/catch/catch.hpp"
+    ]
+   },
+   "4096": {
+    "used": 4090,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 33,
+    "header_entities": 21,
+    "omissions": {
+     "packing: budget": 30,
+     "selection: item cap N": 2,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: benchmarks/thirdparty/benchmark/include/benchmark/benchmark.h",
+     "incomplete parse: single_include/nlohmann/json.hpp",
+     "incomplete parse: test/thirdparty/Fuzzer/FuzzerUtilWindows.cpp",
+     "incomplete parse: test/thirdparty/catch/catch.hpp"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "8f01acc32bdb0ae4f195a7508452ead40c3b07ff7e23f4af8ae30bf3ed03b97a",
+   "routed": "08cc9ec5bad0564fc870f1e4bf75f1721d78f7023eb0a24c0d867f5116836a75",
+   "payload@256": "28ecfa8f4f160a11f6e05d9dd7001d7744fd6612056e5312e7798619f11d6dd6",
+   "payload@1024": "876c7f72efdef372ab862c17a4b6d33d1b88b4a3eb9a15f8c0c4a863577790f8",
+   "payload@4096": "5b50940cc45abf8ce519dc02d8a61c45909851a1cfbae93d486c6dde0f84fb67"
+  }
+ },
+ {
+  "task": "simdjson__simdjson-1615",
+  "split": "heldout",
+  "corpus": "simdjson__simdjson@40cba172ed66",
+  "verified": {
+   "counts": {
+    "spans": 13,
+    "lines": 1780,
+    "files": 13
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.153846,
+    "entry_recall@20": 0.384615,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 0.384615,
+    "routed_coverage": 0.384615,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.910156,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.003371,
+    "file_recall@1024": 0.230769,
+    "utilization@1024": 0.990234,
+    "gold_unit_share@1024": 0.304734,
+    "span_recall@4096": 0.153846,
+    "line_recall@4096": 0.060674,
+    "file_recall@4096": 0.384615,
+    "utilization@4096": 0.998779,
+    "gold_unit_share@4096": 0.55121
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "include/simdjson/dom/array-inl.h",
+    "lines": [
+     67,
+     103
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 33,
+    "module_lines": 33,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/simdjson/dom/element-inl.h",
+    "lines": [
+     362,
+     384
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 23,
+    "module_lines": 23,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/simdjson/dom/element.h",
+    "lines": [
+     1,
+     461
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 434,
+    "module_lines": 434,
+    "entry_rank": 13,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/simdjson/dom/object-inl.h",
+    "lines": [
+     83,
+     123
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 40,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/simdjson/dom/object.h",
+    "lines": [
+     1,
+     275
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 246,
+    "module_lines": 246,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/array-inl.h",
+    "lines": [
+     1,
+     21
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 20,
+    "module_lines": 20,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/array.h",
+    "lines": [
+     1,
+     116
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 103,
+    "module_lines": 12,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/document-inl.h",
+    "lines": [
+     1,
+     21
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 8,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/document.h",
+    "lines": [
+     1,
+     379
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 357,
+    "module_lines": 15,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/object-inl.h",
+    "lines": [
+     1,
+     21
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 20,
+    "module_lines": 3,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/object.h",
+    "lines": [
+     1,
+     117
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 103,
+    "module_lines": 12,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/value-inl.h",
+    "lines": [
+     1,
+     21
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/value.h",
+    "lines": [
+     1,
+     402
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 365,
+    "module_lines": 11,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 268,
+   "fanout_truncations": 27,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 233,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 60,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/simdjson/dom/array-inl.h",
+     "incomplete parse: include/simdjson/dom/element-inl.h",
+     "incomplete parse: include/simdjson/dom/element.h",
+     "incomplete parse: include/simdjson/dom/object-inl.h",
+     "incomplete parse: include/simdjson/error-inl.h",
+     "incomplete parse: include/simdjson/error.h",
+     "incomplete parse: singleheader/simdjson.h",
+     "incomplete parse: tests/dom/pointercheck.cpp",
+     "incomplete parse: tests/test_macros.h"
+    ]
+   },
+   "1024": {
+    "used": 1014,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 17,
+    "header_entities": 12,
+    "omissions": {
+     "packing: budget": 49,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/simdjson/dom/array-inl.h",
+     "incomplete parse: include/simdjson/dom/element-inl.h",
+     "incomplete parse: include/simdjson/dom/element.h",
+     "incomplete parse: include/simdjson/dom/object-inl.h",
+     "incomplete parse: include/simdjson/error-inl.h",
+     "incomplete parse: include/simdjson/error.h",
+     "incomplete parse: singleheader/simdjson.h",
+     "incomplete parse: tests/dom/pointercheck.cpp",
+     "incomplete parse: tests/test_macros.h"
+    ]
+   },
+   "4096": {
+    "used": 4091,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 41,
+    "header_entities": 24,
+    "omissions": {
+     "packing: budget": 5,
+     "selection: item cap N": 34,
+     "selection: value N below floor": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: include/simdjson/dom/array-inl.h",
+     "incomplete parse: include/simdjson/dom/element-inl.h",
+     "incomplete parse: include/simdjson/dom/element.h",
+     "incomplete parse: include/simdjson/dom/object-inl.h",
+     "incomplete parse: include/simdjson/error-inl.h",
+     "incomplete parse: include/simdjson/error.h",
+     "incomplete parse: singleheader/simdjson.h",
+     "incomplete parse: tests/dom/pointercheck.cpp",
+     "incomplete parse: tests/test_macros.h"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "ff3abe988c3cacaea4f57095afa30f30a0dac8e77384cb81123bd77a5b109f2a",
+   "routed": "6f1da137c0f81e3d515ca92dbb5227936f6e393f9eee14d226a2a146867a87b6",
+   "payload@256": "1021c673ec8841f2bc494c2daea936daa2d716dc8a9b38f6ecd0fab7bc93d121",
+   "payload@1024": "774e86067ba3790ba9e485f842cdda2b3a9dbb0813e2abaf9ad1c09f3acc9dc2",
+   "payload@4096": "7d94b82c6bd105334696c112fcd0835c1e56c97eac9b6c7883db4cdc26d9dd5b"
+  }
+ },
+ {
+  "task": "simdjson__simdjson-1667",
+  "split": "heldout",
+  "corpus": "simdjson__simdjson@47a62db55936",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 805,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.972656,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.995605,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 51,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.972656,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.995605,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "/workspace/reproduce.cpp",
+    "lines": [
+     1,
+     51
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 51,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "examples/quickstart/quickstart.cpp",
+    "lines": [
+     1,
+     7
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 1,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/dom/element-inl.h",
+    "lines": [
+     1,
+     393
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 365,
+    "module_lines": 365,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/dom/element.h",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 95,
+    "module_lines": 95,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/dom/element.h",
+    "lines": [
+     1,
+     461
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 434,
+    "module_lines": 434,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/dom/element.h",
+    "lines": [
+     100,
+     131
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 31,
+    "module_lines": 31,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 312,
+   "fanout_truncations": 20,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 249,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 46,
+     "packing: too large": 1,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: dependencies/jsoncppdist/json/json.h",
+     "incomplete parse: dependencies/jsoncppdist/jsoncpp.cpp",
+     "incomplete parse: include/simdjson/error-inl.h",
+     "incomplete parse: include/simdjson/error.h",
+     "incomplete parse: singleheader/simdjson.cpp",
+     "incomplete parse: singleheader/simdjson.h",
+     "incomplete parse: src/generic/stage1/json_scanner.h",
+     "incomplete parse: src/generic/stage1/json_string_scanner.h",
+     "incomplete parse: tests/ondemand/ondemand_wrong_type_error_tests.cpp",
+     "incomplete parse: tests/test_macros.h"
+    ]
+   },
+   "1024": {
+    "used": 1021,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: dependencies/jsoncppdist/json/json.h",
+     "incomplete parse: dependencies/jsoncppdist/jsoncpp.cpp",
+     "incomplete parse: include/simdjson/error-inl.h",
+     "incomplete parse: include/simdjson/error.h",
+     "incomplete parse: singleheader/simdjson.cpp",
+     "incomplete parse: singleheader/simdjson.h",
+     "incomplete parse: src/generic/stage1/json_scanner.h",
+     "incomplete parse: src/generic/stage1/json_string_scanner.h",
+     "incomplete parse: tests/ondemand/ondemand_wrong_type_error_tests.cpp",
+     "incomplete parse: tests/test_macros.h"
+    ]
+   },
+   "4096": {
+    "used": 4078,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 47,
+    "header_entities": 34,
+    "omissions": {
+     "packing: budget": 18,
+     "selection: item cap N": 10,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: dependencies/jsoncppdist/json/json.h",
+     "incomplete parse: dependencies/jsoncppdist/jsoncpp.cpp",
+     "incomplete parse: include/simdjson/error-inl.h",
+     "incomplete parse: include/simdjson/error.h",
+     "incomplete parse: singleheader/simdjson.cpp",
+     "incomplete parse: singleheader/simdjson.h",
+     "incomplete parse: src/generic/stage1/json_scanner.h",
+     "incomplete parse: src/generic/stage1/json_string_scanner.h",
+     "incomplete parse: tests/ondemand/ondemand_wrong_type_error_tests.cpp",
+     "incomplete parse: tests/test_macros.h"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "d51de6f543548ff54bfac0052950a9f6a63568f0e6a1e903a22e1e5ffa8899d4",
+   "routed": "d4764450893ff7c6c241e4fb8daf209792060a7bf81329035bb6d6af981a04cf",
+   "payload@256": "3c347c77d485431ac77a463688778420e5ebc158520d0f80568b564a580c91bc",
+   "payload@1024": "2ade51ae25a624206e1c01a94e46193f67a5932ecdd90de9a72e54435b626522",
+   "payload@4096": "4c36e35e6d4a69787cd49c224423ac5b2dcc7e2a25266b7ed2691a315c4bdfeb"
+  }
+ },
+ {
+  "task": "simdjson__simdjson-1695",
+  "split": "heldout",
+  "corpus": "simdjson__simdjson@35158257c6e7",
+  "verified": {
+   "counts": {
+    "spans": 12,
+    "lines": 66,
+    "files": 6
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.333333,
+    "routed_coverage": 0.166667,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.882812,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.333333,
+    "utilization@1024": 0.984375,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.333333,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "include/simdjson/error.h",
+    "lines": [
+     39,
+     44
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 5,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/document-inl.h",
+    "lines": [
+     19,
+     24
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/document-inl.h",
+    "lines": [
+     437,
+     442
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 2,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/document-inl.h",
+    "lines": [
+     492,
+     497
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/document-inl.h",
+    "lines": [
+     654,
+     659
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 2,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/document.h",
+    "lines": [
+     426,
+     431
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/document.h",
+    "lines": [
+     542,
+     547
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/document.h",
+    "lines": [
+     605,
+     610
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/document.h",
+    "lines": [
+     662,
+     667
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/json_iterator-inl.h",
+    "lines": [
+     195,
+     200
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "include/simdjson/generic/ondemand/json_iterator.h",
+    "lines": [
+     240,
+     245
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/internal/error_tables.cpp",
+    "lines": [
+     32,
+     38
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 229,
+   "fanout_truncations": 14,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 226,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 55,
+     "packing: too large": 5
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: dependencies/jsoncppdist/json/json.h",
+     "incomplete parse: dependencies/jsoncppdist/jsoncpp.cpp",
+     "incomplete parse: include/simdjson/common_defs.h",
+     "incomplete parse: include/simdjson/dom/document_stream-inl.h",
+     "incomplete parse: include/simdjson/dom/document_stream.h",
+     "incomplete parse: include/simdjson/generic/ondemand/document_stream.h",
+     "incomplete parse: include/simdjson/generic/ondemand/json_iterator-inl.h",
+     "incomplete parse: include/simdjson/generic/ondemand/json_iterator.h",
+     "incomplete parse: include/simdjson/generic/ondemand/token_iterator-inl.h",
+     "incomplete parse: include/simdjson/generic/ondemand/token_iterator.h",
+     "incomplete parse: singleheader/simdjson.cpp",
+     "incomplete parse: src/generic/stage1/json_structural_indexer.h",
+     "incomplete parse: src/generic/stage2/structural_iterator.h"
+    ]
+   },
+   "1024": {
+    "used": 1008,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 18,
+    "header_entities": 12,
+    "omissions": {
+     "packing: budget": 52
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: dependencies/jsoncppdist/json/json.h",
+     "incomplete parse: dependencies/jsoncppdist/jsoncpp.cpp",
+     "incomplete parse: include/simdjson/common_defs.h",
+     "incomplete parse: include/simdjson/dom/document_stream-inl.h",
+     "incomplete parse: include/simdjson/dom/document_stream.h",
+     "incomplete parse: include/simdjson/generic/ondemand/document_stream.h",
+     "incomplete parse: include/simdjson/generic/ondemand/json_iterator-inl.h",
+     "incomplete parse: include/simdjson/generic/ondemand/json_iterator.h",
+     "incomplete parse: include/simdjson/generic/ondemand/token_iterator-inl.h",
+     "incomplete parse: include/simdjson/generic/ondemand/token_iterator.h",
+     "incomplete parse: singleheader/simdjson.cpp",
+     "incomplete parse: src/generic/stage1/json_structural_indexer.h",
+     "incomplete parse: src/generic/stage2/structural_iterator.h"
+    ]
+   },
+   "4096": {
+    "used": 4095,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 52,
+    "header_entities": 37,
+    "omissions": {
+     "packing: budget": 32,
+     "selection: item cap N": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound",
+     "incomplete parse: dependencies/jsoncppdist/json/json.h",
+     "incomplete parse: dependencies/jsoncppdist/jsoncpp.cpp",
+     "incomplete parse: include/simdjson/common_defs.h",
+     "incomplete parse: include/simdjson/dom/document_stream-inl.h",
+     "incomplete parse: include/simdjson/dom/document_stream.h",
+     "incomplete parse: include/simdjson/generic/ondemand/document_stream.h",
+     "incomplete parse: include/simdjson/generic/ondemand/json_iterator-inl.h",
+     "incomplete parse: include/simdjson/generic/ondemand/json_iterator.h",
+     "incomplete parse: include/simdjson/generic/ondemand/token_iterator-inl.h",
+     "incomplete parse: include/simdjson/generic/ondemand/token_iterator.h",
+     "incomplete parse: singleheader/simdjson.cpp",
+     "incomplete parse: src/generic/stage1/json_structural_indexer.h",
+     "incomplete parse: src/generic/stage2/structural_iterator.h"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:1b2f0bc249a111a78e2b842729ec71454372a3da042fd349ffa99aa296b9820b",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "972fc33331fdd97824ebc301cdba6e91878db12ac47af3107f20759226c8ceff",
+   "routed": "37287a3071ac4998ade19fabdf818f5b3d4591fdcbef6b159956d6a31e0037e7",
+   "payload@256": "0137d6092fc24192a79767aa3a6e18ce505268b2907abbd04ec1ec1bf323836e",
+   "payload@1024": "1c16afa47885983d9b40052e1cb9e403bae40feaaaedbf8aaffe288ef1ccd81a",
+   "payload@4096": "d2b1249e091a53ce47a97156ce70c12a6f4a3b364af1020484b1d292ffc5ddd8"
+  }
+ }
+]

@@ -20,7 +20,7 @@ files, with no contradiction found.
 The wheel and sdist were installed into separate fresh Python 3.13 environments.
 Build artifacts and those temporary environments were removed after both smokes;
 the logs and result JSON remain. Windows and macOS runtime verification is pending
-hosted CI. No `go/types` oracle was run. Four additional regressions covering receiver
+hosted CI. A later `go/types` oracle on gin is in [../README.md](../README.md#gotypes-oracle-gin). Four additional regressions covering receiver
 type parameters, file-scope closure bindings, commented receivers and indexed
 function-value calls were observed failing before their fixes, then passed with the
 full suite.

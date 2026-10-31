@@ -42,6 +42,34 @@ spot check is not a precision estimate or compiler oracle. Import ambiguity was 
 in this sample, but call ambiguity is substantial in Prometheus; build constraints,
 platform variants, type information, and external module source remain unmodeled.
 
+## go/types oracle (gin)
+
+After the milestone commit, OXIDE's gin edges were scored against `go/types`
+(`golang.org/x/tools/go/packages`, `Tests: true`, default `GOOS=linux GOARCH=amd64`
+build, Go 1.27.3). The oracle only type-checks gin; it does not run gin's code. Each
+Go-derived `calls`/`references` edge is matched to the oracle's `Uses` entry at its
+named identifier: the last selector of qualified evidence (`pkg.F`, `x.M`, `&pkg.T{`)
+or the receiver type of a receiver reference. An edge agrees when the oracle's
+definition lies inside a target symbol.
+
+| Measured (gin `0f09c3a9b462`) | Count |
+| --- | ---: |
+| Resolved edges: agree / disagree | 3,019 / 0 (precision 1.0) |
+| Resolved edges agreeing on a qualified (`pkg.F`, `x.M`) form | 391 |
+| Resolved edges with no oracle use: files outside the default build (build tags, `testdata/`) | 63 |
+| Ambiguous edges whose oracle definition is one of the candidates | 52 |
+| Unresolved calls whose oracle definition is a gin symbol's name | 1,618 |
+
+The 1,618 recall gaps are 1,568 method calls on something other than the receiver
+(including promoted methods and interface dispatch) and 50 calls of function values
+held in package-level variables. Both are listed under "Not modeled" in
+[go.md](../../go.md), and none falls outside that list. Precision covers only
+resolved edges in the default linux/amd64 build. Build-tag variants, other platforms
+and Prometheus were not scored. A first scoring pass reported 0.904. Its 252
+disagreements were all scorer errors: it looked up the qualifier (`pkg` in
+`pkg.F`), not the selected name. Program, scorer and report are in
+[oracle/](oracle/report.md).
+
 ## ContextBench diagnostic
 
 Both arms used the same 18 selected rows (`go-rows.json`, SHA-256
@@ -70,7 +98,7 @@ timings and integrity records are in `context-before/` and `context-after/`.
 `baseline-v10` and `typescript-v7` are identity-only successors for the derivation
 identity change. Results otherwise match their predecessors, metrics are byte-identical,
 and each manifest corpus record changed only in its derivation hash. The Go limitations
-are documented in [../../go.md](../../go.md). No `go/types` oracle was run. Windows
+are documented in [../../go.md](../../go.md). The `go/types` oracle covers gin only (above). Windows
 and macOS Go runtime and artifact checks remain pending hosted CI; wheel availability
 does not establish runtime support. The platform matrix and existing LadybugDB limits
 still apply.
@@ -84,6 +112,9 @@ uv run --locked python scripts/eval_go.py real /path/to/gin docs/phase-6/go-v1/r
 uv run --locked python scripts/eval_go.py audit /path/to/gin docs/phase-6/go-v1/real/gin-audit.json
 uv run --locked python scripts/bench.py /path/to/gin --iterations 3 --warm 3 --query ServeHTTP --query Bind
 uv run --locked python scripts/eval_go.py context /path/to/go-rows.json /path/to/corpora docs/phase-6/go-v1/context-after
+# go/types oracle: needs a Go 1.27 toolchain; writes gin-uses.json, then gin-oracle.json and report.md
+cp docs/phase-6/go-v1/oracle/* /path/to/work/ && (cd /path/to/work && go run . /path/to/gin gin-uses.json)
+uv run --locked python docs/phase-6/go-v1/oracle/score.py /path/to/work /path/to/gin
 ```
 
 The previous-engine ContextBench arm requires its recorded isolated environment and

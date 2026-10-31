@@ -78,10 +78,52 @@ Coverage and cost (measured, `derive` only, 200% CPU cap): fmt 69 C++ files, 44
 complete and 25 partial, 1.3 s; yaml-cpp 246 C++ files (bundled gtest included), 183
 complete and 63 partial, 2.1 s.
 
-Not measured: retrieval or context quality on C++ tasks. ContextBench holds 60 C++
-rows (fmt, nlohmann/json, simdjson, Catch2, ponyc, …), but no diagnostic was run; the
-pinned baseline corpora hold no C++, and their baselines move by identity only
+The pinned baseline corpora hold no C++, and their baselines move by identity only
 ([../baseline-v17](../baseline-v17/README.md), [../typescript-v14](../typescript-v14/README.md)).
+
+## ContextBench diagnostic (measured)
+
+`scripts/eval_cpp.py` selected, before any scoring, the first three C++ rows per
+repository (by instance id) whose gold names a C/C++ source: 12 rows over Catch2, fmt,
+nlohmann/json and simdjson (`cpp-rows.json`, SHA-256
+`1627c229fc27e7315927a5716550c84982362a86e6e19918d7b17a368f6f4e9b`). Corpora are a
+`git archive` projection of C/C++ sources and build files at each base commit (65–376
+files). Both arms used the same rows, corpora, gold audit and scorer, with module lines
+projected through tree-sitter-cpp independently of OXIDE. Before ran the previous engine
+(18ffaa5, C slice only, `.h` parsed as C) with this checkout's scorer and environment;
+after ran this checkout. Gold audit: 16 exact, 59 path-only, 4 unresolved (excluded);
+Catch2-1422 has no verified span.
+
+| Verified macro metric (11 tasks, 75 spans, 6,021 lines) | Before | After |
+| --- | ---: | ---: |
+| Entry recall@20 | 0.267796 | 0.241872 |
+| Routed coverage | 0.552564 | 0.484739 |
+| Complete span recall@1,024 | 0.006993 | 0 |
+| Complete span recall@4,096 | 0.006993 | 0.039960 |
+| Line recall@4,096 | 0.034005 | 0.040730 |
+| File recall@4,096 | 0.337413 | 0.406177 |
+
+The C++ slice indexes 2–10× more entities (Catch2 587 → 6,560, nlohmann/json 678 →
+6,511). Entry recall@20 rises on all three fmt tasks (0.43/0.09/0.12 → 0.57/0.45/0.50)
+and Catch2-1448 (0.50 → 0.75), and falls on nlohmann/json-1221, json-1301 and
+simdjson-1695.
+
+json-1221 traced (measured, `repo.search` on the task query, both engines): its one
+gold span is the whole `include/nlohmann/detail/exceptions.hpp`. The query is mostly
+the pull-request template ("pull request checklist", "test suite compiles", "code
+coverage"), with one specific term, "error 305". Before, the C slice gave `.hpp` files
+only a file entity, so the file entity ranked 15th, inside the scorer's 20 entries
+(`retrieval.LEXICAL_LIMIT`). Now the file holds 21 symbols plus its file entity,
+which ranks below the first 1,000 entries; its best symbol, `other_error.create`, ranks
+44th. The top 20 went from 5 to 17 vendored third-party entities (`test/thirdparty/catch`,
+`Fuzzer`, `benchmarks/thirdparty`), which the C++ slice now indexes as symbols that
+match the template words. The loss is boilerplate-query displacement by newly indexed
+vendored code, not a C++ parsing fault; the gold file is parsed correctly. Nothing was
+changed. Neither direction is meaningful at n=11; the results are retained as
+observed and nothing was tuned. Median index time was 1.23 s before and 3.88 s after;
+peak RSS 228 and 280 MiB (200% CPU / 3 GB cap). This is a small diagnostic, not a gate.
+Raw scores, audits, corpus identities and timings are in `context-before/` and
+`context-after/`.
 
 ## Verification (Linux, measured)
 
@@ -92,14 +134,25 @@ Logs are in [verification/](verification/):
   fixtures (82 files, 403 entities) and pass `scripts/smoke_dist.py` (`exit=0`). The first
   run failed: the copied C++ fixture's two `Store::must_get` entities ranked above Rust's
   `<impl Store>.must_get`, which the Rust check required at rank 1; it now requires the
-  Rust entity among the results (extraction unchanged). The TypeScript gate was not rerun
-  for this slice.
+  Rust entity among the results (extraction unchanged).
+- `contextbench-ts.log`: `mise run contextbench-ts` against typescript-v14, 17 passed
+  (14 min, 200% CPU / 3 GB cap).
 
 ## Reproduce
 
 ```
 uv run python docs/phase-6/cpp-v1/oracle/oracle.py $YAML docs/phase-6/cpp-v1/oracle/yaml-cpp-oracle.json 'src/*.cpp' 'src/contrib/*.cpp' -- -std=c++17 -include cstdint -Iinclude -Isrc
 uv run python docs/phase-6/cpp-v1/oracle/oracle.py $FMT docs/phase-6/cpp-v1/oracle/fmt-oracle.json 'src/format.cc' 'src/os.cc' 'test/*-test.cc' 'test/gtest-extra.cc' 'test/util.cc' 'test/test-main.cc' 'test/gtest/gmock-gtest-all.cc' -- -std=c++17 -Iinclude -Itest -Itest/gtest -DGTEST_HAS_STD_WSTRING=1 -include cstdint
+```
+
+ContextBench diagnostic (`$E` outside `/tmp`; the before arm puts a worktree of 18ffaa5
+first on `PYTHONPATH`):
+
+```
+uv run --locked --with pyarrow python scripts/eval_cpp.py rows $PARQUET docs/phase-6/cpp-v1/cpp-rows.json
+TMPDIR=$E/tmp uv run --locked python scripts/eval_cpp.py fetch docs/phase-6/cpp-v1/cpp-rows.json $E/corpora
+uv run --locked python scripts/eval_cpp.py context docs/phase-6/cpp-v1/cpp-rows.json $E/corpora docs/phase-6/cpp-v1/context-after
+PYTHONPATH=$BEFORE/src .venv/bin/python scripts/eval_cpp.py context docs/phase-6/cpp-v1/cpp-rows.json $E/corpora docs/phase-6/cpp-v1/context-before
 ```
 
 `*-oracle.json` lists every disagreement (with "agree for some"), every miss (`missed`)
