@@ -3,10 +3,16 @@
   "checkpoint_id": "01M695B2DF8B59JPYSQZZ5FCMB",
   "strategy": "manual-commit",
   "branch": "rewrite/v2",
-  "checkpoints_count": 1,
+  "checkpoints_count": 4,
   "files_touched": [
+    "AGENTS.md",
     "docs/README.md",
+    "docs/adr/0002-ladybugdb-knowledge-store.md",
+    "docs/agents/invariants.md",
+    "docs/architecture/oxide-runtime.html",
+    "docs/architecture/oxide-runtime.json",
     "docs/migration-audit/legacy-infrastructure.md",
+    "docs/oxide-architecture.html",
     "docs/phase-6/README.md",
     "docs/phase-6/agc-v2/README.md",
     "docs/phase-6/agc-v3/README.md",
@@ -16,15 +22,20 @@
     "docs/phase-6/decision-study-v1/README.md",
     "docs/phase-6/decision-study-v2/README.md",
     "docs/phase-6/decision-study-v3/README.md",
+    "docs/phase-6/entry-retrieval-diagnostic/README.md",
     "docs/phase-6/fts-footprint/README.md",
     "docs/phase-6/graph-navigation-v2/README.md",
     "docs/phase-6/graph-navigation/README.md",
+    "docs/phase-6/graph-v1/README.md",
     "docs/phase-6/graph-v2/README.md",
     "docs/phase-6/graph-v3/README.md",
     "docs/phase-6/jev-order-m3/README.md",
     "docs/phase-6/jev-reliability/README.md",
     "docs/phase-6/leann-graph-storage/README.md",
-    "docs/phase-6/toon-serialization/README.md"
+    "docs/phase-6/source-body-retrieval/README.md",
+    "docs/phase-6/structural-mcp-trial/README.md",
+    "docs/phase-6/toon-serialization/README.md",
+    "docs/review/README.md"
   ],
   "sessions": [
     {
@@ -33,14 +44,21 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 173,
-    "cache_creation_tokens": 0,
-    "cache_read_tokens": 147072,
-    "output_tokens": 1088,
-    "api_call_count": 1
+    "input_tokens": 179,
+    "cache_creation_tokens": 2492,
+    "cache_read_tokens": 523121,
+    "output_tokens": 1732,
+    "api_call_count": 4
   },
   "redaction": {
     "replacements": 29,
