@@ -6,7 +6,12 @@ on:
   pull_request:
     branches: [main, rewrite/v2]
   push:
-    branches: [main, rewrite/v2]
+    branches: [main]
+
+# One run per change: PR runs cancel when superseded; main pushes (run_id) never do.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -37,3 +42,5 @@ jobs:
         run: mise run verify
         env:
           MISE_AUTO_INSTALL: "false"
+          # Parallel in CI only; loadfile keeps a file's shared corpora fixture in one worker.
+          PYTEST_ADDOPTS: -n auto --dist loadfile

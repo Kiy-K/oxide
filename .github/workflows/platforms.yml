@@ -9,8 +9,13 @@ on:
   pull_request:
     branches: [main, rewrite/v2]
   push:
-    branches: [main, rewrite/v2]
+    branches: [main]
   workflow_dispatch:
+
+# One run per change: PR runs cancel when superseded; main pushes (run_id) never do.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -18,20 +23,24 @@ permissions:
 jobs:
   platform:
     name: ${{ matrix.label }}
-    runs-on: ${{ matrix.os }}
+    # Intel macOS is the slowest runner (retired by GitHub in 2027): it runs on main
+    # pushes and manual runs, not on PRs. The label picks the runner, so exclude works.
+    runs-on: >-
+      ${{ fromJSON('{"windows-x86_64": "windows-2025", "macos-x86_64": "macos-15-intel",
+      "macos-arm64": "macos-15"}')[matrix.label] || 'ubuntu-24.04' }}
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
+        # ladybug 0.21.0's macOS wheels need macOS 15 or later.
+        label: [linux-x86_64, windows-x86_64, macos-x86_64, macos-arm64,
+                linux-x86_64-py3.12, linux-x86_64-py3.14]
+        # The ends of requires-python; the other rows use .python-version (3.13).
         include:
-          - { os: ubuntu-24.04, label: linux-x86_64 }
-          - { os: windows-2025, label: windows-x86_64 }
-          # ladybug 0.21.0's macOS wheels need macOS 15 or later.
-          - { os: macos-15-intel, label: macos-x86_64 }
-          - { os: macos-15, label: macos-arm64 }
-          # The ends of requires-python; the rows above use .python-version (3.13).
-          - { os: ubuntu-24.04, label: linux-x86_64-py3.12, python: "3.12", fts: linux-x86_64 }
-          - { os: ubuntu-24.04, label: linux-x86_64-py3.14, python: "3.14", fts: linux-x86_64 }
+          - { label: linux-x86_64-py3.12, python: "3.12" }
+          - { label: linux-x86_64-py3.14, python: "3.14" }
+        exclude:
+          - label: ${{ github.event_name == 'pull_request' && 'macos-x86_64' || 'none' }}
     env:
       UV_PYTHON: ${{ matrix.python }}  # empty: .python-version
     defaults:
@@ -70,6 +79,8 @@ jobs:
           uv run --locked pytest --ignore=tests/python/test_contextbench.py
           --ignore=tests/python/test_contextbench_ts.py
           --junitxml=pytest.xml
+        env:
+          PYTEST_ADDOPTS: -n auto --dist loadfile
       - name: Build the wheel and sdist
         run: uv build --out-dir dist
       # A lock can hide what a user's pip picks from the wheel's own metadata:
