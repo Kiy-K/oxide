@@ -1,0 +1,65 @@
+Below is a conversation log from a Claude Code coding session.
+Create a summary to help the next session quickly understand the context.
+
+## Prioritize including
+- Design decisions and technology choices made this session
+- Bugs and problems solved
+- Files changed or created, with a brief description of changes
+- Unfinished tasks and work to continue in the next session
+- Important context the next session needs to know
+
+## Conversation log
+**Claude:** Only the expected derivation-id change. Freezing identity-only successors `baseline-v17` and `typescript-v14`, as C did (run in background, one at a time):
+
+**Claude:** While those run (I'll avoid touching `src/` meanwhile), checking what the manifest's `oxide_source` records, then writing the docs.
+
+**Claude:** Writing `docs/cpp.md`:
+
+**Claude:** Updating README, `docs/public-api.md` and `docs/c.md` (whose `.h` statements are now outdated):
+
+**Claude:** Adding the C++ fixture to the distribution smoke:
+
+**Claude:** While the baselines run, drafting the evidence README (numbers refreshed after the final oracle run):
+
+**Claude:** baseline-v17 is identity-only (metrics byte-identical; 44 result diffs, all `derivation`). Setting its labels as v16 did, writing its README, and switching `BASELINE`:
+
+**Claude:** Reviewing `cpp_resolve.py` as it stands while the TS baseline runs:
+
+**Claude:** While waiting, updating project memory with the C++ state:
+
+**Claude:** Preparing the two resolver fixes as a script to apply once the TS run finishes:
+
+**Claude:** I'll wait for the TS baseline run to finish before touching `src/` again.
+
+**Claude:** Status: C v1 is committed (`18ffaa5`). For C++, the slice, its tests and docs are in place, `baseline-v17` is frozen, and the `typescript-v14` identity run is still going. When it finishes I'll apply two queued resolver fixes, rerun the g++ oracles and the full verification, and write the evidence README.
+
+**User:** <task-notification> <task-id>boqrkhzht</task-id> <tool-use-id>toolu_01EnLaGRYKiMaexwufmVBFcF</tool-use-id> <output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/c0bb8f31-8332-4970-8427-3a16a8b5978c/tasks/boqrkhzht.output</output-file> <status>completed</status> <summary>Background command "cd /home/khoi/Projects/oxide; (systemd-run --user --scope -q -p CPUQuota=200% -p MemoryMax=3G uv run --lock
+
+**User:** 
+
+**User:** 
+
+**User:** <system-reminder> SessionStart:resume hook success: PONYTAIL MODE ACTIVE — level: full # Ponytail You are a lazy senior developer. The best code is the code never written. You solve the whole problem with the least new code. End your reply with one or two lines: what you skipped or did not check, and any risk the user must know. Active for the whole session until the user says "stop ponytail" or "
+
+**Claude:** Now the full verification and the distribution smokes, with logs going into `docs/phase-6/cpp-v1/verification/`:
+
+**Claude:** API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+
+## Output format (Markdown only, no preamble)
+
+## Session Summary
+
+### Tasks
+(main tasks worked on this session)
+
+### Decisions Made
+(design decisions and technology choices)
+
+### Files Modified
+(files changed or created)
+
+### Unresolved Issues
+(unfinished tasks and work to continue)
+
+### Next Session Context
+(important context for the next session)
