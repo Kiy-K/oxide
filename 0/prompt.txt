@@ -1,0 +1,67 @@
+Fix the Python 3.14 tsconfig regression, run the TypeScript ContextBench gate against the relocated fixtures, and close PR #45's remaining verified merge blockers without adding new research or documentation overhead.
+
+---
+
+commit and push once the gate passes
+
+---
+
+<task-notification>
+<task-id>bosgmvpmf</task-id>
+<tool-use-id>toolu_019Lh1pqBQcEyvET4K7fBHbk</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/81b139a0-ec88-41be-b439-1567e53d422c/tasks/bosgmvpmf.output</output-file>
+<status>completed</status>
+<summary>Background command "Run TypeScript ContextBench gate under resource limits" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bscfh2hv2</task-id>
+<tool-use-id>toolu_01CH3CocucZL9NXxufYNKv8X</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/81b139a0-ec88-41be-b439-1567e53d422c/tasks/bscfh2hv2.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for the TypeScript gate to finish" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bislgjsst</task-id>
+<tool-use-id>toolu_01Bk3n14V6QSH36eXMhg4UWH</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/81b139a0-ec88-41be-b439-1567e53d422c/tasks/bislgjsst.output</output-file>
+<status>completed</status>
+<summary>Background command "Run ContextBench into a new baseline-v19" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bi6ms8752</task-id>
+<tool-use-id>toolu_01KVGcv6mutCTQPq7hTh2Mz4</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/81b139a0-ec88-41be-b439-1567e53d422c/tasks/bi6ms8752.output</output-file>
+<status>completed</status>
+<summary>Background command "Run TS ContextBench into baseline-v16" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+So now?
+
+---
+
+resolve the outdated review threads on PR #45
+
+---
+
+the CI still failing fix it once and never happen again except for bugs
+
+---
+
+<task-notification>
+<task-id>b4rjotg49</task-id>
+<tool-use-id>toolu_01XQy3uLfYfGchyLbYZF1P9a</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/81b139a0-ec88-41be-b439-1567e53d422c/tasks/b4rjotg49.output</output-file>
+<status>completed</status>
+<summary>Background command "Fix workflow ref, run verify and TS gate" completed (exit code 0)</summary>
+</task-notification>
