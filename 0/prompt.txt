@@ -1,0 +1,17 @@
+Simplify OXIDE's engineering workflow in AGENTS.md and /docs around implementation-first development, remove unnecessary research bureaucracy and obsolete experiment artifacts, preserve essential reproducible evidence, and eliminate redundant documentation requirements. This requires you to go online
+
+---
+
+commit the docs changes only
+
+---
+
+Retire docs/BOOTSTRAP.md and purge completed phase documentation, consolidate essential decisions into one lean document, preserve only active executable evaluation assets, repair references, and leave unrelated changes untouched.
+
+---
+
+Purge OXIDE's legacy v1 documentation, docs/BOOTSTRAP.md, and completed phase/experiment documentation; retain only current v2 references, one lean decisions document, and active executable evaluation assets, repairing all affected links without touching unrelated changes.
+
+---
+
+commit the docs changes only
