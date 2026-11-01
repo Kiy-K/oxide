@@ -72,9 +72,13 @@ jobs:
           uv sync --locked
           uv run --locked oxide prepare
           uv run --locked python scripts/smoke_dist.py --environment | tee environment.json
+      # ci.yml's Verify job runs Ruff, mypy and the suite on Linux with .python-version,
+      # and the py3.12/py3.14 rows run them on ubuntu-24.04, so linux-x86_64 only builds and smokes.
       - name: mypy --strict (this platform's branches)
+        if: matrix.label != 'linux-x86_64'
         run: uv run --locked mypy
       - name: pytest (without the ContextBench corpora gate)
+        if: matrix.label != 'linux-x86_64'
         run: >
           uv run --locked pytest --ignore=tests/python/test_contextbench.py
           --ignore=tests/python/test_contextbench_ts.py

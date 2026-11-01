@@ -16,6 +16,8 @@ from pathlib import Path
 
 import pytest
 
+import oxide.storage.ladybug as ladybug_storage
+import oxide.storage.store as store
 from oxide.storage.fts import _fts_build, fts_location, fts_unavailable
 from oxide.storage.ladybug import default_data_dir
 
@@ -49,6 +51,15 @@ def private_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     for name in [k for k in os.environ if k.lower().endswith("_proxy")]:
         monkeypatch.delenv(name)  # localhost judges are reached directly
     return data
+
+
+@pytest.fixture(autouse=True)
+def no_fsync(monkeypatch: pytest.MonkeyPatch) -> None:
+    """In-process indexing skips fsync: no test can observe durability, and each flush
+    costs ~85 ms on the Windows runner (most of its test time). Subprocess tests
+    (crash injection, CLI, ``smoke_dist.py``) still flush for real."""
+    monkeypatch.setattr(ladybug_storage, "_fsync", lambda path: None)
+    monkeypatch.setattr(store, "_fsync", lambda path: None)
 
 
 @pytest.fixture
