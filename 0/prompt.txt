@@ -1,0 +1,1 @@
+/goal Optimize OXIDE's GitHub Actions CI using measured bottlenecks, especially Windows pytest, Intel macOS, dependency caching and duplicated verification. Minimize PR feedback latency and CI costs without weakening correctness, platform coverage or release gates.
