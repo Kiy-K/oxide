@@ -226,7 +226,7 @@ class Store:
         staging.mkdir()
         try:
             # LadybugDB releases the GIL and builds the FTS index on one thread, so the
-            # source blobs are written meanwhile (docs/phase-6/fts-footprint § 4).
+            # source blobs are written meanwhile (docs/fts-footprint.md § 4).
             with ThreadPoolExecutor(1) as pool:
                 retaining = pool.submit(self._retain, staging, capture)
                 snapshot = Snapshot(self.repo_id, capture.snapshot_id, derivation)
@@ -330,9 +330,9 @@ class Store:
         pool = load_pool(size)
         # The staging load alone gets a second thread for COPY (rows unchanged); read views
         # keep one. FTS indexing does not: on 2 threads its BM25 scores drift by one ULP in
-        # ~10% of builds (docs/phase-6/indexing-throughput § 9). Only the final CHECKPOINT
+        # ~10% of builds (indexing-throughput § 9 at 013e791). Only the final CHECKPOINT
         # writes pages: an auto-checkpoint inside CREATE_FTS_INDEX would leave its temporary
-        # tables as dead pages in the file (docs/phase-6/fts-footprint).
+        # tables as dead pages in the file (docs/fts-footprint.md).
         db = ladybug.Database(
             str(staging / "graph.lbug"),
             buffer_pool_size=pool,

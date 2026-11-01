@@ -1,4 +1,5 @@
-"""Bounded Rust milestone evidence (docs/phase-6/rust-v1), without running repository code.
+"""Bounded Rust milestone evidence (docs/phase-6/rust-v1 at 013e791),
+without running repository code.
 
 rows PARQUET OUT: the Rust tasks of the SHA-checked ContextBench full.parquet selected
   by the rule fixed before scoring (``select``).

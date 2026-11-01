@@ -22,7 +22,8 @@ def keys(root: Path) -> dict[str, oxide.Entity]:
 
 
 def test_fixture_derivation_matches_the_rust_slice_counts() -> None:
-    # The Rust oxide-python-v1 slice recorded 65 entities / 194 relations (docs/phase-3.md).
+    # The Rust oxide-python-v1 slice recorded 65 entities / 194 relations
+    # (docs/phase-3.md at d4a03fe).
     # oxide-python-v5 adds two ``super().__init__`` sites, which were not call facts;
     # receiver dispatch only changes how existing sites resolve.
     derived = derive(capture(FIXTURE), "test-repo")

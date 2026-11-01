@@ -66,7 +66,7 @@ jobs:
           fi
           cp "$dll" "$(dirname "$dll")/libcrypto-3-x64.dll" /c/Windows/System32/
       # Not cached: every run fetches the pinned FTS build cold, so a replaced or missing
-      # upstream build fails here instead of hiding behind a cache (docs/phase-6/release-blockers/).
+      # upstream build fails here instead of hiding behind a cache (docs/fts-mirror/RELEASE.md).
       - name: Install the locked environment and the FTS extension
         run: |
           uv sync --locked

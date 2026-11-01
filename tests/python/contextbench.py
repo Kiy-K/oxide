@@ -1,10 +1,11 @@
 """ContextBench-py: the Python engine's context-quality harness and frozen baseline.
 
-``docs/phase-6/baseline-v4/README.md`` and the READMEs it amends are the protocol: tasks,
-gold, its audit, metrics and the gate rules ``test_contextbench.py`` enforces. Gold
+``fixtures/eval/README.md`` and the frozen baseline's README are the
+protocol: tasks, gold, its audit, metrics and the gate rules ``test_contextbench.py``
+enforces. Gold
 comes from the fixture benchmark files (mapped to lines with ``ast``) and from
 ContextBench's human annotations, never from OXIDE's output. The annotations are kept
-as built in ``baseline-v1/tasks.json``; ``baseline-v2/gold-audit.json`` records every
+as built in ``tasks.json``; ``gold-audit.json`` records every
 span's integrity verdict, with provenance, and is applied at load. Every run indexes
 into a fresh private data location::
 
@@ -43,11 +44,11 @@ from oxide.core import packing, retrieval, routing
 from oxide.models import SourceRef
 
 REPO = Path(__file__).resolve().parents[2]
-PHASE6 = REPO / "docs" / "phase-6"
-BASELINE = PHASE6 / "baseline-v18"
+EVAL = REPO / "fixtures" / "eval" / "contextbench-py"
+BASELINE = EVAL / "baseline-v18"
 # The original annotations, as built for baseline-v1; never edited.
-TASKS = PHASE6 / "baseline-v1" / "tasks.json"
-AUDIT = PHASE6 / "baseline-v2" / "gold-audit.json"
+TASKS = EVAL / "tasks.json"
+AUDIT = EVAL / "gold-audit.json"
 SCORER = "contextbench-py-scorer-v2"
 TASKS_VERSION = "contextbench-py-tasks-v1"
 AUDIT_VERSION = "contextbench-py-gold-audit-v1"
@@ -318,7 +319,7 @@ def build_audit(parquet: Path, tasks: dict[str, Any]) -> dict[str, Any]:
         spans[task["id"]] = verdicts
     return {
         "version": AUDIT_VERSION,
-        "tasks": f"docs/phase-6/baseline-v1/tasks.json sha256 {_sha(TASKS.read_bytes())}",
+        "tasks": f"fixtures/eval/contextbench-py/tasks.json sha256 {_sha(TASKS.read_bytes())}",
         "source": f"EuniAI/ContextBench data/full.parquet sha256 {PARQUET_SHA256}",
         "verified": list(VERIFIED),
         "spans": spans,
@@ -674,7 +675,7 @@ def manifest(evaluated: dict[str, Any]) -> dict[str, Any]:
     head = git("rev-parse", "HEAD") + (" +dirty" if git("status", "--porcelain", "-uno") else "")
     return {
         "baseline": f"contextbench-py-{BASELINE.name.removeprefix('baseline-')}",
-        "protocol": f"docs/phase-6/{BASELINE.name}/README.md",
+        "protocol": f"fixtures/eval/contextbench-py/{BASELINE.name}/README.md",
         "scorer": SCORER,
         "tasks": f"{TASKS_VERSION} sha256 {_sha(TASKS.read_bytes())}",
         "audit": f"{AUDIT_VERSION} sha256 {_sha(AUDIT.read_bytes())}",

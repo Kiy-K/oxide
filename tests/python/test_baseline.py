@@ -1,4 +1,4 @@
-"""The frozen Rust Phase 3/4 baselines as read-only oracles (docs/phase-3, docs/phase-4).
+"""The frozen Rust Phase 3/4 baselines as read-only oracles (fixtures/eval/structural-v1).
 
 Retrieval and routing are expected to reproduce the Rust results exactly on the
 fixture. Context packing changed format (``oxide-payload-v3``), so only its
@@ -18,7 +18,7 @@ from conftest import FIXTURE, REPO
 import oxide
 from oxide.core import retrieval, routing
 
-BASELINE = json.loads((REPO / "docs/phase-3/baseline-v1/results.json").read_text())
+BASELINE = json.loads((REPO / "fixtures/eval/structural-v1/results.json").read_text())
 
 
 def rust(key: str) -> str:

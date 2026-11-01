@@ -123,8 +123,8 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
 
     One tool, ``oxide_search``, whose ``mode`` picks one API operation: ``search``
     (``Repository.search``) or ``context`` (``build_context``). Structural search stays
-    a Python API: an agent trial found no benefit over grep (docs/phase-6/
-    structural-mcp-trial/).
+    a Python API: an agent trial found no benefit over grep (docs/decisions.md,
+    structural-mcp-trial).
     """
     resolve = _resolver(repos)
     app = FastMCP(
@@ -181,7 +181,7 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
                 lambda repo: repo.search(query, limit=count, paths=paths, symbols=symbols),
             )
             # The status leads: clients that clip the tail (OpenCode code mode) keep it
-            # (docs/phase-6/output-integrity/).
+            # (docs/phase-6/output-integrity/ at 013e791).
             more = found.lexical.truncated or any(h.issue == "truncated" for h in found.hints)
             value = {"entries_returned": len(found.entries), "more_available": more}
             value |= dataclasses.asdict(found)

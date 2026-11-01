@@ -1,7 +1,7 @@
 """Python language slice: tree-sitter syntax facts (resolution is in ``python_resolve``).
 
 Semantics are those of the Rust ``oxide-python-v1`` slice (docs/phase-2b.md § Python
-slice): ``class``/``def`` symbols nested by declaration, ``python:`` modules from the
+slice, at d4a03fe): ``class``/``def`` symbols nested by declaration, ``python:`` modules from the
 path, resolution only by Python scoping (no type inference), anything shadowed or
 rebound stays unresolved, and ``TESTED_BY`` is a heuristic from pytest discovery.
 

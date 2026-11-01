@@ -40,7 +40,8 @@ redundant-cast = "warn"
 
 [project.optional-dependencies]
 # Explicit structural search (Repository.structural_search). Optional: it adds 46 MB to a
-# 94 MB install (docs/phase-6/astgrep-feasibility/). Pinned exactly: pre-1.0, own grammars.
+# 94 MB install (docs/phase-6/astgrep-feasibility/ at 013e791).
+# Pinned exactly: pre-1.0, own grammars.
 structural = [
     "ast-grep-py==0.51.0",
 ]

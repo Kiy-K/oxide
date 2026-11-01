@@ -1,4 +1,4 @@
-"""ContextBench-ts (protocol in ``docs/phase-6/typescript-v1/README.md``, harness in
+"""ContextBench-ts (protocol in ``fixtures/eval/README.md``, harness in
 ``contextbench_ts.py``): scorer regression cases and the task protocol, which always
 run, and the gate over the frozen TypeScript baseline, which needs its 81 pinned
 corpora and runs only with ``OXIDE_CONTEXTBENCH_TS=1`` (``mise run contextbench-ts``).

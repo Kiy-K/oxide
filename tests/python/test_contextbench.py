@@ -1,5 +1,6 @@
-"""The context-quality regression gate over the latest ``docs/phase-6/baseline-vN`` (protocol in its
-README, harness in ``contextbench.py``), and regression cases for the scorer itself.
+"""The context-quality regression gate over the latest
+``fixtures/eval/contextbench-py/baseline-vN`` (protocol in ``fixtures/eval/README.md``,
+harness in ``contextbench.py``), and regression cases for the scorer itself.
 
 Quality, invariants and exact output compatibility are separate tests, so a changed
 format is never read as a quality regression and a regression never hides behind a

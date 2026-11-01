@@ -1,4 +1,5 @@
-"""Bounded C++ ContextBench diagnostic (docs/phase-6/cpp-v1), without running repository code.
+"""Bounded C++ ContextBench diagnostic (docs/phase-6/cpp-v1 at 013e791),
+without running repository code.
 
 rows PARQUET OUT: the C++ tasks of the SHA-checked ContextBench full.parquet selected
   by the rule fixed before scoring (``select``).

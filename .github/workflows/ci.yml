@@ -31,9 +31,9 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.cache/oxide
-          key: oxide-cache-linux-x86_64-${{ hashFiles('src/oxide/storage/ladybug.py', 'docs/phase-6/baseline-v1/tasks.json') }}
+          key: oxide-cache-linux-x86_64-${{ hashFiles('src/oxide/storage/ladybug.py', 'fixtures/eval/contextbench-py/tasks.json') }}
       # The corpora stay cached; the FTS build is always fetched cold, so a replaced
-      # upstream build cannot hide behind the cache (docs/phase-6/release-blockers/).
+      # upstream build cannot hide behind the cache (docs/fts-mirror/RELEASE.md).
       - name: Drop the cached FTS extension
         run: rm -f ~/.cache/oxide/ladybug-extensions-*/libfts.lbug_extension
       - name: Install locked environment, verify the FTS extension, fetch the corpora

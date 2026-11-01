@@ -43,7 +43,7 @@ def terms(text: str) -> list[str]:
 
 
 # Words repeat across names, signatures and paths: caching them halves `document`'s cost
-# on large repositories (docs/phase-6/fts-footprint § 4).
+# on large repositories (docs/fts-footprint.md § 4).
 @lru_cache(maxsize=1 << 16)
 def _word_terms(word: str) -> tuple[str, ...]:
     parts = [p.lower() for p in _PART.findall(word)]

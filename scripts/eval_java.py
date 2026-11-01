@@ -1,4 +1,5 @@
-"""Bounded Java milestone evidence (docs/phase-6/java-v1), without running repository code.
+"""Bounded Java milestone evidence (docs/phase-6/java-v1 at 013e791),
+without running repository code.
 
 rows PARQUET OUT: the Java tasks of the SHA-checked ContextBench full.parquet selected
   by the rule fixed before scoring (``select``).

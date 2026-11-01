@@ -179,7 +179,7 @@ class Repository:
                 f"reusing {hits}"
             )
             # A build allocates millions of objects that hold no cycles; the cyclic GC only
-            # re-scans them (~8% of a build, docs/phase-6/indexing-throughput). The switch
+            # re-scans them (~8% of a build, indexing-throughput at 013e791). The switch
             # is process-global, so the caller's state is restored on every exit.
             enabled = gc.isenabled()
             gc.disable()

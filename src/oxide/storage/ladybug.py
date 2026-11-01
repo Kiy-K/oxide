@@ -94,7 +94,7 @@ def _rows(conn: ladybug.Connection, query: str, params: dict[str, Any] | None = 
 def _literal(path: Path) -> str:
     """A path as a quoted Cypher literal (COPY, LOAD EXTENSION). ``\\`` and ``'`` are
     escaped; the pinned parser decodes them back byte-exactly (probed with quotes,
-    backslashes, control and non-ASCII characters, docs/migration-audit)."""
+    backslashes, control and non-ASCII characters, docs/migration-audit at 013e791)."""
     text = str(path)
     try:
         text.encode("utf-8")
@@ -107,7 +107,7 @@ def _literal(path: Path) -> str:
 
 def _field(value: object) -> str:
     """One CSV field: strings always quoted, quotes doubled; COPY reads them back
-    byte-exactly (verified at the pin, docs/phase-3.md)."""
+    byte-exactly (verified at the pin, docs/phase-3.md at d4a03fe)."""
     if isinstance(value, bool):
         return "true" if value else "false"
     if isinstance(value, int):
@@ -343,7 +343,7 @@ class View:
             "K := 1.2, B := 0.75{top}) RETURN node.key, score ORDER BY score DESC, node.key "
             "LIMIT {n}"
         )
-        # `top` spares sorting every match by key (docs/phase-6/fts-footprint § 3) but cuts
+        # `top` spares sorting every match by key (docs/fts-footprint.md § 3) but cuts
         # ties arbitrarily: exact unless its last score reaches the limit-th; then rerun.
         wide = 10 * (limit + 1)
         rows = self._query(statement.format(top=f", top := {wide}", n=wide))

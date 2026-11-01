@@ -9,5 +9,3 @@
 # Rendered architecture diagrams under docs/ (archify output).
 docs/**/*.html linguist-documentation
 
-# Eval task fixture repositories (third-party JS/TS/Python projects).
-eval-agent/tasks/** linguist-vendored

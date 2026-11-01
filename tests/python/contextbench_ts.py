@@ -1,6 +1,6 @@
 """ContextBench-ts: TypeScript context quality on the ContextBench-py ruler.
 
-``docs/phase-6/typescript-v1/README.md`` is the protocol, with v2's amendment (each
+``fixtures/eval/README.md`` is the protocol (typescript-v2 amended it: each
 corpus also holds the commit's ``tsconfig*.json``). Scoring is ``contextbench.py``'s
 (entry, routing and packing metrics, loss stages, gold audit rules) with three
 TypeScript parts: the corpus is the tracked TypeScript sources, module-level lines come
@@ -47,10 +47,10 @@ from oxide.models import IndexReport, SourceRef
 from oxide.storage import ladybug
 from oxide.storage.ladybug import View
 
-BASELINE = cb.PHASE6 / "typescript-v15"
-PROTOCOL = cb.PHASE6 / "typescript-v1"  # tasks, gold audit and scorer are v1's
-TASKS = PROTOCOL / "tasks.json"
-AUDIT = PROTOCOL / "gold-audit.json"
+EVAL = cb.REPO / "fixtures" / "eval" / "contextbench-ts"
+BASELINE = EVAL / "baseline-v15"
+TASKS = EVAL / "tasks.json"  # tasks, gold audit and scorer are v1's
+AUDIT = EVAL / "gold-audit.json"
 SCORER = "contextbench-ts-scorer-v1"
 TASKS_VERSION = "contextbench-ts-tasks-v1"
 AUDIT_VERSION = "contextbench-ts-gold-audit-v1"
@@ -352,7 +352,7 @@ def build_audit(parquet: Path, tasks: dict[str, Any]) -> dict[str, Any]:
         spans[task["id"]] = verdicts
     return {
         "version": AUDIT_VERSION,
-        "tasks": f"docs/phase-6/typescript-v1/tasks.json sha256 {cb._sha(TASKS.read_bytes())}",
+        "tasks": f"fixtures/eval/contextbench-ts/tasks.json sha256 {cb._sha(TASKS.read_bytes())}",
         "source": f"EuniAI/ContextBench data/full.parquet sha256 {cb.PARQUET_SHA256}",
         "verified": list(cb.VERIFIED),
         "spans": spans,
@@ -751,10 +751,7 @@ def manifest(evaluated: dict[str, Any]) -> dict[str, Any]:
     return {
         **base,
         "baseline": "contextbench-ts-v8",
-        "protocol": (
-            "docs/phase-6/typescript-v1/README.md, "
-            "amended by typescript-v2, v3, v4, v5, v6, v7 and v8"
-        ),
+        "protocol": "fixtures/eval/README.md",
         "scorer": SCORER,
         "tasks": f"{TASKS_VERSION} sha256 {cb._sha(TASKS.read_bytes())}",
         "audit": f"{AUDIT_VERSION} sha256 {cb._sha(AUDIT.read_bytes())}",
@@ -780,7 +777,7 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument("--only", help="evaluate only the corpora whose name starts with this")
     args = parser.parse_args(argv)
     if args.command == "tasks":
-        PROTOCOL.mkdir(parents=True, exist_ok=True)
+        EVAL.mkdir(parents=True, exist_ok=True)
         TASKS.write_text(json.dumps(build_tasks(args.parquet), indent=1, ensure_ascii=False) + "\n")
         return 0
     if args.command == "audit":
