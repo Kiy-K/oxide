@@ -162,6 +162,8 @@ def test_lost_repository_identity_is_never_reissued(repo_copy: Path, private_dat
     kept = generation(private_data)
     (store_dir(private_data) / "repo.json").unlink()
     with pytest.raises(StoreCorrupt):
+        oxide.open_repository(repo_copy, create=False)  # a reader too, not NotIndexed
+    with pytest.raises(StoreCorrupt):
         oxide.open_repository(repo_copy)
     assert kept.is_dir() and not (store_dir(private_data) / "repo.json").exists()
 

@@ -91,6 +91,9 @@ class Store:
         if not create and not (
             (self.dir / "repo.json").is_file() and (self.dir / "generations").is_dir()
         ):
+            if (self.dir / "CURRENT").exists():
+                # Published once, then damaged: never "not indexed" (SPEC § failure modes).
+                raise StoreCorrupt(f"{self.dir}: repo.json or generations is missing; remove it")
             # A reader never initializes a store, even a half-created one left by a crash.
             raise NotIndexed(f"{root} has not been indexed")
         self.dir.mkdir(parents=True, exist_ok=True)

@@ -116,7 +116,7 @@ def main(fixtures: Path) -> None:
         def result(*args: str) -> Any:
             return json.loads(oxide(*args, "--json").stdout)
 
-        from oxide.storage.ladybug import _fts_build
+        from oxide.storage.fts import _fts_build
 
         pinned = _fts_build() is not None  # unpinned platforms run without FTS
         built = result("index", str(root))

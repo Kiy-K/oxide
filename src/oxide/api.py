@@ -383,7 +383,7 @@ class Repository:
             and c.entity.source is not None
             and view.files[c.entity.source.path].coverage != "unsupported"
         ]
-        children = view.adjacency(files)
+        children = view.adjacency(files, kinds=("contains",))
         tops = view.entities(
             b for k in files for kind, b, *_ in children[k][0] if kind == "contains"
         )

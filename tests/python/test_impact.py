@@ -145,6 +145,8 @@ def test_store_reads_stop_at_the_edge_allowance_and_say_so(
     rows = max(map(len, whole))
     assert view.adjacency([low], rows) == {low: whole}
     assert view.adjacency([low], rows - 1) == {}  # cut keys are absent, never partial
+    calls = view.adjacency([low], kinds=("calls",))[low]
+    assert calls == tuple([e for e in side if e[0] == "calls"] for side in whole) != whole
     monkeypatch.setattr(navigation, "MAX_EDGES", 0)
     assert repo.impact(low).stopped_by == "edges"
     monkeypatch.setattr(routing, "MAX_ROWS", 0)

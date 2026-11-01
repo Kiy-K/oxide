@@ -69,11 +69,11 @@ def _roots(view: View, key: str) -> list[str]:
     """``key``, its physical descendants and, for a file, its logical modules."""
     roots, layer = [key], [key]
     while layer:
-        adjacency = view.adjacency(layer)
+        adjacency = view.adjacency(layer, kinds=("contains",))
         layer = sorted({b for k in layer for kind, b, *_ in adjacency[k][0] if kind == "contains"})
         roots += layer
     if key.startswith("file:"):
-        into = view.adjacency([key])[key][1]
+        into = view.adjacency([key], kinds=("contains_logical",))[key][1]
         roots += sorted(a for kind, a, *_ in into if kind == "contains_logical")
     return list(dict.fromkeys(roots))
 

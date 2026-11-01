@@ -356,17 +356,19 @@ class View:
         return [(r[0], r[1]) for r in rows[:limit]], len(rows) > limit
 
     def adjacency(
-        self, keys: list[str], allowance: int | None = None
+        self, keys: list[str], allowance: int | None = None, kinds: tuple[str, ...] = ()
     ) -> dict[str, tuple[Adjacent, Adjacent]]:
         """Resolved and ambiguous edges of every key as ``(outgoing, incoming)`` lists of
         ``(kind, other end, proven, heuristic)``: two queries for any number of keys.
         With an ``allowance``, each direction reads at most that many rows in key order;
-        keys whose edges it cut are left out, so callers see the cut and never a part."""
+        keys whose edges it cut are left out, so callers see the cut and never a part.
+        With ``kinds``, only edges of those kinds are read."""
         found: dict[str, tuple[Adjacent, Adjacent]] = {key: ([], []) for key in keys}
         if not keys:
             return found
-        params = {"keys": sorted(set(keys))}
+        params: dict[str, Any] = {"keys": sorted(set(keys)), "kinds": list(kinds)}
         match = "MATCH (a:Entity)-[r:Rel]->(b:Entity) WHERE "
+        match += "r.kind IN $kinds AND " if kinds else ""
         flags = "r.resolution = 'resolved' AND r.basis <> 'heuristic', r.basis = 'heuristic'"
         bound = "" if allowance is None else f" ORDER BY k LIMIT {max(allowance, 0) + 1}"
         out = match + f"a.key IN $keys RETURN a.key AS k, r.kind, b.key, {flags}{bound}"
