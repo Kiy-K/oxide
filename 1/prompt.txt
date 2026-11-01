@@ -1,0 +1,21 @@
+### Issue 1
+src/oxide/storage/fts.py:49-51
+`_fts_build` moved to `oxide.storage.fts`, but `scripts/smoke_dist.py:119` still imports it from `oxide.storage.ladybug`. The installed wheel and sdist checks in `platforms.yml` reach that import and fail with `ImportError` before indexing. Update the smoke script's import as part of this move.
+
+### Issue 2
+src/oxide/storage/store.py:91-95
+When an indexed store loses `repo.json` but keeps `CURRENT`, this guard raises `NotIndexed` before `_repo_id` can raise `StoreCorrupt`. CLI reads and MCP use `create=False`, so they tell users to index a store that cannot reopen until its damaged state is removed.
+
+The repository's damage rule requires `store_corrupt` for this state. Distinguish a half-created store from an existing store with a missing identity. This repository requirement must be satisfied before merging.
+
+### Issue 3
+src/oxide/storage/ladybug.py:444-448
+Traversal limits do not bound these database reads. `adjacency` returns every edge for the requested nodes, and `_rows` loads all rows before routing cuts the neighbor count or navigation checks `MAX_EDGES`. A heavily imported module or widely called function can therefore load and sort its whole neighborhood for a small request. Pass an edge allowance into the store read and report when it cuts results.
+
+---
+
+For each issue above, determine whether it is valid and should be fixed. If so, fix it directly.
+
+---
+
+Commit them
