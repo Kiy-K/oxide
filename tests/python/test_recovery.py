@@ -410,10 +410,13 @@ def test_publication_flushes_every_byte_before_current_moves(
     monkeypatch.setattr(ladybug_storage, "_fsync", record)
     monkeypatch.setattr(store, "_fsync", record)
     oxide.index_repository(repo_copy)
+    name = (store_dir(private_data) / "CURRENT").read_text()
     pointer = flushed.index(store_dir(private_data) / "CURRENT.tmp")
     before = {p.name for p in flushed[:pointer]}
-    # Staged under another name, so compare names: every blob, the manifest, the
-    # generation and its directories reach disk before CURRENT names them.
+    # Staged under another name, so compare names: every blob, every top-level file
+    # (graph, facts, manifest), the staging and its parents reach disk before CURRENT.
     assert {b.name for b in blobs(private_data)} <= before
-    assert {"MANIFEST.json", "source", "generations"} <= before
+    files = {p.name for p in generation(private_data).iterdir() if p.is_file()}
+    assert {"MANIFEST.json", "facts.json"} <= files <= before
+    assert {f"{name}.staging", "source", "generations"} <= before
     assert flushed[pointer + 1] == store_dir(private_data)  # the rename itself
