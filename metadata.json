@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6B4FCGS51PA0E6CFBZ53M40",
   "strategy": "manual-commit",
   "branch": "rewrite/v2",
-  "checkpoints_count": 8,
+  "checkpoints_count": 10,
   "files_touched": [
     "docs/phase-6/fts-footprint/README.md"
   ],
@@ -14,22 +14,29 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 146417,
-    "cache_creation_tokens": 109218,
-    "cache_read_tokens": 1289728,
-    "output_tokens": 7304,
-    "api_call_count": 22
+    "input_tokens": 218115,
+    "cache_creation_tokens": 252832,
+    "cache_read_tokens": 4730871,
+    "output_tokens": 28509,
+    "api_call_count": 54
   },
   "redaction": {
-    "replacements": 29,
+    "replacements": 31,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
-      "credential_value": 0,
+      "credential_value": 2,
       "credentialed_uri": 0,
       "entropy": 1607,
       "key_context": 0,
