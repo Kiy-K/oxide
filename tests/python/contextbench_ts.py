@@ -48,7 +48,7 @@ from oxide.storage import ladybug
 from oxide.storage.ladybug import View
 
 EVAL = cb.REPO / "fixtures" / "eval" / "contextbench-ts"
-BASELINE = EVAL / "baseline-v15"
+BASELINE = EVAL / "baseline-v16"
 TASKS = EVAL / "tasks.json"  # tasks, gold audit and scorer are v1's
 AUDIT = EVAL / "gold-audit.json"
 SCORER = "contextbench-ts-scorer-v1"

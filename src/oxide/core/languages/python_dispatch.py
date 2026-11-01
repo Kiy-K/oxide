@@ -120,6 +120,11 @@ class Dispatch:
             self._assigned, self._typing = found, False
         return self._assigned
 
+    def reassigned(self, cls: str, name: str) -> bool:
+        """Whether ``cls.name`` may not be what ``cls``'s body declares: assigned on the
+        class or its instances, or unknown while ``assigned`` is being computed."""
+        return self._typing or name in self.assigned().get(cls, ())
+
     def _defines(self, key: str, name: str) -> Res | Literal[False]:
         """Candidates ``key``'s body binds to ``name``; False when it does not bind it,
         None when it binds it some other way or may intercept every lookup."""

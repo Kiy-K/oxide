@@ -247,6 +247,9 @@ class Patched:
 
 Patched.run = print
 
+def direct():
+    Patched.run()
+
 def use():
     c = Client()
     c.send = print
@@ -272,3 +275,4 @@ def test_attributes_hide_methods_only_on_their_own_class_hierarchy(tmp_path: Pat
         assert site("symbol:shadow.py#Client.go") == [("self.send", None)]
         assert site("symbol:shadow.py#use") == [("Client", ["Client"]), ("c.send", None)]
         assert site("symbol:shadow.py#Patched.go") == [("self.run", None)]
+        assert site("symbol:shadow.py#direct") == [("Patched.run", None)]

@@ -386,6 +386,8 @@ class Resolver:
             decl = self.files[i].parsed.scopes[k].decl
             if decl is None or not decl.cls:
                 return None
+            if self.dispatch.reassigned(res[0], member):
+                return None
             found = self.in_scope(i, k, member, [])
             if found is False:
                 res = self.dispatch.method(res[0], member, False)

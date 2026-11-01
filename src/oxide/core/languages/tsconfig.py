@@ -20,6 +20,8 @@ _TRAILING_COMMA = re.compile(r'"(?:\\.|[^"\\])*"|,(?=\s*[}\]])')
 # Inherited per key: the last config of the ``extends`` chain that sets a key wins.
 _KEYS = ("baseUrl", "paths", "files", "include", "exclude")
 _DEFAULT_EXCLUDE = ["node_modules", "bower_components", "jspm_packages"]
+_BRACKET = re.compile(r'"(?:\\.|[^"\\])*"|[\[\]{}]')
+MAX_NESTING = 256  # deeper JSON is rejected, not parsed: no real tsconfig nests this far
 MAX_EXTENDS = 32  # a deeper ``extends`` chain is unknowable, not followed recursively
 
 Merged = dict[str, tuple[Any, str]]  # key -> (value, directory of the config that set it)
@@ -29,10 +31,14 @@ def jsonc(data: bytes) -> Any:
     """JSON with comments and trailing commas, as tsconfig allows; ValueError if not."""
     text = data.decode("utf-8-sig")
     text = _COMMENT.sub(lambda m: m[0] if m[0][0] == '"' else " ", text)
-    try:
-        return json.loads(_TRAILING_COMMA.sub(lambda m: m[0] if m[0][0] == '"' else "", text))
-    except RecursionError as error:
-        raise ValueError("tsconfig nests too deeply") from error
+    # The interpreter's recursion limit is not a stable bound across versions (3.14).
+    depth = 0
+    for bracket in _BRACKET.findall(text):
+        if bracket[0] != '"':
+            depth += 1 if bracket in "[{" else -1
+            if depth > MAX_NESTING:
+                raise ValueError("tsconfig nests too deeply")
+    return json.loads(_TRAILING_COMMA.sub(lambda m: m[0] if m[0][0] == '"' else "", text))
 
 
 @dataclass(frozen=True, slots=True)
