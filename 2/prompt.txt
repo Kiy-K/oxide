@@ -1,0 +1,57 @@
+Below is a conversation log from a Claude Code coding session.
+Create a summary to help the next session quickly understand the context.
+
+## Prioritize including
+- Design decisions and technology choices made this session
+- Bugs and problems solved
+- Files changed or created, with a brief description of changes
+- Unfinished tasks and work to continue in the next session
+- Important context the next session needs to know
+
+## Conversation log
+**User:** Simplify OXIDE's engineering workflow in AGENTS.md and /docs around implementation-first development, remove unnecessary research bureaucracy and obsolete experiment artifacts, preserve essential reproducible evidence, and eliminate redundant documentation requirements. This requires you to go online
+
+**User:** <system-reminder> Codebase and user instructions are shown below. Be sure to adhere to these instructions. IMPORTANT: These instructions OVERRIDE any default behavior and you MUST follow them exactly as written. Contents of /home/khoi/.claude/CLAUDE.md (user's private global instructions for all projects): ## CodeGraph In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the r
+
+**Claude:** Surveying the docs to find what's evidence the gates still need versus leftover experiment artifacts; next I'll read the policy docs and do quick online research on current AGENTS.md conventions.
+
+**Claude:** 📦 [ACP] Compressed m00004–m00031 → 1 block(s), ~48788 tokens saved.
+
+**Claude:** Deleting unreferenced phase-6 studies and superseded baseline data next, then rewriting the workflow docs.
+
+**Claude:** Safe. Applying deletions.
+
+**Claude:** Now the phase-6 index.
+
+**Claude:** Now AGENTS.md and the workflow/evidence docs.
+
+**Claude:** 📦 [ACP] Compressed m00032–m00079 → 1 block(s), ~33493 tokens saved.
+
+**Claude:** Now run the verification (the ContextBench gates load the kept baselines).
+
+**Claude:** The workflow docs now say implementation comes first, and about 19 MB of obsolete experiment files are removed and staged. Nothing is committed. `mise run verify` passed: 436 passed, 7 skipped. The 7 skips are the opt-in TypeScript gate. **The rule now (`AGENTS.md`, with the same wording in `docs/BOOTSTRAP.md` and `docs/agents/workflow.md`)** - **Normal work:** read the code, change it, add or adjust a test, run `mise run verify`. Features, fixes, language work and refactors need no study, preregistration or report. - **When an experiment is still needed:** only for claims a test can't settle.
+
+**User:** commit the docs changes only
+
+**Claude:** I committed the docs changes as `6e2f245` on `rewrite/v2`. It holds the six docs files I edited plus the staged `docs/phase-6` deletions, and nothing else. I didn't push. Still uncommitted: the changes that were already in the working tree before I started. That's `docs/phase-6/fts-footprint/README.md`, `scripts/smoke_dist.py`, the four `src/oxide` files, and `tests/python/test_impact.py` and `test_recovery.py`.
+
+**User:** /compact
+
+## Output format (Markdown only, no preamble)
+
+## Session Summary
+
+### Tasks
+(main tasks worked on this session)
+
+### Decisions Made
+(design decisions and technology choices)
+
+### Files Modified
+(files changed or created)
+
+### Unresolved Issues
+(unfinished tasks and work to continue)
+
+### Next Session Context
+(important context for the next session)
