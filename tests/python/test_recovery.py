@@ -24,6 +24,9 @@ from oxide.capture import digest
 from oxide.models import IncompatibleIndex, StoreCorrupt
 from oxide.storage.store import Store
 
+# Durability is this file's subject: storage flushes for real (conftest.no_fsync).
+pytestmark = pytest.mark.real_fsync
+
 
 def store_dir(data: Path) -> Path:
     (directory,) = (data / "repos").iterdir()
@@ -389,3 +392,28 @@ def test_a_failure_on_either_side_of_the_concurrent_publish_keeps_the_current_ge
     with oxide.open_repository(repo_copy) as repo:
         assert repo.index().status == "built"
         assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is not None
+
+
+def test_publication_flushes_every_byte_before_current_moves(
+    repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import oxide.storage.ladybug as ladybug_storage
+    import oxide.storage.store as store
+
+    flushed: list[Path] = []
+    real = ladybug_storage._fsync
+
+    def record(path: Path) -> None:
+        flushed.append(path)
+        real(path)
+
+    monkeypatch.setattr(ladybug_storage, "_fsync", record)
+    monkeypatch.setattr(store, "_fsync", record)
+    oxide.index_repository(repo_copy)
+    pointer = flushed.index(store_dir(private_data) / "CURRENT.tmp")
+    before = {p.name for p in flushed[:pointer]}
+    # Staged under another name, so compare names: every blob, the manifest, the
+    # generation and its directories reach disk before CURRENT names them.
+    assert {b.name for b in blobs(private_data)} <= before
+    assert {"MANIFEST.json", "source", "generations"} <= before
+    assert flushed[pointer + 1] == store_dir(private_data)  # the rename itself

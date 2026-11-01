@@ -54,10 +54,12 @@ def private_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
 
 @pytest.fixture(autouse=True)
-def no_fsync(monkeypatch: pytest.MonkeyPatch) -> None:
-    """In-process indexing skips fsync: no test can observe durability, and each flush
-    costs ~85 ms on the Windows runner (most of its test time). Subprocess tests
-    (crash injection, CLI, ``smoke_dist.py``) still flush for real."""
+def no_fsync(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> None:
+    """In-process indexing skips fsync unless a test is marked ``real_fsync``: each
+    flush costs ~85 ms on the Windows runner (most of its test time). Subprocess tests
+    (crash injection, CLI, ``smoke_dist.py``) always flush for real."""
+    if request.node.get_closest_marker("real_fsync"):
+        return
     monkeypatch.setattr(ladybug_storage, "_fsync", lambda path: None)
     monkeypatch.setattr(store, "_fsync", lambda path: None)
 
