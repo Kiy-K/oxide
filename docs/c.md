@@ -116,4 +116,4 @@ all facts reused.
 Facts are cached by `(c, source digest)` under `oxide-c-facts-v1`; the cache decoder
 validates types, ranges, identifier names and the scope list, and anything else is
 parsed again. Derivation components add `c` (`oxide-c-v1`) and `c-parser`; older
-indices are re-indexed. Evidence and reproduction: [phase-6/c-v1](phase-6/c-v1/README.md).
+indices are re-indexed. Evidence and reproduction: [phase-6/c-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/c-v1/README.md).

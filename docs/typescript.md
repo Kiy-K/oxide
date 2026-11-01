@@ -1,6 +1,6 @@
 # TypeScript language slice (`oxide-typescript-v3`)
 
-The second language slice (BOOTSTRAP § Remaining, item 3), in `src/oxide/core/languages/typescript.py`.
+The second language slice (Phase 6 language work, [decisions](decisions.md)), in `src/oxide/core/languages/typescript.py`.
 It has the same shape as the Python slice: one compiled tree-sitter query per dialect
 collects every fact in C; Python only assigns captured nodes to their innermost declaration
 scope (a bisect over body ranges) and resolves names conservatively. It produces the same
@@ -54,7 +54,7 @@ of object literals and method signatures of type literals *are* symbols (kind
 `method`; parent the innermost enclosing function, class, interface, enum or namespace,
 else the file, since a type alias is not a scope). This section first said they were
 not; the TypeScript evaluation's scorer validation found the difference
-([phase-6/typescript-v1](phase-6/typescript-v1/README.md#scorer-validation)).
+([phase-6/typescript-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/typescript-v1/README.md#scorer-validation)).
 
 A declaration's range starts at its `export`/`declare` keyword or its decorators. Its
 signature is the header from the first keyword to the body (`export class Derived extends
@@ -184,7 +184,7 @@ fresh full rebuilds of every logical fact).
   are re-exports of workspace packages or package stars and unexported variables,
   unresolved by the rules above.
 - `tsconfig` resolution (`oxide-typescript-v2`, measured 2026-10-17,
-  [phase-6/typescript-v2](phase-6/typescript-v2/README.md)):
+  [phase-6/typescript-v2](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/typescript-v2/README.md)):
   - **VS Code:** on the 14 corpora with their `tsconfig*.json`, unresolved imports
     drop from 802,296 to 53,078.
   - **Correctness:** on vscode@1a599e2d, 56,978 of the 57,190 newly resolved bare

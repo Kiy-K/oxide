@@ -144,4 +144,4 @@ Facts are cached by `(java, source digest)` under `oxide-java-facts-v1`. The cac
 decoder validates types, ranges, identifier and dotted names, and the scope tree,
 including that members belong to declared types. Anything else is parsed again.
 Derivation components add `java` (`oxide-java-v1`) and `java-parser`, and older indices
-are re-indexed. Evidence and reproduction: [phase-6/java-v1](phase-6/java-v1/README.md).
+are re-indexed. Evidence and reproduction: [phase-6/java-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/java-v1/README.md).

@@ -1,7 +1,7 @@
 # Large repositories: the LadybugDB load pool
 
 Measured 2026-10-17 on this laptop (2 CPUs and 3 GB through `systemd-run`, as for every
-heavy run), on the 81 pinned corpora of [TypeScript ContextBench v1](phase-6/typescript-v1/README.md).
+heavy run), on the 81 pinned corpora of [TypeScript ContextBench v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/typescript-v1/README.md).
 
 ## Root cause
 
@@ -70,7 +70,7 @@ after this change. The pool's ceiling therefore costs nothing; the memory is wha
 load uses, about 350 MB above the 829 MB that derivation holds before `COPY`.
 The TypeScript v1 harness at this commit (all 81 corpora, the product's settings)
 gives a `results.json` and a `metrics.json` byte-identical to the frozen
-[v1](phase-6/typescript-v1/README.md). The pool changes no result, and no corpus records
+[v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/typescript-v1/README.md). The pool changes no result, and no corpus records
 a `default_index_failure` (v1: 14). The VS Code index median is 22.9 s (v1: 24.0 s,
 built with the 512 MiB override). The whole run's peak RSS is 1,270 MB (v1: 1,821 MB),
 because no corpus is indexed twice any more.

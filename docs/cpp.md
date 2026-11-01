@@ -159,4 +159,4 @@ Facts are cached by `(cpp, source digest)` under `oxide-cpp-facts-v1`; the cache
 validates types, ranges, names, qualifiers and the scope tree (parents first, and only
 namespaces and classes as parents), and anything else is parsed again. Derivation
 components add `cpp` (`oxide-cpp-v1`) and `cpp-parser`; older indices are re-indexed.
-Evidence and reproduction: [phase-6/cpp-v1](phase-6/cpp-v1/README.md).
+Evidence and reproduction: [phase-6/cpp-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/cpp-v1/README.md).

@@ -1,6 +1,6 @@
 # Parser limits: long chains and deep syntax
 
-The ast-grep evaluation ([phase-6/astgrep-feasibility](phase-6/astgrep-feasibility/README.md))
+The ast-grep evaluation ([phase-6/astgrep-feasibility](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/astgrep-feasibility/README.md))
 found `oxide.core.languages.python.parse` super-linear on long method chains: 3.0 s for 10k
 `.then(f)` links, 29.6 s for 30k, over 120 s for 100k. This records the diagnosis, the
 fix and the one explicit limit left (measured 2026-10-18, py-tree-sitter 0.26.0,

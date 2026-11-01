@@ -85,7 +85,7 @@ from the OXIDE release `ladybug-fts-0.21.0`
 It checks the download against the SHA-256 pinned in `oxide.storage.fts.FTS_BUILDS`, and the
 engine checks it again before every load. The release holds LadybugDB's own builds,
 unmodified, with LadybugDB's license and third-party notices
-([fts-mirror/](phase-6/release-blockers/fts-mirror/RELEASE.md)). The digests were taken
+([fts-mirror/](fts-mirror/RELEASE.md)). The digests were taken
 on 2026-10-17 (file types: ELF x86-64, Mach-O x86_64, Mach-O arm64, PE32+ x86-64). On a
 platform without a pin, `fts_unavailable` names the platform, and `oxide prepare` fails
 with the same message without touching the network. Search and context still run with
@@ -99,7 +99,7 @@ build of upstream main at `225bc28088` (core 0.22.0-dev) for Linux x86-64, macOS
 and Windows. That build fails to load into core 0.21.0 (undefined symbol, measured on
 Linux). To move the pin forward, mirror the new version's release builds the same way,
 after checking that they load into the matching core. See
-[docs/phase-6/release-blockers/](phase-6/release-blockers/README.md).
+[docs/phase-6/release-blockers/](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/release-blockers/README.md).
 
 CI fetches the FTS build cold on every run, so a missing or replaced asset fails CI
 instead of hiding behind a cache.
@@ -213,7 +213,7 @@ lines when Intel macOS support is dropped, or if pyca ships x86_64 wheels again.
 four supported OS/architecture rows above, usable on Python 3.12–3.14. Its grammar
 ABI is 14; the locked tree-sitter 0.26.0 accepts ABI 13–15. Published wheel metadata
 and local runtime checks are recorded in
-[phase-6/javascript-v1](phase-6/javascript-v1/README.md). The existing platform
+[phase-6/javascript-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/javascript-v1/README.md). The existing platform
 workflow automatically includes the new conformance fixtures and distribution smoke.
 New JavaScript execution on Windows/macOS is pending those hosted jobs; wheel
 availability does not establish runtime verification. Existing platform limitations
@@ -224,7 +224,7 @@ still apply. No Node or Bun runtime dependency is introduced.
 `tree-sitter-go==0.25.0` ships CPython `cp310-abi3` wheels for Linux x86_64/aarch64,
 macOS x86_64/arm64 and Windows amd64/arm64. Its grammar ABI is 15; the locked
 tree-sitter 0.26.0 accepts ABI 13–15. Fixture conformance and Linux distribution
-smoke evidence are recorded in [phase-6/go-v1](phase-6/go-v1/README.md). Runtime
+smoke evidence are recorded in [phase-6/go-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/go-v1/README.md). Runtime
 verification on Windows and macOS is pending hosted CI; wheel availability alone
 does not establish runtime verification. Existing platform limitations still apply.
 
@@ -236,6 +236,6 @@ does not establish runtime verification. Existing platform limitations still app
 library's `tomllib`, so no Rust toolchain, `cargo` or `rust-analyzer` is needed or run
 (the installed-artifact smoke runs with host toolchains off `PATH`). Fixture
 conformance and Linux distribution smoke evidence are recorded in
-[phase-6/rust-v1](phase-6/rust-v1/README.md). Runtime verification on Windows and macOS is
+[phase-6/rust-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/rust-v1/README.md). Runtime verification on Windows and macOS is
 pending hosted CI; wheel availability alone does not establish runtime verification.
 Existing platform limitations still apply.

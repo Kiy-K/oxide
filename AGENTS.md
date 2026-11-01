@@ -3,7 +3,7 @@
 OXIDE v2 (branch `rewrite/v2`): a structural context engine for agents. One Python package, `oxide`, in `src/oxide/` (ADR-0011); the Rust/Bun implementation it replaced is recoverable at `f79808a`.
 `CLAUDE.md` is a symlink to this file, so Claude and Codex share one root policy.
 
-The architecture authority is `docs/spec/SPEC.md`, with phases and exit gates in `docs/BOOTSTRAP.md` and decisions in `docs/adr/` (Proposed ADRs are proposals, not Accepted decisions; never change an ADR's status unasked). When they disagree with anything else in the repo, they win.
+The architecture authority is `docs/spec/SPEC.md`, with standing rules, research verdicts and the evaluation protocol in `docs/decisions.md` and decisions in `docs/adr/` (Proposed ADRs are proposals, not Accepted decisions; never change an ADR's status unasked). When they disagree with anything else in the repo, they win.
 
 This file is always loaded; keep it short. New commands go in `docs/agents/workflow.md`; the public API is documented in `docs/public-api.md`.
 
@@ -26,9 +26,9 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 - Keep the public API and versioned formats (derivation components, store schema, payload/units versions) compatible unless the task says to change them; bump the version when you do. Legacy v1 compatibility (SQLite indexes, symbol ids, CLI/MCP/JSON surface) and the retired Rust/TS protocol are not requirements (SPEC § Compatibility policy).
 - Fix root causes. Don't weaken tests, regenerate goldens or re-baseline just to make a failure go away.
 - Implementation first: the default loop is read the code, change it, add or adjust a test, `mise run verify`. Feature, bug-fix, language and refactor work needs no study, preregistration or report.
-- An experiment is only for claims a test can't settle: a retrieval/routing/packing quality change (ContextBench gates, `docs/agents/workflow.md`), a performance claim (measure before and after with `scripts/bench.py`), or promoting an optional judge. Then fix the pass/fail rule before reading held-out results, and record the verdict (one line in `docs/phase-6/README.md`, plus a short report only if a gate, test or comment will cite it).
+- An experiment is only for claims a test can't settle: a retrieval/routing/packing quality change (ContextBench gates, `docs/agents/workflow.md`), a performance claim (measure before and after with `scripts/bench.py`), or promoting an optional judge. Then fix the pass/fail rule before reading held-out results, and record the verdict (one row in `docs/decisions.md` § Research verdicts, plus a short report only if a gate, test or comment will cite it).
 - Read the code, tests and docs before stating how something works. Label each claim as measured or inferred.
-- If missing or ambiguous information could change the implementation, check the repo first. If that doesn't settle it, ask one focused question instead of guessing. Don't invent permanent ID/schema/transport/model policy to unblock scaffolding (BOOTSTRAP rule 4).
+- If missing or ambiguous information could change the implementation, check the repo first. If that doesn't settle it, ask one focused question instead of guessing. Don't invent permanent ID/schema/transport/model policy to unblock scaffolding (`docs/decisions.md` rule 4).
 - Before finishing, read the full diff for accidental changes in scope, public API surface (`oxide/__init__.py`), dependencies (`pyproject.toml`, `uv.lock`) or generated files.
 - Tests never touch real user data: every test and subprocess gets a private data location (`tests/python/conftest.py`).
 - Don't commit, push, tag, release, edit GitHub issues or roadmaps, or start the next phase unless approved.
@@ -39,16 +39,16 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 
 | Area | Read first |
 |---|---|
-| Anything architectural | `docs/spec/SPEC.md`, `docs/BOOTSTRAP.md`, `docs/adr/` |
+| Anything architectural | `docs/spec/SPEC.md`, `docs/decisions.md`, `docs/adr/` |
 | Python engine, storage, removed/retained features | `docs/adr/0011-python-engine-vectorless.md`, `docs/public-api.md` |
 | Build, test, lint, commit format | `docs/agents/workflow.md` |
 | Issues, triage labels, domain docs | `docs/agents/` (`issue-tracker.md`, `triage-labels.md`, `domain.md`) |
-| Historical evidence and legacy reproduction | `docs/phase-6/README.md`, `docs/migration-audit/legacy-infrastructure.md` (pinned originals). Port semantic lessons only where current SPEC requires them; legacy layout and APIs are not v2 instructions. |
-| v2 review policy | `docs/review/` — reviewer-facing invariants for the Python engine (public API, storage/generations, core/retrieval, capture/language, evidence/benchmarks). Architecture authority remains `docs/spec/SPEC.md` and `docs/BOOTSTRAP.md`. |
+| Historical evidence and legacy reproduction | `docs/decisions.md` (verdicts; reports and the migration audit are pinned at `013e791`). Port semantic lessons only where current SPEC requires them; legacy layout and APIs are not v2 instructions. |
+| v2 review policy | `docs/review/` — reviewer-facing invariants for the Python engine (public API, storage/generations, core/retrieval, capture/language, evidence/benchmarks). Architecture authority remains `docs/spec/SPEC.md` and `docs/decisions.md`. |
 
 ## Always-on rules
 
-- Legacy code and docs are historical evidence, not a template (SPEC, BOOTSTRAP rule 2). The old implementation is recoverable from `main` / `ac985b28`; don't port it into `src/oxide/` without a stated SPEC requirement.
+- Legacy code and docs are historical evidence, not a template (SPEC, `docs/decisions.md` rule 2). The old implementation is recoverable from `main` / `ac985b28`; don't port it into `src/oxide/` without a stated SPEC requirement.
 - Retrieval, routing and packing changes are evaluated per SPEC § Evaluation against the frozen baselines (`tests/python/test_baseline.py` checks Phase 3 exactly); never regenerate a frozen artifact to make a failure pass. Legacy numbers in pinned historical reports are historical comparators, not v2 gates.
 - Models judge; deterministic code decides. Keep JEV and learned judges optional; there are no embeddings. The deterministic offline path needs no model or network (only `oxide prepare` fetches the pinned FTS extension, explicitly).
 - Let native libraries do recursive and latency-sensitive work (tree-sitter queries, LadybugDB queries, Networkx for graph algorithms); Python holds bounded policy.

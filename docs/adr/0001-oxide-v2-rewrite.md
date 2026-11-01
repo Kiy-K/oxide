@@ -35,7 +35,7 @@ DecisionProvider is designed from the beginning for a deterministic heuristic ju
 
 Repository knowledge is derived state rebuildable from source; legacy SQLite migration compatibility is not required. TreeIndex exposes structural navigation over graph knowledge while retaining non-tree relationships. Its schema/projection and TreeRouter's algorithm remain open architectural decisions.
 
-The architectural source of truth is [SPEC.md](../spec/SPEC.md). [BOOTSTRAP.md](../BOOTSTRAP.md) gives future implementation phases and exit gates. This ADR establishes the top-level rewrite and refined product direction; it does not freeze tree/storage schemas, routing algorithms, transports, IDs, capsule fields, JEV API mappings, runner APIs, model heads, fusion, or inclusion algorithms. Detailed decisions belong in follow-up ADRs.
+The architectural source of truth is [SPEC.md](../spec/SPEC.md). [decisions.md](../decisions.md) holds the standing rules and remaining work (the phase plan, `docs/BOOTSTRAP.md`, is retired and pinned at `013e791`). This ADR establishes the top-level rewrite and refined product direction; it does not freeze tree/storage schemas, routing algorithms, transports, IDs, capsule fields, JEV API mappings, runner APIs, model heads, fusion, or inclusion algorithms. Detailed decisions belong in follow-up ADRs.
 
 ## Decision drivers
 

@@ -21,15 +21,15 @@ judgments inside TreeRouter, calibration heads and local judges are out of scope
 
 ADR-0011 § 5 keeps decision models optional and outside the engine, and names
 `packing.value` as the one place a judge's estimate may enter. The pieces now in place
-are as follows (all measured, `docs/phase-6/`):
+are as follows (all measured, `docs/phase-6/` at `013e791`):
 
 | Step | What it established |
 | --- | --- |
-| [decision-seam](../phase-6/decision-seam/README.md) (`83c8f17`, `fef45e5`) | `DecisionProvider` behind `packing.value`; `oxide-capsule-v1` (bounded, digest-correlated); `CapsuleJudge` with one adapter call under `capsule.DEADLINE` (2.0 s); `Recorded` replay; any failure leaves the heuristic. No judge configured: byte-identical bundles, both frozen gates reproduce. The seam costs about 25 µs a request |
-| [Decision Study v1](../phase-6/decision-study-v1/README.md) | **REJECT.** Used as a direct `value`, JEV's calibrated probabilities fall below `INCLUDE_FLOOR`, so recall drops (0.593 vs 0.659 @4096). Its ranking is strong (within-task AUROC 0.878 vs 0.716, about the same without rank). Compact rendering is the only one that fits on every request |
-| [Decision Study v2](../phase-6/decision-study-v2/README.md) | **INCONCLUSIVE.** Preregistered hybrid (heuristic admits, JEV orders). Held-out passed every quality criterion (0.235 → 0.360 @4096), but 10 of 29 primary requests got HTTP 529 |
-| [JEV reliability](../phase-6/jev-reliability/README.md) | **PASS under immediate fallback.** 0/408 first-attempt failures, 1 deadline miss (2.14 s), p50 0.90 s. Retry and breaker policies untested (no failures to test on). Outages are episodic |
-| [Decision Study v3](../phase-6/decision-study-v3/README.md) | **PASS.** v2's frozen policy with the 2.0 s deadline enforced, on 52 new tasks from 8 new repositories, end to end: 0.316 → 0.476 @4096 (Δ +0.159, CI +0.103…+0.224), positive at every budget, 33 wins / 0 losses @4096, repeat Spearman 0.989 |
+| [decision-seam](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/decision-seam/README.md) (`83c8f17`, `fef45e5`) | `DecisionProvider` behind `packing.value`; `oxide-capsule-v1` (bounded, digest-correlated); `CapsuleJudge` with one adapter call under `capsule.DEADLINE` (2.0 s); `Recorded` replay; any failure leaves the heuristic. No judge configured: byte-identical bundles, both frozen gates reproduce. The seam costs about 25 µs a request |
+| [Decision Study v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/decision-study-v1/README.md) | **REJECT.** Used as a direct `value`, JEV's calibrated probabilities fall below `INCLUDE_FLOOR`, so recall drops (0.593 vs 0.659 @4096). Its ranking is strong (within-task AUROC 0.878 vs 0.716, about the same without rank). Compact rendering is the only one that fits on every request |
+| [Decision Study v2](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/decision-study-v2/README.md) | **INCONCLUSIVE.** Preregistered hybrid (heuristic admits, JEV orders). Held-out passed every quality criterion (0.235 → 0.360 @4096), but 10 of 29 primary requests got HTTP 529 |
+| [JEV reliability](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/jev-reliability/README.md) | **PASS under immediate fallback.** 0/408 first-attempt failures, 1 deadline miss (2.14 s), p50 0.90 s. Retry and breaker policies untested (no failures to test on). Outages are episodic |
+| [Decision Study v3](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/decision-study-v3/README.md) | **PASS.** v2's frozen policy with the 2.0 s deadline enforced, on 52 new tasks from 8 new repositories, end to end: 0.316 → 0.476 @4096 (Δ +0.159, CI +0.103…+0.224), positive at every budget, 33 wins / 0 losses @4096, repeat Spearman 0.989 |
 
 v3's preregistration allows exactly this step: proposing an ADR for an optional judge
 adapter with that mapping. It also set out what remains open: availability, deadline
@@ -154,7 +154,7 @@ child process, and a request costs about $0.0006 (~24k billed tokens) with p50 �
 
 **Not verified (the production integration this ADR proposes):**
 
-- Every call so far went through research scripts under `docs/phase-6/`
+- Every call so far went through research scripts under `docs/phase-6/` (at `013e791`)
   (`adapter.py`, `render.py`, `call.py`, `harness.py`), not code in `src/oxide/`. A
   port must be shown to send the same bytes and pack the same bundles.
 - The judged path inside `Repository.build_context`, its added latency in real use, and
@@ -181,7 +181,7 @@ child process, and a request costs about $0.0006 (~24k billed tokens) with p50 �
 
 ## Smallest implementation milestone (M1)
 
-Delivered 2026-10-24 ([docs/phase-6/jev-order-m1](../phase-6/jev-order-m1/README.md)):
+Delivered 2026-10-24 ([docs/phase-6/jev-order-m1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/jev-order-m1/README.md)):
 the request bodies of v2 and v3 are byte-identical, and replaying the recorded
 judgments through the in-tree path reproduces v2's dev and held-out arms and v3's
 primary and repeat arms at every task and budget. No live call was made.
@@ -224,7 +224,7 @@ a different deadline, other models, renderers or languages, and router branch ju
 
 ## Opt-in surface and live check (M2)
 
-Delivered 2026-10-24 ([docs/phase-6/jev-order-m2](../phase-6/jev-order-m2/README.md)).
+Delivered 2026-10-24 ([docs/phase-6/jev-order-m2](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/jev-order-m2/README.md)).
 This amends § 5: the adapter stays internal, and one opt-in is public.
 
 - **Authorization is the configuration.** `Repository.judge(True)` records consent for
@@ -265,7 +265,7 @@ Before release, these remain open:
 
 ## Release-readiness validation (M3)
 
-Delivered 2026-10-24 ([docs/phase-6/jev-order-m3](../phase-6/jev-order-m3/README.md)).
+Delivered 2026-10-24 ([docs/phase-6/jev-order-m3](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/jev-order-m3/README.md)).
 The policy, manifest and default are unchanged, and no quality was measured.
 
 - **Long MCP sessions (offline).** 429 calls through one real `oxide mcp` stdio process,

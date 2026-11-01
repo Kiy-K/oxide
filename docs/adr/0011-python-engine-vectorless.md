@@ -131,7 +131,7 @@ benefit.
 
 ## 4. Accepted performance and packaging tradeoffs
 
-**Corrected 2026-10-15 (migration audit, `docs/migration-audit/`).** The first
+**Corrected 2026-10-15 (migration audit, `docs/migration-audit/` at `013e791`).** The first
 version of this table compared Rust and Python on different source snapshots.
 The Rust asyncio and email runs included `__pycache__`, and asyncio predates a
 stdlib update. One row also compared Rust routing alone with the whole Python
@@ -145,9 +145,9 @@ Rust figures are the historical Phase 3 records (release build, 2 threads,
 come from `scripts/bench.py` (5 fresh-process iterations, median, warm = median
 of 20 repeats, 3 default queries, budget 1,024) under `CPUQuota=200%` and
 `MemoryMax=3G`, CPython 3.13, Linux x86_64. The reports, with corpus identities,
-are in `docs/migration-audit/bench/`.
+are in `docs/migration-audit/bench/` at `013e791`.
 
-| Measure | Rust (`docs/phase-3.md`) | Python (`scripts/bench.py`) | Comparable? |
+| Measure | Rust (`docs/phase-3.md` at `d4a03fe`) | Python (`scripts/bench.py`) | Comparable? |
 | --- | --- | --- | --- |
 | `fixtures/py_repo` (65 / 194) rebuild | 0.48–0.56 s (write + publish) | 0.16 s `index_cold` (open + capture + derive + publish) | Same corpus; different harness and scope. Indicative only |
 | asyncio rebuild | 0.86–0.95 s (140 files with 105 `.pyc`, 1,283 / 5,224) | 0.35 s (35 files, 1,179 / 5,139) | No: different snapshots |

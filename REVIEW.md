@@ -10,5 +10,5 @@ Reviewer-facing invariants for OXIDE v2. Full policy and rule files live in
 - `docs/review/capture-and-language.md` — capture, parsing, language support, identity.
 - `docs/review/evidence-and-benchmarks.md` — benchmark provenance and frozen baselines.
 
-Architecture authority: `docs/spec/SPEC.md` and `docs/BOOTSTRAP.md`. When they
+Architecture authority: `docs/spec/SPEC.md` and `docs/decisions.md`. When they
 disagree with this policy, they win.

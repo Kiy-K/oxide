@@ -166,4 +166,4 @@ Facts are cached by `(rust, source digest)` under `oxide-rust-facts-v1`; the cac
 validates types, ranges, identifier names, impl names and the scope tree, and anything else is
 parsed again. Derivation components add `rust` (`oxide-rust-v1`) and `rust-parser`;
 older indices are re-indexed. Evidence and reproduction:
-[phase-6/rust-v1](phase-6/rust-v1/README.md).
+[phase-6/rust-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/rust-v1/README.md).

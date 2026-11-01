@@ -13,7 +13,7 @@ from [ADR-0010](0010-domain-identity-and-source-capture.md).
 ## Context
 
 SPEC names LadybugDB as the initial `KnowledgeStore` adapter on the strength of
-documentation, and requires a pinned feasibility record (BOOTSTRAP Phase 2)
+documentation, and requires a pinned feasibility record (BOOTSTRAP Phase 2, retired; pinned at `013e791`)
 before an adapter is built. The questions were: does the Rust API build and
 run offline and reproducibly; can it give one-owner resource control, atomic
 publication and snapshot-isolated reads; how do FTS/vector behave; and what

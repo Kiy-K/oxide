@@ -33,8 +33,7 @@ uv run python scripts/bench.py fixtures/py_repo --iterations 5
 
 Compare against a run on unchanged code under the same limits (`systemd-run
 --user --scope -p CPUQuota=200% -p MemoryMax=3G`). Report the medians and the
-corpus `snapshot_id` from the JSON report. Keep negative results in the eval docs.
+corpus `snapshot_id` from the JSON report. Record the verdict in `docs/decisions.md`.
 
-Legacy v1 harnesses (`cargo`, `fixtures/benchmark.json`, ContextBench under
-`eval-agent/`) belong to the retired implementation on `main` / `ac985b28` and
-are not v2 gates.
+Legacy v1 harnesses (`cargo`, `eval-agent/`, `scripts/agent_eval/`) belong to the
+retired implementation, recoverable at `ac985b28`, and are not v2 gates.

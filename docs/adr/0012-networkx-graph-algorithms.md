@@ -4,13 +4,13 @@
 
 **Proposed**, 2026-10-25. The maintainer asked to introduce NetworkX as OXIDE's standard
 graph-algorithm dependency. The evidence is in
-[docs/phase-6/networkx-v1](../phase-6/networkx-v1/README.md). This proposal amends no
+[docs/phase-6/networkx-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/networkx-v1/README.md). This proposal amends no
 existing ADR. LadybugDB stays the authoritative store ([ADR-0002](0002-ladybugdb-knowledge-store.md),
 [ADR-0011](0011-python-engine-vectorless.md)).
 
 ## Context
 
-OXIDE's graph code (audit, docs/phase-6/networkx-v1 § Audit) is almost all domain
+OXIDE's graph code (audit, docs/phase-6/networkx-v1 § Audit, at `013e791`) is almost all domain
 traversal:
 
 - `navigation.walk` (impact BFS);

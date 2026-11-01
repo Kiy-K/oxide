@@ -126,4 +126,4 @@ Facts are cached by `(go, source digest)` under `oxide-go-facts-v1`; the cache d
 validates types, ranges, identifier names, the package clause and the scope tree,
 and anything else is parsed again. Derivation components add `go` (`oxide-go-v1`)
 and `go-parser`; older indices are re-indexed. Evidence and reproduction:
-[phase-6/go-v1](phase-6/go-v1/README.md).
+[phase-6/go-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/go-v1/README.md).

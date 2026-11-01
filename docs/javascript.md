@@ -116,4 +116,4 @@ and old caches are safely discarded. Resolution always reruns over the full capt
 Persisted edit/rebuild equivalence, metadata-only changes, source deletion, grammar
 changes, corruption and long chains are covered by tests.
 
-Evidence, limitations and reproduction: [phase-6/javascript-v1](phase-6/javascript-v1/README.md).
+Evidence, limitations and reproduction: [phase-6/javascript-v1](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/javascript-v1/README.md).

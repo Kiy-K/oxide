@@ -3,9 +3,9 @@
 ## Status
 
 **Proposed**, 2026-10-25. Nothing is implemented in `src/oxide`. The experimental server
-lives only in `docs/phase-6/agc-v4/scripts/server.py`. The proposal becomes Accepted, and
+lives only in `docs/phase-6/agc-v4/scripts/server.py` (at `013e791`). The proposal becomes Accepted, and
 then implemented, only if AGC v4's preregistered rule promotes the interface
-([docs/phase-6/agc-v4](../phase-6/agc-v4/README.md)) and the maintainer agrees.
+([docs/phase-6/agc-v4](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/agc-v4/README.md)) and the maintainer agrees.
 
 ## Context
 
@@ -25,7 +25,7 @@ than the unguided one (D):
 - **Mechanism (*inferred*):** the guidance ("callers first, depth 2, don't grep again")
   doubled tool calls and halved verification greps. Precision fell from 0.86 to 0.81 at
   the same recall, with depth-2 walks run from intermediate symbols.
-- Analysis: `docs/phase-6/agc-v4/scripts/v3_dg.py`.
+- Analysis: `docs/phase-6/agc-v4/scripts/v3_dg.py` (at `013e791`).
 
 Production MCP already has one tool, `oxide_search`, with `mode=search|context`. A second
 tool adds schema to every prompt and one more choice for the agent to make. A new mode

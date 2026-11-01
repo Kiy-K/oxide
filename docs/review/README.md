@@ -14,7 +14,7 @@ are the public boundary; `oxide.core` holds pure repository intelligence and
 policy (no database or filesystem access); `oxide.capture` and
 `oxide.storage` own worktree capture and LadybugDB; the CLI and `oxide mcp`
 are clients of the public API only. Architecture authority is
-`docs/spec/SPEC.md` and `docs/BOOTSTRAP.md`. When they disagree with this
+`docs/spec/SPEC.md` and `docs/decisions.md`. When they disagree with this
 file, they win.
 
 ## Rule files
@@ -30,7 +30,7 @@ file, they win.
 ## Load-bearing invariants
 
 The v2 invariants live in `docs/spec/SPEC.md` ("Core invariants", "Engine
-resources and ownership", "Failure contract") and `docs/BOOTSTRAP.md`. Read those
+resources and ownership", "Failure contract") and `docs/decisions.md` § Standing rules. Read those
 directly rather than relying on this policy's summary; duplicating them risks
 drift. Treat every entry there as **BLOCKER** severity under this policy.
 

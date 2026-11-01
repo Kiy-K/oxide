@@ -105,7 +105,7 @@ mise run verify           # ruff, mypy --strict, pytest (CI runs exactly this)
 uv run python scripts/bench.py path/to/corpus   # latency and peak RSS, JSON report
 ```
 
-Architecture: [docs/spec/SPEC.md](docs/spec/SPEC.md), [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md)
+Architecture: [docs/spec/SPEC.md](docs/spec/SPEC.md), [docs/decisions.md](docs/decisions.md)
 and the decisions in [docs/adr/](docs/adr/), in particular
 [ADR-0011](docs/adr/0011-python-engine-vectorless.md) (Python engine, vectorless
 retrieval). Contributor workflow: [docs/agents/workflow.md](docs/agents/workflow.md).

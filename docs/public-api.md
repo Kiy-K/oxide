@@ -138,7 +138,7 @@ zero does not mean complete. Uses OXIDE records no unresolved call/reference for
 not counted: a bare name passed as a value (`StreamHandler(f)`), a decorator
 (`@flask.after_this_request`), the name as a receiver (`f.attr()`) and pytest fixture
 injection. On 24 sampled flask/requests/pytest functions and methods, 3 of the 11 with
-missed dependents had `unresolved == 0` ([phase-6/graph-navigation](phase-6/graph-navigation/README.md)). Method calls on a receiver OXIDE cannot type
+missed dependents had `unresolved == 0` ([phase-6/graph-navigation](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/graph-navigation/README.md)). Method calls on a receiver OXIDE cannot type
 (`self.client.get()`, a parameter's `x.save()`) are the main source.
 
 Bounds: `depth` in `[0, 8]`, `limit` reached entities in `[0, 1000]`, and 20,000
@@ -147,7 +147,7 @@ adjacency rows per pass; `stopped_by` names the one that cut the walk (`depth`,
 `invalid_argument`. Measured upstream cost (p50, 40 random symbols): 6–26 ms on
 requests, xarray, pytest, ripgrep and gh-cli; 101 ms on VS Code, where the unresolved
 count reads only the sites sharing a root name's last segment (3.5 ms of 377k unresolved
-rows; [phase-6/graph-v2](phase-6/graph-v2/README.md)).
+rows; [phase-6/graph-v2](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/graph-v2/README.md)).
 It is a Python API only; the MCP tool is unchanged (§ MCP).
 
 ## Structural search
@@ -177,7 +177,7 @@ upgrading the extra must re-check that. The binding has no timeout and holds the
 so `paths` and `limit` are the bounds. ast-grep alone took about 1 s per rule over VS
 Code's 3,902 TypeScript files; through this API, with entity lookups,
 0.35–0.81 s per rule on xarray and vue core (measured). Pattern pitfalls, measured in
-[docs/phase-6/astgrep-feasibility/](phase-6/astgrep-feasibility/README.md):
+[docs/phase-6/astgrep-feasibility/](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/astgrep-feasibility/README.md):
 
 - a pattern matches the syntax it spells: `new Promise($E)` misses
   `new Promise<T>(...)`;
@@ -199,7 +199,7 @@ only while `TYPESAFE_API_KEY` holds a key. A key alone never sends anything.
   source are never sent. `JudgeStatus.discloses` says the same. TypeSafe's published
   policies (checked 2026-10-24) say input is not used to train models but set no
   retention period. Zero data retention is offered to enterprise customers only
-  (`docs/phase-6/jev-order-m3/`).
+  (`docs/phase-6/jev-order-m3/` at `013e791`).
 - **Where consent lives.** In this repository's store under the data location, naming
   the repository root and the judge's manifest digest, never inside the repository.
   Consent for another manifest (a new model or policy) or another root does not apply:
@@ -210,9 +210,9 @@ only while `TYPESAFE_API_KEY` holds a key. A key alone never sends anything.
   one of `not_authorized`, `no_credential`, `unsendable`, `deadline`, `http <status>`,
   `transport`, `wrong_model`, `unparsable` or `incomplete`.
 - **Cost.** One request, killed at 2.0 s, with no retry. Measured on the fixture
-  (`docs/phase-6/jev-order-m2/`): p50 0.70 s added and 3–12k billed tokens (about
+  (`docs/phase-6/jev-order-m2/` at `013e791`): p50 0.70 s added and 3–12k billed tokens (about
   $0.0003) a request. On three larger public code bases through `oxide mcp`
-  (`docs/phase-6/jev-order-m3/`): p50 1.00 s and about 21.5k billed tokens ($0.0009) a
+  (`docs/phase-6/jev-order-m3/` at `013e791`): p50 1.00 s and about 21.5k billed tokens ($0.0009) a
   request. Every client of the API judges once enabled, including `oxide context` and
   `oxide mcp`. The MCP text header then includes `# judged by <identity>`.
 - **Network.** The request honours `HTTP(S)_PROXY`, `NO_PROXY`, `SSL_CERT_FILE` and
@@ -284,7 +284,7 @@ Damage is classified like this:
 - One owner per store across processes (`flock`). While a handle is open, every
   other owner (the CLI included) gets `ownership_conflict`, so long-running
   clients should open per request. `oxide mcp` opens, reads and closes on every
-  tool call (9–13 ms open cost, measured in `docs/migration-audit/README.md`), so
+  tool call (9–13 ms open cost, measured in `docs/migration-audit/README.md` at `013e791`), so
   it never blocks `oxide index` between calls.
 - A `Repository` is not thread-safe, and neither is the native binding.
   Serialize calls.
@@ -305,13 +305,13 @@ Damage is classified like this:
   Paths that are not valid UTF-8 are `invalid_path`.
 - Indexing reuses parse facts of unchanged bytes, but resolution and publication
   (the graph and FTS index) are rebuilt per change
-  (`docs/phase-6/incremental-indexing/`). Retained source blobs the current
+  (`docs/phase-6/incremental-indexing/` at `013e791`). Retained source blobs the current
   generation already holds byte for byte are hard-linked into the new one instead of
-  rewritten (`docs/phase-6/indexing-throughput/` § 8). Capture holds every captured file in
+  rewritten (`docs/phase-6/indexing-throughput/` at `013e791` § 8). Capture holds every captured file in
   memory: at most 1 GiB in scope, 1 MiB per file, and peak RSS was about 1.0×
   the captured bytes plus ~30 MiB for capture alone. Derivation adds per-entity
   memory: 239 MiB peak for a 14 MiB stdlib. Measurements are in
-  `docs/migration-audit/README.md`.
+  `docs/migration-audit/README.md` at `013e791`.
 
 ## CLI
 
@@ -349,7 +349,7 @@ the same arguments, defaults and output. Clients that list tools now see one.
 
 Structural search (`Repository.structural_search`) is **not** an MCP mode. In a
 preregistered agent trial, agents given it matched what they already found with grep
-(shape-task F1 0.994 vs 0.978) ([phase-6/structural-mcp-trial](phase-6/structural-mcp-trial/README.md)).
+(shape-task F1 0.994 vs 0.978) ([phase-6/structural-mcp-trial](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/structural-mcp-trial/README.md)).
 
 - **Stateless.** Every call opens the repository, reads and closes it, inside a
   `with`; no handle, connection or lock outlives a call, and nothing depends on an

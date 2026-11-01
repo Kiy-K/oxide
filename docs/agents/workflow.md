@@ -38,17 +38,16 @@ stateless HTTP on loopback); `docs/public-api.md` § MCP has the contract.
 `uv run python scripts/bench.py <corpus>` is the reproducible latency and
 peak-RSS benchmark: fresh processes and private data, cold and warm definitions
 in its docstring, and a JSON report with the corpus identity and environment.
-Run it under the limits below; recorded runs are in `docs/migration-audit/bench/`.
+Run it under the limits below; recorded runs are in `docs/migration-audit/bench/` at commit `013e791`.
 `uv run python tests/python/contextbench.py run [--out DIR]` is the context-quality
 harness (entry-point, routing and packing metrics at 256/1,024/4,096 units);
 `tests/python/test_contextbench.py` gates it in `mise run verify` against the latest
-frozen `docs/phase-6/baseline-vN/` (`contextbench.BASELINE`); v1's README is the
-protocol (splits, gate rules, how to freeze a new version) and each later README states
-its amendments. Gold is audited (`gold-audit.json`); only verified gold is gated.
+frozen `docs/phase-6/baseline-vN/` (`contextbench.BASELINE`); the protocol (splits, gate
+rules, how to freeze a new version) is [decisions § Evaluation protocol](../decisions.md#evaluation-protocol),
+and the frozen README states the latest amendment. Gold is audited (`gold-audit.json`); only verified gold is gated.
 Develop on the dev split; never tune on held-out.
-`tests/python/contextbench_ts.py` is the same ruler for TypeScript (protocol in
-`docs/phase-6/typescript-v1/`, corpora amendment in `typescript-v2/`, latest frozen
-baseline `typescript-v15/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
+`tests/python/contextbench_ts.py` is the same ruler for TypeScript (tasks and gold
+audit in `docs/phase-6/typescript-v1/`, latest frozen baseline `typescript-v15/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
 sources-only `corpora/` only reproduces v1). Its scorer cases run in `verify`; the gate
 needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
 `verify`. Run it under the limits below before and after any TypeScript retrieval,
@@ -67,7 +66,7 @@ smoke with only the environment's scripts on `PATH`. That smoke also checks
 that MCP advertises exactly `oxide_search`. Optional agent tooling (CodeGraph,
 Context7, archify, external MCP servers) and GitHub Actions have their own runtimes;
 they are not OXIDE dependencies. See the
-[legacy infrastructure audit](../migration-audit/legacy-infrastructure.md) for
+[legacy infrastructure audit](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/migration-audit/legacy-infrastructure.md) for
 the inventory and process ancestry.
 
 Tests never write to real user data: `tests/python/conftest.py` gives every
@@ -89,14 +88,12 @@ lowercase prefix plus an imperative summary: `fix:`, `feat:`, `refactor:`,
 
 ## Historical reproduction
 
-Retained `eval-agent/`, `scripts/agent_eval/`, `scripts/perf.sh` and Rust
-regression/conformance fixtures are historical evidence, not current build steps.
-Use the matching pinned tree (`ac985b28` for v1, `f79808a` for the replaced
-Rust/Bun v2 runtime), its manifests and original report commands. The legacy
+Legacy harnesses (`eval-agent/`, `scripts/agent_eval/`, `scripts/perf.sh`) and
+completed study reports are not in this checkout. Run them from their pinned tree:
+`013e791` for the Phase 6 studies and the last copy of the legacy harnesses,
+`ac985b28` for v1, `f79808a` for the replaced Rust/Bun v2 runtime. The legacy
 ContextBench evaluator requires Python 3.11; old TS/TSX task verification uses Bun.
-See the [infrastructure decision summary](../migration-audit/legacy-infrastructure.md)
-for the retention boundary and pinned original audit. Do not apply v1 CLI,
-embedding or SQLite contracts to the Python engine.
+Do not apply v1 CLI, embedding or SQLite contracts to the Python engine.
 
 ## LadybugDB FTS extension
 
@@ -122,5 +119,5 @@ Earlier Phase 4/5 reports and DecisionBench/JEV harness instructions are in the
 
 Each language's conformance suite runs in `mise run verify` (`tests/python/test_<language>.py`).
 Where a bounded real-repository and ContextBench diagnostic exists, it is `scripts/eval_<language>.py`, with
-protocol and results in `docs/phase-6/<language>-v1/`. Rerun it only when a change claims to
+protocol and results in `docs/phase-6/<language>-v1/` (pinned at `013e791`). Rerun it only when a change claims to
 move that language's resolution quality; ordinary fixes need only `verify`.
