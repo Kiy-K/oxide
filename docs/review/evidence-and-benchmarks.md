@@ -12,8 +12,8 @@ change presents, not about the code paths themselves.
 
 **Invariant:** a benchmark claim must say which config produced it: the
 frozen baselines (`tests/python/test_baseline.py` against
-`docs/phase-3/baseline-v1/`; `test_contextbench.py` against the latest
-`docs/phase-6/baseline-vN/`), a ContextBench run
+`fixtures/eval/structural-v1/`; `test_contextbench.py` against the latest
+`fixtures/eval/contextbench-py/baseline-vN/`), a ContextBench run
 (`tests/python/contextbench.py` / `contextbench_ts.py`), or an ad hoc run;
 which corpus and split (dev vs held-out); and the exact reproduction
 command. These are not interchangeable. The frozen baseline is the gate;
@@ -74,8 +74,8 @@ test name.
 
 ### EVD-004 — Frozen baselines are not regenerated to pass
 **Severity:** BLOCKER · **Scope:** `tests/python/test_baseline.py`
-(`docs/phase-3/baseline-v1/`), ContextBench gates (`docs/phase-6/baseline-vN/`,
-`docs/phase-6/typescript-vN/`).
+(`fixtures/eval/structural-v1/`), ContextBench gates (`fixtures/eval/contextbench-py/baseline-vN/`,
+`fixtures/eval/contextbench-ts/baseline-vN/`).
 
 **Invariant:** retrieval, routing and packing changes are evaluated against
 the frozen baselines; never regenerate a frozen artifact to make a failure

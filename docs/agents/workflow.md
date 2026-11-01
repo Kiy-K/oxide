@@ -42,12 +42,12 @@ Run it under the limits below; recorded runs are in `docs/migration-audit/bench/
 `uv run python tests/python/contextbench.py run [--out DIR]` is the context-quality
 harness (entry-point, routing and packing metrics at 256/1,024/4,096 units);
 `tests/python/test_contextbench.py` gates it in `mise run verify` against the latest
-frozen `docs/phase-6/baseline-vN/` (`contextbench.BASELINE`); the protocol (splits, gate
-rules, how to freeze a new version) is [decisions § Evaluation protocol](../decisions.md#evaluation-protocol),
+frozen `fixtures/eval/contextbench-py/baseline-vN/` (`contextbench.BASELINE`); the protocol (splits, gate
+rules, how to freeze a new version) is in [`fixtures/eval/`](../../fixtures/eval/README.md),
 and the frozen README states the latest amendment. Gold is audited (`gold-audit.json`); only verified gold is gated.
 Develop on the dev split; never tune on held-out.
 `tests/python/contextbench_ts.py` is the same ruler for TypeScript (tasks and gold
-audit in `docs/phase-6/typescript-v1/`, latest frozen baseline `typescript-v15/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
+audit in `fixtures/eval/contextbench-ts/`, latest frozen baseline `baseline-v15/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
 sources-only `corpora/` only reproduces v1). Its scorer cases run in `verify`; the gate
 needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
 `verify`. Run it under the limits below before and after any TypeScript retrieval,
@@ -109,7 +109,7 @@ structural retrieval and routing continue. No vector extension exists.
 
 ## Frozen baselines
 
-`docs/phase-3/baseline-v1/` (Rust retrieval and routing) is a read-only
+`fixtures/eval/structural-v1/` (Rust retrieval and routing) is a read-only
 oracle: `tests/python/test_baseline.py` asserts the Python engine reproduces
 it exactly. A pin or version bump that changes it is a new baseline
 directory with a recorded comparison, never a regenerated old one.
@@ -119,5 +119,5 @@ Earlier Phase 4/5 reports and DecisionBench/JEV harness instructions are in the
 
 Each language's conformance suite runs in `mise run verify` (`tests/python/test_<language>.py`).
 Where a bounded real-repository and ContextBench diagnostic exists, it is `scripts/eval_<language>.py`, with
-protocol and results in `docs/phase-6/<language>-v1/` (pinned at `013e791`). Rerun it only when a change claims to
+protocol and results in the pinned `docs/phase-6/<language>-v1/` at `013e791`. Rerun it only when a change claims to
 move that language's resolution quality; ordinary fixes need only `verify`.

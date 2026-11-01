@@ -3,7 +3,7 @@
 OXIDE v2 (branch `rewrite/v2`): a structural context engine for agents. One Python package, `oxide`, in `src/oxide/` (ADR-0011); the Rust/Bun implementation it replaced is recoverable at `f79808a`.
 `CLAUDE.md` is a symlink to this file, so Claude and Codex share one root policy.
 
-The architecture authority is `docs/spec/SPEC.md`, with standing rules, research verdicts and the evaluation protocol in `docs/decisions.md` and decisions in `docs/adr/` (Proposed ADRs are proposals, not Accepted decisions; never change an ADR's status unasked). When they disagree with anything else in the repo, they win.
+The architecture authority is `docs/spec/SPEC.md`, with standing rules and research verdicts in `docs/decisions.md`, the evaluation protocol in `fixtures/eval/README.md` and decisions in `docs/adr/` (Proposed ADRs are proposals, not Accepted decisions; never change an ADR's status unasked). When they disagree with anything else in the repo, they win.
 
 This file is always loaded; keep it short. New commands go in `docs/agents/workflow.md`; the public API is documented in `docs/public-api.md`.
 

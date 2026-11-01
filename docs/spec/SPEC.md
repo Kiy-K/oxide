@@ -7,7 +7,7 @@
 - Date: 2026-10-07.
 - Top-level decision: [ADR-0001](../adr/0001-oxide-v2-rewrite.md), **Proposed**.
 - Implementation decision: [ADR-0011](../adr/0011-python-engine-vectorless.md), **Accepted** 2026-10-15: one Python process, LadybugDB through its Python wheel, vectorless retrieval. It supersedes ADR-0003 and the Rust/TypeScript and vector/embedding parts of ADR-0001.
-- Standing rules, delivered state and remaining work: [decisions.md](../decisions.md).
+- Standing rules and research verdicts: [decisions.md](../decisions.md); frozen evaluation inputs and protocol: [`fixtures/eval/`](../../fixtures/eval/README.md).
 
 **Amended 2026-10-15 (ADR-0011).** OXIDE v2 is implemented in Python. Read "core" (the `oxide.core` modules: pure repository-intelligence policy) where older text said Rust kernel, "engine" (the `oxide` package: API, capture, storage) where it said Rust runtime, and "integrations" (Python clients of the public API: the CLI, the `oxide mcp` server, future editor adapters) where it said TypeScript control plane. Vector and embedding retrieval is removed from the architecture, not deferred. Sections below were edited accordingly; where historical Rust phases are cited, they are evidence, recoverable at commit `f79808a`.
 
@@ -494,7 +494,7 @@ The root policy, development workflow, domain instructions, invariants, README, 
 | [Performance baseline](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/perf-baseline-v0.1.md), [one-parse results](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/one-parse-eval/results/ab_summary.md), [reliability fixes](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/reliability-fixes/README.md) | Repeated parsing cost measurable; deep recursive AST walks overflowed; hash-map iteration changed eval order | Share parsing where safe, use bounded/iterative traversal, deterministic iteration, paired cold/warm measurements |
 | [TS platform roadmap, issue 36](https://github.com/Kiy-K/oxide/issues/36) | Historical transport comparisons and packaging gaps; Rust MCP remained canonical then | Reuse integration evidence only; v2 MCP is the Python `oxide mcp` server (FastMCP) over the public API, and transport/cost claims need fresh validation |
 
-Preserve `fixtures/benchmark.json`, language/relation conformance fixtures and the frozen gate inputs listed in [decisions](../decisions.md#evaluation-protocol) as reference assets. The legacy harnesses (`tests/benchmark_gate.rs`, `eval-agent/`, `scripts/agent_eval/`, `scripts/perf.sh`), their dumps and negative reports are preserved at their pinned trees (`ac985b28`, `013e791`), not in the current checkout. Inventory availability: some machine-local traces are not committed and some retired experiments require their pinned historical code. Their presence in docs does not mean every run can be regenerated from current main.
+Preserve `fixtures/benchmark.json`, language/relation conformance fixtures and the frozen gate inputs in [`fixtures/eval/`](../../fixtures/eval/README.md) as reference assets. The legacy harnesses (`tests/benchmark_gate.rs`, `eval-agent/`, `scripts/agent_eval/`, `scripts/perf.sh`), their dumps and negative reports are preserved at their pinned trees (`ac985b28`, `013e791`), not in the current checkout. Inventory availability: some machine-local traces are not committed and some retired experiments require their pinned historical code. Their presence in docs does not mean every run can be regenerated from current main.
 
 These studies constrain claims, not future possibilities. None proves that graph-native storage or a newly trained capsule decision model will improve task success. Those hypotheses require new paired evaluations.
 
@@ -569,7 +569,7 @@ These uncertainties require a written resolution; downstream agents must not sil
 
 ## Milestones
 
-Historical dependency order (phases 0–6 are delivered; remaining work is in [decisions.md](../decisions.md)):
+Historical dependency order (phases 0–6 are delivered; their plans are pinned at `013e791`):
 
 1. **Phase 0:** Minimal workspace, logical kernel/runtime separation, TS workspace, Mise and CI; specify the minimal typed boundary.
 2. **Phase 1:** Domain identities/snapshots, TreeIndex/TreeRouter navigation contracts, KnowledgeStore/fake store, initial DecisionProvider/heuristic and embedding-provider contracts including JEV capability planning, conformance fixtures.
@@ -577,7 +577,7 @@ Historical dependency order (phases 0–6 are delivered; remaining work is in [d
 4. **Phase 3:** Lexical entry points, deterministic TreeRouter baseline with minimal bounded region/candidate judgments, optional Ollama/llama.cpp vector adapters, evaluation harness and frozen retrieval/routing baselines.
 5. **Phase 4:** Refined CandidateGraph/capsules, optional JEV adapter against the existing contract, deterministic inclusion policy, bounded expansion, ContextPacker and coherent budget validation. JEV remains opt-in and is not required to exit the phase.
 6. **Phase 5:** Local specialized/stronger-judge experiments, calibration and selective routing, DecisionBench collection/evaluation. Confidence/abstention and the provider interface already exist in the earlier phases; a trained model is not required for architecture acceptance.
-7. **Phase 6 — Python migration (ADR-0011):** the Python engine replaces the Rust/Bun implementation, starting with the `index_repository → search → build_context` slice; delivered 2026-10-15 ([decisions](../decisions.md) § Delivered).
+7. **Phase 6 — Python migration (ADR-0011):** the Python engine replaces the Rust/Bun implementation, starting with the `index_repository → search → build_context` slice; delivered 2026-10-15.
 
 Start structural and provider contracts, uncertainty/fallback tests, evaluation and trace fixtures in Phase 1; do not defer TreeIndex/TreeRouter or DecisionProvider design to Phase 5. Grow canonical capsule schemas through explicit versions as routing/candidate data becomes concrete. Implement the deterministic lexical/structural routing/context path before treating ANN, JEV or learned inference as prerequisites. Incremental/full parity and multi-client concurrency can be staged, but are required before those capabilities are advertised. Dependencies may justify moving a phase; document the change and retain exit gates.
 

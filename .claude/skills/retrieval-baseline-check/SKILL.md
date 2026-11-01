@@ -1,9 +1,9 @@
 ---
 name: retrieval-baseline-check
-description: Checks OXIDE v2 retrieval, routing and packing against the frozen Phase 3 baseline before and after a change to src/oxide/core/ (terms, retrieval, routing, packing) or the lexical/FTS path in src/oxide/storage/. Use before and after touching ranking, scoring, seeds, TreeRouter bounds or selection/packing.
+description: Checks OXIDE v2 retrieval, routing and packing against the frozen structural baseline before and after a change to src/oxide/core/ (terms, retrieval, routing, packing) or the lexical/FTS path in src/oxide/storage/. Use before and after touching ranking, scoring, seeds, TreeRouter bounds or selection/packing.
 ---
 
-`docs/phase-3/baseline-v1/` is a read-only oracle (SPEC § Evaluation,
+`fixtures/eval/structural-v1/` is a read-only oracle (SPEC § Evaluation,
 `docs/agents/workflow.md` § Frozen baselines). The Python engine must reproduce
 it exactly: entry points, lexical ranks, BM25 scores to 1e-12 relative, and
 routed entities and depths.
