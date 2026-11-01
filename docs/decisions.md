@@ -1,0 +1,41 @@
+# Decisions
+
+The standing architectural decisions of OXIDE v2 and the research verdicts that constrain
+them. [SPEC](spec/SPEC.md) is the architecture authority and the [ADRs](adr/) record
+individual decisions; this file never changes an ADR's status, and a Proposed ADR is not a
+requirement. The evaluation protocol is in [`fixtures/eval/`](../fixtures/eval/README.md).
+
+Reports, harnesses and raw results behind every verdict are frozen at
+[`013e791`](https://github.com/Kiy-K/oxide/tree/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs)
+(`docs/phase-6/<study>/`, `docs/BOOTSTRAP.md`, `docs/migration-audit/`). The v1
+implementation is pinned at `ac985b28`, the replaced Rust/Bun v2 runtime at `f79808a`.
+
+## Standing rules
+
+1. One Python package, `oxide` (ADR-0011). A new package or dependency needs a reuse, packaging or API reason.
+2. Legacy `main` is evidence, not a template. Reusing it requires a stated SPEC requirement, a boundary-fit reason and tests. No legacy SQLite schemas, row IDs, migrations or cache locations; derived state is rebuildable from captured source.
+3. Repository intelligence lives in `oxide.core`, I/O in `oxide.capture` and `oxide.storage`. LadybugDB objects, native IDs, rows and Cypher stay inside `oxide.storage`; the API exposes only domain values. Integrations (the CLI, `oxide mcp`, editors) are clients of `oxide.api` and never parse, route or select.
+4. When SPEC and code disagree, SPEC wins. If SPEC is ambiguous, record the ambiguity and a proposal; don't invent permanent ID, schema, transport or model policy to unblock scaffolding.
+5. Vectorless: no embeddings, vector indexes or model runners. Lexical entry points, TreeRouter, the heuristic value and the packer need no model or network.
+6. Models judge; deterministic code decides thresholds, traversal, stopping, inclusion, budget, fallback and packing. A `DecisionProvider` seam behind `oxide.core.packing.value` carries abstention and a deterministic fallback; JEV and every learned judge stay optional, and CI never runs a live judge.
+7. Structure comes before similarity: retrieval finds entry points, routing finds context, and the TreeIndex keeps cross-edges.
+8. Native libraries (tree-sitter, LadybugDB, NetworkX, hashing) do recursive and latency-sensitive work; Python holds bounded policy.
+9. Never execute repository code or build hooks while indexing. Respect repository scope and source privacy.
+10. Frozen baselines keep their provenance. Never regenerate gold or erase a negative result to make a challenger pass; promoting a quality change to a default needs gate evidence.
+
+## Research verdicts
+
+Each row is closed; its report is under `docs/phase-6/<study>/` at the pin above.
+
+| Area | Verdict |
+|---|---|
+| Graph ranking (`graph-v1`..`v3`) | Resolution raised routed coverage 0.673 → 0.730. REJECT PPR + communities, dispatch routing and the order tiebreak; the loss after routing comes from budget allocation and the relevance signal. |
+| Graph navigation (`graph-navigation`, `-v2`, `networkx-v1`) | Basis for ADR-0012 and ADR-0013 (both Proposed). |
+| Agent-guided context (`agc`, `agc-v2`..`v4`) | v2 REJECT (adoption); v4 STOP at stage 1, so ADR-0013 stays Proposed without evidence. |
+| Optional judges (`decision-study-v1`..`v3`, `jev-reliability`, `jev-order-m1`..`m3`) | v3 PASS (+0.159 at 4,096 units); reliability PASS only under immediate fallback. M3 and ADR-0009 NOT READY: JEV stays off. |
+| Storage (`leann-graph-storage`, [`fts-footprint`](fts-footprint.md)) | REJECT compaction; DEFER the traversal memo. ACCEPT `auto_checkpoint=False`, exact wide top-k, blob fsync overlap with a 65,536-entry LRU. REJECT two query threads. |
+| Output (`toon-serialization`, `outline-comparison`, `output-integrity`) | REJECT TOON and outlines. Output-integrity fixes shipped. |
+| Retrieval (`path-hint-utility` and diagnostics) | PROMOTE path hints (`oxide-select-greedy-v4`): dev hinted `line_recall@4096` 0.685 → 0.785 (Python), 0.360 → 0.626 (TypeScript). REJECT source bodies; file localization NOT VIABLE; router reachability NEGATIVE. |
+| Structure (`astgrep-feasibility`, `structural-mcp-trial`) | ast-grep feasible (94 MB, pinned). REJECT a structural MCP tool: grep F1 0.994 vs 0.978. |
+| Indexing (`incremental-indexing`, `change-classification`) | Incremental indexing shipped; change classification NOT WORTH IT. |
+| FTS distribution (`release-blockers`) | Upstream replaced the FTS 0.21.0 files, so OXIDE mirrors the original builds ([`fts-mirror/`](fts-mirror/RELEASE.md)). |

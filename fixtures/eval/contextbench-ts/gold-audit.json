@@ -1,0 +1,5972 @@
+{
+ "version": "contextbench-ts-gold-audit-v1",
+ "tasks": "docs/phase-6/typescript-v1/tasks.json sha256 5fc16fa6b0b68542caeb4a5a98a28dc404da1266bec08466c5a97e8e9f1589e2",
+ "source": "EuniAI/ContextBench data/full.parquet sha256 2f56535bdc73eb8a68bf4ebb49789d8e9cd4f219ea60df6290b85278aee61ca8",
+ "verified": [
+  "ast",
+  "exact",
+  "contained",
+  "path"
+ ],
+ "spans": {
+  "coder__code-server-4923": [
+   {
+    "file": "src/node/app.ts",
+    "start": 11,
+    "end": 17,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/app.ts",
+    "start": 22,
+    "end": 28,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/app.ts",
+    "start": 25,
+    "end": 49,
+    "class": "range",
+    "detail": "content verbatim at lines 25-50"
+   },
+   {
+    "file": "src/node/app.ts",
+    "start": 31,
+    "end": 37,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/app.ts",
+    "start": 130,
+    "end": 134,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/cli.ts",
+    "start": 56,
+    "end": 61,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/cli.ts",
+    "start": 175,
+    "end": 177,
+    "class": "contained",
+    "detail": "1 of 2 range lines not in the content"
+   },
+   {
+    "file": "src/node/cli.ts",
+    "start": 175,
+    "end": 180,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/cli.ts",
+    "start": 513,
+    "end": 518,
+    "class": "exact"
+   }
+  ],
+  "coder__code-server-6278": [
+   {
+    "file": "src/node/app.ts",
+    "start": 85,
+    "end": 98,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/main.ts",
+    "start": 121,
+    "end": 132,
+    "class": "contained",
+    "detail": "2 of 10 range lines not in the content"
+   },
+   {
+    "file": "src/node/main.ts",
+    "start": 126,
+    "end": 132,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/util.ts",
+    "start": 53,
+    "end": 88,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "start": 1,
+    "end": 12,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "start": 1,
+    "end": 14,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "start": 38,
+    "end": 83,
+    "class": "exact"
+   },
+   {
+    "file": "src/node/vscodeSocket.ts",
+    "start": 78,
+    "end": 84,
+    "class": "exact"
+   }
+  ],
+  "darkreader__darkreader-6747": [
+   {
+    "file": "/workspace/darkreader__darkreader__0.1/package.json",
+    "start": 1,
+    "end": 109,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/darkreader__darkreader__0.1/src/generators/dynamic-theme.ts",
+    "start": 1,
+    "end": 26,
+    "class": "path",
+    "corrected_file": "src/generators/dynamic-theme.ts",
+    "detail": "/workspace/darkreader__darkreader__0.1/src/generators/dynamic-theme.ts is not in the corpus; src/generators/dynamic-theme.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/darkreader__darkreader__0.1/src/generators/dynamic-theme.ts",
+    "start": 1,
+    "end": 81,
+    "class": "path",
+    "corrected_file": "src/generators/dynamic-theme.ts",
+    "detail": "/workspace/darkreader__darkreader__0.1/src/generators/dynamic-theme.ts is not in the corpus; src/generators/dynamic-theme.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/darkreader__darkreader__0.1/src/generators/dynamic-theme.ts",
+    "start": 50,
+    "end": 71,
+    "class": "path",
+    "corrected_file": "src/generators/dynamic-theme.ts",
+    "detail": "/workspace/darkreader__darkreader__0.1/src/generators/dynamic-theme.ts is not in the corpus; src/generators/dynamic-theme.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/darkreader__darkreader__0.1/src/generators/utils/parse.ts",
+    "start": 1,
+    "end": 41,
+    "class": "path",
+    "corrected_file": "src/generators/utils/parse.ts",
+    "detail": "/workspace/darkreader__darkreader__0.1/src/generators/utils/parse.ts is not in the corpus; src/generators/utils/parse.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/darkreader__darkreader__0.1/src/generators/utils/parse.ts",
+    "start": 140,
+    "end": 161,
+    "class": "path",
+    "corrected_file": "src/generators/utils/parse.ts",
+    "detail": "/workspace/darkreader__darkreader__0.1/src/generators/utils/parse.ts is not in the corpus; src/generators/utils/parse.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/darkreader__darkreader__0.1/src/utils/url.ts",
+    "start": 1,
+    "end": 21,
+    "class": "path",
+    "corrected_file": "src/utils/url.ts",
+    "detail": "/workspace/darkreader__darkreader__0.1/src/utils/url.ts is not in the corpus; src/utils/url.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/darkreader__darkreader__0.1/src/utils/url.ts",
+    "start": 32,
+    "end": 61,
+    "class": "path",
+    "corrected_file": "src/utils/url.ts",
+    "detail": "/workspace/darkreader__darkreader__0.1/src/utils/url.ts is not in the corpus; src/utils/url.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/darkreader__darkreader__0.1/src/utils/url.ts",
+    "start": 90,
+    "end": 151,
+    "class": "path",
+    "corrected_file": "src/utils/url.ts",
+    "detail": "/workspace/darkreader__darkreader__0.1/src/utils/url.ts is not in the corpus; src/utils/url.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/darkreader__darkreader__0.1/src/utils/url.ts",
+    "start": 120,
+    "end": 141,
+    "class": "path",
+    "corrected_file": "src/utils/url.ts",
+    "detail": "/workspace/darkreader__darkreader__0.1/src/utils/url.ts is not in the corpus; src/utils/url.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "darkreader__darkreader-7241": [
+   {
+    "file": "src/generators/utils/parse.ts",
+    "start": 143,
+    "end": 149,
+    "class": "exact"
+   },
+   {
+    "file": "src/generators/utils/parse.ts",
+    "start": 144,
+    "end": 162,
+    "class": "exact"
+   }
+  ],
+  "microsoft__vscode-106767": [
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "start": 56,
+    "end": 61,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "start": 99,
+    "end": 104,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "start": 136,
+    "end": 141,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "start": 136,
+    "end": 180,
+    "class": "drift",
+    "detail": "3 of 25 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+    "start": 164,
+    "end": 169,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "start": 44,
+    "end": 49,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "start": 393,
+    "end": 408,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "start": 550,
+    "end": 575,
+    "class": "contained",
+    "detail": "7 of 21 range lines not in the content"
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "start": 558,
+    "end": 564,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+    "start": 566,
+    "end": 572,
+    "class": "exact"
+   }
+  ],
+  "microsoft__vscode-109750": [
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "start": 144,
+    "end": 150,
+    "class": "drift",
+    "detail": "1 of 3 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "start": 166,
+    "end": 175,
+    "class": "drift",
+    "detail": "3 of 7 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "start": 223,
+    "end": 250,
+    "class": "contained",
+    "detail": "1 of 26 range lines not in the content"
+   },
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "start": 227,
+    "end": 235,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+    "start": 240,
+    "end": 245,
+    "class": "exact"
+   }
+  ],
+  "microsoft__vscode-110094": [
+   {
+    "file": "src/vs/editor/common/controller/cursor.ts",
+    "start": 531,
+    "end": 537,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "start": 14,
+    "end": 20,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "start": 75,
+    "end": 82,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "start": 136,
+    "end": 144,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorDeleteOperations.ts",
+    "start": 122,
+    "end": 128,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 439,
+    "end": 445,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 498,
+    "end": 528,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 524,
+    "end": 549,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 548,
+    "end": 554,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 551,
+    "end": 615,
+    "class": "range",
+    "detail": "content verbatim at lines 551-616"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 560,
+    "end": 565,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 570,
+    "end": 580,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 612,
+    "end": 625,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 617,
+    "end": 626,
+    "class": "contained",
+    "detail": "1 of 9 range lines not in the content"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 794,
+    "end": 802,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 838,
+    "end": 846,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorWordOperations.ts",
+    "start": 384,
+    "end": 390,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/modes/languageConfiguration.ts",
+    "start": 293,
+    "end": 311,
+    "class": "contained",
+    "detail": "1 of 17 range lines not in the content"
+   },
+   {
+    "file": "src/vs/editor/common/modes/languageConfiguration.ts",
+    "start": 294,
+    "end": 310,
+    "class": "exact"
+   }
+  ],
+  "microsoft__vscode-135197": [
+   {
+    "file": "src/vs/editor/common/controller/cursorCommon.ts",
+    "start": 423,
+    "end": 425,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 554,
+    "end": 609,
+    "class": "unresolved",
+    "detail": "content lines present, not in this order"
+   },
+   {
+    "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "start": 598,
+    "end": 604,
+    "class": "exact"
+   }
+  ],
+  "microsoft__vscode-135805": [
+   {
+    "file": "src/vs/editor/common/config/editorOptions.ts",
+    "start": 263,
+    "end": 271,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/editor/contrib/multicursor/multicursor.ts",
+    "start": 68,
+    "end": 89,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/editor/contrib/multicursor/multicursor.ts",
+    "start": 70,
+    "end": 76,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/editor/contrib/multicursor/multicursor.ts",
+    "start": 118,
+    "end": 139,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/editor/contrib/multicursor/multicursor.ts",
+    "start": 120,
+    "end": 126,
+    "class": "drift",
+    "detail": "1 of 1 content lines are not in the file"
+   }
+  ],
+  "microsoft__vscode-136347": [
+   {
+    "file": "src/vs/base/common/charCode.ts",
+    "start": 1,
+    "end": 30,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/browser/viewParts/lines/viewLines.css",
+    "start": 14,
+    "end": 19,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "src/vs/editor/common/config/editorOptions.ts",
+    "start": 575,
+    "end": 581,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/config/editorOptions.ts",
+    "start": 4637,
+    "end": 4644,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "start": 500,
+    "end": 505,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "start": 621,
+    "end": 626,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "start": 621,
+    "end": 650,
+    "class": "drift",
+    "detail": "18 of 26 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "start": 950,
+    "end": 998,
+    "class": "contained",
+    "detail": "1 of 40 range lines not in the content"
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "start": 998,
+    "end": 1012,
+    "class": "drift",
+    "detail": "2 of 15 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "start": 1005,
+    "end": 1010,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "start": 1049,
+    "end": 1051,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/monaco.d.ts",
+    "start": 3226,
+    "end": 3232,
+    "class": "exact"
+   }
+  ],
+  "microsoft__vscode-148971": [
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "start": 120,
+    "end": 160,
+    "class": "contained",
+    "detail": "8 of 39 range lines not in the content"
+   },
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "start": 130,
+    "end": 159,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "start": 265,
+    "end": 275,
+    "class": "contained",
+    "detail": "2 of 7 range lines not in the content"
+   },
+   {
+    "file": "src/vs/base/browser/markdownRenderer.ts",
+    "start": 267,
+    "end": 272,
+    "class": "exact"
+   }
+  ],
+  "microsoft__vscode-149380": [
+   {
+    "file": "src/vs/workbench/contrib/debug/node/terminals.ts",
+    "start": 110,
+    "end": 127,
+    "class": "drift",
+    "detail": "1 of 11 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/workbench/contrib/debug/node/terminals.ts",
+    "start": 120,
+    "end": 125,
+    "class": "range",
+    "detail": "content verbatim at lines 121-126"
+   },
+   {
+    "file": "src/vs/workbench/contrib/debug/node/terminals.ts",
+    "start": 148,
+    "end": 151,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/workbench/contrib/debug/node/terminals.ts",
+    "start": 155,
+    "end": 162,
+    "class": "range",
+    "detail": "content verbatim at lines 157-164"
+   }
+  ],
+  "microsoft__vscode-153121": [
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "start": 59,
+    "end": 64,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "start": 66,
+    "end": 78,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "start": 411,
+    "end": 417,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "start": 411,
+    "end": 430,
+    "class": "contained",
+    "detail": "3 of 18 range lines not in the content"
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "start": 485,
+    "end": 498,
+    "class": "range",
+    "detail": "content verbatim at lines 484-498"
+   },
+   {
+    "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+    "start": 489,
+    "end": 497,
+    "class": "exact"
+   }
+  ],
+  "microsoft__vscode-153857": [
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "start": 146,
+    "end": 150,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "start": 221,
+    "end": 228,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "start": 258,
+    "end": 272,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "start": 271,
+    "end": 278,
+    "class": "contained",
+    "detail": "1 of 8 range lines not in the content"
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "start": 287,
+    "end": 291,
+    "class": "contained",
+    "detail": "1 of 5 range lines not in the content"
+   },
+   {
+    "file": "src/vs/editor/common/languages/linkComputer.ts",
+    "start": 318,
+    "end": 325,
+    "class": "contained",
+    "detail": "1 of 7 range lines not in the content"
+   }
+  ],
+  "microsoft__vscode-160342": [
+   {
+    "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+    "start": 105,
+    "end": 145,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+    "start": 108,
+    "end": 113,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+    "start": 334,
+    "end": 336,
+    "class": "exact"
+   }
+  ],
+  "microsoft__vscode-164396": [
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "start": 765,
+    "end": 797,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "start": 770,
+    "end": 775,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "start": 789,
+    "end": 794,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "start": 812,
+    "end": 825,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "start": 814,
+    "end": 820,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "start": 851,
+    "end": 908,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "start": 868,
+    "end": 873,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "start": 898,
+    "end": 904,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "start": 918,
+    "end": 924,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/editor/common/services/modelService.ts",
+    "start": 918,
+    "end": 950,
+    "class": "contained",
+    "detail": "20 of 31 range lines not in the content"
+   }
+  ],
+  "microsoft__vscode-177084": [
+   {
+    "file": "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts",
+    "start": 451,
+    "end": 457,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+    "start": 1,
+    "end": 30,
+    "class": "drift",
+    "detail": "13 of 20 content lines are not in the file"
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+    "start": 205,
+    "end": 211,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+    "start": 205,
+    "end": 220,
+    "class": "drift",
+    "detail": "5 of 10 content lines are not in the file"
+   }
+  ],
+  "microsoft__vscode-189223": [
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "start": 1,
+    "end": 16,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "start": 31,
+    "end": 53,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "start": 55,
+    "end": 111,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "start": 113,
+    "end": 126,
+    "class": "exact"
+   },
+   {
+    "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+    "start": 127,
+    "end": 132,
+    "class": "exact"
+   }
+  ],
+  "mui__material-ui-11858": [
+   {
+    "file": ".size-limit.js",
+    "start": 27,
+    "end": 33,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.d.ts",
+    "start": 1,
+    "end": 12,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "start": 37,
+    "end": 76,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "start": 42,
+    "end": 48,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "start": 54,
+    "end": 59,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "start": 69,
+    "end": 74,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "start": 78,
+    "end": 93,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "start": 123,
+    "end": 132,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "pages/api/list-item-text.md",
+    "start": 17,
+    "end": 23,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-11987": [
+   {
+    "file": ".size-limit.js",
+    "start": 27,
+    "end": 33,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/style/icons/SvgIcons.js",
+    "start": 2,
+    "end": 7,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/style/icons/SvgIcons.js",
+    "start": 39,
+    "end": 44,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.d.ts",
+    "start": 4,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "start": 40,
+    "end": 75,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "start": 43,
+    "end": 48,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "start": 60,
+    "end": 66,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "start": 68,
+    "end": 76,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "start": 77,
+    "end": 81,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "start": 93,
+    "end": 98,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "start": 118,
+    "end": 125,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "pages/api/svg-icon.md",
+    "start": 18,
+    "end": 23,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-12236": [
+   {
+    "file": "packages/material-ui/src/styles/withTheme.d.ts",
+    "start": 3,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/styles/withTheme.js",
+    "start": 1,
+    "end": 4,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/styles/withTheme.js",
+    "start": 44,
+    "end": 53,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/styles/withTheme.js",
+    "start": 44,
+    "end": 53,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.d.ts",
+    "start": 7,
+    "end": 12,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "start": 95,
+    "end": 135,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "start": 98,
+    "end": 104,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "start": 127,
+    "end": 133,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "start": 144,
+    "end": 149,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-12303": [
+   {
+    "file": "docs/src/pages/demos/selection-controls/CheckboxesGroup.js",
+    "start": 1,
+    "end": 4,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/demos/selection-controls/CheckboxesGroup.js",
+    "start": 6,
+    "end": 16,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/demos/selection-controls/CheckboxesGroup.js",
+    "start": 18,
+    "end": 62,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/demos/selection-controls/RadioButtonsGroup.js",
+    "start": 34,
+    "end": 40,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/demos/selection-controls/RadioButtonsGroup.js",
+    "start": 54,
+    "end": 60,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/demos/selection-controls/RadioButtonsGroup.js",
+    "start": 63,
+    "end": 79,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/FormControlLabel/FormControlLabel.d.ts",
+    "start": 14,
+    "end": 23,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/FormControlLabel/FormControlLabel.js",
+    "start": 22,
+    "end": 27,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/FormControlLabel/FormControlLabel.js",
+    "start": 40,
+    "end": 90,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/FormControlLabel/FormControlLabel.js",
+    "start": 45,
+    "end": 50,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/FormControlLabel/FormControlLabel.js",
+    "start": 74,
+    "end": 79,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/FormControlLabel/FormControlLabel.js",
+    "start": 121,
+    "end": 126,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/FormControlLabel/FormControlLabel.js",
+    "start": 139,
+    "end": 144,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "pages/api/form-control-label.md",
+    "start": 22,
+    "end": 27,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "pages/api/form-control-label.md",
+    "start": 37,
+    "end": 42,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-13534": [
+   {
+    "file": "docs/src/pages/demos/badges/badges.md",
+    "start": 13,
+    "end": 18,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Badge/Badge.d.ts",
+    "start": 7,
+    "end": 15,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/Badge/Badge.js",
+    "start": 34,
+    "end": 39,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Badge/Badge.js",
+    "start": 50,
+    "end": 55,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Badge/Badge.js",
+    "start": 55,
+    "end": 75,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Badge/Badge.js",
+    "start": 60,
+    "end": 70,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Badge/Badge.js",
+    "start": 77,
+    "end": 112,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Badge/Badge.js",
+    "start": 102,
+    "end": 112,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "pages/api/badge.md",
+    "start": 24,
+    "end": 29,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "pages/api/badge.md",
+    "start": 40,
+    "end": 45,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "pages/demos/badges.js",
+    "start": 21,
+    "end": 26,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-18141": [
+   {
+    "file": "docs/src/pages/components/text-fields/ValidationTextFields.js",
+    "start": 30,
+    "end": 36,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/text-fields/ValidationTextFields.js",
+    "start": 50,
+    "end": 56,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/text-fields/ValidationTextFields.js",
+    "start": 71,
+    "end": 77,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/text-fields/ValidationTextFields.tsx",
+    "start": 32,
+    "end": 38,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/text-fields/ValidationTextFields.tsx",
+    "start": 52,
+    "end": 58,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/text-fields/ValidationTextFields.tsx",
+    "start": 73,
+    "end": 79,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/TextField/TextField.js",
+    "start": 87,
+    "end": 88,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/TextField/TextField.js",
+    "start": 120,
+    "end": 126,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/TextField/TextField.js",
+    "start": 128,
+    "end": 129,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/TextField/TextField.js",
+    "start": 144,
+    "end": 144,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/TextField/TextField.js",
+    "start": 175,
+    "end": 183,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-18796": [
+   {
+    "file": "docs/pages/api/autocomplete.md",
+    "start": 57,
+    "end": 63,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/Autocomplete/Autocomplete.js",
+    "start": 622,
+    "end": 628,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.d.ts",
+    "start": 138,
+    "end": 146,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+    "start": 200,
+    "end": 223,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+    "start": 218,
+    "end": 224,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+    "start": 405,
+    "end": 416,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+    "start": 418,
+    "end": 470,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+    "start": 640,
+    "end": 662,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+    "start": 657,
+    "end": 663,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+    "start": 948,
+    "end": 953,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-20657": [
+   {
+    "file": "docs/pages/api-docs/tree-item.md",
+    "start": 36,
+    "end": 41,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/TreeItem/TreeItem.d.ts",
+    "start": 20,
+    "end": 29,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+    "start": 54,
+    "end": 59,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+    "start": 92,
+    "end": 97,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+    "start": 161,
+    "end": 186,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+    "start": 166,
+    "end": 172,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+    "start": 383,
+    "end": 393,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+    "start": 386,
+    "end": 393,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+    "start": 457,
+    "end": 466,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/TreeView/TreeView.js",
+    "start": 219,
+    "end": 228,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-23229": [
+   {
+    "file": "docs/pages/api-docs/autocomplete.md",
+    "start": 108,
+    "end": 114,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Autocomplete/Autocomplete.d.ts",
+    "start": 87,
+    "end": 94,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/Autocomplete/Autocomplete.js",
+    "start": 16,
+    "end": 27,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Autocomplete/Autocomplete.js",
+    "start": 16,
+    "end": 50,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Autocomplete/Autocomplete.js",
+    "start": 135,
+    "end": 160,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Autocomplete/Autocomplete.js",
+    "start": 146,
+    "end": 153,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Autocomplete/Autocomplete.js",
+    "start": 390,
+    "end": 396,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Autocomplete/Autocomplete.js",
+    "start": 418,
+    "end": 445,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Autocomplete/Autocomplete.js",
+    "start": 426,
+    "end": 434,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-23806": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/babel.config.js",
+    "start": 1,
+    "end": 149,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 215,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/index.js",
+    "start": 1,
+    "end": 403,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/useMediaQuery/useMediaQuery.js",
+    "start": 1,
+    "end": 88,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/reproduce-issue.tsx",
+    "start": 80,
+    "end": 91,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/reproduce-issue.tsx is not in the corpus"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/test/regressions/.mocharc.js",
+    "start": 1,
+    "end": 6,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/reproduce-issue.tsx",
+    "start": 1,
+    "end": 11,
+    "class": "unresolved",
+    "detail": "/workspace/reproduce-issue.tsx is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/reproduce-issue.tsx",
+    "start": 1,
+    "end": 89,
+    "class": "unresolved",
+    "detail": "/workspace/reproduce-issue.tsx is not in the corpus",
+    "numbered": true
+   }
+  ],
+  "mui__material-ui-24857": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/babel.config.js",
+    "start": 1,
+    "end": 158,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Dialog/Dialog.js",
+    "start": 1,
+    "end": 71,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Modal/Modal.d.ts",
+    "start": 1,
+    "end": 129,
+    "class": "path",
+    "corrected_file": "packages/material-ui/src/Modal/Modal.d.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Modal/Modal.d.ts is not in the corpus; packages/material-ui/src/Modal/Modal.d.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Modal/Modal.js",
+    "start": 1,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Modal/Modal.js",
+    "start": 100,
+    "end": 151,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Modal/Modal.js",
+    "start": 171,
+    "end": 201,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Modal/Modal.js",
+    "start": 200,
+    "end": 251,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce_issue_16442.tsx",
+    "start": 1,
+    "end": 215,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce_issue_16442.tsx is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce_issue_16442.tsx",
+    "start": 185,
+    "end": 196,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce_issue_16442.tsx is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce_issue_16442.tsx",
+    "start": 187,
+    "end": 188,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce_issue_16442.tsx is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce_issue_16442.tsx",
+    "start": 190,
+    "end": 191,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce_issue_16442.tsx is not in the corpus"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce_issue_16442.tsx",
+    "start": 191,
+    "end": 192,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce_issue_16442.tsx is not in the corpus",
+    "numbered": true
+   }
+  ],
+  "mui__material-ui-25149": [
+   {
+    "file": "docs/pages/api-docs/grid.js",
+    "start": 1,
+    "end": 18,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/pages/components/grid.js",
+    "start": 1,
+    "end": 19,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages.ts",
+    "start": 35,
+    "end": 46,
+    "class": "range",
+    "detail": "content verbatim at lines 34-46"
+   },
+   {
+    "file": "docs/src/pages.ts",
+    "start": 41,
+    "end": 46,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/UploadButtons.js",
+    "start": 1,
+    "end": 9,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/UploadButtons.js",
+    "start": 1,
+    "end": 33,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/UploadButtons.js",
+    "start": 11,
+    "end": 33,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/UploadButtons.tsx",
+    "start": 1,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/UploadButtons.tsx",
+    "start": 1,
+    "end": 33,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/UploadButtons.tsx",
+    "start": 11,
+    "end": 33,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/grid/SpacingGrid.js",
+    "start": 1,
+    "end": 52,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pagesApi.js",
+    "start": 112,
+    "end": 123,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pagesApi.js",
+    "start": 116,
+    "end": 121,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/translations.json",
+    "start": 158,
+    "end": 177,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/translations.json",
+    "start": 171,
+    "end": 176,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-system/src/breakpoints.js",
+    "start": 22,
+    "end": 53,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-system/src/breakpoints.js",
+    "start": 39,
+    "end": 45,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Box/Box.js",
+    "start": 1,
+    "end": 49,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/index.d.ts",
+    "start": 340,
+    "end": 366,
+    "class": "range",
+    "detail": "content verbatim at lines 340-373"
+   },
+   {
+    "file": "packages/material-ui/src/index.d.ts",
+    "start": 360,
+    "end": 365,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/index.js",
+    "start": 281,
+    "end": 299,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/index.js",
+    "start": 293,
+    "end": 298,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-25390": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Button/Button.d.ts",
+    "start": 1,
+    "end": 203,
+    "class": "path",
+    "corrected_file": "packages/material-ui/src/Button/Button.d.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Button/Button.d.ts is not in the corpus; packages/material-ui/src/Button/Button.d.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ToggleButton/ToggleButton.d.ts",
+    "start": 1,
+    "end": 88,
+    "class": "path",
+    "corrected_file": "packages/material-ui/src/ToggleButton/ToggleButton.d.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ToggleButton/ToggleButton.d.ts is not in the corpus; packages/material-ui/src/ToggleButton/ToggleButton.d.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ToggleButton/ToggleButton.js",
+    "start": 1,
+    "end": 219,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ToggleButtonGroup/ToggleButtonGroup.d.ts",
+    "start": 1,
+    "end": 77,
+    "class": "path",
+    "corrected_file": "packages/material-ui/src/ToggleButtonGroup/ToggleButtonGroup.d.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ToggleButtonGroup/ToggleButtonGroup.d.ts is not in the corpus; packages/material-ui/src/ToggleButtonGroup/ToggleButtonGroup.d.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ToggleButtonGroup/ToggleButtonGroup.d.ts",
+    "start": 1,
+    "end": 78,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ToggleButtonGroup/ToggleButtonGroup.d.ts is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ToggleButtonGroup/ToggleButtonGroup.js",
+    "start": 1,
+    "end": 231,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-25637": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/babel.config.js",
+    "start": 1,
+    "end": 161,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 226,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui-styles/src/ThemeProvider/ThemeProvider.js",
+    "start": 1,
+    "end": 83,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui-styles/src/getStylesCreator/getStylesCreator.js",
+    "start": 1,
+    "end": 83,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui-styles/src/getThemeProps/getThemeProps.js",
+    "start": 1,
+    "end": 29,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui-styles/src/makeStyles/makeStyles.js",
+    "start": 1,
+    "end": 284,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui-styles/src/withStyles/withStyles.js",
+    "start": 1,
+    "end": 114,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Tabs/Tabs.js",
+    "start": 1,
+    "end": 524,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/Tabs/Tabs.js",
+    "start": 1,
+    "end": 524,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/index.js",
+    "start": 1,
+    "end": 412,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/styles/index.js",
+    "start": 1,
+    "end": 24,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/styles/withStyles.js",
+    "start": 1,
+    "end": 12,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/repro.tsx",
+    "start": 1,
+    "end": 73,
+    "class": "unresolved",
+    "detail": "/workspace/repro.tsx is not in the corpus",
+    "numbered": true
+   }
+  ],
+  "mui__material-ui-25874": [
+   {
+    "file": "docs/pages/api-docs/loading-button.json",
+    "start": 3,
+    "end": 14,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/pages/api-docs/loading-button.json",
+    "start": 20,
+    "end": 33,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/LoadingButtons.js",
+    "start": 10,
+    "end": 24,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/LoadingButtons.tsx",
+    "start": 10,
+    "end": 24,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/LoadingButtonsTransition.js",
+    "start": 7,
+    "end": 15,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/LoadingButtonsTransition.js",
+    "start": 26,
+    "end": 46,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/LoadingButtonsTransition.js",
+    "start": 48,
+    "end": 55,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/LoadingButtonsTransition.js",
+    "start": 57,
+    "end": 64,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/LoadingButtonsTransition.tsx",
+    "start": 7,
+    "end": 15,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/LoadingButtonsTransition.tsx",
+    "start": 26,
+    "end": 46,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/LoadingButtonsTransition.tsx",
+    "start": 48,
+    "end": 55,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/LoadingButtonsTransition.tsx",
+    "start": 57,
+    "end": 64,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/buttons-de.md",
+    "start": 93,
+    "end": 99,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/buttons-es.md",
+    "start": 93,
+    "end": 99,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/buttons-fr.md",
+    "start": 93,
+    "end": 99,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/buttons-ja.md",
+    "start": 93,
+    "end": 99,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/buttons-pt.md",
+    "start": 93,
+    "end": 99,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/buttons-ru.md",
+    "start": 93,
+    "end": 99,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/buttons/buttons.md",
+    "start": 106,
+    "end": 112,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/guides/migration-v4/migration-v4.md",
+    "start": 785,
+    "end": 790,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/loading-button/loading-button.json",
+    "start": 4,
+    "end": 53,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/LoadingButton/LoadingButton.d.ts",
+    "start": 12,
+    "end": 49,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui-lab/src/LoadingButton/LoadingButton.js",
+    "start": 10,
+    "end": 50,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/LoadingButton/LoadingButton.js",
+    "start": 10,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/LoadingButton/LoadingButton.js",
+    "start": 51,
+    "end": 90,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/LoadingButton/LoadingButton.js",
+    "start": 53,
+    "end": 61,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/LoadingButton/LoadingButton.js",
+    "start": 64,
+    "end": 90,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/LoadingButton/LoadingButton.js",
+    "start": 116,
+    "end": 143,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-lab/src/LoadingButton/LoadingButton.js",
+    "start": 116,
+    "end": 164,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-26480": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ListItem/ListItem.d.ts",
+    "start": 1,
+    "end": 143,
+    "class": "path",
+    "corrected_file": "packages/material-ui/src/ListItem/ListItem.d.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ListItem/ListItem.d.ts is not in the corpus; packages/material-ui/src/ListItem/ListItem.d.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ListItem/ListItem.js",
+    "start": 1,
+    "end": 416,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ListItem/ListItem.js",
+    "start": 1,
+    "end": 416,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ListItem/ListItem.js",
+    "start": 16,
+    "end": 28,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ListItem/ListItem.js",
+    "start": 16,
+    "end": 29,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ListItem/listItemClasses.ts",
+    "start": 1,
+    "end": 49,
+    "class": "path",
+    "corrected_file": "packages/material-ui/src/ListItem/listItemClasses.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ListItem/listItemClasses.ts is not in the corpus; packages/material-ui/src/ListItem/listItemClasses.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/ListItemSecondaryAction/ListItemSecondaryAction.js",
+    "start": 1,
+    "end": 87,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/material-ui/src/index.js",
+    "start": 1,
+    "end": 402,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-26623": [
+   {
+    "file": "docs/pages/api-docs/slide.json",
+    "start": 2,
+    "end": 7,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/transitions/transitions.md",
+    "start": 48,
+    "end": 53,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/slide/slide.json",
+    "start": 3,
+    "end": 8,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popover/Popover.js",
+    "start": 54,
+    "end": 60,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popover/Popover.js",
+    "start": 54,
+    "end": 60,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popover/Popover.js",
+    "start": 153,
+    "end": 159,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popover/Popover.js",
+    "start": 227,
+    "end": 233,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popover/Popover.js",
+    "start": 350,
+    "end": 356,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popover/Popover.js",
+    "start": 398,
+    "end": 404,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popper/Popper.js",
+    "start": 29,
+    "end": 35,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popper/Popper.js",
+    "start": 84,
+    "end": 90,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popper/Popper.js",
+    "start": 138,
+    "end": 144,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popper/Popper.js",
+    "start": 204,
+    "end": 210,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Popper/Popper.js",
+    "start": 258,
+    "end": 264,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.d.ts",
+    "start": 12,
+    "end": 17,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 1,
+    "end": 7,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 11,
+    "end": 18,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 14,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 35,
+    "end": 57,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 76,
+    "end": 94,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 77,
+    "end": 82,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 110,
+    "end": 116,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 155,
+    "end": 161,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 174,
+    "end": 182,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 181,
+    "end": 199,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 186,
+    "end": 192,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 196,
+    "end": 202,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/Slide/Slide.js",
+    "start": 250,
+    "end": 255,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-26746": [
+   {
+    "file": "docs/src/modules/branding/BrandingRoot.tsx",
+    "start": 101,
+    "end": 115,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/pages/customization/breakpoints/breakpoints.md",
+    "start": 15,
+    "end": 20,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/customization/breakpoints/breakpoints.md",
+    "start": 77,
+    "end": 85,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/customization/breakpoints/breakpoints.md",
+    "start": 94,
+    "end": 100,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/customization/breakpoints/breakpoints.md",
+    "start": 139,
+    "end": 145,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/customization/breakpoints/breakpoints.md",
+    "start": 164,
+    "end": 170,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/customization/breakpoints/breakpoints.md",
+    "start": 190,
+    "end": 196,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/customization/breakpoints/breakpoints.md",
+    "start": 216,
+    "end": 222,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/guides/migration-v4/migration-v4.md",
+    "start": 189,
+    "end": 194,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-system/src/breakpoints.js",
+    "start": 5,
+    "end": 15,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-system/src/breakpoints.js",
+    "start": 5,
+    "end": 15,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-system/src/createTheme/createBreakpoints.js",
+    "start": 8,
+    "end": 18,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui-system/src/createTheme/createBreakpoints.js",
+    "start": 8,
+    "end": 18,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/styles/cssUtils.js",
+    "start": 102,
+    "end": 108,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-26807": [
+   {
+    "file": "docs/pages/api-docs/step-label.json",
+    "start": 2,
+    "end": 7,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/step-label/step-label.json",
+    "start": 3,
+    "end": 8,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/step-label/step-label.json",
+    "start": 24,
+    "end": 49,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/step-label/step-label.json",
+    "start": 52,
+    "end": 63,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/StepLabel/StepLabel.d.ts",
+    "start": 14,
+    "end": 19,
+    "class": "exact"
+   },
+   {
+    "file": "packages/material-ui/src/StepLabel/StepLabel.js",
+    "start": 4,
+    "end": 10,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/StepLabel/StepLabel.js",
+    "start": 64,
+    "end": 74,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/StepLabel/StepLabel.js",
+    "start": 64,
+    "end": 80,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/StepLabel/StepLabel.js",
+    "start": 124,
+    "end": 129,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/StepLabel/StepLabel.js",
+    "start": 124,
+    "end": 180,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/StepLabel/StepLabel.js",
+    "start": 170,
+    "end": 180,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/StepLabel/StepLabel.js",
+    "start": 202,
+    "end": 207,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/material-ui/src/StepLabel/stepLabelClasses.ts",
+    "start": 7,
+    "end": 27,
+    "class": "exact"
+   }
+  ],
+  "mui__material-ui-28186": [
+   {
+    "file": "packages/mui-material/src/useTouchRipple/useTouchRipple.ts",
+    "start": 43,
+    "end": 54,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/useTouchRipple/useTouchRipple.ts",
+    "start": 44,
+    "end": 58,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/useTouchRipple/useTouchRipple.ts",
+    "start": 90,
+    "end": 96,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/useTouchRipple/useTouchRipple.ts",
+    "start": 111,
+    "end": 140,
+    "class": "range",
+    "detail": "content verbatim at lines 111-141"
+   }
+  ],
+  "mui__material-ui-28813": [
+   {
+    "file": "docs/src/pages/system/properties/properties.md",
+    "start": 62,
+    "end": 67,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/system/properties/properties.md",
+    "start": 69,
+    "end": 74,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.d.ts",
+    "start": 25,
+    "end": 30,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.d.ts",
+    "start": 44,
+    "end": 49,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.js",
+    "start": 31,
+    "end": 45,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.js",
+    "start": 59,
+    "end": 64,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.js",
+    "start": 76,
+    "end": 81,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.js",
+    "start": 148,
+    "end": 150,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.js",
+    "start": 152,
+    "end": 169,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.js",
+    "start": 171,
+    "end": 177,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.js",
+    "start": 179,
+    "end": 191,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.js",
+    "start": 193,
+    "end": 199,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.js",
+    "start": 201,
+    "end": 213,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-system/src/spacing.js",
+    "start": 215,
+    "end": 227,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-29023": [
+   {
+    "file": "docs/translations/api-docs/tooltip/tooltip.json",
+    "start": 5,
+    "end": 11,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Tooltip/Tooltip.d.ts",
+    "start": 34,
+    "end": 39,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Tooltip/Tooltip.js",
+    "start": 650,
+    "end": 680,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Tooltip/Tooltip.js",
+    "start": 679,
+    "end": 685,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Tooltip/Tooltip.js",
+    "start": 679,
+    "end": 690,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Tooltip/Tooltip.js",
+    "start": 743,
+    "end": 748,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-29880": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Grid/Grid.js",
+    "start": 1,
+    "end": 505,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Grid/Grid.js",
+    "start": 187,
+    "end": 206,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Grid/Grid.js",
+    "start": 238,
+    "end": 261,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Grid/gridClasses.ts",
+    "start": 1,
+    "end": 81,
+    "class": "path",
+    "corrected_file": "packages/mui-material/src/Grid/gridClasses.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Grid/gridClasses.ts is not in the corpus; packages/mui-material/src/Grid/gridClasses.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/tsconfig.json",
+    "start": 1,
+    "end": 48,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/tsconfig.json",
+    "start": 1,
+    "end": 48,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/tsconfig.reproduce.json",
+    "start": 1,
+    "end": 15,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/tsconfig.reproduce.json",
+    "start": 1,
+    "end": 45,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/tsconfig.reproduce.json",
+    "start": 1,
+    "end": 45,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/tsconfig.reproduce.json",
+    "start": 1,
+    "end": 45,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-29898": [
+   {
+    "file": "docs/pages/api-docs/avatar-group.json",
+    "start": 16,
+    "end": 21,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/src/pages/components/avatars/avatars.md",
+    "start": 57,
+    "end": 66,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/avatar-group/avatar-group.json",
+    "start": 6,
+    "end": 11,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/AvatarGroup/AvatarGroup.d.ts",
+    "start": 29,
+    "end": 34,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/AvatarGroup/AvatarGroup.js",
+    "start": 69,
+    "end": 78,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/AvatarGroup/AvatarGroup.js",
+    "start": 98,
+    "end": 104,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/AvatarGroup/AvatarGroup.js",
+    "start": 122,
+    "end": 128,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/AvatarGroup/AvatarGroup.js",
+    "start": 184,
+    "end": 189,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-30345": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/babel.config.js",
+    "start": 1,
+    "end": 173,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/docs/src/modules/components/AppSearch.js",
+    "start": 300,
+    "end": 321,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/docs/src/modules/components/AppSearch.js",
+    "start": 308,
+    "end": 315,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/docs/src/modules/components/AppSearch.js",
+    "start": 309,
+    "end": 319,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/docs/src/modules/components/AppSearch.js",
+    "start": 310,
+    "end": 318,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/scripts/temp_tests/reproducer_after_fix.ts",
+    "start": 1,
+    "end": 107,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/scripts/temp_tests/reproducer_after_fix.ts is not in the corpus"
+   }
+  ],
+  "mui__material-ui-30524": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/babel.config.js",
+    "start": 1,
+    "end": 173,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 229,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/styles/overrides.d.ts",
+    "start": 1,
+    "end": 240,
+    "class": "path",
+    "corrected_file": "packages/mui-material/src/styles/overrides.d.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-material/src/styles/overrides.d.ts is not in the corpus; packages/mui-material/src/styles/overrides.d.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-styled-engine/src/index.d.ts",
+    "start": 1,
+    "end": 184,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-styled-engine/src/index.d.ts is not in the corpus"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/index.d.ts",
+    "start": 1,
+    "end": 167,
+    "class": "path",
+    "corrected_file": "packages/mui-system/src/index.d.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/index.d.ts is not in the corpus; packages/mui-system/src/index.d.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/repro_script/reproduce.ts",
+    "start": 1,
+    "end": 72,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/repro_script/reproduce.ts is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/tsconfig.json",
+    "start": 1,
+    "end": 48,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-31172": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/OptionUnstyled/OptionUnstyledProps.ts",
+    "start": 1,
+    "end": 43,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/OptionUnstyled/OptionUnstyledProps.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/OptionUnstyled/OptionUnstyledProps.ts is not in the corpus; packages/mui-base/src/OptionUnstyled/OptionUnstyledProps.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/OptionUnstyled/index.ts",
+    "start": 1,
+    "end": 8,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/OptionUnstyled/index.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/OptionUnstyled/index.ts is not in the corpus; packages/mui-base/src/OptionUnstyled/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/PopperUnstyled/PopperUnstyled.d.ts",
+    "start": 1,
+    "end": 11,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/PopperUnstyled/PopperUnstyled.d.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/PopperUnstyled/PopperUnstyled.d.ts is not in the corpus; packages/mui-base/src/PopperUnstyled/PopperUnstyled.d.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/PopperUnstyled/PopperUnstyled.d.ts",
+    "start": 1,
+    "end": 102,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/PopperUnstyled/PopperUnstyled.d.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/PopperUnstyled/PopperUnstyled.d.ts is not in the corpus; packages/mui-base/src/PopperUnstyled/PopperUnstyled.d.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SelectUnstyled/SelectUnstyled.tsx",
+    "start": 1,
+    "end": 299,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/SelectUnstyled/SelectUnstyled.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SelectUnstyled/SelectUnstyled.tsx is not in the corpus; packages/mui-base/src/SelectUnstyled/SelectUnstyled.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SelectUnstyled/SelectUnstyledProps.ts",
+    "start": 1,
+    "end": 84,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/SelectUnstyled/SelectUnstyledProps.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SelectUnstyled/SelectUnstyledProps.ts is not in the corpus; packages/mui-base/src/SelectUnstyled/SelectUnstyledProps.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SelectUnstyled/index.ts",
+    "start": 1,
+    "end": 13,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SelectUnstyled/index.ts is not in the corpus"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/utils/appendOwnerState.ts",
+    "start": 1,
+    "end": 24,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/utils/appendOwnerState.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/utils/appendOwnerState.ts is not in the corpus; packages/mui-base/src/utils/appendOwnerState.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "mui__material-ui-31998": [
+   {
+    "file": "packages/mui-material/src/Grid/Grid.d.ts",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.d.ts",
+    "start": 1,
+    "end": 25,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.d.ts",
+    "start": 12,
+    "end": 17,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.d.ts",
+    "start": 51,
+    "end": 91,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.d.ts",
+    "start": 54,
+    "end": 130,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.d.ts",
+    "start": 102,
+    "end": 134,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 21,
+    "end": 26,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 184,
+    "end": 192,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 194,
+    "end": 210,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 194,
+    "end": 211,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 218,
+    "end": 239,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 218,
+    "end": 239,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 247,
+    "end": 336,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 260,
+    "end": 283,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 286,
+    "end": 291,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 295,
+    "end": 310,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 315,
+    "end": 335,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 341,
+    "end": 347,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Grid/Grid.js",
+    "start": 410,
+    "end": 415,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-types/index.d.ts",
+    "start": 67,
+    "end": 73,
+    "class": "exact"
+   }
+  ],
+  "mui__material-ui-33312": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 247,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/package.json",
+    "start": 1,
+    "end": 84,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Autocomplete/Autocomplete.js",
+    "start": 1,
+    "end": 544,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Autocomplete/autocompleteClasses.ts",
+    "start": 1,
+    "end": 90,
+    "class": "path",
+    "corrected_file": "packages/mui-material/src/Autocomplete/autocompleteClasses.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Autocomplete/autocompleteClasses.ts is not in the corpus; packages/mui-material/src/Autocomplete/autocompleteClasses.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "mui__material-ui-34138": [
+   {
+    "file": "docs/pages/material-ui/api/step.json",
+    "start": 4,
+    "end": 9,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/pages/material-ui/api/stepper.json",
+    "start": 4,
+    "end": 9,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/step/step.json",
+    "start": 5,
+    "end": 10,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/stepper/stepper.json",
+    "start": 5,
+    "end": 10,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Step/Step.d.ts",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Step/Step.d.ts",
+    "start": 1,
+    "end": 51,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Step/Step.d.ts",
+    "start": 58,
+    "end": 61,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Step/Step.js",
+    "start": 22,
+    "end": 44,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Step/Step.js",
+    "start": 46,
+    "end": 104,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Step/Step.js",
+    "start": 49,
+    "end": 54,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Step/Step.js",
+    "start": 87,
+    "end": 98,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Step/Step.js",
+    "start": 142,
+    "end": 147,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Stepper/Stepper.d.ts",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Stepper/Stepper.d.ts",
+    "start": 1,
+    "end": 54,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Stepper/Stepper.d.ts",
+    "start": 61,
+    "end": 64,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Stepper/Stepper.js",
+    "start": 21,
+    "end": 44,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Stepper/Stepper.js",
+    "start": 48,
+    "end": 93,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Stepper/Stepper.js",
+    "start": 52,
+    "end": 57,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Stepper/Stepper.js",
+    "start": 62,
+    "end": 67,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Stepper/Stepper.js",
+    "start": 82,
+    "end": 87,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Stepper/Stepper.js",
+    "start": 122,
+    "end": 127,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-34207": [
+   {
+    "file": "docs/data/material/components/checkboxes/CheckboxLabels.js",
+    "start": 7,
+    "end": 12,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/material/components/checkboxes/CheckboxLabels.tsx",
+    "start": 7,
+    "end": 12,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/material/components/checkboxes/CheckboxLabels.tsx.preview",
+    "start": 1,
+    "end": 4,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/material/components/switches/SwitchLabels.js",
+    "start": 7,
+    "end": 12,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/material/components/switches/SwitchLabels.tsx",
+    "start": 7,
+    "end": 12,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/material/components/switches/SwitchLabels.tsx.preview",
+    "start": 1,
+    "end": 4,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/pages/material-ui/api/form-control-label.json",
+    "start": 19,
+    "end": 24,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/pages/material-ui/api/form-control-label.json",
+    "start": 40,
+    "end": 48,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/form-control-label/form-control-label.json",
+    "start": 11,
+    "end": 16,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/form-control-label/form-control-label.json",
+    "start": 45,
+    "end": 50,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControl/formControlState.js",
+    "start": 1,
+    "end": 13,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/FormControlLabel.d.ts",
+    "start": 59,
+    "end": 64,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/FormControlLabel.js",
+    "start": 14,
+    "end": 28,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/FormControlLabel.js",
+    "start": 72,
+    "end": 77,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/FormControlLabel.js",
+    "start": 85,
+    "end": 129,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/FormControlLabel.js",
+    "start": 90,
+    "end": 95,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/FormControlLabel.js",
+    "start": 97,
+    "end": 112,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/FormControlLabel.js",
+    "start": 125,
+    "end": 130,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/FormControlLabel.js",
+    "start": 133,
+    "end": 158,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/FormControlLabel.js",
+    "start": 154,
+    "end": 159,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/FormControlLabel.js",
+    "start": 218,
+    "end": 223,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/formControlLabelClasses.ts",
+    "start": 16,
+    "end": 21,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/FormControlLabel/formControlLabelClasses.ts",
+    "start": 34,
+    "end": 39,
+    "class": "exact"
+   }
+  ],
+  "mui__material-ui-34245": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/reproduce_fab_disabled_issue.tsx",
+    "start": 1,
+    "end": 106,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/reproduce_fab_disabled_issue.tsx is not in the corpus"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/tsconfig.json",
+    "start": 1,
+    "end": 49,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-34337": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/.mocharc.js",
+    "start": 1,
+    "end": 24,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/babel.config.js",
+    "start": 1,
+    "end": 173,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 240,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.test.tsx",
+    "start": 1,
+    "end": 31,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.test.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.test.tsx is not in the corpus; packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.test.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx",
+    "start": 1,
+    "end": 186,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx is not in the corpus; packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.types.ts",
+    "start": 1,
+    "end": 41,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.types.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.types.ts is not in the corpus; packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.types.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/index.ts",
+    "start": 1,
+    "end": 9,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/index.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/index.ts is not in the corpus; packages/mui-base/src/ButtonUnstyled/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/reproduce_error.test.tsx",
+    "start": 1,
+    "end": 80,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/reproduce_error.test.tsx is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/reproduce_error.test.tsx",
+    "start": 1,
+    "end": 80,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/reproduce_error.test.tsx is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/test/cli.js",
+    "start": 1,
+    "end": 125,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/test/utils/createDOM.js",
+    "start": 1,
+    "end": 72,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/test/utils/createRenderer.tsx",
+    "start": 1,
+    "end": 577,
+    "class": "path",
+    "corrected_file": "test/utils/createRenderer.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/test/utils/createRenderer.tsx is not in the corpus; test/utils/createRenderer.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/test/utils/init.js",
+    "start": 1,
+    "end": 16,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/test/utils/setupJSDOM.js",
+    "start": 1,
+    "end": 21,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/reproduce_error.tsx",
+    "start": 1,
+    "end": 94,
+    "class": "unresolved",
+    "detail": "/workspace/reproduce_error.tsx is not in the corpus",
+    "numbered": true
+   }
+  ],
+  "mui__material-ui-34401": [
+   {
+    "file": ".eslintrc.js",
+    "start": 53,
+    "end": 58,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/badge/badge.md",
+    "start": 91,
+    "end": 97,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/button/UseButton.js",
+    "start": 1,
+    "end": 7,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/button/UseButton.tsx",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/base/components/button/button.md",
+    "start": 95,
+    "end": 101,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/form-control/BasicFormControl.tsx",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/base/components/form-control/form-control.md",
+    "start": 55,
+    "end": 61,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/input/UseInput.js",
+    "start": 1,
+    "end": 5,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/input/UseInput.tsx",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/base/components/input/input.md",
+    "start": 89,
+    "end": 95,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/menu/UseMenu.js",
+    "start": 1,
+    "end": 7,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/menu/UseMenu.tsx",
+    "start": 1,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/base/components/menu/menu.md",
+    "start": 110,
+    "end": 117,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/select/UnstyledSelectCustomRenderValue.js",
+    "start": 1,
+    "end": 6,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/select/UnstyledSelectCustomRenderValue.tsx",
+    "start": 2,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/base/components/select/UnstyledSelectObjectValuesForm.js",
+    "start": 1,
+    "end": 6,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/select/UnstyledSelectObjectValuesForm.tsx",
+    "start": 2,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/base/components/select/UseSelect.js",
+    "start": 1,
+    "end": 6,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/select/UseSelect.tsx",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/base/components/select/select.md",
+    "start": 146,
+    "end": 152,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/slider/slider.md",
+    "start": 128,
+    "end": 134,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/switch/UseSwitchesBasic.js",
+    "start": 1,
+    "end": 7,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/switch/UseSwitchesBasic.tsx",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/base/components/switch/UseSwitchesCustom.js",
+    "start": 1,
+    "end": 7,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/components/switch/UseSwitchesCustom.tsx",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/base/components/switch/switch.md",
+    "start": 83,
+    "end": 89,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/getting-started/customization/StylingHooks.js",
+    "start": 1,
+    "end": 6,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/base/getting-started/customization/StylingHooks.tsx",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/material/components/autocomplete/CustomizedHook.js",
+    "start": 1,
+    "end": 6,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/material/components/autocomplete/CustomizedHook.tsx",
+    "start": 1,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/material/components/autocomplete/UseAutocomplete.js",
+    "start": 1,
+    "end": 5,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/data/material/components/autocomplete/UseAutocomplete.tsx",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "docs/data/material/components/autocomplete/autocomplete.md",
+    "start": 136,
+    "end": 142,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/pages/blog/2021-q3-update.md",
+    "start": 55,
+    "end": 61,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/AutocompleteUnstyled/index.d.ts",
+    "start": 1,
+    "end": 2,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/AutocompleteUnstyled/index.js",
+    "start": 1,
+    "end": 1,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.spec.ts",
+    "start": 1,
+    "end": 4,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/BadgeUnstyled/BadgeUnstyled.tsx",
+    "start": 1,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/BadgeUnstyled/index.ts",
+    "start": 1,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.tsx",
+    "start": 9,
+    "end": 15,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/ButtonUnstyled/ButtonUnstyled.types.ts",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/ButtonUnstyled/index.ts",
+    "start": 4,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/InputUnstyled/InputUnstyled.tsx",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/InputUnstyled/InputUnstyled.tsx",
+    "start": 10,
+    "end": 16,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/InputUnstyled/InputUnstyled.types.ts",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/InputUnstyled/index.ts",
+    "start": 2,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/ListboxUnstyled/index.ts",
+    "start": 1,
+    "end": 4,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MenuItemUnstyled/MenuItemUnstyled.tsx",
+    "start": 1,
+    "end": 13,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MenuItemUnstyled/index.tsx",
+    "start": 4,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MenuItemUnstyled/useMenuItem.ts",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MenuUnstyled/MenuUnstyled.tsx",
+    "start": 2,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MenuUnstyled/MenuUnstyled.tsx",
+    "start": 10,
+    "end": 16,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MenuUnstyled/MenuUnstyled.types.ts",
+    "start": 1,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MenuUnstyled/MenuUnstyledContext.ts",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MenuUnstyled/index.tsx",
+    "start": 7,
+    "end": 13,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MenuUnstyled/useMenu.ts",
+    "start": 6,
+    "end": 12,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MenuUnstyled/useMenu.types.ts",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MultiSelectUnstyled/MultiSelectUnstyled.tsx",
+    "start": 4,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MultiSelectUnstyled/MultiSelectUnstyled.tsx",
+    "start": 13,
+    "end": 20,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MultiSelectUnstyled/MultiSelectUnstyled.tsx",
+    "start": 23,
+    "end": 29,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/MultiSelectUnstyled/MultiSelectUnstyled.types.ts",
+    "start": 1,
+    "end": 12,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/OptionUnstyled/OptionUnstyled.tsx",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/OptionUnstyled/OptionUnstyled.types.ts",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SelectUnstyled/SelectUnstyled.tsx",
+    "start": 4,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SelectUnstyled/SelectUnstyled.tsx",
+    "start": 13,
+    "end": 26,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SelectUnstyled/SelectUnstyled.types.ts",
+    "start": 1,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SelectUnstyled/SelectUnstyledContext.ts",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SelectUnstyled/index.ts",
+    "start": 3,
+    "end": 14,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SelectUnstyled/useSelect.ts",
+    "start": 3,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SelectUnstyled/useSelect.ts",
+    "start": 15,
+    "end": 27,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SelectUnstyled/useSelect.types.ts",
+    "start": 1,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SelectUnstyled/utils.tsx",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+    "start": 2,
+    "end": 12,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.types.ts",
+    "start": 1,
+    "end": 14,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/index.d.ts",
+    "start": 5,
+    "end": 13,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/index.js",
+    "start": 1,
+    "end": 5,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SwitchUnstyled/SwitchUnstyled.tsx",
+    "start": 1,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SwitchUnstyled/SwitchUnstyled.types.ts",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SwitchUnstyled/index.ts",
+    "start": 1,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabPanelUnstyled/TabPanelUnstyled.tsx",
+    "start": 1,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabPanelUnstyled/TabPanelUnstyled.types.ts",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabPanelUnstyled/index.ts",
+    "start": 3,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabUnstyled/TabUnstyled.tsx",
+    "start": 2,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabUnstyled/TabUnstyled.tsx",
+    "start": 9,
+    "end": 15,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabUnstyled/TabUnstyled.types.ts",
+    "start": 1,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabUnstyled/index.ts",
+    "start": 3,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabUnstyled/useTab.ts",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabUnstyled/useTab.types.ts",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabsListUnstyled/TabsListUnstyled.tsx",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabsListUnstyled/TabsListUnstyled.tsx",
+    "start": 9,
+    "end": 15,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabsListUnstyled/TabsListUnstyled.types.ts",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabsListUnstyled/index.ts",
+    "start": 3,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabsUnstyled/TabsUnstyled.tsx",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabsUnstyled/TabsUnstyled.tsx",
+    "start": 9,
+    "end": 15,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/TabsUnstyled/index.ts",
+    "start": 7,
+    "end": 12,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/index.d.ts",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/index.d.ts",
+    "start": 9,
+    "end": 36,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/index.d.ts",
+    "start": 46,
+    "end": 55,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/index.d.ts",
+    "start": 79,
+    "end": 82,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/index.js",
+    "start": 1,
+    "end": 7,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/index.js",
+    "start": 12,
+    "end": 33,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/index.js",
+    "start": 74,
+    "end": 76,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-joy/src/Button/Button.tsx",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Checkbox/Checkbox.tsx",
+    "start": 4,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Checkbox/CheckboxProps.ts",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/IconButton/IconButton.tsx",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Input/useForwardedInput.ts",
+    "start": 1,
+    "end": 5,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/ListItemButton/ListItemButton.tsx",
+    "start": 3,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Menu/Menu.tsx",
+    "start": 4,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/MenuItem/MenuItem.tsx",
+    "start": 3,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/MenuList/MenuList.tsx",
+    "start": 4,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/ModalClose/ModalClose.tsx",
+    "start": 4,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Option/OptionProps.ts",
+    "start": 5,
+    "end": 11,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Radio/Radio.tsx",
+    "start": 4,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Radio/RadioProps.ts",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Select/Select.tsx",
+    "start": 8,
+    "end": 19,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Select/SelectProps.ts",
+    "start": 1,
+    "end": 6,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Slider/Slider.tsx",
+    "start": 6,
+    "end": 12,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Switch/Switch.tsx",
+    "start": 4,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Switch/SwitchProps.ts",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Tab/Tab.tsx",
+    "start": 3,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/TabList/TabList.tsx",
+    "start": 3,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/TabPanel/TabPanel.tsx",
+    "start": 4,
+    "end": 10,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Tabs/Tabs.tsx",
+    "start": 3,
+    "end": 9,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material-next/src/Button/Button.js",
+    "start": 7,
+    "end": 13,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material-next/src/Tab/Tab.js",
+    "start": 2,
+    "end": 8,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material-next/src/Tabs/Tabs.js",
+    "start": 10,
+    "end": 16,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material-next/src/Tabs/TabsList.js",
+    "start": 1,
+    "end": 7,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/useAutocomplete/useAutocomplete.d.ts",
+    "start": 1,
+    "end": 2,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/useAutocomplete/useAutocomplete.js",
+    "start": 1,
+    "end": 2,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-34610": [
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+    "start": 45,
+    "end": 74,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+    "start": 46,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+    "start": 78,
+    "end": 92,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+    "start": 94,
+    "end": 109,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+    "start": 117,
+    "end": 125,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+    "start": 179,
+    "end": 185,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+    "start": 187,
+    "end": 189,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+    "start": 280,
+    "end": 290,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+    "start": 282,
+    "end": 287,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/useSlider.ts",
+    "start": 181,
+    "end": 200,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/useSlider.ts",
+    "start": 591,
+    "end": 606,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/SliderUnstyled/useSlider.ts",
+    "start": 630,
+    "end": 674,
+    "class": "drift",
+    "detail": "1 of 34 content lines are not in the file"
+   }
+  ],
+  "mui__material-ui-35410": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/.mocharc.js",
+    "start": 1,
+    "end": 24,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 31,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/package.json",
+    "start": 1,
+    "end": 21,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/package.json",
+    "start": 21,
+    "end": 61,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/index.ts",
+    "start": 1,
+    "end": 9,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/index.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/index.ts is not in the corpus; packages/mui-base/src/ButtonUnstyled/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.test.tsx",
+    "start": 1,
+    "end": 135,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/useButton.test.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.test.tsx is not in the corpus; packages/mui-base/src/ButtonUnstyled/useButton.test.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.test.tsx",
+    "start": 1,
+    "end": 135,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.test.tsx is not in the corpus"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "start": 1,
+    "end": 11,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts is not in the corpus; packages/mui-base/src/ButtonUnstyled/useButton.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "start": 1,
+    "end": 229,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "start": 80,
+    "end": 91,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts is not in the corpus; packages/mui-base/src/ButtonUnstyled/useButton.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "start": 85,
+    "end": 101,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts is not in the corpus; packages/mui-base/src/ButtonUnstyled/useButton.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "start": 100,
+    "end": 121,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts is not in the corpus; packages/mui-base/src/ButtonUnstyled/useButton.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "start": 100,
+    "end": 141,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts is not in the corpus; packages/mui-base/src/ButtonUnstyled/useButton.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "start": 101,
+    "end": 116,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts is not in the corpus; packages/mui-base/src/ButtonUnstyled/useButton.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "start": 145,
+    "end": 166,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/ButtonUnstyled/useButton.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/ButtonUnstyled/useButton.ts is not in the corpus; packages/mui-base/src/ButtonUnstyled/useButton.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "mui__material-ui-35477": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-utils/src/resolveProps.ts",
+    "start": 1,
+    "end": 21,
+    "class": "path",
+    "corrected_file": "packages/mui-utils/src/resolveProps.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-utils/src/resolveProps.ts is not in the corpus; packages/mui-utils/src/resolveProps.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "mui__material-ui-35963": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 11,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 247,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SliderUnstyled/SliderUnstyled.test.tsx",
+    "start": 200,
+    "end": 216,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.test.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SliderUnstyled/SliderUnstyled.test.tsx is not in the corpus; packages/mui-base/src/SliderUnstyled/SliderUnstyled.test.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx",
+    "start": 50,
+    "end": 101,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx is not in the corpus; packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx",
+    "start": 100,
+    "end": 141,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx is not in the corpus; packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx",
+    "start": 150,
+    "end": 201,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx is not in the corpus; packages/mui-base/src/SliderUnstyled/SliderUnstyled.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SliderUnstyled/sliderUnstyledClasses.ts",
+    "start": 1,
+    "end": 65,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/SliderUnstyled/sliderUnstyledClasses.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/SliderUnstyled/sliderUnstyledClasses.ts is not in the corpus; packages/mui-base/src/SliderUnstyled/sliderUnstyledClasses.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/generateUtilityClass/index.ts",
+    "start": 1,
+    "end": 3,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/generateUtilityClass/index.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/generateUtilityClass/index.ts is not in the corpus; packages/mui-base/src/generateUtilityClass/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/generateUtilityClasses/index.ts",
+    "start": 1,
+    "end": 2,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/generateUtilityClasses/index.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/generateUtilityClasses/index.ts is not in the corpus; packages/mui-base/src/generateUtilityClasses/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/useSlider/useSlider.ts",
+    "start": 300,
+    "end": 351,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/useSlider/useSlider.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/useSlider/useSlider.ts is not in the corpus; packages/mui-base/src/useSlider/useSlider.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/useSlider/useSlider.ts",
+    "start": 370,
+    "end": 421,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/useSlider/useSlider.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/useSlider/useSlider.ts is not in the corpus; packages/mui-base/src/useSlider/useSlider.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/useSlider/useSlider.ts",
+    "start": 500,
+    "end": 551,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/useSlider/useSlider.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/useSlider/useSlider.ts is not in the corpus; packages/mui-base/src/useSlider/useSlider.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-base/src/useSlider/useSlider.ts",
+    "start": 600,
+    "end": 702,
+    "class": "path",
+    "corrected_file": "packages/mui-base/src/useSlider/useSlider.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-base/src/useSlider/useSlider.ts is not in the corpus; packages/mui-base/src/useSlider/useSlider.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-utils/package.json",
+    "start": 1,
+    "end": 26,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-utils/package.json",
+    "start": 1,
+    "end": 65,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-utils/src/ClassNameGenerator/ClassNameGenerator.ts",
+    "start": 1,
+    "end": 21,
+    "class": "path",
+    "corrected_file": "packages/mui-utils/src/ClassNameGenerator/ClassNameGenerator.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-utils/src/ClassNameGenerator/ClassNameGenerator.ts is not in the corpus; packages/mui-utils/src/ClassNameGenerator/ClassNameGenerator.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-utils/src/generateUtilityClass/generateUtilityClass.ts",
+    "start": 1,
+    "end": 40,
+    "class": "path",
+    "corrected_file": "packages/mui-utils/src/generateUtilityClass/generateUtilityClass.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-utils/src/generateUtilityClass/generateUtilityClass.ts is not in the corpus; packages/mui-utils/src/generateUtilityClass/generateUtilityClass.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-utils/src/generateUtilityClasses/generateUtilityClasses.ts",
+    "start": 1,
+    "end": 16,
+    "class": "path",
+    "corrected_file": "packages/mui-utils/src/generateUtilityClasses/generateUtilityClasses.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-utils/src/generateUtilityClasses/generateUtilityClasses.ts is not in the corpus; packages/mui-utils/src/generateUtilityClasses/generateUtilityClasses.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-utils/src/generateUtilityClasses/index.ts",
+    "start": 1,
+    "end": 2,
+    "class": "path",
+    "corrected_file": "packages/mui-utils/src/generateUtilityClasses/index.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-utils/src/generateUtilityClasses/index.ts is not in the corpus; packages/mui-utils/src/generateUtilityClasses/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/tsconfig.json",
+    "start": 1,
+    "end": 21,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/tsconfig.json",
+    "start": 1,
+    "end": 49,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-35994": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Unstable_Grid2/Grid2.tsx",
+    "start": 1,
+    "end": 37,
+    "class": "path",
+    "corrected_file": "packages/mui-material/src/Unstable_Grid2/Grid2.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Unstable_Grid2/Grid2.tsx is not in the corpus; packages/mui-material/src/Unstable_Grid2/Grid2.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Unstable_Grid2/Grid2.tsx",
+    "start": 15,
+    "end": 36,
+    "class": "path",
+    "corrected_file": "packages/mui-material/src/Unstable_Grid2/Grid2.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Unstable_Grid2/Grid2.tsx is not in the corpus; packages/mui-material/src/Unstable_Grid2/Grid2.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/GridProps.ts",
+    "start": 1,
+    "end": 180,
+    "class": "path",
+    "corrected_file": "packages/mui-system/src/Unstable_Grid/GridProps.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/GridProps.ts is not in the corpus; packages/mui-system/src/Unstable_Grid/GridProps.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "start": 1,
+    "end": 235,
+    "class": "path",
+    "corrected_file": "packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx is not in the corpus; packages/mui-system/src/Unstable_Grid/createGrid.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "start": 1,
+    "end": 235,
+    "class": "path",
+    "corrected_file": "packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx is not in the corpus; packages/mui-system/src/Unstable_Grid/createGrid.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "start": 95,
+    "end": 116,
+    "class": "path",
+    "corrected_file": "packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx is not in the corpus; packages/mui-system/src/Unstable_Grid/createGrid.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "start": 100,
+    "end": 121,
+    "class": "path",
+    "corrected_file": "packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx is not in the corpus; packages/mui-system/src/Unstable_Grid/createGrid.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "start": 135,
+    "end": 151,
+    "class": "path",
+    "corrected_file": "packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx is not in the corpus; packages/mui-system/src/Unstable_Grid/createGrid.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "start": 187,
+    "end": 206,
+    "class": "path",
+    "corrected_file": "packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx is not in the corpus; packages/mui-system/src/Unstable_Grid/createGrid.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "start": 204,
+    "end": 231,
+    "class": "path",
+    "corrected_file": "packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx is not in the corpus; packages/mui-system/src/Unstable_Grid/createGrid.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx",
+    "start": 240,
+    "end": 266,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Unstable_Grid/createGrid.tsx is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/tsconfig.json",
+    "start": 1,
+    "end": 49,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/reproduce_error.tsx",
+    "start": 1,
+    "end": 53,
+    "class": "unresolved",
+    "detail": "/workspace/reproduce_error.tsx is not in the corpus"
+   }
+  ],
+  "mui__material-ui-36056": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 21,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/package.json",
+    "start": 1,
+    "end": 41,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/useMediaQuery/useMediaQuery.ts",
+    "start": 1,
+    "end": 180,
+    "class": "path",
+    "corrected_file": "packages/mui-material/src/useMediaQuery/useMediaQuery.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-material/src/useMediaQuery/useMediaQuery.ts is not in the corpus; packages/mui-material/src/useMediaQuery/useMediaQuery.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/tsconfig.json",
+    "start": 1,
+    "end": 49,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/reproduce.tsx",
+    "start": 1,
+    "end": 124,
+    "class": "unresolved",
+    "detail": "/workspace/reproduce.tsx is not in the corpus",
+    "numbered": true
+   }
+  ],
+  "mui__material-ui-36971": [
+   {
+    "file": "docs/data/material/components/autocomplete/autocomplete.md",
+    "start": 235,
+    "end": 240,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "docs/translations/api-docs/autocomplete/autocomplete.json",
+    "start": 56,
+    "end": 62,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Autocomplete/Autocomplete.d.ts",
+    "start": 237,
+    "end": 249,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material/src/Autocomplete/Autocomplete.d.ts",
+    "start": 237,
+    "end": 249,
+    "class": "contained",
+    "detail": "2 of 13 range lines not in the content"
+   },
+   {
+    "file": "packages/mui-material/src/Autocomplete/Autocomplete.js",
+    "start": 412,
+    "end": 412,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Autocomplete/Autocomplete.js",
+    "start": 548,
+    "end": 560,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Autocomplete/Autocomplete.js",
+    "start": 552,
+    "end": 562,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material/src/Autocomplete/Autocomplete.js",
+    "start": 1064,
+    "end": 1070,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-37716": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-joy/package.json",
+    "start": 1,
+    "end": 31,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-joy/src/Button/Button.tsx",
+    "start": 1,
+    "end": 16,
+    "class": "path",
+    "corrected_file": "packages/mui-joy/src/Button/Button.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-joy/src/Button/Button.tsx is not in the corpus; packages/mui-joy/src/Button/Button.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-joy/src/ToggleButton/ToggleButton.tsx",
+    "start": 1,
+    "end": 129,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-joy/src/ToggleButton/ToggleButton.tsx is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-joy/src/className/index.ts",
+    "start": 1,
+    "end": 10,
+    "class": "path",
+    "corrected_file": "packages/mui-joy/src/className/index.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-joy/src/className/index.ts is not in the corpus; packages/mui-joy/src/className/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-joy/src/index.ts",
+    "start": 1,
+    "end": 200,
+    "class": "path",
+    "corrected_file": "packages/mui-joy/src/index.ts",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-joy/src/index.ts is not in the corpus; packages/mui-joy/src/index.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "mui__material-ui-37850": [
+   {
+    "file": "docs/data/material/components/badges/badges.md",
+    "start": 71,
+    "end": 73,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material-next/migration.md",
+    "start": 6,
+    "end": 11,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "packages/mui-material-next/src/index.ts",
+    "start": 1,
+    "end": 4,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material-next/src/styles/Theme.types.ts",
+    "start": 34,
+    "end": 39,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material-next/src/styles/Theme.types.ts",
+    "start": 61,
+    "end": 66,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material-next/src/styles/createDarkColorScheme.ts",
+    "start": 34,
+    "end": 39,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material-next/src/styles/createLightColorScheme.ts",
+    "start": 34,
+    "end": 39,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-material-next/src/styles/palette.ts",
+    "start": 59,
+    "end": 64,
+    "class": "exact"
+   }
+  ],
+  "mui__material-ui-37855": [
+   {
+    "file": "packages/mui-base/src/useSelect/useSelect.ts",
+    "start": 255,
+    "end": 264,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/useSelect/useSelect.ts",
+    "start": 298,
+    "end": 304,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-base/src/useSelect/useSelect.types.ts",
+    "start": 109,
+    "end": 115,
+    "class": "exact"
+   }
+  ],
+  "mui__material-ui-38247": [
+   {
+    "file": "docs/data/material/components/icons/TwoToneIcons.tsx",
+    "start": 1,
+    "end": 7,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/modules/sandbox/CodeSandbox.ts",
+    "start": 36,
+    "end": 55,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/modules/sandbox/CreateReactApp.ts",
+    "start": 1,
+    "end": 83,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/modules/sandbox/CreateReactApp.ts",
+    "start": 4,
+    "end": 13,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/modules/sandbox/CreateReactApp.ts",
+    "start": 23,
+    "end": 29,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/modules/sandbox/StackBlitz.ts",
+    "start": 8,
+    "end": 19,
+    "class": "exact"
+   },
+   {
+    "file": "docs/src/modules/sandbox/types.ts",
+    "start": 1,
+    "end": 13,
+    "class": "exact"
+   }
+  ],
+  "mui__material-ui-39108": [
+   {
+    "file": "packages/mui-joy/src/Select/Select.tsx",
+    "start": 177,
+    "end": 183,
+    "class": "exact"
+   },
+   {
+    "file": "packages/mui-joy/src/Select/SelectProps.ts",
+    "start": 57,
+    "end": 63,
+    "class": "exact"
+   }
+  ],
+  "mui__material-ui-39196": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-material/src/Stack/Stack.js",
+    "start": 1,
+    "end": 75,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Stack/createStack.tsx",
+    "start": 1,
+    "end": 242,
+    "class": "path",
+    "corrected_file": "packages/mui-system/src/Stack/createStack.tsx",
+    "detail": "/workspace/mui__material-ui__0.1/packages/mui-system/src/Stack/createStack.tsx is not in the corpus; packages/mui-system/src/Stack/createStack.tsx holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/spacing.js",
+    "start": 1,
+    "end": 256,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "mui__material-ui-39962": [
+   {
+    "file": "/workspace/mui__material-ui__0.1/package.json",
+    "start": 1,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/index.js",
+    "start": 1,
+    "end": 79,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/palette.js",
+    "start": 15,
+    "end": 33,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/styleFunctionSx/defaultSxConfig.js",
+    "start": 1,
+    "end": 307,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/styleFunctionSx/defaultSxConfig.js",
+    "start": 50,
+    "end": 61,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/packages/mui-system/src/styleFunctionSx/styleFunctionSx.js",
+    "start": 1,
+    "end": 144,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce.tsx",
+    "start": 1,
+    "end": 46,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce.tsx is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce.tsx",
+    "start": 1,
+    "end": 46,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce.tsx is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce.tsx",
+    "start": 70,
+    "end": 81,
+    "class": "unresolved",
+    "detail": "/workspace/mui__material-ui__0.1/scripts/temp_repro/reproduce.tsx is not in the corpus"
+   },
+   {
+    "file": "/workspace/mui__material-ui__0.1/tsconfig.json",
+    "start": 1,
+    "end": 31,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/reproduce.ts",
+    "start": 1,
+    "end": 46,
+    "class": "unresolved",
+    "detail": "/workspace/reproduce.ts is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/reproduce.tsx",
+    "start": 1,
+    "end": 46,
+    "class": "unresolved",
+    "detail": "/workspace/reproduce.tsx is not in the corpus",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-10004": [
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-dom/src/index.ts",
+    "start": 1,
+    "end": 271,
+    "class": "path",
+    "corrected_file": "packages/runtime-dom/src/index.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-dom/src/index.ts is not in the corpus; packages/runtime-dom/src/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/vue/src/index.ts",
+    "start": 1,
+    "end": 121,
+    "class": "path",
+    "corrected_file": "packages/vue/src/index.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/vue/src/index.ts is not in the corpus; packages/vue/src/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/repro.ts",
+    "start": 60,
+    "end": 81,
+    "class": "unresolved",
+    "detail": "/workspace/vuejs__core__0.1/repro.ts is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/repro.ts",
+    "start": 80,
+    "end": 101,
+    "class": "unresolved",
+    "detail": "/workspace/vuejs__core__0.1/repro.ts is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/repro.ts",
+    "start": 88,
+    "end": 106,
+    "class": "unresolved",
+    "detail": "/workspace/vuejs__core__0.1/repro.ts is not in the corpus",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-10027": [
+   {
+    "file": "packages/runtime-core/src/scheduler.ts",
+    "start": 170,
+    "end": 175,
+    "class": "exact"
+   }
+  ],
+  "vuejs__core-10250": [
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-core/src/hydration.ts",
+    "start": 1,
+    "end": 101,
+    "class": "path",
+    "corrected_file": "packages/runtime-core/src/hydration.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-core/src/hydration.ts is not in the corpus; packages/runtime-core/src/hydration.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/shared/src/normalizeProp.ts",
+    "start": 1,
+    "end": 95,
+    "class": "path",
+    "corrected_file": "packages/shared/src/normalizeProp.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/shared/src/normalizeProp.ts is not in the corpus; packages/shared/src/normalizeProp.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-10289": [
+   {
+    "file": "/workspace/vuejs__core__0.1/package.json",
+    "start": 1,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/reactivity/src/reactive.ts",
+    "start": 1,
+    "end": 411,
+    "class": "path",
+    "corrected_file": "packages/reactivity/src/reactive.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/reactivity/src/reactive.ts is not in the corpus; packages/reactivity/src/reactive.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-10522": [
+   {
+    "file": "/workspace/vuejs__core__0.1/package.json",
+    "start": 1,
+    "end": 51,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/compileStyle.ts",
+    "start": 1,
+    "end": 244,
+    "class": "path",
+    "corrected_file": "packages/compiler-sfc/src/compileStyle.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/compileStyle.ts is not in the corpus; packages/compiler-sfc/src/compileStyle.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/style/pluginScoped.ts",
+    "start": 1,
+    "end": 222,
+    "class": "path",
+    "corrected_file": "packages/compiler-sfc/src/style/pluginScoped.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/style/pluginScoped.ts is not in the corpus; packages/compiler-sfc/src/style/pluginScoped.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/style/pluginScoped.ts",
+    "start": 175,
+    "end": 196,
+    "class": "path",
+    "corrected_file": "packages/compiler-sfc/src/style/pluginScoped.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/style/pluginScoped.ts is not in the corpus; packages/compiler-sfc/src/style/pluginScoped.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/style/pluginScoped.ts",
+    "start": 195,
+    "end": 216,
+    "class": "path",
+    "corrected_file": "packages/compiler-sfc/src/style/pluginScoped.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/style/pluginScoped.ts is not in the corpus; packages/compiler-sfc/src/style/pluginScoped.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-10874": [
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-core/src/apiCreateApp.ts",
+    "start": 1,
+    "end": 419,
+    "class": "path",
+    "corrected_file": "packages/runtime-core/src/apiCreateApp.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-core/src/apiCreateApp.ts is not in the corpus; packages/runtime-core/src/apiCreateApp.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-core/src/componentProps.ts",
+    "start": 1,
+    "end": 558,
+    "class": "path",
+    "corrected_file": "packages/runtime-core/src/componentProps.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-core/src/componentProps.ts is not in the corpus; packages/runtime-core/src/componentProps.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-core/src/componentProps.ts",
+    "start": 597,
+    "end": 616,
+    "class": "path",
+    "corrected_file": "packages/runtime-core/src/componentProps.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-core/src/componentProps.ts is not in the corpus; packages/runtime-core/src/componentProps.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-core/src/componentProps.ts",
+    "start": 636,
+    "end": 671,
+    "class": "path",
+    "corrected_file": "packages/runtime-core/src/componentProps.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-core/src/componentProps.ts is not in the corpus; packages/runtime-core/src/componentProps.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-core/src/componentProps.ts",
+    "start": 659,
+    "end": 701,
+    "class": "path",
+    "corrected_file": "packages/runtime-core/src/componentProps.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-core/src/componentProps.ts is not in the corpus; packages/runtime-core/src/componentProps.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-core/src/componentProps.ts",
+    "start": 710,
+    "end": 741,
+    "class": "path",
+    "corrected_file": "packages/runtime-core/src/componentProps.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-core/src/componentProps.ts is not in the corpus; packages/runtime-core/src/componentProps.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-dom/src/index.ts",
+    "start": 1,
+    "end": 271,
+    "class": "path",
+    "corrected_file": "packages/runtime-dom/src/index.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-dom/src/index.ts is not in the corpus; packages/runtime-dom/src/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/vitest.config.ts",
+    "start": 1,
+    "end": 48,
+    "class": "path",
+    "corrected_file": "vitest.config.ts",
+    "detail": "/workspace/vuejs__core__0.1/vitest.config.ts is not in the corpus; vitest.config.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-11201": [
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/shared/src/toDisplayString.ts",
+    "start": 17,
+    "end": 36,
+    "class": "path",
+    "corrected_file": "packages/shared/src/toDisplayString.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/shared/src/toDisplayString.ts is not in the corpus; packages/shared/src/toDisplayString.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-11338": [
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-core/src/renderer.ts",
+    "start": 2000,
+    "end": 2201,
+    "class": "path",
+    "corrected_file": "packages/runtime-core/src/renderer.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-core/src/renderer.ts is not in the corpus; packages/runtime-core/src/renderer.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-11517": [
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-dom/src/index.ts",
+    "start": 1,
+    "end": 295,
+    "class": "unresolved",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-dom/src/index.ts is not in the corpus"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/vue/src/index.ts",
+    "start": 1,
+    "end": 121,
+    "class": "path",
+    "corrected_file": "packages/vue/src/index.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/vue/src/index.ts is not in the corpus; packages/vue/src/index.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-11761": [
+   {
+    "file": "/workspace/vuejs__core__0.1/package.json",
+    "start": 1,
+    "end": 21,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/reactivity/__tests__/reproExtArray.spec.ts",
+    "start": 67,
+    "end": 81,
+    "class": "unresolved",
+    "detail": "/workspace/vuejs__core__0.1/packages/reactivity/__tests__/reproExtArray.spec.ts is not in the corpus"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/vitest.config.ts",
+    "start": 1,
+    "end": 54,
+    "class": "path",
+    "corrected_file": "vitest.config.ts",
+    "detail": "/workspace/vuejs__core__0.1/vitest.config.ts is not in the corpus; vitest.config.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/vitest.config.ts",
+    "start": 1,
+    "end": 54,
+    "class": "path",
+    "corrected_file": "vitest.config.ts",
+    "detail": "/workspace/vuejs__core__0.1/vitest.config.ts is not in the corpus; vitest.config.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-11899": [
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/package.json",
+    "start": 1,
+    "end": 6,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/package.json",
+    "start": 1,
+    "end": 68,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/style/pluginScoped.ts",
+    "start": 1,
+    "end": 291,
+    "class": "unresolved",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/style/pluginScoped.ts is not in the corpus"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/vue/package.json",
+    "start": 1,
+    "end": 113,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "vuejs__core-8535": [
+   {
+    "file": "/workspace/vuejs__core__0.1/node_modules/.pnpm/entities@4.4.0/node_modules/entities/lib/esm/index.js",
+    "start": 1,
+    "end": 113,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/node_modules/.pnpm/entities@4.4.0/node_modules/entities/package.json",
+    "start": 1,
+    "end": 91,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/package.json",
+    "start": 1,
+    "end": 105,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-core/package.json",
+    "start": 1,
+    "end": 59,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-core/src/parser.ts",
+    "start": 1,
+    "end": 51,
+    "class": "unresolved",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-core/src/parser.ts is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-core/src/tokenizer.ts",
+    "start": 1,
+    "end": 527,
+    "class": "unresolved",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-core/src/tokenizer.ts is not in the corpus",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/package.json",
+    "start": 1,
+    "end": 61,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/package.json",
+    "start": 1,
+    "end": 61,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/tsconfig.json",
+    "start": 1,
+    "end": 40,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   }
+  ],
+  "vuejs__core-8538": [
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-core/src/ast.ts",
+    "start": 1,
+    "end": 650,
+    "class": "path",
+    "corrected_file": "packages/compiler-core/src/ast.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-core/src/ast.ts is not in the corpus; packages/compiler-core/src/ast.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-core/src/babelUtils.ts",
+    "start": 1,
+    "end": 431,
+    "class": "unresolved",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-core/src/babelUtils.ts is not in the corpus"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-core/src/index.ts",
+    "start": 1,
+    "end": 72,
+    "class": "path",
+    "corrected_file": "packages/compiler-core/src/index.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-core/src/index.ts is not in the corpus; packages/compiler-core/src/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-core/src/transform.ts",
+    "start": 1,
+    "end": 505,
+    "class": "path",
+    "corrected_file": "packages/compiler-core/src/transform.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-core/src/transform.ts is not in the corpus; packages/compiler-core/src/transform.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-core/src/utils.ts",
+    "start": 1,
+    "end": 522,
+    "class": "path",
+    "corrected_file": "packages/compiler-core/src/utils.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-core/src/utils.ts is not in the corpus; packages/compiler-core/src/utils.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-dom/src/index.ts",
+    "start": 1,
+    "end": 73,
+    "class": "path",
+    "corrected_file": "packages/compiler-dom/src/index.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-dom/src/index.ts is not in the corpus; packages/compiler-dom/src/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/script/analyzeScriptBindings.ts",
+    "start": 1,
+    "end": 132,
+    "class": "path",
+    "corrected_file": "packages/compiler-sfc/src/script/analyzeScriptBindings.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/script/analyzeScriptBindings.ts is not in the corpus; packages/compiler-sfc/src/script/analyzeScriptBindings.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/script/importUsageCheck.ts",
+    "start": 1,
+    "end": 116,
+    "class": "path",
+    "corrected_file": "packages/compiler-sfc/src/script/importUsageCheck.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/compiler-sfc/src/script/importUsageCheck.ts is not in the corpus; packages/compiler-sfc/src/script/importUsageCheck.ts holds the content at these lines",
+    "numbered": true
+   }
+  ],
+  "vuejs__core-9213": [
+   {
+    "file": "packages/runtime-core/src/helpers/renderSlot.ts",
+    "start": 82,
+    "end": 87,
+    "class": "exact"
+   },
+   {
+    "file": "packages/runtime-core/src/renderer.ts",
+    "start": 1060,
+    "end": 1066,
+    "class": "exact"
+   },
+   {
+    "file": "packages/runtime-core/src/vnode.ts",
+    "start": 240,
+    "end": 245,
+    "class": "exact"
+   }
+  ],
+  "vuejs__core-9572": [
+   {
+    "file": "/workspace/vuejs__core__0.1/packages/runtime-core/src/index.ts",
+    "start": 1,
+    "end": 51,
+    "class": "path",
+    "corrected_file": "packages/runtime-core/src/index.ts",
+    "detail": "/workspace/vuejs__core__0.1/packages/runtime-core/src/index.ts is not in the corpus; packages/runtime-core/src/index.ts holds the content at these lines",
+    "numbered": true
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/scripts/dev.js",
+    "start": 1,
+    "end": 156,
+    "class": "outside",
+    "detail": "not a TypeScript source"
+   },
+   {
+    "file": "/workspace/vuejs__core__0.1/vitest.e2e.config.ts",
+    "start": 1,
+    "end": 14,
+    "class": "path",
+    "corrected_file": "vitest.e2e.config.ts",
+    "detail": "/workspace/vuejs__core__0.1/vitest.e2e.config.ts is not in the corpus; vitest.e2e.config.ts holds the content at these lines",
+    "numbered": true
+   }
+  ]
+ }
+}
