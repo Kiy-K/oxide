@@ -1,0 +1,11 @@
+<task-notification>
+<task-id>bbxotd0uv</task-id>
+<tool-use-id>toolu_01Y3LKY52D8oazezxwYjR4M3</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/b1eeba18-94c0-4265-9e38-b1be00cb0f75/tasks/bbxotd0uv.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for Platforms run to finish" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+Open a PR from ci/speedup, preserve real-fsync coverage for durability-critical tests, verify the new CI cache behavior, and merge once checks pass.
