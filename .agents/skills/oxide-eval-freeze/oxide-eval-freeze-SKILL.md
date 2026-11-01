@@ -12,7 +12,7 @@ Work in `~/Projects/oxide` (branch is usually `rewrite/v2`). Eval data and scrat
 Every eval, probe, pytest or verify run uses this prefix:
 
 ```bash
-export TMPDIR=<eval-dir>/tmp
+mkdir -p <eval-dir>/tmp && export TMPDIR=<eval-dir>/tmp
 systemd-run --user --scope -q -p CPUQuota=200% -p MemoryMax=3G -p MemorySwapMax=0 uv run --locked <command>
 ```
 

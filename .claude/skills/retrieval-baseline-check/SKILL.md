@@ -11,11 +11,12 @@ routed entities and depths.
 ## Check (every retrieval-, routing- or packing-adjacent change)
 
 ```bash
+mise run bootstrap   # once: without the FTS extension these tests skip, which is not parity
 uv run pytest tests/python/test_baseline.py -q      # exact Phase 3 parity + Phase 4 recall floor
 uv run pytest tests/python/test_retrieval.py tests/python/test_context.py -q
 ```
 
-Run both before the change too. A difference the change wasn't meant to cause is
+Both must report no skips. Run both before the change too. A difference the change wasn't meant to cause is
 a regression: find the cause before going further. `test_baseline.py` also
 checks the Phase 4 context-quality floor (recall 1.0 at 1,024 units), and every
 bundle must keep `used <= budget`.

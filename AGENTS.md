@@ -32,7 +32,7 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 - Before finishing, read the full diff for accidental changes in scope, public API surface (`oxide/__init__.py`), dependencies (`pyproject.toml`, `uv.lock`) or generated files.
 - Tests never touch real user data: every test and subprocess gets a private data location (`tests/python/conftest.py`).
 - Don't commit, push, tag, release, edit GitHub issues or roadmaps, or start the next phase unless approved.
-- Keep every source file at or below 500 LOC. Tests, docs and CSS are exempt. Markdown is documentation, not source. Split a source file before completion if your change takes it over the limit.
+- Keep every OXIDE source file at or below 500 LOC. Tests, docs and CSS are exempt, and so are vendored or generated agent tooling (`.agents/`, `.claude/`, `.opencode/`), which stay as their tools ship them. Markdown is documentation, not source. Split a source file before completion if your change takes it over the limit.
 - If unsure about a problem or a bug, search relevant sources of the problem before tackling it.
 
 ## Read before touching

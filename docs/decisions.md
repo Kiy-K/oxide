@@ -31,7 +31,7 @@ Each row is closed; its report is under `docs/phase-6/<study>/` at the pin above
 |---|---|
 | Graph ranking (`graph-v1`..`v3`) | Resolution raised routed coverage 0.673 → 0.730. REJECT PPR + communities, dispatch routing and the order tiebreak; the loss after routing comes from budget allocation and the relevance signal. |
 | Graph navigation (`graph-navigation`, `-v2`, `networkx-v1`) | Basis for ADR-0012 and ADR-0013 (both Proposed). |
-| Agent-guided context (`agc`, `agc-v2`..`v4`) | v2 REJECT (adoption); the rest is input to ADR-0013. |
+| Agent-guided context (`agc`, `agc-v2`..`v4`) | v2 REJECT (adoption); v4 STOP at stage 1, so ADR-0013 stays Proposed without evidence. |
 | Optional judges (`decision-study-v1`..`v3`, `jev-reliability`, `jev-order-m1`..`m3`) | v3 PASS (+0.159 at 4,096 units); reliability PASS only under immediate fallback. M3 and ADR-0009 NOT READY: JEV stays off. |
 | Storage (`leann-graph-storage`, [`fts-footprint`](fts-footprint.md)) | REJECT compaction; DEFER the traversal memo. ACCEPT `auto_checkpoint=False`, exact wide top-k, blob fsync overlap with a 65,536-entry LRU. REJECT two query threads. |
 | Output (`toon-serialization`, `outline-comparison`, `output-integrity`) | REJECT TOON and outlines. Output-integrity fixes shipped. |

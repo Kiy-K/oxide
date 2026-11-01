@@ -3,9 +3,11 @@
 ## Status
 
 **Proposed**, 2026-10-25. Nothing is implemented in `src/oxide`. The experimental server
-lives only in `docs/phase-6/agc-v4/scripts/server.py` (at `013e791`). The proposal becomes Accepted, and
-then implemented, only if AGC v4's preregistered rule promotes the interface
-([docs/phase-6/agc-v4](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/agc-v4/README.md)) and the maintainer agrees.
+lives only in `docs/phase-6/agc-v4/scripts/server.py` (at `013e791`). AGC v4, the study
+that was to decide it, stopped at stage 1 without promoting the interface
+([docs/phase-6/agc-v4](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/agc-v4/README.md)):
+there is no evidence for this proposal yet. It can become Accepted only through a new
+preregistered study that promotes it, and the maintainer's agreement.
 
 ## Context
 
@@ -43,8 +45,12 @@ reuses an interface the agent already sees.
        calls that weren't resolved.
      - `depth` 1–3, default 1.
    - `mode=outline`: the package map (empty `query`), a file's declarations with line
-     ranges, or a symbol's signature, docstring and members. This needs one new read-only
-     API method (`Repository.outline`), additive.
+     ranges, or a symbol's signature, docstring and members.
+   - Today's API does not carry all of this. Additive, read-only API is needed first:
+     `Repository.outline`; per hop, the linking relation's evidence (`ImpactHop` has only
+     `via`), as `path:line` (relation evidence is a byte range, so the API converts);
+     and unresolved calls for downstream walks (`Impact.unresolved` is upstream only).
+     The server stays a formatter over that API (decision 5).
 2. **Source-backed.** Every listed relation cites `path:line` evidence from the index.
    The tool never returns source beyond those lines: exact source is the client's `read`,
    or `mode=context`.
@@ -68,7 +74,8 @@ reuses an interface the agent already sees.
 
 ## Evidence required before Accepted
 
-AGC v4's preregistered rule must pass. In brief:
+AGC v4 stopped without promotion, so a new preregistered study must pass. Its rule
+should keep AGC v4's terms:
 
 - **Interface:** the single shape is chosen unless the split shape shows the defined clear
   advantage.
@@ -76,7 +83,7 @@ AGC v4's preregistered rule must pass. In brief:
   baseline. Forced use is a separate diagnostic and never counts as adoption.
 - **Tasks:** fresh, rule-selected, across Python and TypeScript and five question types.
 
-If v4 doesn't promote, this ADR stays Proposed or is withdrawn, and graph navigation stays
+Until one does, this ADR stays Proposed (or is withdrawn), and graph navigation stays
 API-only (`Repository.impact`).
 
 ## Consequences
