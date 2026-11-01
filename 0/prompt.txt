@@ -1,0 +1,7 @@
+<task-notification>
+<task-id>bpmfhr9id</task-id>
+<tool-use-id>toolu_01NAZDyZcsiiwk31VsQ9xDCT</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/81b139a0-ec88-41be-b439-1567e53d422c/tasks/bpmfhr9id.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for CI on 8c93bed" completed (exit code 0)</summary>
+</task-notification>
