@@ -134,8 +134,10 @@ def test_every_failure_is_one_attempt_with_a_named_outcome(
         jev.Jev("k", server.base + path, deadline=deadline)(_capsules())
     assert raised.value.outcome == outcome
     assert len(server.received) == 1  # no retry
-    if outcome == "deadline":  # killed at the deadline, the late reply (1.5 s) unread
-        assert time.monotonic() - start < 1.5
+    # `deadline` itself proves the late reply was unread; the bound proves the hung
+    # request (released after 10 s) was killed, with room for a slow Windows kill.
+    if outcome == "deadline":
+        assert time.monotonic() - start < deadline + 2.0
 
 
 def test_the_request_goes_through_a_configured_proxy(
@@ -195,14 +197,16 @@ def test_a_hung_judge_falls_back_and_leaves_nothing_running(
     repo: oxide.Repository, server: Server
 ) -> None:
     start = time.monotonic()
+    plain = repo.build_context(QUERY, 1024)  # also warms the store (slow on Windows CI)
+    building = time.monotonic() - start
+    start = time.monotonic()
     bundle = _context(repo, jev.order(repo, FIXTURE, "k", server.base + "hang"))
-    assert time.monotonic() - start < DEADLINE + 1.0
+    # Killed at the deadline, long before the hung server's 10 s release.
+    assert time.monotonic() - start < DEADLINE + building + 2.0
     assert bundle.degradations[-1].endswith("fell back: deadline")
-    assert [i.source for i in bundle.items] == [
-        i.source for i in repo.build_context(QUERY, 1024).items
-    ]
+    assert [i.source for i in bundle.items] == [i.source for i in plain.items]
     # The child is killed at the deadline, so the abandoned judge thread ends too.
-    limit = time.monotonic() + 1.0
+    limit = time.monotonic() + 5.0  # well before the server's 10 s release
     while any(t.name == "oxide-judge" for t in threading.enumerate()):
         assert time.monotonic() < limit, "a judge thread outlived the request"
         time.sleep(0.05)
