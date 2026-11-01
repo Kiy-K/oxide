@@ -4,6 +4,13 @@ Commands and verification for OXIDE v2, loaded on demand from the root
 `AGENTS.md` routing table. Older docs and code comments that cite
 "`AGENTS.md`" for a command or harness detail mean this file.
 
+## Default loop
+
+Read the code, change it, add or adjust a test, run `mise run verify`. That is the
+whole process for features, fixes, language work and refactors. Only changes that
+claim a retrieval/routing/packing quality or performance improvement also need the
+ContextBench or `scripts/bench.py` runs below (see `AGENTS.md`).
+
 ## Commands
 
 [Mise](https://mise.jdx.dev/installing-mise.html) is the one entrypoint;
@@ -113,14 +120,7 @@ Earlier Phase 4/5 reports and DecisionBench/JEV harness instructions are in the
 [retired runtime tree](https://github.com/Kiy-K/oxide/tree/f79808a/docs), not local
 `docs/phase-4/` or `docs/phase-5/` directories. Reproduction requires that tree.
 
-JavaScript/JSX conformance runs in `mise run verify` (`test_javascript.py`). The bounded
-real-repository and ContextBench diagnostic is reproducible via
-`scripts/eval_javascript.py`; protocol and results: `docs/phase-6/javascript-v1/`.
-
-Go conformance runs in `mise run verify` (`test_go.py`). The bounded real-repository
-and ContextBench diagnostic is reproducible via `scripts/eval_go.py`; protocol and
-results: `docs/phase-6/go-v1/`.
-
-Rust conformance runs in `mise run verify` (`test_rust.py`). The bounded real-repository,
-oracle and ContextBench diagnostic is reproducible via `scripts/eval_rust.py`; protocol and
-results: `docs/phase-6/rust-v1/`.
+Each language's conformance suite runs in `mise run verify` (`tests/python/test_<language>.py`).
+Where a bounded real-repository and ContextBench diagnostic exists, it is `scripts/eval_<language>.py`, with
+protocol and results in `docs/phase-6/<language>-v1/`. Rerun it only when a change claims to
+move that language's resolution quality; ordinary fixes need only `verify`.

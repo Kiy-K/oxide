@@ -153,7 +153,7 @@ editable install.
 ## Independent re-run (OpenCode GPT-6 Luna)
 
 The same brief, with outputs redirected, was executed end to end by OpenCode (`openai/gpt-6-luna`, `--auto`), which
-wrote its own comparison script, oracle and scorer. Outputs are in [../java-v1-opencode/](../java-v1-opencode/).
+wrote its own comparison script, oracle and scorer. Outputs are in `java-v1-opencode/` at the [evidence tree](https://github.com/Kiy-K/oxide/tree/eb43ac1070d8724d31a0be49bc7357c7132fb90f/docs/phase-6/java-v1-opencode).
 
 The first attempt stopped at step 1 on a crash in its own comparison script. It was relaunched with notes on the
 file shapes and on what counts as a failed check.

@@ -25,7 +25,8 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 - Reuse existing patterns and dependencies before adding new ones. A new package or dependency needs a reuse, packaging or API reason (SPEC § System architecture).
 - Keep the public API and versioned formats (derivation components, store schema, payload/units versions) compatible unless the task says to change them; bump the version when you do. Legacy v1 compatibility (SQLite indexes, symbol ids, CLI/MCP/JSON surface) and the retired Rust/TS protocol are not requirements (SPEC § Compatibility policy).
 - Fix root causes. Don't weaken tests, regenerate goldens or re-baseline just to make a failure go away.
-- Measure before optimizing. Keep negative results in the eval docs.
+- Implementation first: the default loop is read the code, change it, add or adjust a test, `mise run verify`. Feature, bug-fix, language and refactor work needs no study, preregistration or report.
+- An experiment is only for claims a test can't settle: a retrieval/routing/packing quality change (ContextBench gates, `docs/agents/workflow.md`), a performance claim (measure before and after with `scripts/bench.py`), or promoting an optional judge. Then fix the pass/fail rule before reading held-out results, and record the verdict (one line in `docs/phase-6/README.md`, plus a short report only if a gate, test or comment will cite it).
 - Read the code, tests and docs before stating how something works. Label each claim as measured or inferred.
 - If missing or ambiguous information could change the implementation, check the repo first. If that doesn't settle it, ask one focused question instead of guessing. Don't invent permanent ID/schema/transport/model policy to unblock scaffolding (BOOTSTRAP rule 4).
 - Before finishing, read the full diff for accidental changes in scope, public API surface (`oxide/__init__.py`), dependencies (`pyproject.toml`, `uv.lock`) or generated files.
