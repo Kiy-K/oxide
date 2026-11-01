@@ -1,5 +1,6 @@
 # OXIDE v2 developer entrypoint (ADR-0011: one Python package). `mise run verify`
-# is the one check, and CI (.github/workflows/ci.yml) runs exactly it. uv manages
+# is the one check, and CI (.github/workflows/ci.yml) runs exactly it; before a push,
+# `mise run pythons` also runs platforms.yml's other Python versions. uv manages
 # Python (.python-version) and dependencies (pyproject.toml, uv.lock).
 min_version = "2024.1.0"
 
@@ -36,6 +37,24 @@ run = [
   "uv run --locked python tests/python/contextbench_ts.py fetch",
   "OXIDE_CONTEXTBENCH_TS=1 uv run --locked pytest tests/python/test_contextbench_ts.py",
 ]
+
+[tasks.pythons]
+description = "The CI Python matrix locally (platforms.yml py3.12/py3.14 rows): mypy and pytest, xdist like CI"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+# verify runs only .python-version; CI also runs the ends of requires-python, in
+# xdist workers. Same commands and flags, newest patch release like CI's runners, and
+# an unlimited stack like theirs: 3.14 bounds recursion by the C stack, not a count.
+ulimit -s unlimited 2>/dev/null || ulimit -s "$(ulimit -H -s)"
+for py in 3.12 3.14; do
+  uv python install -q --upgrade "$py"
+  export UV_PYTHON="$py" UV_PROJECT_ENVIRONMENT="${XDG_CACHE_HOME:-$HOME/.cache}/oxide/venv-py$py"
+  uv run --locked mypy
+  uv run --locked pytest -q -n "${OXIDE_JOBS:-2}" --dist loadfile \
+    --ignore=tests/python/test_contextbench.py --ignore=tests/python/test_contextbench_ts.py
+done
+'''
 
 [tasks.verify]
 description = "Everything CI checks, in order: lint, typecheck, test"

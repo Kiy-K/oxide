@@ -44,9 +44,15 @@ sys.path.insert(0, "tests/python")
 import contextbench as cb
 b = json.load(open("fixtures/eval/<lang>-vN/before/metrics.json"))
 a = json.load(open("fixtures/eval/<lang>-vN/metrics.json"))
+failed = []
 for s in ("dev", "heldout"):
-    print(s, {m: round(a[s]["verified"][m] - b[s]["verified"][m], 4) for m in cb.GATED})
-print("tolerance", cb.TOLERANCE)
+    if not a.get(s) or not b.get(s):
+        print(s, "empty: not gated")
+        continue
+    delta = {m: round(a[s]["verified"][m] - b[s]["verified"][m], 4) for m in cb.GATED}
+    print(s, delta)
+    failed += [f"{s}.{m}" for m, d in delta.items() if d < -cb.TOLERANCE]
+sys.exit(f"gate failed: {failed}" if failed else 0)
 EOF
 ```
 

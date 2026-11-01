@@ -12,8 +12,9 @@ mise run verify
 It runs, in order, stopping at the first failure (`docs/agents/workflow.md`):
 `lint` (`ruff check` and `ruff format --check` over `src/` and `tests/python/`),
 `typecheck` (`mypy --strict`), `test` (`pytest`, including the frozen Phase 3
-baseline oracle). Lexical tests need the pinned FTS extension: run
-`mise run bootstrap` (or `uv run oxide prepare`) once.
+baseline oracle). Tests need the pinned FTS extension and the ContextBench corpora:
+run `mise run bootstrap` once.
+Before a push, also run `mise run pythons`: CI tests Python 3.12 and 3.14 too.
 
 Report the first failing step and its output; do not run later steps against
 code you know is broken. If `ruff format --check` fails, run

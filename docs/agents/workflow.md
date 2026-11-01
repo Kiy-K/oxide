@@ -47,7 +47,7 @@ rules, how to freeze a new version) is in [`fixtures/eval/`](../../fixtures/eval
 and the frozen README states the latest amendment. Gold is audited (`gold-audit.json`); only verified gold is gated.
 Develop on the dev split; never tune on held-out.
 `tests/python/contextbench_ts.py` is the same ruler for TypeScript (tasks and gold
-audit in `fixtures/eval/contextbench-ts/`, latest frozen baseline `baseline-v15/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
+audit in `fixtures/eval/contextbench-ts/`, latest frozen baseline `baseline-v16/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
 sources-only `corpora/` only reproduces v1). Its scorer cases run in `verify`; the gate
 needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
 `verify`. Run it under the limits below before and after any TypeScript retrieval,
