@@ -93,3 +93,50 @@ def test_a_data_location_inside_the_repository_is_never_captured(
             statuses.append(report.status)
             assert report.files == outside.files
     assert statuses == ["built", "unchanged", "unchanged"]
+
+
+@pytest.mark.skipif(
+    sys.platform == "win32" or os.geteuid() == 0,
+    reason="mode 000 blocks reads only for non-root POSIX",
+)
+def test_a_file_that_cannot_be_opened_is_an_unreadable_skip(tmp_path: Path) -> None:
+    write(tmp_path, {"a.py": "x = 1\n", "secret.py": "y = 2\n"})
+    (tmp_path / "secret.py").chmod(0)
+    try:
+        captured = capture(tmp_path)
+    finally:
+        (tmp_path / "secret.py").chmod(0o644)
+    assert [f.path for f in captured.files] == ["a.py"]
+    assert [(s.path, s.reason) for s in captured.skipped] == [("secret.py", "unreadable")]
+
+
+def test_a_file_that_grows_after_it_is_listed_is_read_only_to_its_listed_size(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from oxide import capture as module
+
+    (tmp_path / "a.py").write_bytes(b"x" * 10)
+    expected = module._key(os.stat(tmp_path / "a.py"))
+    (tmp_path / "a.py").write_bytes(b"x" * 1_000_000)
+    monkeypatch.setattr(module, "_key", lambda st: expected)  # growth after fstat
+    sizes: list[int] = []
+    real = os.fdopen
+
+    class Spy:
+        def __init__(self, fd: int, mode: str) -> None:
+            self.handle = real(fd, mode)
+
+        def __enter__(self) -> Spy:
+            return self
+
+        def __exit__(self, *_: object) -> None:
+            self.handle.close()
+
+        def read(self, n: int = -1) -> bytes:
+            sizes.append(n)
+            data: bytes = self.handle.read(n)
+            return data
+
+    monkeypatch.setattr(os, "fdopen", Spy)
+    assert module._read(tmp_path, "a.py", expected) is None
+    assert sizes == [11]

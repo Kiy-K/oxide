@@ -109,6 +109,9 @@ def test_an_answer_is_judged_and_the_body_is_the_rendered_request(server: Server
     assert sent["state"]["candidates"]["c1"].startswith("symbol function ")
 
 
+SLOW_START = 30.0  # deadline for cases that must not hit it, even on a loaded runner
+
+
 @pytest.mark.parametrize(
     ("path", "outcome"),
     [
@@ -123,12 +126,16 @@ def test_an_answer_is_judged_and_the_body_is_the_rendered_request(server: Server
 def test_every_failure_is_one_attempt_with_a_named_outcome(
     server: Server, path: str, outcome: str
 ) -> None:
+    # Only the deadline cases race the clock: a 1 s deadline elsewhere turns a slow
+    # child-process start (Windows CI) into a spurious `deadline`.
+    deadline = 1.0 if outcome == "deadline" else SLOW_START
     start = time.monotonic()
     with pytest.raises(Unanswered) as raised:
-        jev.Jev("k", server.base + path, deadline=1.0)(_capsules())
+        jev.Jev("k", server.base + path, deadline=deadline)(_capsules())
     assert raised.value.outcome == outcome
     assert len(server.received) == 1  # no retry
-    assert time.monotonic() - start < 1.5  # killed at the deadline, the late reply unread
+    if outcome == "deadline":  # killed at the deadline, the late reply (1.5 s) unread
+        assert time.monotonic() - start < 1.5
 
 
 def test_the_request_goes_through_a_configured_proxy(
@@ -147,10 +154,9 @@ def test_the_request_goes_through_a_configured_proxy(
 
 
 def test_a_dropped_connection_is_a_transport_failure(server: Server) -> None:
-    # Not a refused port: Windows reports refusal only after ~2 s of retries, past the
-    # deadline, so that is a `deadline` there (Platforms CI, 2026-10-24).
+    # Not a refused port: Windows reports refusal only after ~2 s of retries.
     with pytest.raises(Unanswered) as raised:
-        jev.Jev("k", server.base + "reset", deadline=1.0)(_capsules())
+        jev.Jev("k", server.base + "reset", deadline=SLOW_START)(_capsules())
     assert raised.value.outcome == "transport"
 
 

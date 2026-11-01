@@ -14,6 +14,7 @@ import stat
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 import pathspec
 
@@ -152,16 +153,20 @@ def _walk(root: Path, excluded: frozenset[tuple[int, int]]) -> _Listing:
     return listing
 
 
-def _read(root: Path, path: str, expected: StatKey) -> bytes | None:
-    """The file's bytes, or None when it changed since it was listed."""
+def _read(root: Path, path: str, expected: StatKey) -> bytes | Literal[False] | None:
+    """The file's bytes; None when it changed since it was listed; False when it
+    cannot be opened for want of permission (an ``unreadable`` skip once the final
+    walk confirms the tree did not change)."""
     try:
         fd = os.open(root / path, _READ_FLAGS)
+    except PermissionError:
+        return False
     except OSError:
         return None
     with os.fdopen(fd, "rb") as handle:
         if _key(os.fstat(fd)) != expected:
             return None
-        data = handle.read()
+        data = handle.read(expected[1] + 1)  # a file growing after fstat stays bounded
     return data if len(data) == expected[1] else None
 
 
@@ -189,6 +194,7 @@ def capture(root: str | os.PathLike[str], exclude: Iterable[Path] = ()) -> Captu
         listing = _walk(base, frozen)
         total = 0
         files: list[CapturedFile] = []
+        unreadable: list[Skip] = []
         for path, expected in sorted(listing.files.items()):
             total += expected[1]
             if total > MAX_TOTAL_BYTES:
@@ -196,9 +202,13 @@ def capture(root: str | os.PathLike[str], exclude: Iterable[Path] = ()) -> Captu
             data = _read(base, path, expected)
             if data is None:
                 break
+            if data is False:
+                unreadable.append(Skip(path, "unreadable"))
+                continue
             files.append(CapturedFile(path, data, digest(data)))
         else:
             if _walk(base, frozen).state == listing.state:
+                listing.skipped += unreadable
                 return _seal(base, files, listing)
     raise CaptureConflict(f"{base}: changed during capture {ATTEMPTS} times")
 
