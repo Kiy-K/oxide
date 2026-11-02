@@ -3,6 +3,7 @@ attempt killed at the deadline, every failure named, nothing sent unless authori
 
 from __future__ import annotations
 
+import functools
 import hashlib
 import http.server
 import json
@@ -17,7 +18,7 @@ from conftest import FIXTURE
 
 import oxide
 from oxide import jev
-from oxide.core.capsule import CAPSULE_VERSION, DEADLINE, Capsule, build
+from oxide.core.capsule import CAPSULE_VERSION, DEADLINE, Capsule, CapsuleJudge, build
 from oxide.core.ordering import Unanswered
 from oxide.core.packing import Candidate
 from oxide.models import Entity, SourceRef
@@ -55,7 +56,7 @@ class Server:
                     self.connection.close()
                     return
                 if path == "late":
-                    time.sleep(1.5)
+                    time.sleep(RACED + 1.0)
                 status = 529 if path == "busy" else 200
                 names = list(sent["questions"])[: -1 if path == "partial" else None]
                 data = {
@@ -98,18 +99,30 @@ def test_pinned_identity_is_decision_study_v3s_with_its_formats() -> None:
     assert (jev.MANIFEST["renderer"], jev.MANIFEST["capsule"]) == (jev.RENDERER, CAPSULE_VERSION)
 
 
+SLOW_START = 30.0  # deadline for cases that must not hit it, even on a loaded runner
+# Deadline for cases that must hit it after the request arrived: the child's start alone
+# can take over 2 s on a loaded runner (macOS x86 CI), so a shorter one may kill it unsent.
+RACED = 5.0
+
+
+@pytest.fixture
+def patient(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Judged-path cases that must be answered: lift both production 2 s deadlines
+    (the adapter's child process and the judge thread) that a slow start can miss."""
+    monkeypatch.setattr(jev, "Jev", functools.partial(jev.Jev, deadline=SLOW_START))
+    judge = functools.partial(CapsuleJudge, deadline=SLOW_START)
+    monkeypatch.setattr(jev, "CapsuleJudge", judge)
+
+
 def test_an_answer_is_judged_and_the_body_is_the_rendered_request(server: Server) -> None:
     caps = _capsules()
-    found = jev.Jev("secret", server.base + "ok")(caps)
+    found = jev.Jev("secret", server.base + "ok", deadline=SLOW_START)(caps)
     assert found == {c.digest: 0.5 for c in caps}
     [(path, sent, auth)] = server.received
     assert path == "ok"
     assert sent == jev.body(caps) and auth == "Bearer secret"
     assert list(sent["state"]["candidates"]) == list(sent["questions"]) == ["c1", "c2"]
     assert sent["state"]["candidates"]["c1"].startswith("symbol function ")
-
-
-SLOW_START = 30.0  # deadline for cases that must not hit it, even on a loaded runner
 
 
 @pytest.mark.parametrize(
@@ -126,9 +139,8 @@ SLOW_START = 30.0  # deadline for cases that must not hit it, even on a loaded r
 def test_every_failure_is_one_attempt_with_a_named_outcome(
     server: Server, path: str, outcome: str
 ) -> None:
-    # Only the deadline cases race the clock: a 1 s deadline elsewhere turns a slow
-    # child-process start (Windows CI) into a spurious `deadline`.
-    deadline = 1.0 if outcome == "deadline" else SLOW_START
+    # Only the deadline cases race the clock, after the request arrived (`RACED`).
+    deadline = RACED if outcome == "deadline" else SLOW_START
     start = time.monotonic()
     with pytest.raises(Unanswered) as raised:
         jev.Jev("k", server.base + path, deadline=deadline)(_capsules())
@@ -148,7 +160,8 @@ def test_the_request_goes_through_a_configured_proxy(
     monkeypatch.delenv("NO_PROXY", raising=False)
     monkeypatch.delenv("no_proxy", raising=False)
     caps = _capsules()
-    assert jev.Jev("k", "http://judge.invalid/ok")(caps) == {c.digest: 0.5 for c in caps}
+    judged = jev.Jev("k", "http://judge.invalid/ok", deadline=SLOW_START)(caps)
+    assert judged == {c.digest: 0.5 for c in caps}
     # A proxy is sent the absolute URL.
     assert [(path, auth) for path, _, auth in server.received] == [
         ("http://judge.invalid/ok", "Bearer k")
@@ -176,6 +189,7 @@ def _context(repo: oxide.Repository, by: Any) -> oxide.ContextBundle:
     return repo._context(QUERY, 1024, (), (), None, (), by)
 
 
+@pytest.mark.usefixtures("patient")
 def test_an_authorized_repository_is_judged_once(repo: oxide.Repository, server: Server) -> None:
     bundle = _context(repo, jev.order(repo, FIXTURE, "k", server.base + "ok"))
     assert len(server.received) == 1
@@ -231,6 +245,7 @@ def test_disabled_by_default_and_a_key_alone_sends_nothing(
     assert server.received == []
 
 
+@pytest.mark.usefixtures("patient")
 def test_an_enabled_repository_is_judged_and_revoking_restores_production(
     repo: oxide.Repository, server: Server, monkeypatch: pytest.MonkeyPatch, private_data: Path
 ) -> None:
