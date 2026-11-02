@@ -1,0 +1,55 @@
+merge it once CI is green
+
+---
+
+check CI status on PR #48
+
+---
+
+Done
+
+---
+
+<task-notification>
+<task-id>bzpyzqhm3</task-id>
+<tool-use-id>toolu_018GCDyvhb6PWttqg5UrwJWV</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/566997bd-229d-4d2e-b7b7-172e55bc5931/tasks/bzpyzqhm3.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for PR checks to finish" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+So now to fix the pypi Github env?
+
+---
+
+Added the PyPI publisher, push v0.1.1
+
+---
+
+<task-notification>
+<task-id>bkhd8g25n</task-id>
+<tool-use-id>toolu_01ByTPh2xMhWg4WK9V65qE97</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/566997bd-229d-4d2e-b7b7-172e55bc5931/tasks/bkhd8g25n.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for main Platforms run" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+fix the JEV flake on macOS x86
+
+---
+
+<task-notification>
+<task-id>b5vjn21ae</task-id>
+<tool-use-id>toolu_014TJeUNrC1F4Twp31vXKeDB</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/566997bd-229d-4d2e-b7b7-172e55bc5931/tasks/b5vjn21ae.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait until release run needs approval or finishes" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+commit the flake fix on main
