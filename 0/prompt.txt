@@ -1,0 +1,19 @@
+Verify CI, clean installation, release artifacts, and PyPI Trusted Publisher configuration. Report release readiness without tagging or publishing.
+
+---
+
+So... delete that tag and remake v0.1.0 to test and after succeeding, delete it again
+
+---
+
+<task-notification>
+<task-id>b9qv1yqzn</task-id>
+<tool-use-id>toolu_012HWb4gmXeZJR5Kpdz6BUTw</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/566997bd-229d-4d2e-b7b7-172e55bc5931/tasks/b9qv1yqzn.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for main Platforms run to finish" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+bump to 0.1.1 and open a PR
