@@ -1,0 +1,5 @@
+Prepare OXIDE for its first Python release: finalize packaging, versioning, cross-platform verification, and secure PyPI publishing. Don't tag or publish yet. Prepare release.yml runs on tag and moreover, I needs it to set trusted publisher
+
+---
+
+commit this on a branch and open a PR
