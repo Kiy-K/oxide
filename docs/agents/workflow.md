@@ -86,6 +86,27 @@ legacy v1 implementation until the rewrite is merged by explicit decision. Messa
 lowercase prefix plus an imperative summary: `fix:`, `feat:`, `refactor:`,
 `docs:`, `harden:`, `bench:`, `tierb:`.
 
+## Release
+
+OXIDE ships to PyPI as `oxide-agent` (PyPI's `oxide` is another project); the import
+package and the CLI are still `oxide`. Pushing a `v<version>` tag runs
+`.github/workflows/release.yml`. It runs the whole Platforms matrix, Intel macOS
+included, and then uploads the wheel and sdist that linux-x86_64 built and smoke-tested.
+The upload uses PyPI trusted publishing (OIDC), so no token is stored anywhere.
+
+One-time setup, before the first tag:
+
+1. On PyPI, go to *Your account → Publishing → Add a new pending publisher* and enter:
+   PyPI project `oxide-agent`, owner `Kiy-K`, repository `oxide`, workflow
+   `release.yml`, environment `pypi`. The project is created on the first upload.
+2. On GitHub, go to *Settings → Environments → New environment* and create `pypi`.
+   Add yourself as a required reviewer, and limit deployment to tags matching `v*`.
+
+Each release: set `version` in `pyproject.toml`, run `uv lock`, `mise run verify` and
+`mise run pythons`, merge to `main`, then tag that commit `v<version>` and push the tag
+(only when the release is approved). The publish job fails unless the tag matches the
+built version.
+
 ## Historical reproduction
 
 Legacy harnesses (`eval-agent/`, `scripts/agent_eval/`, `scripts/perf.sh`) and

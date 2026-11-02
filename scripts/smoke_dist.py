@@ -272,7 +272,7 @@ def environment() -> dict[str, Any]:
         "packages": {
             p: version(p)
             for p in (
-                "oxide",
+                "oxide-agent",
                 "ladybug",
                 "tree-sitter",
                 "tree-sitter-javascript",

@@ -92,7 +92,7 @@ def environment(repo: Path) -> dict[str, Any]:
         run = subprocess.run(["git", "-C", str(repo), *args], capture_output=True, text=True)
         return run.stdout.strip()
 
-    packages = ("oxide", "ladybug", "tree-sitter", "tree-sitter-python", "pathspec")
+    packages = ("oxide-agent", "ladybug", "tree-sitter", "tree-sitter-python", "pathspec")
     return {
         "python": sys.version.split()[0],
         "platform": platform.platform(),

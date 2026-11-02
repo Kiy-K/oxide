@@ -1,0 +1,43 @@
+name: Release
+
+# Publishes OXIDE to PyPI (project oxide-agent) when a version tag is pushed. The full
+# Platforms matrix runs first, Intel macOS included; the wheel and sdist it built and
+# smoke-tested on linux-x86_64 are the ones uploaded. Uploading uses PyPI trusted
+# publishing (OIDC): no API token exists anywhere. Setup: docs/agents/workflow.md#release.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  platforms:
+    uses: ./.github/workflows/platforms.yml
+
+  publish:
+    name: Publish to PyPI
+    needs: platforms
+    runs-on: ubuntu-24.04
+    # The trusted publisher on PyPI is bound to this workflow file and this environment.
+    environment:
+      name: pypi
+      url: https://pypi.org/project/oxide-agent/${{ steps.check.outputs.version }}/
+    permissions:
+      id-token: write  # OIDC token for PyPI; nothing else in this job can write.
+    steps:
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0  # v5
+        with:
+          name: platform-linux-x86_64
+          path: platform
+      - name: The tag names the built version
+        id: check
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          ls "platform/dist/oxide_agent-$version-py3-none-any.whl" \
+             "platform/dist/oxide_agent-$version.tar.gz"
+          [ "$(ls platform/dist | wc -l)" -eq 2 ]
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086  # v1.14.3
+        with:
+          packages-dir: platform/dist/

@@ -35,9 +35,9 @@ your platform (Linux x86_64, macOS 15+ x86_64/arm64, Windows x86_64;
 [docs/platforms.md](docs/platforms.md)) and checks its SHA-256. Without that extension,
 the lexical channel reports `unavailable` and structural seeds and routing still work.
 
-OXIDE is not on PyPI yet. To use it outside the checkout, build it with `uv build` and
-install the wheel into any environment (`pip install dist/oxide-*.whl`), then run
-`oxide prepare`. That needs only Python and the native wheels. It does not need Rust,
+Outside the checkout, install the `oxide-agent` distribution (`pip install oxide-agent`
+once it is published, or build it with `uv build` and `pip install dist/oxide_agent-*.whl`),
+then run `oxide prepare`. That needs only Python and the native wheels. It does not need Rust,
 Node.js, or a compiler. On Windows, LadybugDB also needs the OpenSSL 3 x64 DLLs in the
 system directory. It opens only ASCII paths there, so with a non-ASCII user name, set
 `OXIDE_DATA_DIR` and `OXIDE_FTS_EXTENSION` ([docs/platforms.md](docs/platforms.md)).

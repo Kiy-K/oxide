@@ -11,6 +11,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # release.yml gates publishing on this matrix and publishes linux-x86_64's dist/.
+  workflow_call:
 
 # One run per change: PR runs cancel when superseded; main pushes (run_id) never do.
 concurrency:
@@ -50,6 +52,8 @@ jobs:
       # Fixtures and frozen spans are byte-exact: no CRLF conversion on Windows.
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Install pinned uv
         uses: jdx/mise-action@v5
         with:
