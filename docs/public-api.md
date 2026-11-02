@@ -169,7 +169,7 @@ most 1000), with `truncated` set when more existed. It is read-only, determinist
 never part of retrieval, ranking or packing.
 
 It is a Python API only; the MCP server does not offer it (§ MCP). It needs the
-optional `structural` extra (`pip install 'oxide[structural]'`, which
+optional `structural` extra (`pip install 'oxide-agent[structural]'`, which
 pins `ast-grep-py` 0.51.0 and adds ~46 MB); without it the call raises
 `native_unavailable`. ast-grep parses with its own bundled grammars. They are the same
 `tree-sitter-python` 0.25.0 and `tree-sitter-typescript` 0.23.2 OXIDE pins, so

@@ -1,0 +1,13 @@
+id	symbols	rep	arms	vmhwm_kb
+Multi-SWE-Bench__java__maintenance__bugfix__8b7cc5e0	43204	0	A	118752
+Multi-SWE-Bench__java__maintenance__bugfix__8b7cc5e0	43204	0	A,T	118996
+Multi-SWE-Bench__java__maintenance__bugfix__8b7cc5e0	43204	1	A,T	119128
+Multi-SWE-Bench__java__maintenance__bugfix__8b7cc5e0	43204	1	A	118984
+SWE-Bench-Verified__python__maintenance__bugfix__4cac510e	43159	0	A	130632
+SWE-Bench-Verified__python__maintenance__bugfix__4cac510e	43159	0	A,T	130864
+SWE-Bench-Verified__python__maintenance__bugfix__4cac510e	43159	1	A,T	130672
+SWE-Bench-Verified__python__maintenance__bugfix__4cac510e	43159	1	A	130584
+SWE-Bench-Verified__python__maintenance__bugfix__1756507b	43106	0	A	149540
+SWE-Bench-Verified__python__maintenance__bugfix__1756507b	43106	0	A,T	150056
+SWE-Bench-Verified__python__maintenance__bugfix__1756507b	43106	1	A,T	149868
+SWE-Bench-Verified__python__maintenance__bugfix__1756507b	43106	1	A	149992

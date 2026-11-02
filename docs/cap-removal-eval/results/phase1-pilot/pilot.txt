@@ -1,0 +1,4 @@
+#43 PHASE 1 PILOT (descriptive, NOT the verdict): held-out httpx/requests/flask, n=30, repos=3
+B vs A: cov 0.5315->0.5993  Δ +0.0677 clustered[+0.0000,+0.1699] (3 repos: CI not decision-grade) task[+0.0000,+0.1677] up/down 3/0
+rel/used +5.0% task[+0.4%,+9.3%]  tokens 1630->1623  items 7.10->7.87
+P1 parity 30/30; B repeats 30/30

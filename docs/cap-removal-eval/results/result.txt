@@ -1,0 +1,7 @@
+#43 B vs A — n=149 (held-out 80 in 8 repos, CB 69); verdict: REJECT
+  pooled   n=149 repos=44 cov 0.2656->0.3036 Δ +0.0380 clu[-0.0063,+0.0846] task[+0.0070,+0.0715] up/down 30/8 | rel/used +6.7% clu[-5.3%,+19.6%] | tok 1735->1730 items 7.22->8.06
+  heldout  n= 80 repos= 8 cov 0.3835->0.4401 Δ +0.0567 clu[-0.0233,+0.1430] task[-0.0003,+0.1205] up/down 10/3 | rel/used -1.1% clu[-29.1%,+20.6%] | tok 1629->1624 items 7.16->8.06
+  cb       n= 69 repos=37 cov 0.1290->0.1454 Δ +0.0163 clu[+0.0037,+0.0345] task[+0.0052,+0.0303] up/down 20/5 | rel/used +8.8% clu[-4.6%,+24.3%] | tok 1857->1852 items 7.29->8.06
+O1 latency median Δ +2.97 ms vs search 51.2 ms; RSS Δ +0.72%, +0.25%, +0.43%
+P1 parity 149/149; B repeats 149/149
+gates: Q1=False, Q2=True, E1=False, R1_counts=True, O1=False, P1=True, validity=True

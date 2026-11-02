@@ -1,0 +1,150 @@
+id	result	bytes	used	items
+httpx-9ae170a9	mismatch	134		
+httpx-15d09a3b	mismatch	134		
+httpx-c1cc6b24	mismatch	134		
+httpx-4b5a92e8	mismatch	134		
+httpx-85c5898d	mismatch	134		
+httpx-f0fd9192	mismatch	134		
+httpx-b82fbe2c	mismatch	134		
+httpx-a8dd079b	mismatch	134		
+httpx-40a0da09	mismatch	134		
+httpx-57aa5b08	mismatch	134		
+requests-210095fd	mismatch	134		
+requests-2d551768	mismatch	134		
+requests-95f45673	mismatch	134		
+requests-2d2447e2	mismatch	134		
+requests-99b3b492	mismatch	134		
+requests-4ab2550d	mismatch	134		
+requests-6fbfca90	mismatch	134		
+requests-d8829f9f	mismatch	134		
+requests-db575eee	mismatch	134		
+requests-53514694	mismatch	134		
+flask-c9e000b9	mismatch	134		
+flask-4f03a769	mismatch	134		
+flask-45174bf9	mismatch	134		
+flask-3ba37d2a	mismatch	134		
+flask-88bcf784	mismatch	134		
+flask-eb36135c	mismatch	134		
+flask-69e23006	mismatch	134		
+flask-39f93632	mismatch	134		
+flask-4eb5e945	mismatch	134		
+flask-08a283af	mismatch	134		
+ripgrep-ab4665a1	mismatch	134		
+ripgrep-624bbf7d	mismatch	134		
+ripgrep-75970fd1	mismatch	134		
+ripgrep-94ea38da	mismatch	134		
+ripgrep-da672f87	mismatch	134		
+ripgrep-edafb612	mismatch	134		
+ripgrep-14f4957b	mismatch	134		
+ripgrep-f7222688	mismatch	134		
+ripgrep-90a680ab	mismatch	134		
+ripgrep-163ac157	mismatch	134		
+clap-6c2cff66	mismatch	134		
+clap-a062eaf7	mismatch	134		
+clap-5571b83c	mismatch	134		
+clap-c3b44057	mismatch	134		
+clap-2280d480	mismatch	134		
+clap-c2ced1ae	mismatch	134		
+clap-126440ca	mismatch	134		
+clap-dd17a418	mismatch	134		
+clap-92fd6e71	mismatch	134		
+clap-2b0a847f	mismatch	134		
+rayon-87274ad0	mismatch	134		
+rayon-18f68616	mismatch	134		
+rayon-9461f7bb	mismatch	134		
+rayon-936093fd	mismatch	134		
+rayon-03aba955	mismatch	134		
+rayon-e39b730a	mismatch	134		
+rayon-99e6fc12	mismatch	134		
+rayon-f98eb575	mismatch	134		
+rayon-f4ac4d23	mismatch	134		
+rayon-98077fe0	mismatch	134		
+zod-72a05c4f	mismatch	134		
+zod-036b39f4	mismatch	134		
+zod-d4108872	mismatch	134		
+zod-6574e784	mismatch	134		
+zod-937b5d01	mismatch	134		
+zod-b63db248	mismatch	134		
+zod-830ba314	mismatch	134		
+zod-6c77d028	mismatch	134		
+zod-87ffeb0f	mismatch	134		
+zod-7785fc82	mismatch	134		
+axios-38ba1b3d	mismatch	134		
+axios-3dec28f9	mismatch	134		
+axios-58d8a125	mismatch	134		
+axios-140a1794	mismatch	134		
+axios-278041d8	mismatch	134		
+axios-2af5c5fb	mismatch	134		
+axios-caa00a90	mismatch	134		
+axios-5ad5fe0d	mismatch	134		
+axios-f2b903fc	mismatch	134		
+axios-50618796	mismatch	134		
+Multi-SWE-Bench__cpp__maintenance__bugfix__0abc73df	mismatch	134		
+SWE-Bench-Verified__python__maintenance__bugfix__607f6b9e	mismatch	134		
+Multi-SWE-Bench__java__maintenance__bugfix__9a294334	mismatch	134		
+Multi-SWE-Bench__typescript__maintenance__bugfix__6a53360d	mismatch	134		
+SWE-Bench-Pro__python__maintenance__bugfix__f29228c8	mismatch	134		
+SWE-Bench-Verified__python__maintenance__bugfix__17c22a6f	mismatch	134		
+Multi-SWE-Bench__cpp__maintenance__bugfix__fe080aac	mismatch	134		
+Multi-SWE-Bench__c__maintenance__bugfix__0dde5323	mismatch	134		
+Multi-SWE-Bench__go__maintenance__bugfix__73631dc4	mismatch	134		
+Multi-SWE-Bench__cpp__maintenance__bugfix__2c96f617	mismatch	134		
+Multi-SWE-Bench__cpp__maintenance__bugfix__9b468650	mismatch	134		
+Multi-SWE-Bench__rust__maintenance__bugfix__88eb056b	mismatch	134		
+Multi-SWE-Bench__typescript__maintenance__bugfix__c8b82135	mismatch	134		
+Multi-SWE-Bench__c__maintenance__bugfix__0c83f46c	mismatch	134		
+Multi-SWE-Bench__go__maintenance__bugfix__50943d1e	mismatch	134		
+Multi-SWE-Bench__cpp__maintenance__bugfix__8d98e6e0	mismatch	134		
+Multi-SWE-Bench__typescript__maintenance__bugfix__ff629f34	mismatch	134		
+Multi-SWE-Bench__c__maintenance__bugfix__5e659108	mismatch	134		
+Multi-SWE-Bench__go__maintenance__bugfix__0f79e39c	mismatch	134		
+Multi-SWE-Bench__cpp__maintenance__bugfix__57ee9a45	mismatch	134		
+Multi-SWE-Bench__typescript__maintenance__bugfix__7c41997b	mismatch	134		
+Multi-SWE-Bench__c__maintenance__bugfix__39769692	mismatch	134		
+Multi-SWE-Bench__go__maintenance__bugfix__2fea5f6b	mismatch	134		
+Multi-SWE-Bench__c__maintenance__bugfix__2fa17064	mismatch	134		
+Multi-SWE-Bench__go__maintenance__bugfix__437b3ccc	mismatch	134		
+Multi-SWE-Bench__typescript__maintenance__bugfix__5f6606a5	mismatch	134		
+Multi-SWE-Bench__go__maintenance__bugfix__697e2017	mismatch	134		
+SWE-Bench-Verified__python__maintenance__bugfix__c2f0f2be	mismatch	134		
+SWE-Bench-Pro__python__maintenance__bugfix__0c4f8d13	mismatch	134		
+SWE-PolyBench__typescript__maintenance__bugfix__7dfdbbd1	mismatch	134		
+SWE-PolyBench__python__maintenance__bugfix__3f3ff585	mismatch	134		
+SWE-Bench-Verified__python__maintenance__bugfix__5462d419	mismatch	134		
+SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c	mismatch	134		
+Multi-SWE-Bench__cpp__maintenance__bugfix__41b108ee	mismatch	134		
+SWE-PolyBench__python__maintenance__bugfix__7fb7f57f	mismatch	134		
+SWE-Bench-Verified__python__maintenance__bugfix__0e1d5fcf	mismatch	134		
+SWE-Bench-Pro__go__maintenance__bugfix__b5ad2c2c	mismatch	134		
+SWE-PolyBench__python__maintenance__bugfix__4c48ff4b	mismatch	134		
+Multi-SWE-Bench__rust__maintenance__bugfix__15d38459	mismatch	134		
+SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b	mismatch	134		
+SWE-Bench-Pro__python__maintenance__bugfix__3e3c6b22	mismatch	134		
+Multi-SWE-Bench__c__maintenance__bugfix__a47dfbbf	mismatch	134		
+SWE-Bench-Pro__go__maintenance__bugfix__43d6d59b	mismatch	134		
+SWE-Bench-Verified__python__maintenance__bugfix__512ce46c	mismatch	134		
+SWE-PolyBench__javascript__maintenance__bugfix__2bce56a3	mismatch	134		
+SWE-PolyBench__javascript__maintenance__bugfix__21086305	mismatch	134		
+SWE-Bench-Verified__python__maintenance__bugfix__960705f5	mismatch	134		
+SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7	mismatch	134		
+SWE-PolyBench__python__maintenance__bugfix__05ee156f	mismatch	134		
+Multi-SWE-Bench__cpp__maintenance__bugfix__aaea44c7	identical	16563	1869	include/nlohmann/json.hpp#include/nlohmann/json.hpp:__module__:355|doc/mkdocs/docs/features/arbitrary_types.md#doc/mkdocs/docs/features/arbitrary_types.md:__module__:361|doc/mkdocs/docs/home/design_goals.md#doc/mkdocs/docs/home/design_goals.md:__module__:303|include/nlohmann/detail/meta/type_traits.hpp#nlohmann:359|doc/mkdocs/docs/home/faq.md#doc/mkdocs/docs/home/faq.md:__module__:350|test/src/unit-regression2.cpp#Data:53|test/thirdparty/Fuzzer/test/FuzzerUnittest.cpp#Merge(const std::string&,const std::vector<std::string>,size_t):88
+Multi-SWE-Bench__go__maintenance__bugfix__b74904cc	identical	17628	2129	pkg/cmd/ssh-key/list/list.go#listRun:270|git/ssh_config.go#git/ssh_config.go:__module__:359|docs/gh-vs-hub.md#docs/gh-vs-hub.md:__module__:317|pkg/cmd/auth/login/login.go#loginRun:359|pkg/cmd/ssh-key/list/http.go#pkg/cmd/ssh-key/list/http.go:__module__:292|api/client.go#Client:23|pkg/iostreams/color.go#ColorScheme:29|pkg/cmd/ssh-key/list/list.go#NewCmdList:120|git/ssh_config_test.go#Test_sshParser_read:360
+SWE-Bench-Verified__python__maintenance__bugfix__9f3a5677	identical	10508	1077	src/_pytest/logging.py#caplog:185|src/_pytest/logging.py#LogCaptureFixture:362|testing/logging/test_fixture.py#logging_during_setup_and_teardown:75|testing/test_capture.py#testing/test_capture.py:__module__:355|testing/example_scripts/collect/package_infinite_recursion/tests/test_basic.py#test:17|testing/example_scripts/collect/package_init_given_as_arg/pkg/test_foo.py#test:17|testing/logging/test_fixture.py#test_clear:66
+SWE-Bench-Pro__python__maintenance__bugfix__22a1484c	identical	15611	2062	lib/ansible/plugins/filter/core.py#to_yaml:99|lib/ansible/parsing/vault/__init__.py#EncryptedString:359|lib/ansible/parsing/vault/__init__.py#VaultLib:340|lib/ansible/plugins/filter/encryption.py#lib/ansible/plugins/filter/encryption.py:__module__:356|lib/ansible/_internal/_json/_profiles/_legacy.py#lib/ansible/_internal/_json/_profiles/_legacy.py:__module__:360|lib/ansible/_internal/_yaml/_loader.py#AnsibleLoader:150|lib/ansible/parsing/yaml/dumper.py#AnsibleDumper:57|test/units/parsing/yaml/test_dumper.py#test_vaulted_value_dump:341
+SWE-PolyBench__typescript__maintenance__bugfix__27393dd8	identical	22223	2484	docs/src/pages/components/autocomplete/Virtualize.tsx#docs/src/pages/components/autocomplete/Virtualize.tsx:__module__:358|packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js#useAutocomplete:352|docs/src/pages/components/autocomplete/Virtualize.js#docs/src/pages/components/autocomplete/Virtualize.js:__module__:346|packages/material-ui-lab/src/Autocomplete/Autocomplete.js#Autocomplete:358|docs/src/pages/components/autocomplete/autocomplete-pt.md#docs/src/pages/components/autocomplete/autocomplete-pt.md:__module__:330|packages/material-ui/src/FormControlLabel/FormControlLabel.test.js#Control:33|packages/material-ui/src/MenuList/MenuList.js#MenuList:356|packages/material-ui-lab/src/Autocomplete/Autocomplete.test.js#packages/material-ui-lab/src/Autocomplete/Autocomplete.test.js:__module__:351
+SWE-PolyBench__python__maintenance__bugfix__64a006b0	identical	17918	2675	keras/src/initializers/random_initializers.py#OrthogonalInitializer:357|keras/src/layers/rnn/simple_rnn.py#keras/src/layers/rnn/simple_rnn.py:__module__:361|keras/src/layers/rnn/conv_lstm.py#keras/src/layers/rnn/conv_lstm.py:__module__:357|keras/src/layers/rnn/gru.py#GRUCell:354|keras/src/layers/core/dense.py#keras/src/layers/core/dense.py:__module__:358|keras/src/constraints/constraints.py#Constraint:353|keras/src/layers/activations/activation.py#Activation:290|keras/src/initializers/random_initializers_test.py#InitializersTest.test_orthogonal_initializer:245
+SWE-Bench-Verified__python__maintenance__bugfix__f0418d70	identical	17549	2532	sphinx/ext/napoleon/docstring.py#NumpyDocstring:361|doc/conf.py#doc/conf.py:__module__:360|sphinx/themes/basic/static/doctools.js#sphinx/themes/basic/static/doctools.js:__module__:355|tests/test_ext_napoleon_docstring.py#GoogleDocstringTest:361|sphinx/ext/napoleon/__init__.py#Config:357|sphinx/themes/basic/static/jquery.js#A:12|tests/roots/test-inheritance/dummy/test.py#A:19|sphinx/ext/napoleon/__init__.py#_process_docstring:357|tests/test_ext_napoleon_docstring.py#NumpyDocstringTest.test_parameter_types:350
+SWE-Bench-Verified__python__maintenance__bugfix__20eb5bc8	identical	18746	2226	xarray/coding/variables.py#UnsignedIntegerCoder:358|xarray/backends/netCDF4_.py#NetCDF4DataStore:357|xarray/conventions.py#xarray/conventions.py:__module__:359|xarray/backends/netcdf3.py#is_valid_nc3_name:356|xarray/core/duck_array_ops.py#around:22|xarray/core/variable.py#Variable:350|xarray/backends/netCDF4_.py#_encode_nc4_variable:66|xarray/tests/test_backends.py#TestPydap:358
+Multi-SWE-Bench__cpp__maintenance__bugfix__c69b0f66	identical	15876	2321	include/simdjson/document_parser.h#simdjson:358|tests/readme_examples.cpp#tests/readme_examples.cpp:__module__:345|include/simdjson/document_stream.h#include/simdjson/document_stream.h:__module__:348|include/simdjson/inline/document_stream.h#include/simdjson/inline/document_stream.h:__module__:362|include/simdjson/jsonioutil.h#simdjson:187|include/simdjson/document.h#simdjson.document:360|include/simdjson/document.h#simdjson.operator document():22|tests/parse_many_test.cpp#validate(const char*):339
+SWE-PolyBench__python__maintenance__bugfix__ef257729	identical	11979	1174	langchain/document_loaders/csv_loader.py#CSVLoader.__init__:144|langchain/document_loaders/csv_loader.py#CSVLoader.load:260|langchain/document_loaders/conllu.py#CoNLLULoader.__init__:41|langchain/document_loaders/conllu.py#CoNLLULoader.load:191|tests/unit_tests/document_loader/blob_loaders/test_schema.py#tests/unit_tests/document_loader/blob_loaders/test_schema.py:__module__:358|langchain/schema.py#Document:50|tests/unit_tests/document_loader/test_csv_loader.py#TestCSVLoader.test_csv_loader_load_empty_file:130
+Multi-SWE-Bench__rust__maintenance__bugfix__1b1ad6ba	identical	11941	1871	src/walk.rs#scan:358|src/walk.rs#spawn_senders:359|src/main.rs#run:361|src/app.rs#build_app:361|tests/tests.rs#tests/tests.rs:__module__:362|src/exec/mod.rs#CommandTemplate:43|src/filter/owner.rs#Check:27
+Multi-SWE-Bench__rust__maintenance__bugfix__5baf9739	identical	8884	1171	src/bytes_mut.rs#BytesMut.reserve_inner:346|src/bytes_mut.rs#BytesMut.freeze:201|src/bytes.rs#fuzz.bytes_cloning_vec:187|tests/test_bytes.rs#split_off_to_loop:345|tests/test_bytes.rs#split_off_to_at_gt_len.make_bytes:52|src/bytes.rs#Vec:40
+Multi-SWE-Bench__c__maintenance__bugfix__d22bf206	identical	12559	1879	src/libponyc/type/alias.c#recover_single:362|src/libponyc/type/alias.c#recover_type:317|src/libponyc/expr/reference.c#expr_fieldref:361|src/libponyc/expr/operator.c#expr_assign:361|examples/ffi-struct/struct.c#Inner:22|test/libponyc/util.h#PassTest:357|test/libponyc/recover.cc#TEST_F(RecoverTest,CantAccess_NonSendableField):99
+Multi-SWE-Bench__go__maintenance__bugfix__74cafcca	identical	10417	1220	credentials/alts/alts.go#ErrUntrustedPlatform:36|credentials/alts/internal/handshaker/handshaker.go#credentials/alts/internal/handshaker/handshaker.go:__module__:345|credentials/alts/utils.go#vmOnGCP:16|credentials/alts/utils.go#isRunningOnGCP:152|credentials/alts/alts.go#altsTC.ServerHandshake:344|credentials/alts/internal/common.go#ClientSide:18|credentials/credentials.go#AuthInfo:24|credentials/alts/utils_test.go#TestIsRunningOnGCP:285
+SWE-PolyBench__python__evolution__refactor__57ad5598	identical	13594	1890	keras/models/model.py#Model.save:362|keras/saving/saving_lib.py#save_model:359|keras/layers/preprocessing/feature_space.py#FeatureSpace.save:102|keras/saving/saving_api.py#save_model:362|keras/models/model.py#Model.save_weights:265|examples/keras_io/vision/keypoint_detection.py#JSON:25|keras/utils/file_utils.py#File:66|keras/layers/preprocessing/feature_space_test.py#FeatureSpaceTest.test_saving:349
+Multi-SWE-Bench__java__maintenance__bugfix__4e0927d8	identical	13346	1779	gson/src/test/java/com/google/gson/PrimitiveTypeAdapter.java#PrimitiveTypeAdapter.adaptType(Object,Class):360|gson/src/test/java/com/google/gson/GsonTypeAdapterTest.java#GsonTypeAdapterTest.testTypeAdapterDoesNotAffectNonAdaptedTypes():85|CHANGELOG.md#CHANGELOG.md:__module__:357|gson/src/main/java/com/google/gson/internal/ConstructorConstructor.java#ConstructorConstructor:357|gson/src/test/java/com/google/gson/functional/ExclusionStrategyFunctionalTest.java#ExclusionStrategyFunctionalTest.testExclusionStrategySerializationDoesNotImpactSerialization():102|gson/src/main/java/com/google/gson/JsonElement.java#JsonElement:362|gson/src/main/java/com/google/gson/JsonIOException.java#JsonIOException:156
+SWE-Bench-Verified__python__maintenance__bugfix__7080a326	identical	15234	2057	sympy/core/numbers.py#mod_inverse:359|sympy/core/mod.py#Mod:362|sympy/simplify/hyperexpand.py#_mod1:152|sympy/simplify/hyperexpand.py#Hyper_Function:346|sympy/functions/combinatorial/factorials.py#binomial._eval_Mod:358|sympy/core/numbers.py#Number.invert:70|sympy/integrals/rubi/utility_function.py#If:39|sympy/physics/units/definitions.py#One:15|sympy/core/tests/test_arit.py#test_Mod:356
+Multi-SWE-Bench__java__maintenance__bugfix__7ed1d1b8	identical	8505	634	fastjson1-compatible/src/main/java/com/alibaba/fastjson/JSON.java#JSON.isValid(String):40|fastjson1-compatible/src/main/java/com/alibaba/fastjson/JSON.java#JSON.isValidArray(String):42|fastjson1-compatible/src/test/java/com/alibaba/json/bvtVO/PushMsg.java#PushMsg.Msg.ControlFlags.isValid():33|core/src/main/java/com/alibaba/fastjson2/JSON.java#JSON.isValid(byte[],int,int,Charset):113|core/src/test/java/com/alibaba/fastjson2/v1issues/issue_3600/Issue3671.java#core/src/test/java/com/alibaba/fastjson2/v1issues/issue_3600/Issue3671.java:__module__:294|fastjson1-compatible/src/test/java/com/alibaba/fastjson/issue_2300/Issue2397.java#Issue2397.SuperBaseReply:73|core/src/test/java/com/alibaba/fastjson2/v1issues/issue_3500/Issue3516.java#Issue3516.test_for_issue():39
+SWE-PolyBench__javascript__maintenance__bugfix__eb4ff271	identical	17557	2851	lib/classes/Variables.js#Variables:357|lib/plugins/aws/package/compile/events/apiGateway/lib/cors.js#lib/plugins/aws/package/compile/events/apiGateway/lib/cors.js:__module__:349|lib/plugins/print/print.js#lib/plugins/print/print.js:__module__:360|docs/providers/openwhisk/guide/variables.md#docs/providers/openwhisk/guide/variables.md:__module__:354|docs/providers/spotinst/guide/cors.md#docs/providers/spotinst/guide/cors.md:__module__:357|lib/classes/PromiseTracker.js#PromiseTracker:362|lib/classes/Service.js#Service:356|lib/classes/Variables.test.js#lib/classes/Variables.test.js:__module__:356
+Multi-SWE-Bench__javascript__maintenance__bugfix__cbea412a	identical	14087	2149	examples/mvc/index.js#examples/mvc/index.js:__module__:357|lib/application.js#render:362|Contributing.md#Contributing.md:__module__:350|lib/response.js#lib/response.js:__module__:361|examples/error-pages/index.js#examples/error-pages/index.js:__module__:361|lib/router/route.js#Route:51|lib/view.js#View:262|lib/application.js#tryRender:45

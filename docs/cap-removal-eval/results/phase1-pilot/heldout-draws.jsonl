@@ -1,0 +1,40 @@
+{"set": "heldout", "id": "httpx-9ae170a9", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-15d09a3b", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-c1cc6b24", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-4b5a92e8", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-f1157dbc", "repo": "encode/httpx", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "httpx-85c5898d", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-c5e9c82c", "repo": "encode/httpx", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "httpx-a934c36a", "repo": "encode/httpx", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "httpx-f0fd9192", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-a6af45ed", "repo": "encode/httpx", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "httpx-bddd774c", "repo": "encode/httpx", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "httpx-4cbf13ec", "repo": "encode/httpx", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "httpx-b82fbe2c", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-b97c0594", "repo": "encode/httpx", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "httpx-a8dd079b", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-40a0da09", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-57aa5b08", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-210095fd", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-2d551768", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-95f45673", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-2d2447e2", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-99b3b492", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-4ab2550d", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-6fbfca90", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-d8829f9f", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-db575eee", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-33cf965f", "repo": "psf/requests", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "requests-53514694", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-c9e000b9", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-4f03a769", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-45174bf9", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-3ba37d2a", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-88bcf784", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-8cb95067", "repo": "pallets/flask", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "flask-1232d698", "repo": "pallets/flask", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "flask-eb36135c", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-69e23006", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-39f93632", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-4eb5e945", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-08a283af", "repo": "pallets/flask", "eligible": true, "why": null}

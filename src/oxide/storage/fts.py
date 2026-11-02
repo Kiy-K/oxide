@@ -93,7 +93,7 @@ def prepare_fts(path: Path | None = None) -> Path:
     url, sha256 = build
     path.parent.mkdir(parents=True, exist_ok=True)
     # The extension host refuses urllib's default User-Agent (HTTP 403, measured).
-    request = urllib.request.Request(url, headers={"User-Agent": f"oxide/{version('oxide')}"})
+    request = urllib.request.Request(url, headers={"User-Agent": f"oxide/{version('oxide-agent')}"})
     try:
         with urllib.request.urlopen(request, timeout=60) as response:
             data = response.read()
