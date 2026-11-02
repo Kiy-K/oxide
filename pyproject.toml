@@ -2,7 +2,7 @@
 [project]
 # PyPI's "oxide" belongs to another project; the import package and CLI stay `oxide`.
 name = "oxide-agent"
-version = "0.1.0"
+version = "0.1.1"
 description = "OXIDE v2: a structural context engine for agents"
 readme = "README.md"
 license = "MIT"
