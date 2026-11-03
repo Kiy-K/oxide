@@ -19,14 +19,16 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 ## How to work
 
 - For fully-autonomous tasks, don't poll background tasks; they will send you their output once they're done.
-- Keep it simple. Build only what the current phase needs: no speculative abstractions, flags or features.
-- Don't duplicate logic, policy or docs. Still, don't add an abstraction just to remove a few repeated lines.
+- Implementation first: read the code, change it, add or adjust a test, `mise run verify`; before a push also `mise run pythons` (CI's 3.12/3.14 rows). Feature, bug-fix, language and refactor work needs no study, preregistration, plan doc or report.
+- Library first: an existing helper, the standard library or an installed dependency (tree-sitter queries, LadybugDB queries, NetworkX) before your own code. Native libraries do recursive and latency-sensitive work; Python holds bounded policy. A new dependency needs a reuse, packaging or API reason (SPEC § System architecture).
+- No speculative abstractions, flags, options or features: build only what the current phase needs. Don't duplicate logic or policy, but don't add an abstraction just to remove a few repeated lines.
+- Minimal documentation: update only the doc that owns a changed fact (SPEC, `docs/public-api.md`, `docs/agents/workflow.md`). No new design notes, plans or reports unless asked or a gate cites them. Comments say why, never what.
+- Graph selection is algorithm-driven: a named, standard graph algorithm (NetworkX or a LadybugDB query) over stored relations with a stated objective, not hand-tuned weights or ad-hoc traversal.
+- Benchmark-backed decisions: a quality or performance claim needs before/after numbers (ContextBench gates per `docs/agents/workflow.md` for retrieval/routing/packing/selection, `scripts/bench.py` for speed). Fix the pass/fail rule before reading held-out results; record the verdict as one row in `docs/decisions.md` § Research verdicts. No numbers, no claim, no merge.
 - Keep changes small and cohesive. Don't clean up unrelated code during a focused task.
-- Reuse existing patterns and dependencies before adding new ones. A new package or dependency needs a reuse, packaging or API reason (SPEC § System architecture).
 - Keep the public API and versioned formats (derivation components, store schema, payload/units versions) compatible unless the task says to change them; bump the version when you do. Legacy v1 compatibility (SQLite indexes, symbol ids, CLI/MCP/JSON surface) and the retired Rust/TS protocol are not requirements (SPEC § Compatibility policy).
 - Fix root causes. Don't weaken tests, regenerate goldens or re-baseline just to make a failure go away.
-- Implementation first: the default loop is read the code, change it, add or adjust a test, `mise run verify`; before a push also `mise run pythons` (CI's 3.12/3.14 rows). Feature, bug-fix, language and refactor work needs no study, preregistration or report.
-- An experiment is only for claims a test can't settle: a retrieval/routing/packing quality change (ContextBench gates, `docs/agents/workflow.md`), a performance claim (measure before and after with `scripts/bench.py`), or promoting an optional judge. Then fix the pass/fail rule before reading held-out results, and record the verdict (one row in `docs/decisions.md` § Research verdicts, plus a short report only if a gate, test or comment will cite it).
+- Experiments are only for claims a test can't settle: the quality and performance claims above, or promoting an optional judge.
 - Read the code, tests and docs before stating how something works. Label each claim as measured or inferred.
 - If missing or ambiguous information could change the implementation, check the repo first. If that doesn't settle it, ask one focused question instead of guessing. Don't invent permanent ID/schema/transport/model policy to unblock scaffolding (`docs/decisions.md` rule 4).
 - Before finishing, read the full diff for accidental changes in scope, public API surface (`oxide/__init__.py`), dependencies (`pyproject.toml`, `uv.lock`) or generated files.
@@ -51,7 +53,6 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 - Legacy code and docs are historical evidence, not a template (SPEC, `docs/decisions.md` rule 2). The old implementation is recoverable from `main` / `ac985b28`; don't port it into `src/oxide/` without a stated SPEC requirement.
 - Retrieval, routing and packing changes are evaluated per SPEC § Evaluation against the frozen baselines (`tests/python/test_baseline.py` checks Phase 3 exactly); never regenerate a frozen artifact to make a failure pass. Legacy numbers in pinned historical reports are historical comparators, not v2 gates.
 - Models judge; deterministic code decides. Keep JEV and learned judges optional; there are no embeddings. The deterministic offline path needs no model or network (only `oxide prepare` fetches the pinned FTS extension, explicitly).
-- Let native libraries do recursive and latency-sensitive work (tree-sitter queries, LadybugDB queries, Networkx for graph algorithms); Python holds bounded policy.
 
 <!-- CODEGRAPH_START -->
 ## CodeGraph
