@@ -1,0 +1,5 @@
+/goal Improve OXIDE's coding-agent context quality and token efficiency through algorithmic optimization. Own the implementation, iterate autonomously, and retain only benchmark-proven improvements.
+
+---
+
+Goal set: Improve OXIDE's context intelligence, token efficiency, and incremental indexing speed through better algorithms. This is is additional to the first one
