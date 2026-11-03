@@ -37,6 +37,7 @@ else:
 from oxide.storage.fts import fts_location
 from oxide.storage.ladybug import (
     _HEX64,
+    _LEXICAL_SCHEMA,
     _SCHEMA,
     SCHEMA_VERSION,
     STORAGE_FORMAT,
@@ -47,6 +48,7 @@ from oxide.storage.ladybug import (
     _write_atomic,
     _write_csv,
     identity,
+    lexical_pool,
     load_pool,
     unresolved_key,
 )
@@ -225,13 +227,22 @@ class Store:
         shutil.rmtree(staging, ignore_errors=True)
         staging.mkdir()
         try:
-            # LadybugDB releases the GIL and builds the FTS index on one thread, so the
-            # source blobs are written meanwhile (docs/fts-footprint.md § 4).
-            with ThreadPoolExecutor(1) as pool:
+            # LadybugDB releases the GIL, so the source blobs and the lexical index are
+            # written while the graph loads (docs/fts-footprint.md § 4).
+            lexical = None
+            with ThreadPoolExecutor(2) as pool:
                 retaining = pool.submit(self._retain, staging, capture)
+                if lexical_unavailable is None:
+                    lexical, count = self._documents(staging, derived)
+                    old = self.previous()
+                    same = old is not None and old.manifest.get("lexical") == lexical
+                    reuse = old.directory if old is not None and same else None
+                    indexing = pool.submit(self._lexical, staging, lexical, count, reuse)
                 snapshot = Snapshot(self.repo_id, capture.snapshot_id, derivation)
-                rows = self._load(staging, derived, lexical_unavailable is None, snapshot)
+                rows = self._load(staging, derived, snapshot)
                 retaining.result()
+                if lexical is not None:
+                    indexing.result()
             facts = json.dumps(derived.facts, separators=(",", ":")).encode()
             (staging / "facts.json").write_bytes(facts)
             manifest = {
@@ -250,6 +261,7 @@ class Store:
                 "entities": len(derived.entities),
                 "relations": len(derived.edges),
                 "rows": rows,
+                "lexical": lexical,
                 "facts": {"format": FACTS_FORMAT, "digest": digest(facts)},
             }
             self._seal(staging, manifest)
@@ -287,6 +299,50 @@ class Store:
             _fsync(blob)
         _fsync(source)
 
+    def _documents(self, staging: Path, derived: Derived) -> tuple[str, int]:
+        """Writes the lexical documents; their digest identifies the lexical index."""
+        csv = staging / "Doc.csv"
+        count = _write_csv(csv, ((e.key, document(e)) for e in derived.entities))
+        return digest(csv.read_bytes()), count
+
+    def _lexical(self, staging: Path, documents: str, count: int, reuse: Path | None) -> None:
+        """Builds ``lexical.lbug`` from ``Doc.csv``, or links ``reuse``'s, a readable
+        generation with the same documents: the index is a function of them alone."""
+        csv, target = staging / "Doc.csv", staging / "lexical.lbug"
+        if reuse is not None:
+            try:
+                os.link(reuse / "lexical.lbug", target)
+                csv.unlink()
+                return
+            except OSError:
+                pass  # no hard links here: build it
+        # One thread: on two, FTS BM25 scores drift by one ULP in ~10% of builds
+        # (indexing-throughput § 9 at 013e791). Only the final CHECKPOINT writes pages:
+        # an auto-checkpoint inside CREATE_FTS_INDEX leaves dead pages (docs/fts-footprint.md).
+        db = ladybug.Database(
+            str(target),
+            buffer_pool_size=lexical_pool(csv.stat().st_size),
+            max_num_threads=1,
+            auto_checkpoint=False,
+        )
+        conn = ladybug.Connection(db)
+        try:
+            for statement in _LEXICAL_SCHEMA:
+                _rows(conn, statement)
+            options = "header=false, quote='\"', escape='\"', delim=',', parallel=false"
+            _rows(conn, f"COPY Doc FROM {_literal(csv)} ({options})")
+            csv.unlink()
+            read = _rows(conn, "MATCH (d:Doc) RETURN count(d)")[0][0]
+            if read != count:
+                raise StoreCorrupt(f"read back {read} documents, wrote {count}")
+            _rows(conn, "CREATE (:Identity {key: $key})", {"key": documents})
+            _rows(conn, f"LOAD EXTENSION {_literal(fts_location())}")
+            _rows(conn, "CALL CREATE_FTS_INDEX('Doc', 'lexical', ['terms'], stemmer := 'porter')")
+            _rows(conn, "CHECKPOINT")
+        finally:
+            conn.close()
+            db.close()
+
     def _seal(self, staging: Path, manifest: dict[str, Any]) -> None:
         """Writes the manifest, then makes the staging durable."""
         (staging / "MANIFEST.json").write_text(
@@ -297,14 +353,12 @@ class Store:
                 _fsync(path)
         _fsync(staging)
 
-    def _load(
-        self, staging: Path, derived: Derived, lexical: bool, snapshot: Snapshot
-    ) -> dict[str, int]:
+    def _load(self, staging: Path, derived: Derived, snapshot: Snapshot) -> dict[str, int]:
         entities: list[tuple[object, ...]] = []
         for e in derived.entities:
             src = e.source or SourceRef("", -1, -1, "")
             row = (e.key, e.category, e.kind, e.name, e.signature or "", src.path, src.start)
-            entities.append((*row, src.end, src.digest, e.test, document(e)))
+            entities.append((*row, src.end, src.digest, e.test))
         rels: list[tuple[object, ...]] = []
         opaque: list[tuple[object, ...]] = []
         unresolved: dict[str, tuple[object, ...]] = {}
@@ -329,10 +383,7 @@ class Store:
         size = sum((staging / f"{table}.csv").stat().st_size for table in tables)
         pool = load_pool(size)
         # The staging load alone gets a second thread for COPY (rows unchanged); read views
-        # keep one. FTS indexing does not: on 2 threads its BM25 scores drift by one ULP in
-        # ~10% of builds (indexing-throughput § 9 at 013e791). Only the final CHECKPOINT
-        # writes pages: an auto-checkpoint inside CREATE_FTS_INDEX would leave its temporary
-        # tables as dead pages in the file (docs/fts-footprint.md).
+        # keep one.
         db = ladybug.Database(
             str(staging / "graph.lbug"),
             buffer_pool_size=pool,
@@ -364,13 +415,6 @@ class Store:
             if read != written:
                 # COPY can drop rows whose endpoints are missing; never publish that.
                 raise StoreCorrupt(f"read back {read}, wrote {written}")
-            if lexical:
-                conn.set_max_threads_for_exec(1)
-                _rows(conn, f"LOAD EXTENSION {_literal(fts_location())}")
-                _rows(
-                    conn,
-                    "CALL CREATE_FTS_INDEX('Entity', 'lexical', ['terms'], stemmer := 'porter')",
-                )
             _rows(conn, "CHECKPOINT")
         finally:
             conn.close()

@@ -74,12 +74,13 @@ def damage(path: Path, how: str) -> None:
         path.unlink()
 
 
+@pytest.mark.parametrize("database", ["graph.lbug", "lexical.lbug"])
 @pytest.mark.parametrize("how", ["random", "short", "empty", "missing"])
 def test_a_damaged_database_fails_closed_then_rebuilds(
-    repo_copy: Path, private_data: Path, fts: Path, how: str
+    repo_copy: Path, private_data: Path, fts: Path, how: str, database: str
 ) -> None:
     oxide.index_repository(repo_copy)
-    damage(generation(private_data) / "graph.lbug", how)
+    damage(generation(private_data) / database, how)
     result = python(private_data, PROBE, str(repo_copy), str(private_data))
     assert result.returncode == 0, result.stderr
     report = json.loads(result.stdout)
@@ -104,6 +105,24 @@ def test_a_foreign_graph_with_the_same_shape_fails_closed_then_rebuilds(
             repo.files()
         assert repo.index().status == "built"
         assert repo.files()
+
+
+def test_another_generations_lexical_index_fails_closed_then_rebuilds(
+    repo_copy: Path, private_data: Path, fts: Path, tmp_path: Path
+) -> None:
+    """A lexical index over other documents must not serve this generation's search."""
+    oxide.index_repository(repo_copy)
+    mine = generation(private_data) / "lexical.lbug"
+    kept = tmp_path / "lexical.lbug"
+    shutil.copyfile(mine, kept)
+    write(repo_copy, {"oxidepy/extra.py": "def brand_new_helper():\n    pass\n"})
+    oxide.index_repository(repo_copy)
+    shutil.copyfile(kept, generation(private_data) / "lexical.lbug")
+    with oxide.open_repository(repo_copy) as repo:
+        with pytest.raises(StoreCorrupt):
+            repo.search("brand new helper")
+        assert repo.index().status == "built"
+        assert repo.search("brand new helper").entries
 
 
 MANIFEST_DAMAGE: dict[str, Callable[[dict[str, Any]], str]] = {

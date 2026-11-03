@@ -55,6 +55,32 @@ def test_edits_publish_a_new_generation_and_drop_the_old(
     assert len(generations) == 1
 
 
+def test_a_body_only_edit_reuses_the_lexical_index(
+    repo_copy: Path, private_data: Path, fts: Path
+) -> None:
+    """Same documents, same index: linked, never rebuilt; new documents rebuild it."""
+
+    def lexical() -> Path:
+        directory = store_dir(private_data)
+        return directory / "generations" / (directory / "CURRENT").read_text() / "lexical.lbug"
+
+    with oxide.open_repository(repo_copy) as repo:
+        repo.index()
+        before = lexical().stat().st_ino
+        with (repo_copy / "oxidepy/retry.py").open("a") as f:
+            f.write("\n# a comment changes bytes, not documents\n")
+        assert repo.index().status == "built"
+        assert lexical().stat().st_ino == before
+        assert repo.search("RetryPolicy").entries[0].entity.key == (
+            "symbol:oxidepy/retry.py#RetryPolicy"
+        )
+        write(repo_copy, {"oxidepy/extra.py": "def brand_new_helper():\n    pass\n"})
+        repo.index()
+        assert lexical().stat().st_ino != before
+        hits = repo.search("brand new helper").entries
+        assert hits[0].entity.key == "symbol:oxidepy/extra.py#brand_new_helper"
+
+
 def test_interrupted_builds_are_discarded_on_open(private_data: Path) -> None:
     oxide.index_repository(FIXTURE)
     leftover = store_dir(private_data) / "generations" / ("0" * 64 + ".staging")
@@ -75,7 +101,7 @@ def test_another_store_schema_requires_a_rebuild(private_data: Path) -> None:
     oxide.index_repository(FIXTURE)
     directory = store_dir(private_data)
     (manifest,) = (directory / "generations").glob("*/MANIFEST.json")
-    manifest.write_text(manifest.read_text().replace("oxide-ladybug-py-v3", "older-schema"))
+    manifest.write_text(manifest.read_text().replace("oxide-ladybug-py-v4", "older-schema"))
     with oxide.open_repository(FIXTURE) as repo:
         with pytest.raises(IncompatibleIndex):
             repo.search("x")

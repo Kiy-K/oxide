@@ -116,7 +116,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -263,7 +263,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -394,7 +394,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -514,7 +514,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -636,7 +636,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -763,7 +763,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -931,7 +931,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -1059,7 +1059,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -1404,7 +1404,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -1702,7 +1702,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2022,7 +2022,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2187,7 +2187,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2567,7 +2567,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2822,7 +2822,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -3393,7 +3393,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -3603,7 +3603,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -3833,7 +3833,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -4232,7 +4232,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -4442,7 +4442,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -4673,7 +4673,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -4956,7 +4956,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -5210,7 +5210,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -5389,7 +5389,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -5736,7 +5736,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -5972,7 +5972,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -6203,7 +6203,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -6330,7 +6330,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -6514,7 +6514,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -6747,7 +6747,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -6926,7 +6926,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -7159,7 +7159,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -7412,7 +7412,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -7602,7 +7602,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -7799,7 +7799,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -7997,7 +7997,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -8237,7 +8237,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -8555,7 +8555,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -8912,7 +8912,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -9249,7 +9249,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -9405,7 +9405,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -9751,7 +9751,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -10070,7 +10070,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -10245,7 +10245,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -10568,7 +10568,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -10812,7 +10812,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -11127,7 +11127,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -11281,7 +11281,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -11498,7 +11498,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -11667,7 +11667,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -11861,7 +11861,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -12046,7 +12046,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -12323,7 +12323,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -12676,7 +12676,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -12956,7 +12956,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -13188,7 +13188,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -13464,7 +13464,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -13792,7 +13792,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -14059,7 +14059,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -14393,7 +14393,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -16919,7 +16919,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -17362,7 +17362,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -17822,7 +17822,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -17990,7 +17990,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -18469,7 +18469,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -18932,7 +18932,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -19124,7 +19124,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -19303,7 +19303,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -19580,7 +19580,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -19843,7 +19843,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -20034,7 +20034,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -20316,7 +20316,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -20474,7 +20474,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -20607,7 +20607,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -20852,7 +20852,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -21160,7 +21160,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -21287,7 +21287,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -21444,7 +21444,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -21578,7 +21578,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -21796,7 +21796,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22105,7 +22105,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22243,7 +22243,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22376,7 +22376,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22563,7 +22563,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22776,7 +22776,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22922,7 +22922,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -23104,7 +23104,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -23486,7 +23486,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -23662,7 +23662,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -23818,7 +23818,7 @@
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
+   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
    "units": "oxide-units-v1"
   },
   "compat": {

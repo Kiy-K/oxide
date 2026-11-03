@@ -6,8 +6,12 @@ Layout of one repository's store under the data location::
         store.lock          exclusive OS lock: one owner per store, enforced by OXIDE
         repo.json           {"repo_id", "root"}; the random RepoId (ADR-0010)
         CURRENT             name of the published generation; replaced atomically
-        generations/<g>/    sealed: graph.lbug, MANIFEST.json, source/<sha256 hex>,
+        generations/<g>/    sealed: graph.lbug, lexical.lbug (when lexical search is
+                            available), MANIFEST.json, source/<sha256 hex>,
                             facts.json (parse facts the next index() may reuse)
+
+``lexical.lbug`` holds only the documents and their FTS index: a database of its own,
+built single-threaded while the graph loads (LadybugDB has one writer per database).
 
 A generation is built in ``<g>.staging``, bulk-loaded with ``COPY``, read back and
 compared, checkpointed, fsynced and renamed; only then does ``CURRENT`` move. A
@@ -52,13 +56,16 @@ from oxide.storage.fts import (
     fts_unavailable,
 )
 
-SCHEMA_VERSION = "oxide-ladybug-py-v3"
+SCHEMA_VERSION = "oxide-ladybug-py-v4"
 STORAGE_FORMAT = 47
 # The pool of every read view, and the floor of a load's. A load holds what it copies
 # in the pool until it commits: measured ~1.6 MiB per CSV MiB (VS Code, 554k relations,
 # needs 288 MiB), so a load gets twice its CSV bytes more (docs/large-repositories.md).
 BUFFER_POOL = 128 << 20
 LOAD_POOL_PER_BYTE = 2
+# CREATE_FTS_INDEX needs far more per document byte: measured on VS Code's documents
+# (10 / 15 / 23.2 MB fit in 140 / 190 / 270 MiB, not 128 / 170 / 256), ~10 MiB per MB.
+LEXICAL_POOL_PER_BYTE = 10
 # (kind, other end, proven, heuristic): proven is ``resolved`` with a non-heuristic basis.
 type Adjacent = list[tuple[str, str, bool, bool]]
 _HEX64 = re.compile(r"[0-9a-f]{64}")
@@ -150,7 +157,7 @@ def _write_atomic(path: Path, data: bytes) -> None:
 _SCHEMA = (
     "CREATE NODE TABLE Entity(key STRING PRIMARY KEY, category STRING, kind STRING, name STRING, "
     "signature STRING, path STRING, start_byte INT64, end_byte INT64, digest STRING, "
-    "test BOOLEAN, terms STRING)",
+    "test BOOLEAN)",
     "CREATE NODE TABLE Unresolved(key STRING PRIMARY KEY, name STRING)",
     # One row: the generation identity, so a swapped-in foreign graph fails closed.
     "CREATE NODE TABLE Identity(key STRING PRIMARY KEY)",
@@ -158,6 +165,10 @@ _SCHEMA = (
     "name STRING, site INT64, ev_path STRING, ev_start INT64, ev_end INT64)",
     "CREATE REL TABLE Opaque(FROM Entity TO Unresolved, kind STRING, basis STRING, name STRING, "
     "site INT64, ev_path STRING, ev_start INT64, ev_end INT64)",
+)
+_LEXICAL_SCHEMA = (
+    "CREATE NODE TABLE Doc(key STRING PRIMARY KEY, terms STRING)",
+    "CREATE NODE TABLE Identity(key STRING PRIMARY KEY)",
 )
 _ENTITY = (
     "e.key, e.category, e.kind, e.name, e.signature, e.path, e.start_byte, e.end_byte, "
@@ -235,6 +246,8 @@ class View:
         self.lexical_scorer = FTS_SCORER
         self._db: ladybug.Database | None = None
         self._conn: ladybug.Connection | None = None
+        self._lexical_db: ladybug.Database | None = None
+        self._lexical: ladybug.Connection | None = None
         try:
             self._db = ladybug.Database(
                 str(directory / "graph.lbug"),
@@ -256,15 +269,37 @@ class View:
             self.close()
             raise StoreCorrupt(f"{directory}: {stored} entities stored, {entities} sealed")
         if self.lexical_unavailable is None:
+            try:
+                self._lexical_db = ladybug.Database(
+                    str(directory / "lexical.lbug"),
+                    read_only=True,
+                    buffer_pool_size=BUFFER_POOL,
+                    max_num_threads=1,
+                )
+                self._lexical = ladybug.Connection(self._lexical_db)
+                docs = _rows(self._lexical, "MATCH (d:Doc) RETURN count(d)")[0][0]
+                owner = [r[0] for r in _rows(self._lexical, "MATCH (i:Identity) RETURN i.key")]
+            except RuntimeError as error:
+                self.close()
+                raise StoreCorrupt(f"{directory}: unreadable lexical index ({error})") from error
+            if owner != [manifest.get("lexical")] or docs != entities:
+                self.close()
+                raise StoreCorrupt(f"{directory}: lexical index belongs to another generation")
             extension = fts_location()
             self.lexical_unavailable = fts_unavailable(extension)
             if self.lexical_unavailable is None:
                 try:
-                    _rows(self._conn, f"LOAD EXTENSION {_literal(extension)}")
+                    _rows(self._lexical, f"LOAD EXTENSION {_literal(extension)}")
                 except RuntimeError as error:
                     self.lexical_unavailable = f"FTS extension did not load: {error}"
 
     def close(self) -> None:
+        if self._lexical is not None:
+            self._lexical.close()
+            self._lexical = None
+        if self._lexical_db is not None:
+            self._lexical_db.close()
+            self._lexical_db = None
         if self._conn is not None:
             self._conn.close()
             self._conn = None
@@ -272,12 +307,15 @@ class View:
             self._db.close()
             self._db = None
 
-    def _query(self, query: str, params: dict[str, Any] | None = None) -> list[Any]:
+    def _query(
+        self, query: str, params: dict[str, Any] | None = None, lexical: bool = False
+    ) -> list[Any]:
         """A read; native failures on a sealed generation mean it is damaged."""
-        if self._conn is None:
+        conn = self._lexical if lexical else self._conn
+        if conn is None:
             raise Closed(f"{self.directory}: view is closed")
         try:
-            return _rows(self._conn, query, params)
+            return _rows(conn, query, params)
         except RuntimeError as error:
             raise StoreCorrupt(f"{self.directory}: read failed ({error})") from error
 
@@ -339,16 +377,16 @@ class View:
         if not _TERMS_TEXT.fullmatch(text):
             raise ValueError(f"lexical query must be OXIDE terms, got {text!r}")
         statement = (
-            f"CALL QUERY_FTS_INDEX('Entity', 'lexical', '{text}', conjunctive := false, "
+            f"CALL QUERY_FTS_INDEX('Doc', 'lexical', '{text}', conjunctive := false, "
             "K := 1.2, B := 0.75{top}) RETURN node.key, score ORDER BY score DESC, node.key "
             "LIMIT {n}"
         )
         # `top` spares sorting every match by key (docs/fts-footprint.md § 3) but cuts
         # ties arbitrarily: exact unless its last score reaches the limit-th; then rerun.
         wide = 10 * (limit + 1)
-        rows = self._query(statement.format(top=f", top := {wide}", n=wide))
+        rows = self._query(statement.format(top=f", top := {wide}", n=wide), lexical=True)
         if len(rows) == wide and rows[-1][1] >= rows[limit - 1][1]:
-            rows = self._query(statement.format(top="", n=limit + 1))
+            rows = self._query(statement.format(top="", n=limit + 1), lexical=True)
         rows = rows[: limit + 1]
         for key, score in rows:
             if not (isinstance(score, float) and math.isfinite(score) and score > 0):
@@ -439,3 +477,8 @@ class View:
 def load_pool(size: int) -> int:
     """Buffer pool for a bulk load of ``size`` bytes; reads the module values at call time."""
     return BUFFER_POOL + LOAD_POOL_PER_BYTE * size
+
+
+def lexical_pool(size: int) -> int:
+    """Buffer pool for building the lexical index of ``size`` document bytes."""
+    return BUFFER_POOL + LEXICAL_POOL_PER_BYTE * size

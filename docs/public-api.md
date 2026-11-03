@@ -256,7 +256,7 @@ Damage is classified like this:
 
 - **Derived state is rebuilt by `index()`**, because the repository identity
   (`repo.json`) and the source are still established. This covers an
-  unreadable, truncated, empty, missing or foreign `graph.lbug`, a malformed or
+  unreadable, truncated, empty, missing or foreign `graph.lbug` or `lexical.lbug`, a malformed or
   foreign `MANIFEST.json`, and a missing or digest-mismatched retained source
   file. Reads raise `store_corrupt` until then, and `index()` never reports
   such a generation `unchanged`.
