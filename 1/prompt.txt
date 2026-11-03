@@ -1,0 +1,7 @@
+<task-notification>
+<task-id>b8ywqp9kz</task-id>
+<tool-use-id>toolu_01ByJ9eQRMsdNF33CeU2TcAe</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/3266a405-c576-4239-b2e9-b0215b6b585f/tasks/b8ywqp9kz.output</output-file>
+<status>completed</status>
+<summary>Background command "Run TypeScript ContextBench with merge" completed (exit code 0)</summary>
+</task-notification>
