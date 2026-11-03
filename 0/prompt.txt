@@ -1,0 +1,1 @@
+Also auto-commit on the worktree after done the implementation, don't push unless asked
