@@ -1,0 +1,5 @@
+First, refine AGENTS.md to enforce implementation-first, library-first engineering: minimal documentation, no speculative abstractions, algorithm-driven graph selection, and benchmark-backed decisions. Keep the rules concise.
+
+---
+
+commit the AGENTS.md change

@@ -1,0 +1,41 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6GJ52HB4QF60VHGGE8GQWS0",
+  "session_id": "c9bdbb0e-1db8-4c45-bae7-25a2753f9493",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-03T11:19:19.62463148Z",
+  "branch": "docs/agents-engineering-rules",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "AGENTS.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "41fbc8a5f34f",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 16,
+    "cache_creation_tokens": 103204,
+    "cache_read_tokens": 685422,
+    "output_tokens": 5651,
+    "api_call_count": 8
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 1
+  }
+}
