@@ -73,7 +73,8 @@ class _File:
     digest: str
     parsed: Parsed
     keys: list[str]
-    children: list[list[int]]
+    named: list[dict[str, list[str]]]  # per scope: child declaration name -> keys
+    star: list[bool]  # per scope: whether it has a star import
     module: str | None
     init: bool
 
@@ -175,7 +176,13 @@ class Resolver:
                 if path in rooted:
                     self.rooted.setdefault(rooted[path], []).append(module)
             init = path.rsplit("/", 1)[-1] == "__init__.py"
-            file = _File(path, file_digest, parsed, keys, children, module, init)
+            named: list[dict[str, list[str]]] = [{} for _ in children]
+            for s, kids in enumerate(children):
+                for c in kids:
+                    if (decl := parsed.scopes[c].decl) is not None:
+                        named[s].setdefault(decl.name, []).append(keys[c])
+            star = [any(m.item == "star" for m in sc.imports) for sc in parsed.scopes]
+            file = _File(path, file_digest, parsed, keys, named, star, module, init)
             self.tests.update(keys[k] for k in range(1, len(parsed.scopes)) if _is_test(file, k))
             self.scopes.update((key, (len(self.files), k)) for k, key in enumerate(keys))
             self.files.append(file)
@@ -402,13 +409,9 @@ class Resolver:
         Without ``bindings``, names bound by import resolve through the import."""
         file = self.files[i]
         scope = file.parsed.scopes[s]
-        if any(m.item == "star" for m in scope.imports) or name in scope.bound:
+        if file.star[s] or name in scope.bound:
             return None
-        found = [
-            file.keys[c]
-            for c in file.children[s]
-            if (decl := file.parsed.scopes[c].decl) is not None and decl.name == name
-        ]
+        found = list(file.named[s].get(name, ()))
         bound = bool(found)
         if bindings is None:
             bindings = [
