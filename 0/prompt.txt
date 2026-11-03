@@ -1,0 +1,1 @@
+Make OXIDE's new split graph/FTS indexing architecture production-ready. Optimize memory usage, verify exact correctness and crash recovery across platforms, and improve performance wherever measurements justify it. After that, commit to main
