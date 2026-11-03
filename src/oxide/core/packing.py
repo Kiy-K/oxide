@@ -19,10 +19,10 @@ module-level glue, get the budget.
 
 Units are ``oxide-units-v1``: each run of word characters costs ceil(len/4), each
 newline 1, other whitespace 0, any other character 1. They claim no model's
-tokenizer. Payload ``oxide-payload-v3``: per item ``### <path>:<l1>-<l2> <names>``
+tokenizer. Payload ``oxide-payload-v4``: per item ``### <path>:<l1>-<l2> <names>``
 then its source (a module-level run is named ``(module-level)``); files in
-first-selection order, spans in byte order, overlapping spans of one file merged and
-counted once.
+first-selection order, spans in byte order, spans of one file that overlap or are
+separated only by whitespace merged into one item and counted once.
 
 An optional ``DecisionProvider`` (SPEC § DecisionProvider) may replace ``value`` for
 the candidates it judges; floor, caps, tiers, order and budget stay deterministic. A
@@ -40,7 +40,7 @@ from typing import Protocol
 from oxide.models import ContextItem, Entity, ItemEntity, Omission, SourceRef
 
 SELECTOR_VERSION = "oxide-select-greedy-v4"
-PAYLOAD_VERSION = "oxide-payload-v3"
+PAYLOAD_VERSION = "oxide-payload-v4"
 UNITS_VERSION = "oxide-units-v1"
 GRAPH_NODES = 64
 MAX_ITEMS = 24
@@ -218,7 +218,11 @@ class _Packer:
         for path, group in by_file.items():
             spans: list[list[_Piece]] = []
             for piece in sorted(group, key=lambda p: (p.start, p.end)):
-                if spans and piece.start < max(p.end for p in spans[-1]):
+                assert piece.entity.source is not None
+                end = max(p.end for p in spans[-1]) if spans else 0
+                # Only whitespace between two views: one item, so one heading.
+                gap = self.data(piece.entity.source)[end : piece.start]
+                if spans and (piece.start < end or not gap.strip()):
                     spans[-1].append(piece)
                 else:
                     spans.append([piece])

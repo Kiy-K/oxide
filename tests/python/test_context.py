@@ -77,7 +77,7 @@ def test_context_is_deterministic_and_reports_routing(repo: oxide.Repository) ->
     assert first.route.regions > 0 and not first.route.root_fallback
     assert first.route.stopped_by == "depth"
     assert "routing stopped by its depth bound" in first.degradations
-    assert first.versions["payload"] == "oxide-payload-v3"
+    assert first.versions["payload"] == "oxide-payload-v4"
 
 
 def test_no_entry_points_fall_back_to_the_root_region(repo: oxide.Repository) -> None:
@@ -160,12 +160,12 @@ def test_retrieved_files_contribute_bounded_module_evidence(fts: Path, tmp_path:
         for budget in (0, 8, 32, 64, 2048):
             small = repository.build_context(query, budget)
             assert small.used <= budget and small.used == units(small.payload)
-    module = [i for i in bundle.items if i.entities[0].key == "file:settings.py"]
-    assert module and all(len(i.entities) == 1 and not i.entities[0].complete for i in module)
-    assert all("lexical rank" in i.entities[0].reason for i in module)
-    shown = "".join(i.text for i in module)
+    module = [e for i in bundle.items for e in i.entities if e.key == "file:settings.py"]
+    assert module and all(not e.complete and "lexical rank" in e.reason for e in module)
+    shown = "".join(i.text for i in bundle.items)
     assert "import os" in shown and "TIMEOUT = 30" in shown
-    assert "def " not in shown and "class " not in shown  # declarations are their own views
+    # Declarations are their own views (one item here only because they abut the module's).
+    assert {e.name for i in bundle.items for e in i.entities} >= {"f", "g", "C"}
     ranges = sorted((i.source.start, i.source.end) for i in bundle.items)
     assert all(a[1] <= b[0] for a, b in itertools.pairwise(ranges))
 
@@ -187,3 +187,18 @@ def test_path_hints_pack_the_hinted_files_declarations_first(repo: oxide.Reposit
     assert hinted.items[: len(first)] == tuple(first)  # before any lexical hit elsewhere
     assert any(e.name == "TTLCache" and e.complete for i in first for e in i.entities)
     assert any(i.source.path != "oxidepy/cache.py" for i in hinted.items)  # not exclusive
+
+
+def test_views_separated_only_by_whitespace_share_one_item() -> None:
+    data = b"def f():\n    return 1\n\n\ndef g():\n    return 2\nX = 1\ndef h():\n    pass\n"
+
+    def symbol(name: str) -> Candidate:
+        start = data.index(f"def {name}".encode())
+        end = data.index(b"\n", data.index(b"\n", start) + 1)
+        ref = SourceRef("m.py", start, end, "x")
+        entity = Entity(f"symbol:m.py#{name}", "symbol", "function", name, None, ref, False)
+        return Candidate(entity, 0, 1, True)
+
+    items, _ = pack([symbol("f"), symbol("g"), symbol("h")], {}, 4096, lambda ref: data, {})
+    assert [i.lines for i in items] == [(1, 6), (8, 9)]  # ``X = 1`` keeps h apart
+    assert items[0].text.startswith("### m.py:1-6 f, g\n")

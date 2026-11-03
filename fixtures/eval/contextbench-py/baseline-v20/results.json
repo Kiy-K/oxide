@@ -24,13 +24,13 @@
     "span_recall@1024": 1.0,
     "line_recall@1024": 1.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.99707,
-    "gold_unit_share@1024": 0.452498,
+    "utilization@1024": 0.991211,
+    "gold_unit_share@1024": 0.462069,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.371094,
-    "gold_unit_share@4096": 0.308553
+    "utilization@4096": 0.352539,
+    "gold_unit_share@4096": 0.42313
    }
   },
   "unverified": null,
@@ -82,13 +82,13 @@
     ]
    },
    "1024": {
-    "used": 1021,
+    "used": 1015,
     "within_budget": true,
     "deterministic": true,
-    "items": 9,
+    "items": 8,
     "header_entities": 4,
     "omissions": {
-     "packing: budget": 5,
+     "packing: budget": 4,
      "selection: container": 5,
      "selection: value N below floor": 14
     },
@@ -97,10 +97,10 @@
     ]
    },
    "4096": {
-    "used": 1520,
+    "used": 1444,
     "within_budget": true,
     "deterministic": true,
-    "items": 10,
+    "items": 4,
     "header_entities": 2,
     "omissions": {
      "selection: container": 5,
@@ -115,7 +115,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -123,8 +123,8 @@
    "entries": "d32de9e26e0a2eacd5bc5612ee5d96378ef688d3641c1813b6cefc594ed4f674",
    "routed": "a069f9bfe72286146e911a8cbf570dbb5cf8b5245ea86bf060320d5a980a6f26",
    "payload@256": "9bb2fe6d8b76a62449c5d1033af2276eb014a655bac3b54f10cb44ef4dba7b50",
-   "payload@1024": "b750dd49658ec27f81c44c5adf65fc808e6efa6b29c3870aadc789532b721d6d",
-   "payload@4096": "924f15e68566a38afd85c24e0365def95e2c0705e5d1d54427e3a01d31dcc1f0"
+   "payload@1024": "b7461fc0e4c57a9b86e3dbc9b561527dc3139e77938e5621146141f161a69d52",
+   "payload@4096": "9138ccff221681ff75042ab439d049f4447539ece2a69205ebeb227b65cf1c5c"
   }
  },
  {
@@ -153,12 +153,12 @@
     "line_recall@1024": 1.0,
     "file_recall@1024": 1.0,
     "utilization@1024": 1.0,
-    "gold_unit_share@1024": 0.805664,
+    "gold_unit_share@1024": 0.783203,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.487305,
-    "gold_unit_share@4096": 0.413327
+    "utilization@4096": 0.46875,
+    "gold_unit_share@4096": 0.573958
    }
   },
   "unverified": null,
@@ -235,9 +235,9 @@
     "within_budget": true,
     "deterministic": true,
     "items": 5,
-    "header_entities": 3,
+    "header_entities": 4,
     "omissions": {
-     "packing: budget": 13,
+     "packing: budget": 15,
      "selection: container": 7,
      "selection: value N below floor": 15
     },
@@ -246,10 +246,10 @@
     ]
    },
    "4096": {
-    "used": 1996,
+    "used": 1920,
     "within_budget": true,
     "deterministic": true,
-    "items": 12,
+    "items": 6,
     "header_entities": 3,
     "omissions": {
      "selection: container": 7,
@@ -265,7 +265,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -273,8 +273,8 @@
    "entries": "5f6b1cda38af310a948d98671fd1fb602ef1771222fa65c8d9f38da3bc68e7d7",
    "routed": "7a2201cf84cc35436da5f5d155197fd169a7f483135a42cf6052e169e431a63b",
    "payload@256": "7c4b7ca801741cded36b7b2097243d791153d7c0bd9739286bd0edc12243e813",
-   "payload@1024": "624cb57bcf5302ea156c3984cd896125f9950f133d9dcf2500a51edb50677e6f",
-   "payload@4096": "939862b8ff4f092cfe7250b8db24d041330bb3e893eaa3c7b294cc5864863815"
+   "payload@1024": "6b3a4d4113c785bf9e4c3bfb02734032aa68e9b1d1ae657f1a4ce513f0414ec7",
+   "payload@4096": "ec1da04376343606b65baeaf8c0e66a0431bda819c1994232d143dfffabe2af8"
   }
  },
  {
@@ -297,18 +297,18 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.125,
     "file_recall@256": 1.0,
-    "utilization@256": 0.917969,
-    "gold_unit_share@256": 0.191489,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.176471,
     "span_recall@1024": 1.0,
     "line_recall@1024": 1.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.994141,
-    "gold_unit_share@1024": 0.344794,
+    "utilization@1024": 0.998047,
+    "gold_unit_share@1024": 0.661448,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.352539,
-    "gold_unit_share@4096": 0.247922
+    "utilization@4096": 0.332275,
+    "gold_unit_share@4096": 0.496694
    }
   },
   "unverified": null,
@@ -345,13 +345,13 @@
   },
   "bundles": {
    "256": {
-    "used": 235,
+    "used": 255,
     "within_budget": true,
     "deterministic": true,
     "items": 4,
     "header_entities": 3,
     "omissions": {
-     "packing: budget": 14,
+     "packing: budget": 13,
      "selection: container": 3,
      "selection: value N below floor": 7
     },
@@ -360,13 +360,12 @@
     ]
    },
    "1024": {
-    "used": 1018,
+    "used": 1022,
     "within_budget": true,
     "deterministic": true,
-    "items": 8,
-    "header_entities": 2,
+    "items": 3,
+    "header_entities": 4,
     "omissions": {
-     "packing: budget": 4,
      "selection: container": 3,
      "selection: value N below floor": 7
     },
@@ -375,10 +374,10 @@
     ]
    },
    "4096": {
-    "used": 1444,
+    "used": 1361,
     "within_budget": true,
     "deterministic": true,
-    "items": 10,
+    "items": 3,
     "header_entities": 2,
     "omissions": {
      "selection: container": 3,
@@ -393,16 +392,16 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "7d5efcae56dd357e244a6c50c4adc875cff910686651ee320e1d951c46c03016",
    "routed": "1ea4eccf2263724a2f6e027beb2dfe3b44ff7f63fe6104ccb3dbf56811236351",
-   "payload@256": "222571c169527512d43677bda5cd970e6387c6f82522f5fdafac6b46a383b296",
-   "payload@1024": "5e028c0c651a9e08c4bb05a27e70b5c181b626dbad7ebce405a4353298ed84dc",
-   "payload@4096": "4d99b671c3ff9d364a7466aad7729346dfcd72a86320a7298424ca0df774912e"
+   "payload@256": "cce544d7b34f2ef15ee5b26b18b1e1bcbe5c9c77a2472a4bf577372a099cede4",
+   "payload@1024": "c878c71e676f3220bf4aebcb5344687e9dc5fbb9547ebea7b0a5babe8e1661cb",
+   "payload@4096": "ced83be8feec39a02badfd08f9f44e8e075400a1bdfbfa30e25d1811602c52f6"
   }
  },
  {
@@ -425,18 +424,18 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.25,
     "file_recall@256": 1.0,
-    "utilization@256": 0.960938,
-    "gold_unit_share@256": 0.199187,
+    "utilization@256": 0.957031,
+    "gold_unit_share@256": 0.2,
     "span_recall@1024": 1.0,
     "line_recall@1024": 1.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.988281,
-    "gold_unit_share@1024": 0.102767,
+    "utilization@1024": 0.981445,
+    "gold_unit_share@1024": 0.206965,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.371094,
-    "gold_unit_share@4096": 0.068421
+    "utilization@4096": 0.352539,
+    "gold_unit_share@4096": 0.262465
    }
   },
   "unverified": null,
@@ -473,10 +472,10 @@
   },
   "bundles": {
    "256": {
-    "used": 246,
+    "used": 245,
     "within_budget": true,
     "deterministic": true,
-    "items": 5,
+    "items": 4,
     "header_entities": 3,
     "omissions": {
      "packing: budget": 13,
@@ -488,13 +487,13 @@
     ]
    },
    "1024": {
-    "used": 1012,
+    "used": 1005,
     "within_budget": true,
     "deterministic": true,
-    "items": 7,
-    "header_entities": 1,
+    "items": 4,
+    "header_entities": 2,
     "omissions": {
-     "packing: budget": 5,
+     "packing: budget": 4,
      "selection: container": 5,
      "selection: value N below floor": 14
     },
@@ -503,10 +502,10 @@
     ]
    },
    "4096": {
-    "used": 1520,
+    "used": 1444,
     "within_budget": true,
     "deterministic": true,
-    "items": 10,
+    "items": 4,
     "header_entities": 2,
     "omissions": {
      "selection: container": 5,
@@ -521,16 +520,16 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "e7b6664dce9ac7739eeda226ecbfdad4993055a7f8909f730211c00b46a632ac",
    "routed": "a069f9bfe72286146e911a8cbf570dbb5cf8b5245ea86bf060320d5a980a6f26",
-   "payload@256": "3e45b32fc2c41ddc7a609c3e76ccf46acdf10e23d85defdf67ab6749c652a07a",
-   "payload@1024": "4d5b68b892b4c905be7f5f244a6f86f1ffdad5cfb17fba78eed5dedde7649c8e",
-   "payload@4096": "49ec288b18453ec2d8984d4538c8251b73255a4e374a5a9ddaf44079082538c1"
+   "payload@256": "000102c298047213bb0c4d098cda4711422c64531ce4bd5a82e249a0c9ada37a",
+   "payload@1024": "4ac34876d1f83e73f49b30352041d314a1ead7194bb97e368ca5186c94e8631a",
+   "payload@4096": "0f5773b7a11e155344630e4adb6f4b74fc93a1c6989f62f21b699f6921c7739a"
   }
  },
  {
@@ -553,18 +552,18 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.470588,
     "file_recall@256": 1.0,
-    "utilization@256": 0.921875,
-    "gold_unit_share@256": 0.817797,
+    "utilization@256": 0.824219,
+    "gold_unit_share@256": 1.0,
     "span_recall@1024": 1.0,
     "line_recall@1024": 1.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.3125,
-    "gold_unit_share@1024": 0.865625,
+    "utilization@1024": 0.300781,
+    "gold_unit_share@1024": 1.0,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.078125,
-    "gold_unit_share@4096": 0.865625
+    "utilization@4096": 0.075195,
+    "gold_unit_share@4096": 1.0
    }
   },
   "unverified": null,
@@ -601,10 +600,10 @@
   },
   "bundles": {
    "256": {
-    "used": 236,
+    "used": 211,
     "within_budget": true,
     "deterministic": true,
-    "items": 5,
+    "items": 3,
     "header_entities": 3,
     "omissions": {
      "selection: container": 2,
@@ -615,10 +614,10 @@
     ]
    },
    "1024": {
-    "used": 320,
+    "used": 308,
     "within_budget": true,
     "deterministic": true,
-    "items": 2,
+    "items": 1,
     "header_entities": 1,
     "omissions": {
      "selection: container": 2,
@@ -629,10 +628,10 @@
     ]
    },
    "4096": {
-    "used": 320,
+    "used": 308,
     "within_budget": true,
     "deterministic": true,
-    "items": 2,
+    "items": 1,
     "header_entities": 1,
     "omissions": {
      "selection: container": 2,
@@ -647,16 +646,16 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "276167f0422b26ac318b30c4d3c28592ede26196d999249f1c384ec10778d963",
    "routed": "6229b5abf4cbe83260e0df71a2add6a2d98fc6775832a00dd986536e3912abea",
-   "payload@256": "fd9f47a4c2e60e5eaa2c32b97e888d9255f41c447614b23dd8f7a7be5b5605de",
-   "payload@1024": "00fa7815c445752c55f2dea27a7a1051c250fb44d5572993c49dd65a88c5255c",
-   "payload@4096": "00fa7815c445752c55f2dea27a7a1051c250fb44d5572993c49dd65a88c5255c"
+   "payload@256": "b78ff29ce0e1ad9f6d4f25126d10dffc01738bf296140361403fc1065e2775ab",
+   "payload@1024": "58e567398a3cec8bd292b6a8d04f3ac9947ada647a70bb11ea3180a362ebb7b6",
+   "payload@4096": "58e567398a3cec8bd292b6a8d04f3ac9947ada647a70bb11ea3180a362ebb7b6"
   }
  },
  {
@@ -676,21 +675,21 @@
     "entry_mrr": 0.5,
     "entry_file_recall": 1.0,
     "routed_coverage": 1.0,
-    "span_recall@256": 0.5,
-    "line_recall@256": 0.8,
+    "span_recall@256": 1.0,
+    "line_recall@256": 1.0,
     "file_recall@256": 1.0,
     "utilization@256": 1.0,
-    "gold_unit_share@256": 0.703125,
+    "gold_unit_share@256": 1.0,
     "span_recall@1024": 1.0,
     "line_recall@1024": 1.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.999023,
-    "gold_unit_share@1024": 0.211144,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.450539,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.409668,
-    "gold_unit_share@4096": 0.128725
+    "utilization@4096": 0.385498,
+    "gold_unit_share@4096": 0.291324
    }
   },
   "unverified": null,
@@ -727,13 +726,11 @@
     "entry_rank": 2,
     "routed": true,
     "packed": {
-     "256": "partial",
+     "256": "complete",
      "1024": "complete",
      "4096": "complete"
     },
-    "lost": {
-     "256": "budget: omitted, budget"
-    }
+    "lost": {}
    }
   ],
   "route": {
@@ -749,10 +746,10 @@
     "used": 256,
     "within_budget": true,
     "deterministic": true,
-    "items": 4,
-    "header_entities": 1,
+    "items": 1,
+    "header_entities": 0,
     "omissions": {
-     "packing: budget": 22,
+     "packing: budget": 21,
      "selection: container": 5,
      "selection: value N below floor": 10
     },
@@ -761,10 +758,10 @@
     ]
    },
    "1024": {
-    "used": 1023,
+    "used": 1021,
     "within_budget": true,
     "deterministic": true,
-    "items": 8,
+    "items": 4,
     "header_entities": 2,
     "omissions": {
      "packing: budget": 11,
@@ -776,10 +773,10 @@
     ]
    },
    "4096": {
-    "used": 1678,
+    "used": 1579,
     "within_budget": true,
     "deterministic": true,
-    "items": 12,
+    "items": 5,
     "header_entities": 3,
     "omissions": {
      "selection: container": 5,
@@ -795,16 +792,16 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "4d4d65da48748c0d9977842bb59d6823256ddc2868561043cfad58bb3147c8cc",
    "routed": "93c1ff68d6943caa8a70b172db6d7eaf63bda0ca7945bb6b1dc19e065ed23a94",
-   "payload@256": "60f27625b389e689c83c5b6c90b1ca1b022ffb05e602e210fe8b9af22744894e",
-   "payload@1024": "3026a6aa39c03f9f0b1196976ef1ce9b34f0f185133d2374cb767188a93ce962",
-   "payload@4096": "f9ff7fc4d2b36579d66aa9d4ed1006915bbbbfe5f4f99257dd2babafe70babc7"
+   "payload@256": "9b3a68ba1188a9c89cc0151e45101da56666c9ab813da7a01db69281c180d392",
+   "payload@1024": "0e25ef46831a552ec9c52eb18f7f53bf8e3195b91622290e1da41d9f10cc4782",
+   "payload@4096": "a1cba225357b0050f5a2397d367aa089d93e55430412e03a6c4dbf39d2cc4173"
   }
  },
  {
@@ -827,18 +824,18 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.0,
-    "utilization@256": 0.878906,
+    "utilization@256": 0.996094,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 1.0,
     "line_recall@1024": 1.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.996094,
-    "gold_unit_share@1024": 0.103922,
+    "utilization@1024": 0.992188,
+    "gold_unit_share@1024": 0.104331,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.289795,
-    "gold_unit_share@4096": 0.089301
+    "utilization@4096": 0.283691,
+    "gold_unit_share@4096": 0.091222
    }
   },
   "unverified": null,
@@ -875,13 +872,13 @@
   },
   "bundles": {
    "256": {
-    "used": 225,
+    "used": 255,
     "within_budget": true,
     "deterministic": true,
     "items": 3,
-    "header_entities": 2,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 9,
+     "packing: budget": 8,
      "selection: container": 4,
      "selection: value N below floor": 13
     },
@@ -890,12 +887,13 @@
     ]
    },
    "1024": {
-    "used": 1020,
+    "used": 1016,
     "within_budget": true,
     "deterministic": true,
-    "items": 8,
+    "items": 7,
     "header_entities": 2,
     "omissions": {
+     "packing: budget": 1,
      "selection: container": 4,
      "selection: value N below floor": 13
     },
@@ -904,10 +902,10 @@
     ]
    },
    "4096": {
-    "used": 1187,
+    "used": 1162,
     "within_budget": true,
     "deterministic": true,
-    "items": 8,
+    "items": 6,
     "header_entities": 1,
     "omissions": {
      "selection: container": 4,
@@ -922,16 +920,16 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "4277f56fd12b9f3d3fd8e1961ac9a4e5bac3c04758a339e2a23394ef512f22fa",
    "routed": "739e98559fe29ac0d1776f73afb4d8b4af103a19a42b5ac9949dddc115d108e1",
-   "payload@256": "d72d54f6765b88f353fc9d640c23a425dce72925671702257c197cebda19508d",
-   "payload@1024": "317468bea41b8ccafb38ab4b1055aebf199a16bb9b3f7ed00973fdd9bbfd87bc",
-   "payload@4096": "cba48547bafdac87818b20931364e50f9a19b06254fff2bcc7d5cccbc2185485"
+   "payload@256": "7be8cae2b02734c162c935672fbf2b88177ecf1fe0759fd911ba6cefbccb5e84",
+   "payload@1024": "712c673b8fb77a9ea51c987911764c642890070711696b56fe94e04b5fca805c",
+   "payload@4096": "7e93491858227653f12154b6510e6ee577a977e85cbcdc0dfc8dd3178cb3606f"
   }
  },
  {
@@ -964,8 +962,8 @@
     "span_recall@4096": 0.25,
     "line_recall@4096": 0.059006,
     "file_recall@4096": 0.5,
-    "utilization@4096": 0.998779,
-    "gold_unit_share@4096": 0.072598
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.072527
    }
   },
   "unverified": null,
@@ -1279,13 +1277,13 @@
     ]
    },
    "4096": {
-    "used": 4091,
+    "used": 4095,
     "within_budget": true,
     "deterministic": true,
-    "items": 21,
+    "items": 20,
     "header_entities": 10,
     "omissions": {
-     "packing: budget": 39,
+     "packing: budget": 37,
      "selection: value N below floor": 4
     },
     "degradations": [
@@ -1297,7 +1295,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -1306,7 +1304,7 @@
    "routed": "1bcbd263a26c5f1b30bf3c5434499f9e5d50ca8776fa828979f4a2c3252f1999",
    "payload@256": "3458743c90818c38f8b3604078e9332d7494ccb219fc5d89e5e9a3d0da3cf2be",
    "payload@1024": "69db34fa104a3c5974141dfb50ddcf95c49ca6948c11e907fb3cd80f69546d22",
-   "payload@4096": "5a90f433e16d03817f4803dbc78bf0f7b891f7e9fdf3f64db0641fed16eed47b"
+   "payload@4096": "bcadfe4587cc209cc63794ddbf01799a1cb67e43347aa428a4014a40aa548255"
   }
  },
  {
@@ -1334,12 +1332,12 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.998047,
+    "utilization@1024": 0.994141,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.82666,
+    "utilization@4096": 0.819824,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -1364,12 +1362,12 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.998047,
+    "utilization@1024": 0.994141,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.82666,
+    "utilization@4096": 0.819824,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -1468,10 +1466,10 @@
     ]
    },
    "1024": {
-    "used": 1022,
+    "used": 1018,
     "within_budget": true,
     "deterministic": true,
-    "items": 11,
+    "items": 10,
     "header_entities": 4,
     "omissions": {
      "packing: budget": 23,
@@ -1482,10 +1480,10 @@
     ]
    },
    "4096": {
-    "used": 3386,
+    "used": 3358,
     "within_budget": true,
     "deterministic": true,
-    "items": 28,
+    "items": 26,
     "header_entities": 8,
     "omissions": {
      "selection: item cap N": 9,
@@ -1500,7 +1498,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -1508,8 +1506,8 @@
    "entries": "11304f6cf98d23217a6a07979dacfb78d91d0ed16506cf891a21d23d15a9e72f",
    "routed": "9eef5bdd2d2e0ebf7d2930c6029bffd8b96855c3c8cf4a26c8146adb4ddaafb4",
    "payload@256": "1f1a09c3ddd76cec6fae59063fd2a222d366a66e29d3572c657576b30034f9b9",
-   "payload@1024": "a8599fa63384c02459fd82faed546e4514b085b57dd487d308f1294b3bdbc0db",
-   "payload@4096": "26265cee6711fc261c9873c15c9695a463727ac5a62060a46b2cd2ff3dc5f393"
+   "payload@1024": "5b1e7de90a515c2bbb27685259fc0920d3033a303ed0634ef56bee4d49cba73e",
+   "payload@4096": "d352f2cc8cbcda643fde2e146e57dfb5a513024ce692d0a31cbd10fd2706e169"
   }
  },
  {
@@ -1537,13 +1535,13 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.727273,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.999023,
-    "gold_unit_share@1024": 0.146628,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.146484,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.727273,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.999268,
-    "gold_unit_share@4096": 0.036648
+    "utilization@4096": 0.99585,
+    "gold_unit_share@4096": 0.036774
    }
   },
   "unverified": {
@@ -1567,12 +1565,12 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.999023,
+    "utilization@1024": 1.0,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.999268,
+    "utilization@4096": 0.99585,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -1648,13 +1646,13 @@
     ]
    },
    "1024": {
-    "used": 1023,
+    "used": 1024,
     "within_budget": true,
     "deterministic": true,
-    "items": 15,
-    "header_entities": 8,
+    "items": 12,
+    "header_entities": 6,
     "omissions": {
-     "packing: budget": 38,
+     "packing: budget": 40,
      "selection: value N below floor": 11
     },
     "degradations": [
@@ -1662,10 +1660,10 @@
     ]
    },
    "4096": {
-    "used": 4093,
+    "used": 4079,
     "within_budget": true,
     "deterministic": true,
-    "items": 27,
+    "items": 26,
     "header_entities": 9,
     "omissions": {
      "packing: budget": 7,
@@ -1681,7 +1679,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -1689,8 +1687,8 @@
    "entries": "22032cc0b4abb28ddcfd60a22ffd4a10e121fcf323a022889c4f42b2cfee045b",
    "routed": "3dfdeb28e8fa4424adb799708f8dd455ed63cbea4ec40ab3c0399cfc4eef616c",
    "payload@256": "a894b5476bcf5d3ee69fc3824c41d90e666fc8511558611d8b7162796f6f2e9f",
-   "payload@1024": "6b42ab565106d5cd065413644dc9e2acc34b6e2d0850a42ca620cfa99cf3becf",
-   "payload@4096": "a8bd8c4cb06d3ac459192b7f09d8d22937536e12d00fad3c762acd8ca29f3353"
+   "payload@1024": "c8b9feddacb3ed702476ffb0e9cc93bc1e733ebc8abc3d86c58bd67ffd4d4421",
+   "payload@4096": "77306ed95bef771b97c05395f7bc46fc1f86d5ccaad202fad6f6a7f5fd2873a2"
   }
  },
  {
@@ -1718,13 +1716,13 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.996094,
+    "utilization@1024": 1.0,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.999512,
-    "gold_unit_share@4096": 0.385931
+    "utilization@4096": 0.996094,
+    "gold_unit_share@4096": 0.456373
    }
   },
   "unverified": {
@@ -1748,13 +1746,13 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.045455,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.996094,
-    "gold_unit_share@1024": 0.043137,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.042969,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.999512,
-    "gold_unit_share@4096": 0.385931
+    "utilization@4096": 0.996094,
+    "gold_unit_share@4096": 0.456373
    }
   },
   "gold": [
@@ -1860,10 +1858,10 @@
     "used": 254,
     "within_budget": true,
     "deterministic": true,
-    "items": 3,
-    "header_entities": 1,
+    "items": 2,
+    "header_entities": 2,
     "omissions": {
-     "packing: budget": 49,
+     "packing: budget": 50,
      "packing: too large": 1,
      "selection: value N below floor": 9
     },
@@ -1872,13 +1870,13 @@
     ]
    },
    "1024": {
-    "used": 1020,
+    "used": 1024,
     "within_budget": true,
     "deterministic": true,
-    "items": 13,
-    "header_entities": 6,
+    "items": 8,
+    "header_entities": 7,
     "omissions": {
-     "packing: budget": 41,
+     "packing: budget": 38,
      "packing: too large": 1,
      "selection: value N below floor": 9
     },
@@ -1887,14 +1885,14 @@
     ]
    },
    "4096": {
-    "used": 4094,
+    "used": 4080,
     "within_budget": true,
     "deterministic": true,
-    "items": 27,
+    "items": 19,
     "header_entities": 7,
     "omissions": {
-     "packing: budget": 22,
-     "selection: item cap N": 9,
+     "packing: budget": 12,
+     "selection: item cap N": 19,
      "selection: value N below floor": 9
     },
     "degradations": [
@@ -1906,16 +1904,16 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "a314af2fa5e345a7e21f0b6704acd370ce1c3d9260bfa4054636fb80b2db56dc",
    "routed": "00f3e865d1ce8c7a1414da3431854d4d25aef7ca0deb8f1dad4747498225b9d8",
-   "payload@256": "1951482a78b0297fab8c193a08ec14c3351162b1e7f6e1813874b030d64e7853",
-   "payload@1024": "43fecc5485d751fe50ddb388ff47d0b677c5d5f8311e31330298f3b1a6094e8c",
-   "payload@4096": "02ea729df75f0cc06700165470923dc0e9be5fe7b1d0c9766547c5048e1241ff"
+   "payload@256": "2e02c4ede26f3aa3b7fd34257c2f39f20ca127d69978ef3ba1c4a03b7ad8ac01",
+   "payload@1024": "cb3bc5f9cfa48aad8a8b5aeae28162e48719db827f2853c4dd1cb00bde362d7a",
+   "payload@4096": "e4e319adfe166eac78b214e042d4aac2a322e3a8b31a8cbc6c31031e720a2745"
   }
  },
  {
@@ -1948,8 +1946,8 @@
     "span_recall@4096": 0.166667,
     "line_recall@4096": 0.172414,
     "file_recall@4096": 0.666667,
-    "utilization@4096": 0.999756,
-    "gold_unit_share@4096": 0.04127
+    "utilization@4096": 0.996826,
+    "gold_unit_share@4096": 0.041391
    }
   },
   "unverified": null,
@@ -2133,10 +2131,10 @@
     ]
    },
    "4096": {
-    "used": 4095,
+    "used": 4083,
     "within_budget": true,
     "deterministic": true,
-    "items": 19,
+    "items": 18,
     "header_entities": 7,
     "omissions": {
      "packing: budget": 36,
@@ -2153,7 +2151,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -2162,7 +2160,7 @@
    "routed": "b4821bf8fe96a28e99a082975cdddcabdcd016bc4dd1bdc75b49918ae9dadafe",
    "payload@256": "846396444c70cb6a73a2bc32861c6684f86767358d98fe4ee36f7189774cc6df",
    "payload@1024": "b2d01f6668809cbda222d6b6fe71e6815241bac8947d6e0787fba0046d2b9d79",
-   "payload@4096": "e1afa82c4c663652374fb060140ee9b9327b05cbef145fb8594cdfbc036581ef"
+   "payload@4096": "3ed06fbfc85e1c9b7892bdefd2e61c3d5354c0900755f20d02b996af80ac14a3"
   }
  },
  {
@@ -2195,8 +2193,8 @@
     "span_recall@4096": 0.6,
     "line_recall@4096": 0.696429,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.969971,
-    "gold_unit_share@4096": 0.122326
+    "utilization@4096": 0.945557,
+    "gold_unit_share@4096": 0.278854
    }
   },
   "unverified": null,
@@ -2349,11 +2347,11 @@
     ]
    },
    "4096": {
-    "used": 3973,
+    "used": 3873,
     "within_budget": true,
     "deterministic": true,
-    "items": 29,
-    "header_entities": 8,
+    "items": 21,
+    "header_entities": 7,
     "omissions": {
      "selection: item cap N": 25,
      "selection: value N below floor": 15
@@ -2367,7 +2365,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -2376,7 +2374,7 @@
    "routed": "47d9b8ded75ad3789e749c4c16789bff2333339c6a10e81c35889823a08fc012",
    "payload@256": "b4cff4df4bc1e674cf1acedcc56755d52fdac28bf1bdec563966dc994b0a4e54",
    "payload@1024": "af170c9efa52a708b4be6cdf068a199300613dbfeb3fc28b7dbd473705db8d92",
-   "payload@4096": "de85bd4eaae9a58a1da61af0419ffc2da3b34672e95db59e2951d91e0876746c"
+   "payload@4096": "b0c47c4af8fbc7ebd508085a1b2fdeee26fe052722a5fbc2e6883c0e6d3add86"
   }
  },
  {
@@ -2409,8 +2407,8 @@
     "span_recall@4096": 0.333333,
     "line_recall@4096": 0.22449,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.765625,
-    "gold_unit_share@4096": 0.055485
+    "utilization@4096": 0.743408,
+    "gold_unit_share@4096": 0.057143
    }
   },
   "unverified": null,
@@ -2524,10 +2522,10 @@
     ]
    },
    "4096": {
-    "used": 3136,
+    "used": 3045,
     "within_budget": true,
     "deterministic": true,
-    "items": 29,
+    "items": 22,
     "header_entities": 6,
     "omissions": {
      "selection: container": 2,
@@ -2543,7 +2541,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -2552,7 +2550,7 @@
    "routed": "5deff3eaee9ba7f8e5e896e08013f477170b17ace1ad9dbfd35ebb6e43591134",
    "payload@256": "4e2f49aa9de1e8e40542a53ebe821afe4a1e180212947dd2572d3b0b90b7a5a1",
    "payload@1024": "7eb58698d8d6d87a0edcf893f396f42aedd51b17f97683484f50f3613cb1d2a1",
-   "payload@4096": "0a4707758d47ee666798fe365be51a3eccf770f2eeaea2e4c67eb2de48faa00b"
+   "payload@4096": "4fe7ea35fdf23587c28452673475bfcc3e492d4fe20464ce6f93057b34e0d347"
   }
  },
  {
@@ -2580,12 +2578,12 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.998047,
+    "utilization@1024": 0.993164,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.333333,
-    "utilization@4096": 1.0,
+    "utilization@4096": 0.999268,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -2756,10 +2754,10 @@
     ]
    },
    "1024": {
-    "used": 1022,
+    "used": 1017,
     "within_budget": true,
     "deterministic": true,
-    "items": 9,
+    "items": 8,
     "header_entities": 6,
     "omissions": {
      "packing: budget": 33,
@@ -2772,13 +2770,13 @@
     ]
    },
    "4096": {
-    "used": 4096,
+    "used": 4093,
     "within_budget": true,
     "deterministic": true,
-    "items": 23,
-    "header_entities": 9,
+    "items": 20,
+    "header_entities": 10,
     "omissions": {
-     "packing: budget": 21,
+     "packing: budget": 20,
      "selection: container": 4,
      "selection: value N below floor": 17
     },
@@ -2791,7 +2789,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -2799,8 +2797,8 @@
    "entries": "f7a4603368914cca22354adab5fabe9e9c1d9f3850ce6d067bae3ecc573eaf97",
    "routed": "78bea808c532e234d3ae44f64c254baa69f645a3b0a318cd29b29d917062aa1b",
    "payload@256": "3ad98bc5799920e470b618fc2aa62bf58fd95adcadafc946920289ff66b836c0",
-   "payload@1024": "cb0e92822a4d61760d916ee68bc7b7b1cbbdd9b4cc925869e0d5102492f257b2",
-   "payload@4096": "5478106544b7340dfbacb226bde6bb2fada0a8285ebc414441242026b89c0d08"
+   "payload@1024": "1631b82c8b0e7fa45c498273d5e8efa8d439ca955ff55d80f4ac62e4554aa04b",
+   "payload@4096": "308a6dcc2f9a947a689783a5bb753370ba2c465e71150b7fb8e3afe42197b178"
   }
  },
  {
@@ -3011,7 +3009,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -3397,7 +3395,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -3439,8 +3437,8 @@
     "span_recall@4096": 0.4,
     "line_recall@4096": 0.619048,
     "file_recall@4096": 0.5,
-    "utilization@4096": 0.999756,
-    "gold_unit_share@4096": 0.318193
+    "utilization@4096": 0.998535,
+    "gold_unit_share@4096": 0.31467
    }
   },
   "unverified": {
@@ -3469,8 +3467,8 @@
     "span_recall@4096": 0.5,
     "line_recall@4096": 0.578947,
     "file_recall@4096": 0.5,
-    "utilization@4096": 0.999756,
-    "gold_unit_share@4096": 0.318193
+    "utilization@4096": 0.998535,
+    "gold_unit_share@4096": 0.31467
    }
   },
   "gold": [
@@ -3671,13 +3669,13 @@
     ]
    },
    "4096": {
-    "used": 4095,
+    "used": 4090,
     "within_budget": true,
     "deterministic": true,
-    "items": 23,
+    "items": 22,
     "header_entities": 12,
     "omissions": {
-     "packing: budget": 35,
+     "packing: budget": 34,
      "selection: value N below floor": 8
     },
     "degradations": [
@@ -3689,7 +3687,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -3698,7 +3696,7 @@
    "routed": "08acea6a3f576256b382877cf35c5ccb8bdfbaea7891f65a6c5c105b8c56d0da",
    "payload@256": "c07947925c33d92b049f0a85875b17163a94eddfd40450987bd0f61f4aae9bd6",
    "payload@1024": "fda32bb899e0f17fa459dc27dd46acb6a70571dbc4e267c315cf0d8ab462073d",
-   "payload@4096": "c6e25a5cc130fa6074a9c3a2608405bf4b9263d8102d86ef51b0d82e2256ff2b"
+   "payload@4096": "57947aa4fcc6f91ae420eabac54e6026685abedcd02ed612fad813f8dc2f2cfa"
   }
  },
  {
@@ -3729,10 +3727,10 @@
     "utilization@1024": 1.0,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.25,
-    "line_recall@4096": 0.147059,
+    "line_recall@4096": 0.191176,
     "file_recall@4096": 0.5,
     "utilization@4096": 0.998779,
-    "gold_unit_share@4096": 0.093865
+    "gold_unit_share@4096": 0.110731
    }
   },
   "unverified": null,
@@ -3757,7 +3755,7 @@
     "lost": {
      "256": "budget: omitted, budget",
      "1024": "budget: omitted, budget",
-     "4096": "budget: reduced view"
+     "4096": "budget: omitted, budget"
     }
    },
    {
@@ -3870,10 +3868,10 @@
     "used": 4091,
     "within_budget": true,
     "deterministic": true,
-    "items": 19,
-    "header_entities": 8,
+    "items": 15,
+    "header_entities": 4,
     "omissions": {
-     "packing: budget": 37,
+     "packing: budget": 39,
      "selection: value N below floor": 9
     },
     "degradations": [
@@ -3885,7 +3883,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -3894,7 +3892,7 @@
    "routed": "1318e6e42027b199b58030b13bdc9e808fad3fd15631ba457328bb69b3ec6d89",
    "payload@256": "a242842f0066e9461b3afc6ce13ead87123ef258cdb5e23ebc571ba838eb0911",
    "payload@1024": "7cf844d5028f1ac99586a46b646c44005304989df1b3daf1d8baa7ba611c78cf",
-   "payload@4096": "dbb1e27ecf20bc1217a7c3a6c706e75d5817070b9e3f4f345e1cf4008887d0ab"
+   "payload@4096": "52b4696de4fff15e3b57f3adecccb5c4ae0d13264d051301c1578b3c2188a007"
   }
  },
  {
@@ -3922,13 +3920,13 @@
     "span_recall@1024": 0.8,
     "line_recall@1024": 0.66,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.979492,
-    "gold_unit_share@1024": 0.534397,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.523949,
     "span_recall@4096": 0.8,
     "line_recall@4096": 0.66,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.99585,
-    "gold_unit_share@4096": 0.131405
+    "utilization@4096": 0.997803,
+    "gold_unit_share@4096": 0.131148
    }
   },
   "unverified": null,
@@ -3953,7 +3951,7 @@
     "lost": {
      "256": "selection: value N below floor",
      "1024": "selection: value N below floor",
-     "4096": "selection: value N below floor"
+     "4096": "selection: item cap N"
     }
    },
    {
@@ -4063,13 +4061,13 @@
     ]
    },
    "1024": {
-    "used": 1003,
+    "used": 1023,
     "within_budget": true,
     "deterministic": true,
     "items": 7,
-    "header_entities": 2,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 40,
+     "packing: budget": 39,
      "selection: value N below floor": 17
     },
     "degradations": [
@@ -4077,14 +4075,14 @@
     ]
    },
    "4096": {
-    "used": 4079,
+    "used": 4087,
     "within_budget": true,
     "deterministic": true,
-    "items": 28,
-    "header_entities": 10,
+    "items": 27,
+    "header_entities": 11,
     "omissions": {
-     "packing: budget": 15,
-     "selection: item cap N": 8,
+     "packing: budget": 8,
+     "selection: item cap N": 15,
      "selection: value N below floor": 17
     },
     "degradations": [
@@ -4096,7 +4094,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -4104,8 +4102,8 @@
    "entries": "41674b8940a71bff123dd500d3f9fb5f1c04a658d7c1141f6c96dbee0a2ee060",
    "routed": "2b968275b6ce0875be682e999c1a2116bdf122ce7460911c35e82d96f87f9ff6",
    "payload@256": "5cc8d80f60176d8982de68684cf7511f94819b3e8891041129ac05216970741f",
-   "payload@1024": "c625a28286db66682dd0bf19eb08ea523591364fe32285d0dc4d89ad34fa615c",
-   "payload@4096": "8d3d927d7ca8ddc440d49b7799c5cab0f3ff89817ce4736f6c28a465a3bfdc3b"
+   "payload@1024": "eda4e73005695d8b3e32c8f978b9165a171959cd14e233391ae8e1d3c3119069",
+   "payload@4096": "d88f6d7b9d86837df5f02af42ad433090c154308fe50eab662b408a14406e3a5"
   }
  },
  {
@@ -4272,7 +4270,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -4313,8 +4311,8 @@
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
-    "file_recall@4096": 0.0,
-    "utilization@4096": 1.0,
+    "file_recall@4096": 0.25,
+    "utilization@4096": 0.999512,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -4343,8 +4341,8 @@
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
-    "file_recall@4096": 0.0,
-    "utilization@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999512,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -4438,7 +4436,7 @@
     "lost": {
      "256": "budget: omitted, budget",
      "1024": "budget: omitted, budget",
-     "4096": "budget: omitted, budget"
+     "4096": "budget: reduced view"
     }
    },
    {
@@ -4664,13 +4662,13 @@
     ]
    },
    "4096": {
-    "used": 4096,
+    "used": 4094,
     "within_budget": true,
     "deterministic": true,
     "items": 13,
-    "header_entities": 3,
+    "header_entities": 4,
     "omissions": {
-     "packing: budget": 39,
+     "packing: budget": 40,
      "selection: value N below floor": 10
     },
     "degradations": [
@@ -4682,7 +4680,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -4691,7 +4689,7 @@
    "routed": "5c0c53ce4fc0790cfe94f96d45391d14cbc3f6ac2c21ca89a5042bf7c59f495e",
    "payload@256": "a9e6002b5d7cb7814200cb666b9e885bc7099aec1a81844cce444a4863d9acfe",
    "payload@1024": "45c5b4716b201781e92b8acaa50009e0a3db541b22d62bf763ba0fb3e67e4891",
-   "payload@4096": "61c3175e92d51cf26356cfa2f67ffc2200870e9421c775f1ecd6b74bbab47ef5"
+   "payload@4096": "eb54d32e2f6b864d718003f76a403e0a0157b7933e14e289b48d514c1631734e"
   }
  },
  {
@@ -4724,7 +4722,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 1.0,
+    "utilization@4096": 0.997803,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -4754,7 +4752,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 1.0,
+    "utilization@4096": 0.997803,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -4959,10 +4957,10 @@
     ]
    },
    "4096": {
-    "used": 4096,
+    "used": 4087,
     "within_budget": true,
     "deterministic": true,
-    "items": 15,
+    "items": 14,
     "header_entities": 5,
     "omissions": {
      "packing: budget": 38,
@@ -4977,7 +4975,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -4986,7 +4984,7 @@
    "routed": "a95657ef2d7ffd426dcfbf857b87c72e9943753e9ccbdcae739e79f8d0f66f83",
    "payload@256": "7ca0e8da05222a9c94d32afe284724dfa03aed3dd326f07203de88b0043e6efe",
    "payload@1024": "511c24f10db5cc1289509b4b576325a54c3c9a55953442d448629d83759bd718",
-   "payload@4096": "6abaa6e8ed910b69ac9855f2ade25a8edf5b1a9096df3020bd5b05c5f5abcf97"
+   "payload@4096": "19f82504d04158b0072c5744b2f24bff50e8be4f150b5eab8fae2a8e238a7dfb"
   }
  },
  {
@@ -5157,7 +5155,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -5189,17 +5187,17 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.5,
-    "utilization@256": 0.984375,
+    "utilization@256": 0.921875,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.5,
-    "utilization@1024": 0.992188,
+    "utilization@1024": 0.996094,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.5,
-    "utilization@4096": 0.998047,
+    "utilization@4096": 0.998779,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -5285,10 +5283,10 @@
   },
   "bundles": {
    "256": {
-    "used": 252,
+    "used": 236,
     "within_budget": true,
     "deterministic": true,
-    "items": 4,
+    "items": 3,
     "header_entities": 2,
     "omissions": {
      "packing: budget": 50,
@@ -5301,13 +5299,13 @@
     ]
    },
    "1024": {
-    "used": 1016,
+    "used": 1020,
     "within_budget": true,
     "deterministic": true,
-    "items": 11,
-    "header_entities": 6,
+    "items": 10,
+    "header_entities": 7,
     "omissions": {
-     "packing: budget": 44,
+     "packing: budget": 43,
      "selection: container": 1,
      "selection: value N below floor": 8
     },
@@ -5316,13 +5314,13 @@
     ]
    },
    "4096": {
-    "used": 4088,
+    "used": 4091,
     "within_budget": true,
     "deterministic": true,
-    "items": 17,
+    "items": 13,
     "header_entities": 4,
     "omissions": {
-     "packing: budget": 42,
+     "packing: budget": 41,
      "selection: container": 1,
      "selection: value N below floor": 8
     },
@@ -5335,16 +5333,16 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "b742cd54a9d1490c84f22b1a73b3b413a76665b8b8126473c04d0e36e1f75141",
    "routed": "373bb23f67744ef47d2bc5a02907a443237856542d8fc0140afeb6439e3fc352",
-   "payload@256": "65ef54825172df43306d6c3fe969eb6e1a09252b76096ad1f071fc026595106b",
-   "payload@1024": "a98850ab2afe64dc4819b651140d7df9cb9bbbd7f58a1dbb0a0ea97fad620a1a",
-   "payload@4096": "bce8db75baf39eac7335115b6a900f0afacd72ec7cf42588fea79a1eaeee8947"
+   "payload@256": "9a7676780b3a85f81b720714df1bdd3475be0490f8eb702d4c32347f04c856d8",
+   "payload@1024": "b1f85bd2d7d69efcb530c3fb6dfce176660dcee702b885300a38c26b688f0b8f",
+   "payload@4096": "b5b5dbccd4b5b15e91b0f1c2ceb58a05ce90c1d992d735f1ca0412e74a5cbc04"
   }
  },
  {
@@ -5583,7 +5581,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -5623,10 +5621,10 @@
     "utilization@1024": 0.989258,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
-    "line_recall@4096": 0.0,
-    "file_recall@4096": 0.0,
-    "utilization@4096": 1.0,
-    "gold_unit_share@4096": 0.0
+    "line_recall@4096": 0.009709,
+    "file_recall@4096": 0.333333,
+    "utilization@4096": 0.997314,
+    "gold_unit_share@4096": 0.007834
    }
   },
   "unverified": null,
@@ -5646,12 +5644,12 @@
     "packed": {
      "256": "missed",
      "1024": "missed",
-     "4096": "missed"
+     "4096": "partial"
     },
     "lost": {
      "256": "budget: omitted, budget",
      "1024": "budget: omitted, budget",
-     "4096": "budget: omitted, budget"
+     "4096": "budget: reduced view"
     }
    },
    {
@@ -5674,7 +5672,7 @@
     "lost": {
      "256": "budget: omitted, budget",
      "1024": "budget: omitted, budget",
-     "4096": "budget: omitted, budget"
+     "4096": "budget: reduced view"
     }
    },
    {
@@ -5762,13 +5760,13 @@
     ]
    },
    "4096": {
-    "used": 4096,
+    "used": 4085,
     "within_budget": true,
     "deterministic": true,
-    "items": 15,
-    "header_entities": 9,
+    "items": 16,
+    "header_entities": 11,
     "omissions": {
-     "packing: budget": 40,
+     "packing: budget": 39,
      "selection: value N below floor": 8
     },
     "degradations": [
@@ -5780,7 +5778,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -5789,7 +5787,7 @@
    "routed": "e3b1a1ca11250cb2e0e8520c68cc0e2f41b4c77bedba20c019a9d4bbd6bfd04f",
    "payload@256": "901b0531f287d4542e8448e4b765c42195e993c15eff9982b1c6b9bf02f9b0ed",
    "payload@1024": "e13cece87febce4b54dcf7ddc811db84975bb882643c5cd7367c2a5cf0d2a2cf",
-   "payload@4096": "392c3a8717797cefda7efa30a2d994f2e5807d6e40eebddb4abce57c703287f4"
+   "payload@4096": "66cd77838628d1f34eeb157e49facf541faf895bf45c49ded6ddccaeb8a6bd46"
   }
  },
  {
@@ -6069,7 +6067,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -6111,8 +6109,8 @@
     "span_recall@4096": 0.125,
     "line_recall@4096": 0.404762,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.998535,
-    "gold_unit_share@4096": 0.208557
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.208252
    }
   },
   "unverified": null,
@@ -6339,13 +6337,14 @@
     ]
    },
    "4096": {
-    "used": 4090,
+    "used": 4096,
     "within_budget": true,
     "deterministic": true,
-    "items": 24,
-    "header_entities": 9,
+    "items": 23,
+    "header_entities": 10,
     "omissions": {
-     "packing: budget": 21,
+     "packing: budget": 20,
+     "selection: item cap N": 1,
      "selection: value N below floor": 19
     },
     "degradations": [
@@ -6357,7 +6356,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -6366,7 +6365,7 @@
    "routed": "c40af43d2582f17e7a04ee42f27dc37ec844f5890dea4ac27c11e3b467214381",
    "payload@256": "9c1c6f6cf193fb59f80476793f7742d2558ab3fc0567bca4c6260fc0a6477946",
    "payload@1024": "4223168f99972b528e80f0dbbc6cac8d5f226fa0c2139a322c4f668a8f555a14",
-   "payload@4096": "f791186be95ea90ea6b7f256aa6c991e684c7c72cc4c06516d85521c76cb4940"
+   "payload@4096": "2304d3e04b39bee29159e8703e491934df23d0229e45c074ca1c9d31abae2f77"
   }
  },
  {
@@ -6600,7 +6599,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -6642,7 +6641,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 0.997803,
+    "utilization@4096": 0.994141,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -6672,7 +6671,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.997803,
+    "utilization@4096": 0.994141,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -6831,10 +6830,10 @@
     ]
    },
    "4096": {
-    "used": 4087,
+    "used": 4072,
     "within_budget": true,
     "deterministic": true,
-    "items": 18,
+    "items": 17,
     "header_entities": 9,
     "omissions": {
      "packing: budget": 36,
@@ -6849,7 +6848,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -6858,7 +6857,7 @@
    "routed": "9574eb2011ac47105c7a66eeaff45a629d22048abff07c15cc0bb507efa51903",
    "payload@256": "3bf2f5abf8dbfca269a7457fe8a7fcddeba161f817bb2e1e79a82725954a0a87",
    "payload@1024": "4dd10f4dc668471dfe24e48586317ab9bf852962878b08e8acc4131f2eaffe48",
-   "payload@4096": "7e29309b0813cfd880f86e63fc03a2aa818fb81c1487cb4214a6ef5196c10ae7"
+   "payload@4096": "ea2848c7608151a30551efdfcb9a19720c14765e258cb6a053d521f98b72dcc8"
   }
  },
  {
@@ -7107,9 +7106,9 @@
     "within_budget": true,
     "deterministic": true,
     "items": 16,
-    "header_entities": 4,
+    "header_entities": 5,
     "omissions": {
-     "packing: budget": 35,
+     "packing: budget": 38,
      "selection: value N below floor": 10
     },
     "degradations": [
@@ -7121,7 +7120,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -7130,7 +7129,7 @@
    "routed": "5dae411cab39da08f676c8b34e68c82a3dbea3e14221059d658d56cd34015733",
    "payload@256": "fcef51324e1a900867bce40cb7ed73f56a882de703304ce341657db899de2bd2",
    "payload@1024": "30838226bc25c93d544041288cf3fab98fcbda763413b9d9f7091569679af201",
-   "payload@4096": "a68ec531775db7be201a4d020e16602ab113f2d3b10b10d6535bd82fcdb80882"
+   "payload@4096": "870aa94c5905516c88c1068d090dc3196163e079ca7401c02d8b45c6a4fa76dc"
   }
  },
  {
@@ -7160,11 +7159,11 @@
     "file_recall@1024": 1.0,
     "utilization@1024": 0.969727,
     "gold_unit_share@1024": 0.0,
-    "span_recall@4096": 0.25,
-    "line_recall@4096": 0.421053,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.315789,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.855713,
-    "gold_unit_share@4096": 0.117832
+    "utilization@4096": 0.982178,
+    "gold_unit_share@4096": 0.056426
    }
   },
   "unverified": {
@@ -7190,11 +7189,11 @@
     "file_recall@1024": 1.0,
     "utilization@1024": 0.969727,
     "gold_unit_share@1024": 0.133938,
-    "span_recall@4096": 0.333333,
-    "line_recall@4096": 0.655172,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.37931,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.855713,
-    "gold_unit_share@4096": 0.117832
+    "utilization@4096": 0.982178,
+    "gold_unit_share@4096": 0.089485
    }
   },
   "gold": [
@@ -7259,11 +7258,12 @@
     "packed": {
      "256": "missed",
      "1024": "partial",
-     "4096": "complete"
+     "4096": "partial"
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget"
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
     }
    },
    {
@@ -7281,11 +7281,12 @@
     "packed": {
      "256": "missed",
      "1024": "missed",
-     "4096": "complete"
+     "4096": "partial"
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget"
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
     }
    },
    {
@@ -7396,10 +7397,10 @@
     ]
    },
    "4096": {
-    "used": 3505,
+    "used": 4023,
     "within_budget": true,
     "deterministic": true,
-    "items": 30,
+    "items": 25,
     "header_entities": 11,
     "omissions": {
      "selection: item cap N": 14,
@@ -7414,7 +7415,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -7423,7 +7424,7 @@
    "routed": "24057b63b41d39b56c962183bc164bacf689c4cd43497b6b31f436529f4e1336",
    "payload@256": "d34c26c98009d58c65e13bb731fee49b90c76b253df876cf83d20e7d979a627b",
    "payload@1024": "2e7689472aefc1ecf34f78315540a6cffa163a775b316c274a3d36e2aee1b556",
-   "payload@4096": "387f4efac5d75bf4260affafd5d2b4a5ecc51f0472b6542e0840d5b3bb3e2b42"
+   "payload@4096": "6789c30bbbb6328cf858b624f6898b80d4a0a4f513f89e956ec9f68b81bcd5ab"
   }
  },
  {
@@ -7456,8 +7457,8 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.116883,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.99585,
-    "gold_unit_share@4096": 0.050503
+    "utilization@4096": 0.985352,
+    "gold_unit_share@4096": 0.051041
    }
   },
   "unverified": {
@@ -7486,7 +7487,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.99585,
+    "utilization@4096": 0.985352,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -7691,10 +7692,10 @@
     ]
    },
    "4096": {
-    "used": 4079,
+    "used": 4036,
     "within_budget": true,
     "deterministic": true,
-    "items": 31,
+    "items": 29,
     "header_entities": 10,
     "omissions": {
      "selection: item cap N": 23,
@@ -7709,7 +7710,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -7718,7 +7719,7 @@
    "routed": "fa66f594b9599234f89a5fce275cb2d33c84b1348fec22a1b897673114cbb0ea",
    "payload@256": "fa87df8dffd89652e00a62f11a7cb80afa16c9c911e5592d113ad04c1a4737a6",
    "payload@1024": "3cb533453c6e7c58ce7fcc6db5d3e46e21bc3156f3fc134079706b5f7c68f524",
-   "payload@4096": "c2456c0d7329cc515ab7a2a58a85fd6d5a3d958f92919a279727721b1dcae941"
+   "payload@4096": "cea396243303e2f8f2258562198c03334eb606dfc2a9409e380b974a52b995c1"
   }
  },
  {
@@ -7751,7 +7752,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.999512,
+    "utilization@4096": 0.998291,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -7781,7 +7782,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.999512,
+    "utilization@4096": 0.998291,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -7894,10 +7895,10 @@
     ]
    },
    "4096": {
-    "used": 4094,
+    "used": 4089,
     "within_budget": true,
     "deterministic": true,
-    "items": 29,
+    "items": 27,
     "header_entities": 11,
     "omissions": {
      "packing: budget": 5,
@@ -7913,7 +7914,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -7922,7 +7923,7 @@
    "routed": "98e333186735f63f1b61be1e5aa44ea698946f78c3063a17b88e6a307c4a7970",
    "payload@256": "17c09b1327116f0d4ecc4630b79f8176fe3304055ee84addecd7db12231f5058",
    "payload@1024": "fc4162432f5553587c69f1e462e19a49eee212e9515941b85abbc66c308a4828",
-   "payload@4096": "9324b00d7fe1bfc27f948dd187b7fdb52eb282311066ff285ad6dba3e92a8b2c"
+   "payload@4096": "79826f9da1b272f9ad31f9ea62ddbc1fe1b016b7a0309c91b54ef7ea57c5eec9"
   }
  },
  {
@@ -7955,8 +7956,8 @@
     "span_recall@4096": 0.333333,
     "line_recall@4096": 0.323529,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.968506,
-    "gold_unit_share@4096": 0.077388
+    "utilization@4096": 0.965088,
+    "gold_unit_share@4096": 0.077663
    }
   },
   "unverified": null,
@@ -8071,10 +8072,10 @@
     ]
    },
    "4096": {
-    "used": 3967,
+    "used": 3953,
     "within_budget": true,
     "deterministic": true,
-    "items": 25,
+    "items": 24,
     "header_entities": 6,
     "omissions": {
      "selection: container": 1,
@@ -8091,7 +8092,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -8100,7 +8101,7 @@
    "routed": "576c0889651a870114f193e13c7094da511530a4d7406824e6ad2e1f9668af74",
    "payload@256": "ed7893799f0aff393109c973c1508f23b873903dd2643b54a6c43a8a711c6973",
    "payload@1024": "83dcf7da3267abb0285d0ba493cc13943848c0792788405460119dd73294a858",
-   "payload@4096": "288b5301d8f46293423fc23de92168a51f07dfb34bec95a2d91b8adb29456594"
+   "payload@4096": "c961e21cbec7b371c007a93b4d5b024dc8ac2581855034b3aa12b37753280c06"
   }
  },
  {
@@ -8128,13 +8129,13 @@
     "span_recall@1024": 0.5,
     "line_recall@1024": 0.8125,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.992188,
-    "gold_unit_share@1024": 0.239173,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.223851,
     "span_recall@4096": 0.5,
     "line_recall@4096": 0.875,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.995117,
-    "gold_unit_share@4096": 0.20682
+    "utilization@4096": 0.998535,
+    "gold_unit_share@4096": 0.202689
    }
   },
   "unverified": null,
@@ -8209,13 +8210,13 @@
     ]
    },
    "1024": {
-    "used": 1016,
+    "used": 1023,
     "within_budget": true,
     "deterministic": true,
-    "items": 6,
-    "header_entities": 2,
+    "items": 5,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 47,
+     "packing: budget": 46,
      "selection: container": 1,
      "selection: value N below floor": 10
     },
@@ -8224,15 +8225,15 @@
     ]
    },
    "4096": {
-    "used": 4076,
+    "used": 4090,
     "within_budget": true,
     "deterministic": true,
-    "items": 25,
-    "header_entities": 10,
+    "items": 24,
+    "header_entities": 11,
     "omissions": {
-     "packing: budget": 22,
+     "packing: budget": 21,
      "selection: container": 1,
-     "selection: item cap N": 7,
+     "selection: item cap N": 8,
      "selection: value N below floor": 10
     },
     "degradations": [
@@ -8244,7 +8245,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -8252,8 +8253,8 @@
    "entries": "242a677bb4797039ce252259aa71e7924de27660b717436b3489c8157e5ed52a",
    "routed": "07511d756906bec8559d34368ff67512db6f371f1a88e97d1890b4b7c6f5bf46",
    "payload@256": "f8e689b4a8ef2e9e59f23faf16df4bfdec82cda692215a6f4381c0d0ea16d7fc",
-   "payload@1024": "74c0f81931d9ae01b4930043fe757e3d9251fe55a0bc948d10649f13239842c7",
-   "payload@4096": "eabdbaa74ca4fc010c6ee4457ea5a1e1b5d2d203e9f33b4227ec24992aebc2d2"
+   "payload@1024": "ccaaa58699522f7e34478e4b512d91eafb9f8ca85861ea34244fb92f22db7390",
+   "payload@4096": "2685edc8aa409c9886c30d1d2d779bc293fce8e1c1f47ecae547f887c829edd5"
   }
  },
  {
@@ -8276,17 +8277,17 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.0,
-    "utilization@256": 0.964844,
+    "utilization@256": 0.992188,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.99707,
+    "utilization@1024": 0.989258,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 0.994385,
+    "utilization@4096": 0.993164,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -8306,17 +8307,17 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.5,
-    "utilization@256": 0.964844,
+    "utilization@256": 0.992188,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.5,
-    "utilization@1024": 0.99707,
+    "utilization@1024": 0.989258,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.5,
-    "utilization@4096": 0.994385,
+    "utilization@4096": 0.993164,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -8516,13 +8517,13 @@
   },
   "bundles": {
    "256": {
-    "used": 247,
+    "used": 254,
     "within_budget": true,
     "deterministic": true,
-    "items": 3,
-    "header_entities": 2,
+    "items": 4,
+    "header_entities": 4,
     "omissions": {
-     "packing: budget": 28,
+     "packing: budget": 27,
      "selection: container": 2,
      "selection: no module-level source": 1,
      "selection: value N below floor": 29
@@ -8532,13 +8533,13 @@
     ]
    },
    "1024": {
-    "used": 1021,
+    "used": 1013,
     "within_budget": true,
     "deterministic": true,
-    "items": 6,
+    "items": 5,
     "header_entities": 3,
     "omissions": {
-     "packing: budget": 25,
+     "packing: budget": 24,
      "selection: container": 2,
      "selection: no module-level source": 1,
      "selection: value N below floor": 29
@@ -8548,15 +8549,15 @@
     ]
    },
    "4096": {
-    "used": 4073,
+    "used": 4068,
     "within_budget": true,
     "deterministic": true,
-    "items": 26,
+    "items": 21,
     "header_entities": 8,
     "omissions": {
-     "packing: budget": 3,
+     "packing: budget": 1,
      "selection: container": 2,
-     "selection: item cap N": 5,
+     "selection: item cap N": 7,
      "selection: no module-level source": 1,
      "selection: value N below floor": 29
     },
@@ -8569,16 +8570,16 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "8c4ed0df5b830d3a69eea1dea1abd475f3d35f7d27f958e2fc9bd60bc32b8702",
    "routed": "7244a16a13fd7d536de9f212e7276a3cde735cd1d1cf4a47dfd3b4a32c7990f3",
-   "payload@256": "3222a64df07f50fdff24278c2f88adad85ca3360f78a90dbac2ded37901653ce",
-   "payload@1024": "643043d7c1d2bbf90f7c583e00ce594a6c767d02673a908aceed6b95df752c5a",
-   "payload@4096": "a47a1e9af1589102db6906b5cde75bc4afb6fefe4bfd6ba4164a27c03ab172c3"
+   "payload@256": "304a8e3bb97c9d55e3fcc02691dbd6cd0f01fdffa3732cca08ac69e0ccf73937",
+   "payload@1024": "d116ae13222204a26e20424820de7929eb2b285bb79c4c703b16a94d31e6b587",
+   "payload@4096": "f8cf6b50ae02fe906d118bab4f86c25727a83d8a68540f9dedca6666923d8b65"
   }
  },
  {
@@ -8611,8 +8612,8 @@
     "span_recall@4096": 0.5,
     "line_recall@4096": 0.411765,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.963867,
-    "gold_unit_share@4096": 0.082067
+    "utilization@4096": 0.941895,
+    "gold_unit_share@4096": 0.083981
    }
   },
   "unverified": {
@@ -8641,8 +8642,8 @@
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.963867,
-    "gold_unit_share@4096": 0.082067
+    "utilization@4096": 0.941895,
+    "gold_unit_share@4096": 0.083981
    }
   },
   "gold": [
@@ -8741,10 +8742,10 @@
     "used": 1015,
     "within_budget": true,
     "deterministic": true,
-    "items": 12,
+    "items": 11,
     "header_entities": 8,
     "omissions": {
-     "packing: budget": 46,
+     "packing: budget": 45,
      "selection: value N below floor": 6
     },
     "degradations": [
@@ -8752,11 +8753,11 @@
     ]
    },
    "4096": {
-    "used": 3948,
+    "used": 3858,
     "within_budget": true,
     "deterministic": true,
-    "items": 34,
-    "header_entities": 15,
+    "items": 29,
+    "header_entities": 13,
     "omissions": {
      "selection: item cap N": 34,
      "selection: value N below floor": 6
@@ -8770,7 +8771,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -8778,8 +8779,8 @@
    "entries": "e50ea1985ab37b2e708043d0ea733c1e6bf1aaf26ec55f4186f501da5c3155e4",
    "routed": "b5b09289fcd0d9692412420f9ff351de5dab9fa3ce63c9d876cafaad02932cb3",
    "payload@256": "9da999c4906709488b07096aa02b9a9c9d383dddf0c0cf898dd1e508d24baf40",
-   "payload@1024": "95524a2ae1fce2e2710d9a973c5b5d9b18d9426f93b269d2d1281efa948d756f",
-   "payload@4096": "525c3ead1460a030286e90dd70a2802186f0ce9a7cf2c6f0eea5522e4fcad46a"
+   "payload@1024": "b1705a28eb8a3663969855e4e3dcbb5467678dbe645f05c67aeaae35001a4575",
+   "payload@4096": "24082d299ba975ae7d5e27a860dec602819bb4a469ae04db1a18edc165b0c111"
   }
  },
  {
@@ -8807,8 +8808,8 @@
     "span_recall@1024": 0.25,
     "line_recall@1024": 0.303797,
     "file_recall@1024": 0.333333,
-    "utilization@1024": 0.982422,
-    "gold_unit_share@1024": 0.34493,
+    "utilization@1024": 0.994141,
+    "gold_unit_share@1024": 0.340864,
     "span_recall@4096": 0.375,
     "line_recall@4096": 0.493671,
     "file_recall@4096": 0.333333,
@@ -9022,13 +9023,13 @@
     ]
    },
    "1024": {
-    "used": 1006,
+    "used": 1018,
     "within_budget": true,
     "deterministic": true,
     "items": 7,
-    "header_entities": 4,
+    "header_entities": 5,
     "omissions": {
-     "packing: budget": 42,
+     "packing: budget": 41,
      "selection: value N below floor": 15
     },
     "degradations": [
@@ -9039,10 +9040,10 @@
     "used": 4095,
     "within_budget": true,
     "deterministic": true,
-    "items": 19,
-    "header_entities": 8,
+    "items": 18,
+    "header_entities": 7,
     "omissions": {
-     "packing: budget": 27,
+     "packing: budget": 29,
      "selection: value N below floor": 15
     },
     "degradations": [
@@ -9054,7 +9055,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -9062,8 +9063,8 @@
    "entries": "2c7b1a259fb85ae6b2565f5d71edd2990705b2dfcfd6025ee7bf3695eca7a185",
    "routed": "d8a882f7ba1a554232bfe9937de34234620727e8449913d69fb77af45740ba39",
    "payload@256": "56a7d9a7dd89c64222bdb509a92b23a6af6a4e75a3cf5d7931ffe74cae54744f",
-   "payload@1024": "272269557c67c002ee7725f454f09a84a21186ffd068f8527cad0c20fae797e4",
-   "payload@4096": "21f082ab42b05d8e17646ae27809475ebf1e6694bf02c4c7c7489b16bcc7efb8"
+   "payload@1024": "433c04f1addc4e1e98e26c0f1052d0a46a15fe30ab441e95e368a22a2300bf22",
+   "payload@4096": "f665105adafd127cc230e0ea73d3b421fa603e5cece2765690ee438d4454009e"
   }
  },
  {
@@ -9086,7 +9087,7 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.0,
-    "utilization@256": 0.976562,
+    "utilization@256": 0.960938,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.022727,
@@ -9096,8 +9097,8 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.083333,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.995605,
-    "gold_unit_share@4096": 0.045365
+    "utilization@4096": 0.994141,
+    "gold_unit_share@4096": 0.045432
    }
   },
   "unverified": null,
@@ -9297,10 +9298,10 @@
   },
   "bundles": {
    "256": {
-    "used": 250,
+    "used": 246,
     "within_budget": true,
     "deterministic": true,
-    "items": 5,
+    "items": 4,
     "header_entities": 4,
     "omissions": {
      "packing: budget": 35,
@@ -9315,7 +9316,7 @@
     "used": 1023,
     "within_budget": true,
     "deterministic": true,
-    "items": 8,
+    "items": 7,
     "header_entities": 5,
     "omissions": {
      "packing: budget": 32,
@@ -9327,15 +9328,14 @@
     ]
    },
    "4096": {
-    "used": 4078,
+    "used": 4072,
     "within_budget": true,
     "deterministic": true,
-    "items": 31,
-    "header_entities": 13,
+    "items": 28,
+    "header_entities": 14,
     "omissions": {
-     "packing: budget": 2,
      "selection: container": 1,
-     "selection: item cap N": 14,
+     "selection: item cap N": 16,
      "selection: value N below floor": 23
     },
     "degradations": [
@@ -9347,16 +9347,16 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "d726f3556f5208f8032bed60c420ceec5fdbe475efd8d219eb6080e3fd8cb9c6",
    "routed": "65329b6a10e9b5fb148e3bdbc13b75bbc61243fe379ef203c4ed6ad0a4fb1631",
-   "payload@256": "0758be244ca2a84802d51b4214479a88a57fe2ac082231e137b59a0d3feda0b0",
-   "payload@1024": "6e34918a7d8d1f49be58890316f682b5843954e7c4a69b643ad20511acfd7d1b",
-   "payload@4096": "bf64348f392551aab0b7b82c023ab1f35b22a787267c4612690067bec9261b3a"
+   "payload@256": "e06408dd0ba7c9b914a0b60fc23a40f19900b44ca8da8119848e4b2cd635f410",
+   "payload@1024": "5fe8aff5df524920ea739700f68bd1f95de12c884142446cb789da9c5d3ade99",
+   "payload@4096": "c6490180516195b4c49d2c03259fe1cacfd3d1532c6d31c53996ba56feb643f7"
   }
  },
  {
@@ -9389,8 +9389,8 @@
     "span_recall@4096": 0.428571,
     "line_recall@4096": 0.72549,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.998047,
-    "gold_unit_share@4096": 0.383072
+    "utilization@4096": 0.996826,
+    "gold_unit_share@4096": 0.376684
    }
   },
   "unverified": null,
@@ -9592,13 +9592,13 @@
     ]
    },
    "4096": {
-    "used": 4088,
+    "used": 4083,
     "within_budget": true,
     "deterministic": true,
-    "items": 20,
-    "header_entities": 4,
+    "items": 18,
+    "header_entities": 5,
     "omissions": {
-     "packing: budget": 23,
+     "packing: budget": 22,
      "selection: container": 2,
      "selection: value N below floor": 19
     },
@@ -9611,7 +9611,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -9620,7 +9620,7 @@
    "routed": "025e3b6548683b6844a4115eaa62886298ed1565b7c74d68da4ce85d75c9fe45",
    "payload@256": "b5eb5b077d7069c22b06c86b4c99e00eafb3c8b246d9cc3c4981f338c759d240",
    "payload@1024": "e00ee17c2e3f094c9664540478e1c686fee794b15e9ab813de28e3ccc4e49ff9",
-   "payload@4096": "a1365b38f6a718b79ee05881b4a396f0e995fe9d4f0c2c3964c31889c8d9306d"
+   "payload@4096": "76d276e89ccf3d812a06e58efd59533675e5b840c27f5d7caf2f3256c1938e60"
   }
  },
  {
@@ -9913,7 +9913,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -9955,8 +9955,8 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.25,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.908691,
-    "gold_unit_share@4096": 0.073885
+    "utilization@4096": 0.895996,
+    "gold_unit_share@4096": 0.074932
    }
   },
   "unverified": {
@@ -9985,8 +9985,8 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.411765,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.908691,
-    "gold_unit_share@4096": 0.073885
+    "utilization@4096": 0.895996,
+    "gold_unit_share@4096": 0.074932
    }
   },
   "gold": [
@@ -10125,10 +10125,10 @@
     ]
    },
    "4096": {
-    "used": 3722,
+    "used": 3670,
     "within_budget": true,
     "deterministic": true,
-    "items": 24,
+    "items": 21,
     "header_entities": 6,
     "omissions": {
      "selection: container": 3,
@@ -10145,7 +10145,7 @@
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
    "selector": "oxide-select-greedy-v4",
-   "payload": "oxide-payload-v3",
+   "payload": "oxide-payload-v4",
    "derivation": "sha256:842813127f307e953cf634d7fce5c71dcaddd5ec39f47da9fc8b28bb2a88f9d1",
    "units": "oxide-units-v1"
   },
@@ -10154,7 +10154,7 @@
    "routed": "dc9bb65db6ec414fb6112c12da38e540f2504da3f0f1b0551d251ee68ac087ec",
    "payload@256": "5ff7436b3f1a789f38caa68ae372bee2d29896331691b120b56bb5084aff0206",
    "payload@1024": "33132b768ed5ac0609fa30aa75816932222d915bc20da83e00a99e38bd9e3ef4",
-   "payload@4096": "e05b74d78a4e0c6e2200720f9d0e026ab04de8ffd0a2d7a2aeaed7a02445bb2f"
+   "payload@4096": "72f7f051fa50d278df0ed72a97abce4f930a5df87bc74c382c6c20465dd23fae"
   }
  }
 ]
