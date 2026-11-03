@@ -1,0 +1,1 @@
+freeze baseline-v20 and commit once TS passes. Moreover, Make OXIDE's incremental indexing substantially faster through algorithmic improvements, especially dependency-aware recomputation and avoiding unnecessary rebuilds. Preserve exact correctness and retain only measured gains. Research using Feynman if needed
