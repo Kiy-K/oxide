@@ -33,7 +33,7 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 - If missing or ambiguous information could change the implementation, check the repo first. If that doesn't settle it, ask one focused question instead of guessing. Don't invent permanent ID/schema/transport/model policy to unblock scaffolding (`docs/decisions.md` rule 4).
 - Before finishing, read the full diff for accidental changes in scope, public API surface (`oxide/__init__.py`), dependencies (`pyproject.toml`, `uv.lock`) or generated files.
 - Tests never touch real user data: every test and subprocess gets a private data location (`tests/python/conftest.py`).
-- Don't commit, push, tag, release, edit GitHub issues or roadmaps, or start the next phase unless approved.
+- When an implementation is done and `mise run verify` passes, commit it on the current worktree branch without asking. Don't push, tag, release, edit GitHub issues or roadmaps, or start the next phase unless asked.
 - Keep every OXIDE source file at or below 500 LOC. Tests, docs and CSS are exempt, and so are vendored or generated agent tooling (`.agents/`, `.claude/`, `.opencode/`), which stay as their tools ship them. Markdown is documentation, not source. Split a source file before completion if your change takes it over the limit.
 - If unsure about a problem or a bug, search relevant sources of the problem before tackling it.
 
