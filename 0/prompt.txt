@@ -1,0 +1,9 @@
+implement an experimental budget-aware submodular graph selector in the current worktree with minimal changes. Reuse existing routing, packing and libraries. Preserve the default selector, deterministic behavior, provenance and frozen baselines. Add focused tests and compare ContextBench quality, latency and RSS. No promotion without measurable gains. Don't commit or push.
+
+---
+
+/goal Remove the rejected cover selector. Analyze where OXIDE loses task-critical evidence across retrieval, routing, selection, and packing. Identify the largest actionable bottleneck using existing ContextBench data, then recommend one targeted algorithmic improvement.
+
+---
+
+/goal Implement an opt-in budget-aware source excerpt experiment targeting oversized and dropped evidence. Use deterministic sliding windows, exact rendered token costs and existing relevance signals. Preserve defaults and provenance, benchmark against ContextBench dev, and reject if quality or performance regresses. Explain the missing gold-span accounting.
