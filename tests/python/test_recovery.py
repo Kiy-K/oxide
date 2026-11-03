@@ -253,9 +253,15 @@ CRASH = textwrap.dedent(
         real_write(path, data)
         if step == "after-current" and path.name == "CURRENT":
             os._exit(9)
+    real_rows = storage._rows
+    def rows(conn, query, params=None):
+        if step == "in-lexical" and "CREATE_FTS_INDEX" in query:  # lexical.lbug half built
+            os._exit(9)
+        return real_rows(conn, query, params)
     storage.os.rename = rename
     storage._write_atomic = write_atomic
     storage._fsync = fsync
+    storage._rows = rows
     with oxide.open_repository(root, data_dir=data) as repo:
         repo.index()
     sys.exit(3)
@@ -308,6 +314,42 @@ def test_a_crash_after_current_moves_serves_the_new_generation(
         assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is not None
         assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
         assert repo.index().status == "unchanged"
+
+
+def test_a_crash_inside_the_lexical_build_keeps_the_previous_generation(
+    repo_copy: Path, private_data: Path, fts: Path
+) -> None:
+    first = oxide.index_repository(repo_copy)
+    write(repo_copy, {"oxidepy/extra.py": "def brand_new_helper():\n    pass\n"})
+    crash(repo_copy, private_data, "in-lexical")
+    with oxide.open_repository(repo_copy) as repo:
+        assert repo.snapshot == first.snapshot
+        assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
+        assert repo.search("RetryPolicy").entries
+        assert repo.index().status == "built"
+        assert repo.search("brand new helper").entries
+
+
+@pytest.mark.parametrize("step", ["before-current", "after-current"])
+def test_a_crash_around_a_reused_lexical_index_leaves_one_whole_generation(
+    repo_copy: Path, private_data: Path, fts: Path, step: str
+) -> None:
+    """The linked index shares its inode with the previous generation's: either one
+    surviving the crash must still search exactly as a fresh build would."""
+    oxide.index_repository(repo_copy)
+    with oxide.open_repository(repo_copy) as repo:
+        expected = repo.search("retry policy")
+    with (repo_copy / "oxidepy/retry.py").open("a") as f:
+        f.write("\n# a comment changes bytes, not documents\n")
+    crash(repo_copy, private_data, step)
+    with oxide.open_repository(repo_copy) as repo:
+        assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
+        hits = repo.search("retry policy").entries
+        assert hits
+        assert [(e.entity.key, e.lexical_score) for e in hits] == [
+            (e.entity.key, e.lexical_score) for e in expected.entries
+        ]
+        assert repo.index().status == ("unchanged" if step == "after-current" else "built")
 
 
 def test_a_crash_after_linking_blobs_leaves_the_current_generation_whole(
@@ -373,12 +415,13 @@ def test_index_restores_the_callers_gc_state(
         gc.enable()
 
 
-@pytest.mark.parametrize("side", ["_retain", "_load"])
+@pytest.mark.parametrize("side", ["_retain", "_lexical", "_load"])
 def test_a_failure_on_either_side_of_the_concurrent_publish_keeps_the_current_generation(
     repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch, fts: Path, side: str
 ) -> None:
-    """Blobs are retained on a thread while the graph loads: whichever fails, the other
-    finishes first, the staging is removed and the previous generation keeps serving."""
+    """Blobs and the lexical index are written on threads while the graph loads: whichever
+    fails, the others finish first, the staging is removed and the previous generation
+    keeps serving."""
     first = oxide.index_repository(repo_copy)
     before = {b.name: b.read_bytes() for b in blobs(private_data)}
     retain, started = Store._retain, threading.Event()
@@ -395,8 +438,8 @@ def test_a_failure_on_either_side_of_the_concurrent_publish_keeps_the_current_ge
 
     with monkeypatch.context() as patched:  # undo() would also drop the private data dir
         patched.setattr(Store, "_retain", retaining)
-        if side == "_load":
-            patched.setattr(Store, "_load", loading)
+        if side != "_retain":
+            patched.setattr(Store, side, loading)
         write(repo_copy, {"oxidepy/extra.py": "def brand_new_helper():\n    pass\n"})
         with oxide.open_repository(repo_copy) as repo:
             with pytest.raises(OSError, match="disk full"):

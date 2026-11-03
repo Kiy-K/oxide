@@ -10,6 +10,7 @@ import secrets
 import shutil
 import sys
 import weakref
+from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
@@ -18,6 +19,7 @@ import ladybug
 
 from oxide.capture import Capture, digest
 from oxide.core.indexing import FACTS_FORMAT, Derived, derivation_id
+from oxide.core.languages.python_resolve import Edge
 from oxide.core.retrieval import document
 from oxide.models import (
     IncompatibleIndex,
@@ -354,32 +356,48 @@ class Store:
         _fsync(staging)
 
     def _load(self, staging: Path, derived: Derived, snapshot: Snapshot) -> dict[str, int]:
-        entities: list[tuple[object, ...]] = []
-        for e in derived.entities:
-            src = e.source or SourceRef("", -1, -1, "")
-            row = (e.key, e.category, e.kind, e.name, e.signature or "", src.path, src.start)
-            entities.append((*row, src.end, src.digest, e.test))
-        rels: list[tuple[object, ...]] = []
-        opaque: list[tuple[object, ...]] = []
+        # Rows stream to CSV instead of lists: those lists were the largest Python share
+        # of the publish peak on VS Code while the lexical index builds alongside.
+        none = SourceRef("", -1, -1, "")
+
+        def entities() -> Iterator[tuple[object, ...]]:
+            for e in derived.entities:
+                src = e.source or none
+                row = (e.key, e.category, e.kind, e.name, e.signature or "", src.path, src.start)
+                yield (*row, src.end, src.digest, e.test)
+
         unresolved: dict[str, tuple[object, ...]] = {}
-        for site, edge in enumerate(derived.edges):
-            ev = edge.evidence or SourceRef("", -1, -1, "")
-            tail = (edge.name or "", site, ev.path, ev.start, ev.end)
-            if edge.resolution == "unresolved":
-                node = unresolved_key(edge.name or "")
-                unresolved.setdefault(node, (node, node[2:]))
-                opaque.append((edge.source, node, edge.kind, edge.basis, *tail))
-            for target in edge.targets:
-                rels.append((edge.source, target, edge.kind, edge.resolution, edge.basis, *tail))
-        tables = {
-            "Entity": entities,
-            "Unresolved": [*unresolved.values()],
-            "Rel": rels,
-            "Opaque": opaque,
-        }
+
+        def tail(site: int, edge: Edge) -> tuple[object, ...]:
+            ev = edge.evidence or none
+            return (edge.name or "", site, ev.path, ev.start, ev.end)
+
+        def rels() -> Iterator[tuple[object, ...]]:
+            for site, edge in enumerate(derived.edges):
+                for target in edge.targets:
+                    yield (
+                        edge.source,
+                        target,
+                        edge.kind,
+                        edge.resolution,
+                        edge.basis,
+                        *tail(site, edge),
+                    )
+
+        def opaque() -> Iterator[tuple[object, ...]]:
+            for site, edge in enumerate(derived.edges):
+                if edge.resolution == "unresolved":
+                    node = unresolved_key(edge.name or "")
+                    unresolved.setdefault(node, (node, node[2:]))
+                    yield (edge.source, node, edge.kind, edge.basis, *tail(site, edge))
+
         written = {
-            table: _write_csv(staging / f"{table}.csv", rows) for table, rows in tables.items()
+            table: _write_csv(staging / f"{table}.csv", rows)
+            for table, rows in (("Entity", entities()), ("Rel", rels()), ("Opaque", opaque()))
         }
+        # Filled while Opaque was written; COPY still loads nodes before relationships.
+        written["Unresolved"] = _write_csv(staging / "Unresolved.csv", unresolved.values())
+        tables = ("Entity", "Unresolved", "Rel", "Opaque")
         size = sum((staging / f"{table}.csv").stat().st_size for table in tables)
         pool = load_pool(size)
         # The staging load alone gets a second thread for COPY (rows unchanged); read views
