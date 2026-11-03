@@ -13,7 +13,7 @@ implementation is pinned at `ac985b28`, the replaced Rust/Bun v2 runtime at `f79
 ## Standing rules
 
 1. One Python package, `oxide` (ADR-0011). A new package or dependency needs a reuse, packaging or API reason.
-2. Legacy `main` is evidence, not a template. Reusing it requires a stated SPEC requirement, a boundary-fit reason and tests. No legacy SQLite schemas, row IDs, migrations or cache locations; derived state is rebuildable from captured source.
+2. Legacy v1 (`ac985b28`) is evidence, not a template. Reusing it requires a stated SPEC requirement, a boundary-fit reason and tests. No legacy SQLite schemas, row IDs, migrations or cache locations; derived state is rebuildable from captured source.
 3. Repository intelligence lives in `oxide.core`, I/O in `oxide.capture` and `oxide.storage`. LadybugDB objects, native IDs, rows and Cypher stay inside `oxide.storage`; the API exposes only domain values. Integrations (the CLI, `oxide mcp`, editors) are clients of `oxide.api` and never parse, route or select.
 4. When SPEC and code disagree, SPEC wins. If SPEC is ambiguous, record the ambiguity and a proposal; don't invent permanent ID, schema, transport or model policy to unblock scaffolding.
 5. Vectorless: no embeddings, vector indexes or model runners. Lexical entry points, TreeRouter, the heuristic value and the packer need no model or network.

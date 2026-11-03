@@ -80,9 +80,8 @@ only in such subprocesses. Lexical tests need the pinned FTS extension
 
 ## Commits
 
-Commit only when asked. OXIDE v2 work commits on `rewrite/v2` (or a branch
-from it, merged back by PR); never commit v2 work to `main`, which keeps the
-legacy v1 implementation until the rewrite is merged by explicit decision. Messages use a
+Commit only when asked. OXIDE v2 lives on `main`; commit there or on a branch
+from it merged back by PR. Messages use a
 lowercase prefix plus an imperative summary: `fix:`, `feat:`, `refactor:`,
 `docs:`, `harden:`, `bench:`, `tierb:`.
 

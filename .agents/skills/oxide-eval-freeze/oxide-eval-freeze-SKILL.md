@@ -5,7 +5,7 @@ description: Run, freeze and commit an OXIDE evaluation milestone (before/after 
 
 # OXIDE eval milestone freeze
 
-Work in `~/Projects/oxide` (branch is usually `rewrite/v2`). Eval data and scratch live outside the repo in `~/Projects/oxide-eval-data/oxide-<lang>-eval/` (or `~/.cache/oxide-<lang>-eval/`).
+Work in `~/Projects/oxide` (branch is usually `main`). Eval data and scratch live outside the repo in `~/Projects/oxide-eval-data/oxide-<lang>-eval/` (or `~/.cache/oxide-<lang>-eval/`).
 
 ## 1. Always run heavy work under resource caps
 

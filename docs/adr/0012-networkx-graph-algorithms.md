@@ -70,9 +70,14 @@ algorithm by hand would duplicate a mature library.
 5. **Imported lazily.** `import networkx` costs about 87 ms cold (`import oxide` is about
    158 ms), so it happens inside the functions that need it. Commands that never walk or
    index Python pay nothing.
-6. **No algorithm is activated for retrieval, routing or packing without evidence.**
-   - PageRank, PPR, centrality, shortest paths and communities run on projections only in
-     evaluation code, until a preregistered study passes per SPEC § Evaluation.
+6. **Graph selection is algorithm-driven and benchmark-gated** (AGENTS.md).
+   - A graph-based selection candidate is a named, standard algorithm (NetworkX on a
+     bounded projection, or a LadybugDB query) with a stated objective. Hand-tuned
+     weights and ad-hoc traversals are not candidates.
+   - No candidate is activated for retrieval, routing, selection or packing until a
+     preregistered study passes per SPEC § Evaluation. Until then, PageRank, PPR,
+     centrality, shortest paths and communities run on projections only in evaluation
+     code.
    - graph-v1's REJECT stands.
 
 ## Determinism

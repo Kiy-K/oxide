@@ -1,6 +1,6 @@
 # AGENTS.md
 
-OXIDE v2 (branch `rewrite/v2`): a structural context engine for agents. One Python package, `oxide`, in `src/oxide/` (ADR-0011); the Rust/Bun implementation it replaced is recoverable at `f79808a`.
+OXIDE v2 (on `main`): a structural context engine for agents. One Python package, `oxide`, in `src/oxide/` (ADR-0011); the Rust/Bun implementation it replaced is recoverable at `f79808a`.
 `CLAUDE.md` is a symlink to this file, so Claude and Codex share one root policy.
 
 The architecture authority is `docs/spec/SPEC.md`, with standing rules and research verdicts in `docs/decisions.md`, the evaluation protocol in `fixtures/eval/README.md` and decisions in `docs/adr/` (Proposed ADRs are proposals, not Accepted decisions; never change an ADR's status unasked). When they disagree with anything else in the repo, they win.
@@ -50,7 +50,7 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 
 ## Always-on rules
 
-- Legacy code and docs are historical evidence, not a template (SPEC, `docs/decisions.md` rule 2). The old implementation is recoverable from `main` / `ac985b28`; don't port it into `src/oxide/` without a stated SPEC requirement.
+- Legacy code and docs are historical evidence, not a template (SPEC, `docs/decisions.md` rule 2). The old implementation is recoverable at `ac985b28`; don't port it into `src/oxide/` without a stated SPEC requirement.
 - Retrieval, routing and packing changes are evaluated per SPEC § Evaluation against the frozen baselines (`tests/python/test_baseline.py` checks Phase 3 exactly); never regenerate a frozen artifact to make a failure pass. Legacy numbers in pinned historical reports are historical comparators, not v2 gates.
 - Models judge; deterministic code decides. Keep JEV and learned judges optional; there are no embeddings. The deterministic offline path needs no model or network (only `oxide prepare` fetches the pinned FTS extension, explicitly).
 
