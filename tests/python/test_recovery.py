@@ -297,10 +297,12 @@ def test_a_crash_before_current_moves_keeps_the_previous_generation(
     write(repo_copy, {"oxidepy/extra.py": "def brand_new_helper():\n    pass\n"})
     crash(repo_copy, private_data, "before-current")
     with oxide.open_repository(repo_copy) as repo:
-        assert repo.snapshot == first.snapshot
+        # Inspect recovery before the first API read reconciles the edited worktree.
+        assert repo.store.view().snapshot == first.snapshot
         assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
-        assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is None
-        assert repo.index().status == "built"
+        assert not repo.store.view().entities(["symbol:oxidepy/extra.py#brand_new_helper"])
+        assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is not None
+        assert repo.index().status == "unchanged"
 
 
 def test_a_crash_after_current_moves_serves_the_new_generation(
@@ -323,10 +325,10 @@ def test_a_crash_inside_the_lexical_build_keeps_the_previous_generation(
     write(repo_copy, {"oxidepy/extra.py": "def brand_new_helper():\n    pass\n"})
     crash(repo_copy, private_data, "in-lexical")
     with oxide.open_repository(repo_copy) as repo:
-        assert repo.snapshot == first.snapshot
+        assert repo.store.view().snapshot == first.snapshot
         assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
         assert repo.search("RetryPolicy").entries
-        assert repo.index().status == "built"
+        assert repo.index().status == "unchanged"
         assert repo.search("brand new helper").entries
 
 
@@ -344,12 +346,13 @@ def test_a_crash_around_a_reused_lexical_index_leaves_one_whole_generation(
     crash(repo_copy, private_data, step)
     with oxide.open_repository(repo_copy) as repo:
         assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
+        assert (repo.store.view().snapshot == expected.snapshot) is (step == "before-current")
         hits = repo.search("retry policy").entries
         assert hits
         assert [(e.entity.key, e.lexical_score) for e in hits] == [
             (e.entity.key, e.lexical_score) for e in expected.entries
         ]
-        assert repo.index().status == ("unchanged" if step == "after-current" else "built")
+        assert repo.index().status == "unchanged"
 
 
 def test_a_crash_after_linking_blobs_leaves_the_current_generation_whole(
@@ -360,11 +363,11 @@ def test_a_crash_after_linking_blobs_leaves_the_current_generation_whole(
     write(repo_copy, {"oxidepy/extra.py": "def brand_new_helper():\n    pass\n"})
     crash(repo_copy, private_data, "in-seal")
     with oxide.open_repository(repo_copy) as repo:
-        assert repo.snapshot == first.snapshot
+        assert repo.store.view().snapshot == first.snapshot
         assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
         assert {b.name: b.read_bytes() for b in blobs(private_data)} == before
         assert repo.build_context("retry", 4096).used > 0
-        assert repo.index().status == "built"
+        assert repo.index().status == "unchanged"
         assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is not None
 
 
@@ -444,16 +447,19 @@ def test_a_failure_on_either_side_of_the_concurrent_publish_keeps_the_current_ge
         with oxide.open_repository(repo_copy) as repo:
             with pytest.raises(OSError, match="disk full"):
                 repo.index()
-            assert repo.snapshot == first.snapshot
-            assert repo.build_context("retry", 4096).used > 0
+            assert repo.store.view().snapshot == first.snapshot
+            repo.store.view().verify_sources()
+            with pytest.raises(OSError, match="disk full"):
+                repo.build_context("retry", 4096)
         generations = store_dir(private_data) / "generations"
         assert [p.name for p in generations.iterdir()] == [
             (store_dir(private_data) / "CURRENT").read_text()
         ]
         assert {b.name: b.read_bytes() for b in blobs(private_data)} == before
     with oxide.open_repository(repo_copy) as repo:
-        assert repo.index().status == "built"
         assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is not None
+        assert repo.snapshot != first.snapshot
+        assert repo.index().status == "unchanged"
 
 
 def test_a_linked_lexical_index_is_not_flushed_again(

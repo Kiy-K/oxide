@@ -57,6 +57,7 @@ def test_a_dropped_repository_releases_its_lock_on_collection(
 def test_close_and_exceptions_release_everything(private_data: Path, fts: Path) -> None:
     with oxide.open_repository(FIXTURE) as repo:
         use(repo)  # warms imports and the native library before counting
+    gc.collect()  # Exclude pending garbage from earlier tests from the resource baseline.
     before = descriptors()
     for _ in range(10):
         with oxide.open_repository(FIXTURE) as repo:

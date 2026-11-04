@@ -47,12 +47,13 @@ def digest(data: bytes) -> str:
     return "sha256:" + hashlib.sha256(data).hexdigest()
 
 
-# (file type, size, mtime_ns, device, inode): what a re-stat must reproduce.
-type StatKey = tuple[int, int, int, int, int]
+# Include permissions and ctime: restoring mtime must not hide edits or unreadable files.
+type StatKey = tuple[int, int, int, int, int, int]
+type CaptureCache = dict[str, tuple[StatKey, CapturedFile]]
 
 
 def _key(st: os.stat_result) -> StatKey:
-    return (stat.S_IFMT(st.st_mode), st.st_size, st.st_mtime_ns, st.st_dev, st.st_ino)
+    return (st.st_mode, st.st_size, st.st_mtime_ns, st.st_dev, st.st_ino, st.st_ctime_ns)
 
 
 @dataclass(slots=True)
@@ -170,7 +171,9 @@ def _read(root: Path, path: str, expected: StatKey) -> bytes | Literal[False] | 
     return data if len(data) == expected[1] else None
 
 
-def capture(root: str | os.PathLike[str], exclude: Iterable[Path] = ()) -> Capture:
+def capture(
+    root: str | os.PathLike[str], exclude: Iterable[Path] = (), *, cache: CaptureCache | None = None
+) -> Capture:
     """Captures ``root``; retries when the tree changes underneath, then fails closed.
 
     Directories in ``exclude`` (OXIDE's own data location) are left out wherever they
@@ -195,20 +198,31 @@ def capture(root: str | os.PathLike[str], exclude: Iterable[Path] = ()) -> Captu
         total = 0
         files: list[CapturedFile] = []
         unreadable: list[Skip] = []
+        next_cache: CaptureCache = {}
         for path, expected in sorted(listing.files.items()):
             total += expected[1]
             if total > MAX_TOTAL_BYTES:
                 raise CaptureLimit(f"{base}: more than {MAX_TOTAL_BYTES} bytes in scope")
+            cached = cache.get(path) if cache is not None else None
+            if cached is not None and cached[0] == expected:
+                files.append(cached[1])
+                next_cache[path] = cached
+                continue
             data = _read(base, path, expected)
             if data is None:
                 break
             if data is False:
                 unreadable.append(Skip(path, "unreadable"))
                 continue
-            files.append(CapturedFile(path, data, digest(data)))
+            captured = CapturedFile(path, data, digest(data))
+            files.append(captured)
+            next_cache[path] = (expected, captured)
         else:
             if _walk(base, frozen).state == listing.state:
                 listing.skipped += unreadable
+                if cache is not None:
+                    cache.clear()
+                    cache.update(next_cache)
                 return _seal(base, files, listing)
     raise CaptureConflict(f"{base}: changed during capture {ATTEMPTS} times")
 

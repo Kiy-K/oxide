@@ -168,13 +168,19 @@ async def test_output_is_bounded(indexed: Path) -> None:
     assert bundle.structured_content["used"] <= 40
 
 
-async def test_requests_hold_nothing_and_see_a_new_index(indexed: Path) -> None:
+async def test_requests_retain_tracking_and_see_automatic_updates(indexed: Path) -> None:
     async with Client(server([str(indexed)])) as client:
         first = await call(client, "oxide_search", query="brand_new_function")
-        assert_unlocked(indexed)
+        with pytest.raises(oxide.OxideError, match="another"):
+            oxide.open_repository(indexed, create=False)
         write(indexed, {"oxidepy/extra.py": "def brand_new_function():\n    return 1\n"})
-        assert oxide.index_repository(indexed).status == "built"
-        second = await call(client, "oxide_search", query="brand_new_function")
+        second = first
+        for _ in range(100):
+            second = await call(client, "oxide_search", query="brand_new_function")
+            if second.structured_content["snapshot"] != first.structured_content["snapshot"]:
+                break
+            await anyio.sleep(0.05)
+    assert_unlocked(indexed)
     keys = [e["entity"]["key"] for e in second.structured_content["entries"]]
     assert "symbol:oxidepy/extra.py#brand_new_function" in keys
     assert first.structured_content["snapshot"] != second.structured_content["snapshot"]
@@ -251,7 +257,7 @@ def cli(data: Path, *args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(command, env=env(data), capture_output=True, text=True, check=False)
 
 
-async def test_stdio_server_releases_the_store_between_calls(
+async def test_stdio_server_tracks_until_shutdown(
     repo_copy: Path, tmp_path: Path, fts: Path
 ) -> None:
     data = tmp_path / "stdio-data"
@@ -263,10 +269,30 @@ async def test_stdio_server_releases_the_store_between_calls(
         assert [t.name for t in await client.list_tools()] == ["oxide_search"]
         found = await call(client, "oxide_search", query="RetryPolicy")
         assert found.structured_content["entries"][0]["entity"]["key"] == RETRY
-        # The server is alive and idle: the CLI can index (it needs the store's lock).
-        assert cli(data, "index", str(repo_copy)).returncode == 0
-        (graph,) = data.glob("repos/*/generations/*/graph.lbug")
-        graph.write_bytes(b"\0" * graph.stat().st_size)
+        assert "ownership_conflict" in cli(data, "index", str(repo_copy)).stderr
+        write(repo_copy, {"oxidepy/extra.py": "def automatically_fresh():\n    pass\n"})
+        keys: list[str] = []
+        for _ in range(100):
+            again = await call(client, "oxide_search", query="automatically_fresh")
+            keys = [e["entity"]["key"] for e in again.structured_content["entries"]]
+            if "symbol:oxidepy/extra.py#automatically_fresh" in keys:
+                break
+            await anyio.sleep(0.05)
+        assert "symbol:oxidepy/extra.py#automatically_fresh" in keys
+    assert cli(data, "index", str(repo_copy)).returncode == 0
+
+
+async def test_stdio_corruption_fails_closed_and_releases_for_repair(
+    repo_copy: Path, tmp_path: Path, fts: Path
+) -> None:
+    data = tmp_path / "stdio-data"
+    assert cli(data, "index", str(repo_copy)).returncode == 0
+    (graph,) = data.glob("repos/*/generations/*/graph.lbug")
+    graph.write_bytes(b"\0" * graph.stat().st_size)
+    transport = StdioTransport(
+        sys.executable, mcp_command(repo_copy, data), env=env(data), keep_alive=False
+    )
+    async with Client(transport) as client:
         damaged = await call(client, "oxide_search", mode="context", query="RetryPolicy")
         assert damaged.is_error and "error[store_corrupt]" in text(damaged)
         assert str(data) not in text(damaged)
@@ -389,7 +415,7 @@ async def test_context_text_names_the_judge_when_source_was_sent(
             self.end_headers()
             self.wfile.write(json.dumps({"model": jev.MODEL, "answers": answers}).encode())
 
-        def log_message(self, *args: object) -> None:
+        def log_message(self, format: str, *args: object) -> None:
             pass
 
     judge = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Judge)

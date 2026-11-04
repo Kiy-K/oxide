@@ -1,10 +1,7 @@
-"""``oxide mcp``: a stateless MCP server over the public API, built on FastMCP.
+"""MCP adapter over the public API with server-lifetime repository ownership.
 
-Every tool call opens the repository, reads, and closes it: no handle, lock or native
-connection outlives a call, and no call depends on an MCP session, so ``oxide index``
-can run between calls. Calls are serialized in-process because a store has one owner
-and the native binding is not thread-safe. Nothing is indexed or created here: an
-unindexed repository is a ``not_indexed`` tool error and leaves no store behind.
+Tool calls are session-independent; local tracking keeps opened indexes fresh.
+Unindexed repositories still fail without creating a store.
 """
 
 from __future__ import annotations
@@ -14,7 +11,8 @@ import json
 import logging
 import os
 import threading
-from collections.abc import Callable, Sequence
+from collections.abc import AsyncIterator, Callable, Sequence
+from contextlib import asynccontextmanager
 from typing import Annotated, Literal
 
 import anyio.from_thread
@@ -100,14 +98,25 @@ def _resolver(repos: Sequence[str]) -> Callable[[str | None], str]:
     return resolve
 
 
-def _read[T](repository: str, data_dir: str | None, read: Callable[[Repository], T]) -> T:
-    """Open, read, close, holding the in-process lock throughout. Runs on a worker thread."""
+def _read[T](
+    repository: str,
+    data_dir: str | None,
+    read: Callable[[Repository], T],
+    handles: dict[str, Repository],
+) -> T:
+    """Retain one handle per root until shutdown; evict failed handles for explicit repair."""
     with _lock:
-        # A call cancelled while it queued never opens the store.
         anyio.from_thread.check_cancelled()
+        key = os.path.realpath(repository)
         try:
-            with open_repository(repository, data_dir=data_dir, create=False) as repo:
-                return read(repo)
+            try:
+                if key not in handles:
+                    handles[key] = open_repository(key, data_dir=data_dir, create=False)
+                return read(handles[key])
+            except BaseException:
+                if repo := handles.pop(key, None):
+                    repo.close()
+                raise
         except OxideError as error:
             log.warning("%s: %s", error.code, error)
             advice = str(error) if error.code == "invalid_argument" else _ADVICE.get(error.code)
@@ -127,14 +136,30 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
     structural-mcp-trial).
     """
     resolve = _resolver(repos)
+    handles: dict[str, Repository] = {}
+
+    def close_handles() -> None:
+        with _lock:
+            for repo in handles.values():
+                repo.close()
+            handles.clear()
+
+    @asynccontextmanager
+    async def lifespan(app: FastMCP) -> AsyncIterator[None]:
+        try:
+            yield
+        finally:
+            await anyio.to_thread.run_sync(close_handles)
+
     app = FastMCP(
         "oxide",
         instructions="Structural code context for an indexed repository (`oxide index` "
-        "builds the index; this server never indexes). oxide_search finds where something "
+        "builds the initial index; local tracking keeps it fresh). oxide_search finds what "
         "is defined (mode=search), or builds a budgeted bundle of the relevant source "
         "with provenance (mode=context).",
         # Unexpected exceptions reach the client as a generic message, never their text.
         mask_error_details=True,
+        lifespan=lifespan,
     )
     results = TypeAdapter(SearchResult | ContextBundle).json_schema()
     output = {"type": "object", **results}
@@ -179,6 +204,7 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
                 target,
                 data_dir,
                 lambda repo: repo.search(query, limit=count, paths=paths, symbols=symbols),
+                handles,
             )
             # The status leads: clients that clip the tail (OpenCode code mode) keep it
             # (docs/phase-6/output-integrity/ at 013e791).
@@ -194,6 +220,7 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
             target,
             data_dir,
             lambda repo: repo.build_context(query, size, paths=paths, symbols=symbols),
+            handles,
         )
         head = (
             f"# oxide context: {bundle.used}/{bundle.budget} {bundle.units}, "

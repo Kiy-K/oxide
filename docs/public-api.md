@@ -32,7 +32,7 @@ excluded too. Lexical search needs the pinned FTS extension: run `oxide prepare`
 
 | Operation | Returns | Notes |
 | --- | --- | --- |
-| `open_repository(path, *, data_dir=None, create=True)` | `Repository` | Takes the store's exclusive lock; a second owner in any process gets `OwnershipConflict`. `create=False` (read-only clients) raises `NotIndexed` for a repository without a store and writes nothing |
+| `open_repository(path, *, data_dir=None, create=True)` | `Repository` | Takes the store's exclusive lock; a second owner in any process gets `OwnershipConflict`. `create=False` raises `NotIndexed` without creating an absent store; existing indexes are automatically refreshed |
 | `Repository.index(*, progress=None)` | `IndexReport` | Capture → derive → publish a new generation atomically; `unchanged` when snapshot and derivation are already current. Incremental: Python and TypeScript files whose bytes the current generation parsed reuse their parse facts; resolution and publication always cover the whole snapshot, so the result equals a full rebuild. `progress(line)` is called as each stage starts |
 | `Repository.search(query, *, limit, paths, symbols, selection, changed)` | `SearchResult` | Entry points for inspection: seeds in hint order, then BM25 rank; never final context |
 | `Repository.build_context(query, budget, *, paths, symbols, selection, changed)` | `ContextBundle` | Retrieval → TreeRouter → deterministic selection → packing |
@@ -278,16 +278,27 @@ Damage is classified like this:
 
 ## Lifecycle and concurrency
 
-- A `Repository` owns one store until `close()`, `with` exit or garbage
-  collection. Its finalizer holds only the lock descriptor, never the
-  repository, so dropping the last reference releases the lock.
-- One owner per store across processes (`flock`). While a handle is open, every
-  other owner (the CLI included) gets `ownership_conflict`, so long-running
-  clients should open per request. `oxide mcp` opens, reads and closes on every
-  tool call (9–13 ms open cost, measured in `docs/migration-audit/README.md` at `013e791`), so
-  it never blocks `oxide index` between calls.
-- A `Repository` is not thread-safe, and neither is the native binding.
-  Serialize calls.
+- A `Repository` owns its store until `close()`, `with` exit or garbage collection.
+  Closing stops and joins the watcher before returning; weak ownership also lets
+  dropping the last reference stop tracking and release the store lock.
+- After `index()` or the first successful read, filesystem events automatically
+  refresh the index. Bursts are coalesced; unchanged files reuse captured bytes and
+  parse facts, with full resolution and atomic publication. Reads and updates are
+  serialized, so each result uses one complete generation.
+- The first read after reopening fully reconciles content. Active handles fully
+  reconcile every 30 seconds even without events. Watcher failure degrades to
+  reconciliation; update failures are retried before a read or raised explicitly.
+  Events are hints, not a guarantee of instantaneous read-after-write visibility;
+  `index()` explicitly reconciles synchronously. An absent, incompatible or corrupt
+  index still requires explicit indexing or repair.
+- Tracking is local and ephemeral: no change history, developer monitoring,
+  telemetry, repository execution or network access. Capture ignores and data
+  exclusions apply. There is no daemon or manual watch command; while OXIDE is
+  closed, changes are recovered on the next open/read.
+- One owner per store across processes (`flock`). Other owners, including CLI
+  indexing, receive `ownership_conflict` until the handle closes. MCP retains one
+  handle per requested repository until server shutdown; stop it before explicit
+  CLI repair. Concurrent API calls on the same handle are serialized internally.
 
 ## Platform and native limitations
 
@@ -351,11 +362,12 @@ Structural search (`Repository.structural_search`) is **not** an MCP mode. In a
 preregistered agent trial, agents given it matched what they already found with grep
 (shape-task F1 0.994 vs 0.978) ([phase-6/structural-mcp-trial](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/structural-mcp-trial/README.md)).
 
-- **Stateless.** Every call opens the repository, reads and closes it, inside a
-  `with`; no handle, connection or lock outlives a call, and nothing depends on an
-  MCP session. Calls are serialized in-process (one store owner per process, and
-  the binding is not thread-safe). A call cancelled while it waits never opens
-  the store; one already reading runs to the end and closes.
+- **Session-independent.** Calls reuse server-owned repository handles, opened
+  lazily with `create=False` and closed on shutdown. Engine-owned tracking keeps
+  them fresh between calls. Ownership persists while idle; another process cannot
+  index the same store until shutdown. Calls are serialized in-process. A queued
+  cancellation never opens a store; an in-flight read completes coherently.
+  Failed calls evict and close their handle, allowing explicit repair.
 - **Repository.** Each call names `repository` (a path, relative to the server's
   working directory), or omits it when exactly one `--repo` is served. With
   `--repo`, other repositories are refused.
@@ -368,8 +380,9 @@ preregistered agent trial, agents given it matched what they already found with 
   (`127.0.0.1`, `localhost`, `::1`), with Host/Origin validation (foreign Host →
   421, foreign Origin → 403). It is unauthenticated, so it never listens beyond
   this machine.
-- **No side effects.** Calls open with `create=False`: naming an unindexed
-  directory is `not_indexed` and leaves nothing under the data location.
+- **No source mutation.** Naming an unindexed directory is `not_indexed` and
+  leaves nothing under the data location. Existing indexes can be refreshed by
+  the engine; repository files are never changed.
 - **Launch it with the `oxide` command.** `python -m oxide` puts the working
   directory first on `sys.path`. Started inside a Python checkout, that checkout's
   top-level packages can shadow OXIDE's dependencies: FastMCP imports `requests`, and

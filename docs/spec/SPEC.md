@@ -124,7 +124,7 @@ Core invariants:
 
 A `Repository` opened through the public API owns its store for its lifetime: database handles, the pinned read view, and the store's exclusive lock. Each request pins one published generation and one effective derivation; a request never mixes source, entities, relationships or lexical data from different generations. Readers see a complete published generation or an explicit error; unfinished writes are never visible.
 
-One read/write owner per store, across processes, enforced by an OS lock that OXIDE takes itself (the database's own protection is weaker; ADR-0002, ADR-0011). A second owner receives a typed `ownership_conflict`, never a wait or a second writer. A `Repository` is not thread-safe; concurrent multi-client access is out of scope until a product requirement justifies it.
+One read/write owner per store, across processes, enforced by an OS lock that OXIDE takes itself (the database's own protection is weaker; ADR-0002, ADR-0011). A second owner receives a typed `ownership_conflict`, never a wait or a second writer. A `Repository` serializes API reads, indexing and automatic updates in-process; native connections are never used concurrently.
 
 There is no embedding, vector or model-runner boundary (ADR-0011 § 5). Reintroducing one requires a new ADR with paired evidence.
 
@@ -144,7 +144,7 @@ There is no embedding, vector or model-runner boundary (ADR-0011 § 5). Reintrod
 
 ## Integrations
 
-Integrations (the `oxide` CLI and the `oxide mcp` server today; editor adapters later) translate their inputs into typed API calls and render returned results and errors. They MAY collect an editor selection or user-selected roots as typed hints. They MUST NOT parse source for repository intelligence, implement TreeIndex/TreeRouter or graph traversal, rank candidates, derive judgments, apply relevance thresholds, choose context items, truncate source to fit budgets, or read LadybugDB directly. Display filtering must not silently become a second selector. Remote integrations transport validated engine results; they do not introduce a second engine. The MCP server is stateless: each request opens the repository, reads it without creating a store, and closes it, so no ownership, lock or session state outlives a request.
+Integrations (the `oxide` CLI and the `oxide mcp` server today; editor adapters later) translate their inputs into typed API calls and render returned results and errors. They MAY collect an editor selection or user-selected roots as typed hints. They MUST NOT parse source for repository intelligence, implement TreeIndex/TreeRouter or graph traversal, rank candidates, derive judgments, apply relevance thresholds, choose context items, truncate source to fit budgets, or read LadybugDB directly. Display filtering must not silently become a second selector. Remote integrations transport validated engine results; they do not introduce a second engine. MCP requests are session-independent. The server retains lazily opened repository handles until shutdown, allowing engine-owned local tracking between requests; it never initializes an absent index. Store ownership therefore outlives individual requests.
 
 ## Repository knowledge model
 
@@ -208,7 +208,7 @@ The source manifest defines included files, ignores, languages, byte digests, an
 
 An edit invalidates source-dependent entities, relations, snippets, and lexical features as needed. Deletes remove stale facts from the next snapshot. A symbol's body digest is distinct from its identity. Full rebuild and incremental derivation MUST converge to equivalent logical knowledge for identical source/manifests; database byte layout need not match.
 
-An initial full-rebuild implementation is acceptable before incremental indexing. Incremental indexing is a required later validation milestone, not a reason to import old migrations.
+Automatic freshness is an engine capability, not an adapter command. After initial indexing or the first successful read of an existing index, an open `Repository` watches local filesystem changes, coalesces bursts, reuses unchanged captured bytes and parse facts, and publishes through the same atomic path as explicit indexing. Every reopen reconciles before its first read. Full-content reconciliation on a 30-second cadence while active recovers missed events; unavailable or failed watchers fall back to reconciliation. Updates and complete reads are serialized, and failed updates are retried or reported, never silently served as fresh. Close stops tracking and releases ownership. Tracking stores no event history or developer activity, emits no telemetry, executes no repository code, and makes no network requests. It observes capture scope and data-directory exclusions; no daemon or manual watch command is required.
 
 ## TreeIndex
 

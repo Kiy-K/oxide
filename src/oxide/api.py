@@ -9,24 +9,24 @@
         print(bundle.payload)
 
 Every result names the snapshot it was read from. A ``Repository`` owns its store
-exclusively (a second owner, in any process, gets ``OwnershipConflict``) and is not
-thread-safe.
+exclusively (a second owner, in any process, gets ``OwnershipConflict``). Calls are
+serialized with automatic local filesystem updates.
 """
 
 from __future__ import annotations
 
-import gc
 import os
+import threading
 import time
+import weakref
 from collections.abc import Callable, Iterable, Mapping
 from pathlib import Path
 from types import TracebackType
 from typing import Any, Literal
 
-from oxide import jev
-from oxide.capture import capture
+from oxide import _index, jev
+from oxide.capture import CaptureCache
 from oxide.core import navigation, ordering, packing, retrieval, routing, structural
-from oxide.core.indexing import components, derive, source_dialect, validate
 from oxide.core.retrieval import Hints
 from oxide.models import (
     Closed,
@@ -46,9 +46,10 @@ from oxide.models import (
     Snapshot,
     StructuralResult,
 )
-from oxide.storage.fts import fts_location, fts_unavailable, prepare_fts
-from oxide.storage.ladybug import View, default_data_dir, storage_components
+from oxide.storage.fts import prepare_fts
+from oxide.storage.ladybug import View, default_data_dir
 from oxide.storage.store import Store
+from oxide.tracking import RECONCILE_SECONDS, Tracking, serialized
 
 # Upper bounds of caller-chosen sizes, checked before any query is built.
 MAX_LIMIT = 1000
@@ -112,6 +113,11 @@ class Repository:
         self.root = root
         data = Path(data_dir or default_data_dir()).absolute()
         self._store: Store | None = Store(root, data, create)
+        self._lock = threading.RLock()
+        self._cache: CaptureCache = {}
+        self._active = False
+        self._tracking = Tracking(self, data)
+        self._finalizer = weakref.finalize(self, self._tracking.close)
 
     def __enter__(self) -> Repository:
         return self
@@ -125,9 +131,14 @@ class Repository:
         self.close()
 
     def close(self) -> None:
-        if self._store is not None:
-            self._store.close()
-            self._store = None
+        self._tracking.stop.set()
+        with self._lock:
+            if self._store is not None:
+                self._store.close()
+                self._store = None
+                self._cache.clear()
+        self._tracking.close()
+        self._finalizer.detach()
 
     @property
     def store(self) -> Store:
@@ -139,102 +150,60 @@ class Repository:
     def repo_id(self) -> str:
         return self.store.repo_id
 
+    @serialized
     def index(self, *, progress: Callable[[str], None] | None = None) -> IndexReport:
-        """Captures the worktree and publishes a new generation, or reports ``unchanged``
-        when the capture and derivation equal the current one. Supported source
-        files whose bytes the current generation already parsed reuse its facts;
-        resolution and publication always cover the whole capture, so the result equals
-        a full rebuild. ``progress`` receives a line as each stage starts."""
-        started = time.perf_counter()
-        report = progress or (lambda line: None)
-        store = self.store
-        report(f"capturing {self.root}")
-        # The data location is never source, wherever it sits (compared by identity).
-        snapshot = capture(self.root, exclude=(store.data, store.data / "repos"))
-        lexical_unavailable = fts_unavailable(fts_location())
-        parts = components(storage_components(lexical_unavailable is None))
-        built = not store.is_current(snapshot.snapshot_id, parts)
-        previous: Snapshot | None = None
-        changes: tuple[tuple[str, ...], ...] = ((), (), ())
-        parsed = reused = 0
-        if built:
-            old = store.previous()
-            before = {f.path: f.digest for f in old.files.values()} if old else {}
-            after = {f.path: f.digest for f in snapshot.files}
-            changes = (
-                tuple(p for p in after if p not in before),
-                tuple(p for p in after if p in before and before[p] != after[p]),
-                tuple(sorted(p for p in before if p not in after)),
-            )
-            previous = old.snapshot if old else None
-            cached = old.facts() if old else {}
-            sources = [
-                (lang, f.digest)
-                for f in snapshot.files
-                if (lang := source_dialect(f.path, f.data)) is not None
-            ]
-            hits = sum(isinstance(s := cached.get(lang), dict) and d in s for lang, d in sources)
-            report(
-                f"deriving {len(after)} files: parsing {len(sources) - hits} source files, "
-                f"reusing {hits}"
-            )
-            # A build allocates millions of objects that hold no cycles; the cyclic GC only
-            # re-scans them (~8% of a build, indexing-throughput at 013e791). The switch
-            # is process-global, so the caller's state is restored on every exit.
-            enabled = gc.isenabled()
-            gc.disable()
-            try:
-                derived = derive(snapshot, store.repo_id, cached)
-                reused, parsed = derived.reused, len(sources) - derived.reused
-                if reused < hits:
-                    report(f"{hits - reused} cached parse facts were unusable and parsed again")
-                validate(derived)
-                report(
-                    f"publishing {len(derived.entities)} entities, {len(derived.edges)} relations"
-                )
-                store.publish(snapshot, derived, parts, lexical_unavailable)
-            finally:
-                if enabled:
-                    gc.enable()
-        view = store.view()
-        files = view.files.values()
-        return IndexReport(
-            snapshot=view.snapshot,
-            status="built" if built else "unchanged",
-            files=len(view.files),
-            entities=view.counts[0],
-            relations=view.counts[1],
-            partial=tuple(f.path for f in files if f.coverage == "partial"),
-            unsupported=sum(f.coverage == "unsupported" for f in files),
-            skipped=snapshot.skipped,
-            case_collisions=snapshot.case_collisions,
-            lexical=view.lexical_unavailable or "available",
-            seconds=time.perf_counter() - started,
-            previous=previous,
-            added=changes[0],
-            modified=changes[1],
-            deleted=changes[2],
-            parsed=parsed,
-            reused=reused,
-        )
+        """Fully reconcile captured bytes and publish atomically, reusing unchanged parse facts."""
+        return self._index(True, progress)
+
+    def _index(self, full: bool, progress: Callable[[str], None] | None = None) -> IndexReport:
+        self._tracking.dirty.clear()
+        if full:
+            self._cache.clear()
+        try:
+            report = _index.index(self.root, self.store, self._cache, progress)
+        except Exception:
+            self._tracking.dirty.set()
+            raise
+        self._active = True
+        self._tracking.error = None
+        if full:
+            self._tracking.last_full = time.monotonic()
+        return report
+
+    @serialized
+    def _update(self, full: bool, paths: tuple[str, ...] = ()) -> None:
+        if self._store is not None and self._active:
+            # Native events invalidate bytes even on filesystems with coarse timestamps.
+            for path in paths:
+                self._cache.pop(path, None)
+            self._index(full)
 
     def _view(self) -> View:
-        """The current generation; its compatibility is checked before it is opened."""
+        # Preserve explicit not-indexed, incompatible and corrupt-store failures on first read.
+        self.store.view()
+        full = not self._active or time.monotonic() - self._tracking.last_full >= RECONCILE_SECONDS
+        if full or self._tracking.dirty.is_set() or self._tracking.failed:
+            self._index(full or self._tracking.failed)
         return self.store.view()
 
     @property
+    @serialized
     def snapshot(self) -> Snapshot:
         return self._view().snapshot
 
+    @serialized
     def files(self) -> list[FileInfo]:
         return list(self._view().files.values())
 
+    @serialized
     def entity(self, key: str) -> Entity | None:
         return self._view().entities([key]).get(key)
 
+    @serialized
     def relations(self, key: str) -> list[Relation]:
         return self._view().relations(key)
 
+    @serialized
     def impact(
         self,
         key: str,
@@ -271,6 +240,7 @@ class Repository:
             found.stopped_by,
         )
 
+    @serialized
     def search(
         self,
         query: str,
@@ -292,6 +262,7 @@ class Repository:
         )
         return SearchResult(view.snapshot, query, entries, found.lexical, tuple(found.issues))
 
+    @serialized
     def structural_search(
         self,
         rule: str | Mapping[str, Any],
@@ -312,6 +283,7 @@ class Repository:
             self._view(), rule, language, scope, _count("limit", limit, MAX_LIMIT)
         )
 
+    @serialized
     def build_context(
         self,
         query: str,
@@ -327,6 +299,7 @@ class Repository:
         by = jev.configured(self)
         return self._context(query, budget, paths, symbols, selection, changed, by)
 
+    @serialized
     def judge(self, enable: bool | None = None) -> JudgeStatus:
         """The optional judge's status for this repository (ADR-0009). ``True`` authorizes
         ``build_context`` to send this repository's source to it, ``False`` revokes that.
@@ -337,6 +310,7 @@ class Repository:
             (jev.authorize if enable else jev.revoke)(self)
         return jev.status(self)
 
+    @serialized
     def _context(
         self,
         query: str,
