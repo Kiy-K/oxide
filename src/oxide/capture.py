@@ -53,6 +53,9 @@ type CaptureCache = dict[str, tuple[StatKey, CapturedFile]]
 
 
 def _key(st: os.stat_result) -> StatKey:
+    if os.name == "nt":
+        # st_ctime is the creation time there and path and handle stats disagree on mode bits.
+        return (stat.S_IFMT(st.st_mode), st.st_size, st.st_mtime_ns, st.st_dev, st.st_ino, 0)
     return (st.st_mode, st.st_size, st.st_mtime_ns, st.st_dev, st.st_ino, st.st_ctime_ns)
 
 

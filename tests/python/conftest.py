@@ -20,6 +20,7 @@ import oxide.storage.ladybug as ladybug_storage
 import oxide.storage.store as store
 from oxide.storage.fts import _fts_build, fts_location, fts_unavailable
 from oxide.storage.ladybug import default_data_dir
+from oxide.tracking import Tracking
 
 REPO = Path(__file__).resolve().parents[2]
 FIXTURE = REPO / "fixtures" / "py_repo"
@@ -51,6 +52,14 @@ def private_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     for name in [k for k in os.environ if k.lower().endswith("_proxy")]:
         monkeypatch.delenv(name)  # localhost judges are reached directly
     return data
+
+
+@pytest.fixture(autouse=True)
+def untracked(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The background watcher would publish a test's edit before its own ``index()``
+    call; only tests marked ``tracked`` run it."""
+    if request.node.get_closest_marker("tracked") is None:
+        monkeypatch.setattr(Tracking, "_run", lambda self: self.ready.set())
 
 
 @pytest.fixture(autouse=True)

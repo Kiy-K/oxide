@@ -15,6 +15,8 @@ import oxide
 from oxide import capture as source
 from oxide.models import CaptureConflict
 
+pytestmark = pytest.mark.tracked
+
 
 def eventually(check: Callable[[], bool], timeout: float = 10) -> None:
     deadline = time.monotonic() + timeout

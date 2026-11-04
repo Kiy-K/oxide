@@ -168,6 +168,7 @@ async def test_output_is_bounded(indexed: Path) -> None:
     assert bundle.structured_content["used"] <= 40
 
 
+@pytest.mark.tracked
 async def test_requests_retain_tracking_and_see_automatic_updates(indexed: Path) -> None:
     async with Client(server([str(indexed)])) as client:
         first = await call(client, "oxide_search", query="brand_new_function")

@@ -84,7 +84,10 @@ mypy_path = ["src", "tests/python"]
 [tool.pytest.ini_options]
 testpaths = ["tests/python"]
 addopts = "-ra --strict-markers"
-markers = ["real_fsync: storage flushes for real (durability tests); others skip fsync"]
+markers = [
+    "real_fsync: storage flushes for real (durability tests); others skip fsync",
+    "tracked: runs the background freshness watcher; others have it stubbed out",
+]
 
 [tool.pyrefly]
 project-includes = [
