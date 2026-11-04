@@ -17,7 +17,9 @@ from oxide.capture import EXCLUDED
 if TYPE_CHECKING:
     from oxide.api import Repository
 
-RECONCILE_SECONDS = 30.0
+# Healthy watcher: a rare safety-net walk. Failed watcher: poll often, since events are gone.
+RECONCILE_SECONDS = 300.0
+POLL_SECONDS = 30.0
 
 
 def serialized[**P, R](
@@ -68,12 +70,19 @@ class Tracking:
             self.thread.join()
 
     def _tick(self, changes: set[tuple[Change, str]]) -> None:
-        if not self.ready.is_set():
+        first = not self.ready.is_set()
+        try:
+            self._reconcile(changes, first)
+        finally:
+            # Ready means the watcher is live and the post-start reconcile has finished, so
+            # callers never race that background update.
+            self.ready.set()
+
+    def _reconcile(self, changes: set[tuple[Change, str]], first: bool) -> None:
+        if first or changes:
             self.dirty.set()
-        self.ready.set()
-        if changes:
-            self.dirty.set()
-        full = time.monotonic() - self.last_full >= RECONCILE_SECONDS
+        interval = min(RECONCILE_SECONDS, POLL_SECONDS) if self.failed else RECONCILE_SECONDS
+        full = time.monotonic() - self.last_full >= interval
         if not (full or self.dirty.is_set()) or self.stop.is_set():
             return
         owner = self.owner()

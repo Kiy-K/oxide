@@ -153,11 +153,13 @@ class Repository:
     @serialized
     def index(self, *, progress: Callable[[str], None] | None = None) -> IndexReport:
         """Fully reconcile captured bytes and publish atomically, reusing unchanged parse facts."""
-        return self._index(True, progress)
+        return self._index(True, progress, rehash=True)
 
-    def _index(self, full: bool, progress: Callable[[str], None] | None = None) -> IndexReport:
+    def _index(
+        self, full: bool, progress: Callable[[str], None] | None = None, *, rehash: bool = False
+    ) -> IndexReport:
         self._tracking.dirty.clear()
-        if full:
+        if rehash:  # periodic reconciliation only re-walks; stat keys decide which bytes to re-read
             self._cache.clear()
         try:
             report = _index.index(self.root, self.store, self._cache, progress)

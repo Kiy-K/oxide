@@ -281,3 +281,14 @@ def test_reads_pin_one_generation_while_updates_wait(
             release.set()
         assert reading.result().snapshot == first.snapshot
         eventually(lambda: repo.snapshot != first.snapshot)
+
+
+def test_reconciliation_keeps_captured_bytes_and_explicit_index_rereads(tmp_path: Path) -> None:
+    root = write(tmp_path / "repo", {"a.py": "def a(): pass\n"})
+    with oxide.open_repository(root) as repo:
+        repo.index()
+        before = repo._cache["a.py"]
+        repo._update(True)
+        assert repo._cache["a.py"] is before
+        repo.index()
+        assert repo._cache["a.py"] is not before

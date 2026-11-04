@@ -207,6 +207,7 @@ def test_missing_retained_source_is_never_reported_unchanged(
 ) -> None:
     with oxide.open_repository(repo_copy) as repo:
         repo.index()
+        assert repo._tracking.ready.wait(5)  # a background reconcile would heal the tampering
         first, *rest = blobs(private_data)
         first.unlink()
         for blob in rest:

@@ -43,6 +43,7 @@ def test_a_dropped_repository_releases_its_lock_on_collection(
 ) -> None:
     repo = oxide.open_repository(FIXTURE)
     use(repo)
+    assert repo._tracking.ready.wait(5)  # the post-start reconcile would otherwise hold the repo
     store = weakref.ref(repo.store)
     del repo
     gc.collect()
