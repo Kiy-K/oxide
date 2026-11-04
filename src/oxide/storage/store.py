@@ -351,7 +351,10 @@ class Store:
             json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
         )
         for path in staging.iterdir():
-            if path.is_file():
+            # A linked lexical index was made durable when its generation was sealed (as
+            # with blobs); flushing it would open a file the still-open previous view holds,
+            # which Windows may refuse.
+            if path.is_file() and path.stat().st_nlink == 1:
                 _fsync(path)
         _fsync(staging)
 

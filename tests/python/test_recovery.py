@@ -456,6 +456,28 @@ def test_a_failure_on_either_side_of_the_concurrent_publish_keeps_the_current_ge
         assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is not None
 
 
+def test_a_linked_lexical_index_is_not_flushed_again(
+    repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch, fts: Path
+) -> None:
+    import oxide.storage.ladybug as ladybug_storage
+    import oxide.storage.store as store
+
+    oxide.index_repository(repo_copy)
+    with (repo_copy / "oxidepy/retry.py").open("a") as f:
+        f.write("\n# a comment changes bytes, not documents\n")
+    flushed: list[Path] = []
+    real = ladybug_storage._fsync
+
+    def record(path: Path) -> None:
+        flushed.append(path)
+        real(path)
+
+    monkeypatch.setattr(store, "_fsync", record)
+    oxide.index_repository(repo_copy)
+    names = {p.name for p in flushed}
+    assert {"graph.lbug", "MANIFEST.json"} <= names and "lexical.lbug" not in names
+
+
 def test_publication_flushes_every_byte_before_current_moves(
     repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
