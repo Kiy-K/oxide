@@ -49,6 +49,7 @@ class Tracking:
         self.last_full = time.monotonic()
         self.error: type[Exception] | None = None
         self.failed = False
+        self.resync = True
         self.thread = threading.Thread(target=self._run, name="oxide-freshness", daemon=True)
         self.thread.start()
 
@@ -82,7 +83,7 @@ class Tracking:
         if first or changes:
             self.dirty.set()
         interval = min(RECONCILE_SECONDS, POLL_SECONDS) if self.failed else RECONCILE_SECONDS
-        full = time.monotonic() - self.last_full >= interval
+        full = self.resync or time.monotonic() - self.last_full >= interval
         if not (full or self.dirty.is_set()) or self.stop.is_set():
             return
         owner = self.owner()
@@ -90,6 +91,7 @@ class Tracking:
             try:
                 paths = tuple(Path(path).relative_to(self.root).as_posix() for _, path in changes)
                 owner._update(full, paths)
+                self.resync = False  # only on success: a failed update keeps the resync pending
             except Exception as error:
                 # Tracebacks retain the owner; keep only the failure kind until a retry succeeds.
                 self.error = type(error)
@@ -98,26 +100,35 @@ class Tracking:
                 del owner
 
     def _run(self) -> None:
-        try:
-            for changes in watch(
-                self.root,
-                watch_filter=self.accept,
-                debounce=1000,
-                step=200,
-                stop_event=self.stop,
-                rust_timeout=100,
-                yield_on_timeout=True,
-                debug=False,
-                raise_interrupt=False,
-                ignore_permission_denied=True,
-            ):
-                self._tick(changes)
-                if self.error is not None and self.stop.wait(1):
-                    return
-        except (OSError, RuntimeError):
-            # Overflow, watch limits and unavailable backends degrade to reconciliation.
-            self.failed = True
-            self.dirty.set()
-            self.ready.set()
-        while not self.stop.wait(1):
-            self._tick(set())
+        delay = POLL_SECONDS
+        while not self.stop.is_set():
+            self.resync = True  # events are lost while no watcher runs; walk once it is live
+            try:
+                for changes in watch(
+                    self.root,
+                    watch_filter=self.accept,
+                    debounce=1000,
+                    step=200,
+                    stop_event=self.stop,
+                    rust_timeout=100,
+                    yield_on_timeout=True,
+                    debug=False,
+                    raise_interrupt=False,
+                    ignore_permission_denied=True,
+                ):
+                    self.failed = False
+                    delay = POLL_SECONDS
+                    self._tick(changes)
+                    if self.error is not None and self.stop.wait(1):
+                        return
+            except (OSError, RuntimeError):
+                # Overflow, watch limits and unavailable backends degrade to polling, then retry.
+                self.failed = True
+                self.dirty.set()
+                self.ready.set()
+            retry = time.monotonic() + delay
+            delay = min(delay * 2, RECONCILE_SECONDS)
+            while not self.stop.wait(1):
+                self._tick(set())
+                if time.monotonic() >= retry:
+                    break

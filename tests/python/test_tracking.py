@@ -6,6 +6,7 @@ import os
 import time
 from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 import pytest
 from conftest import write
@@ -156,6 +157,34 @@ def test_watcher_failure_falls_back_to_full_reconciliation(
         write(root, {"a.py": "def new(): pass\n"})
         assert repo.snapshot != first.snapshot
         assert repo.entity("symbol:a.py#new") is not None
+
+
+def test_failed_watcher_is_restarted_and_resynced(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from watchfiles import watch as real
+
+    from oxide import tracking
+
+    calls: list[int] = []
+
+    def flaky(*args: Any, **kwargs: Any) -> Any:
+        calls.append(1)
+        if len(calls) == 1:
+            raise RuntimeError("inotify queue overflow")
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(tracking, "watch", flaky)
+    monkeypatch.setattr(tracking, "POLL_SECONDS", 0.5)
+    root = write(tmp_path / "repo", {"a.py": "def old(): pass\n"})
+    with oxide.open_repository(root) as repo:
+        repo.index()
+        # Events lost while the watcher was down are recovered by the post-restart walk.
+        eventually(
+            lambda: len(calls) > 1 and not repo._tracking.failed and not repo._tracking.resync
+        )
+        write(root, {"a.py": "def new(): pass\n"})
+        eventually(lambda: repo.entity("symbol:a.py#new") is not None)
 
 
 def test_failed_background_update_is_retried_before_serving(
