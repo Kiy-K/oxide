@@ -1,0 +1,23 @@
+push main to origin
+
+---
+
+Improve OXIDE's automatic indexing freshness and responsiveness while minimizing reconciliation overhead. Ensure reliable recovery from missed filesystem events without sacrificing correctness or performance.
+
+---
+
+push main to origin
+
+---
+
+Validate OXIDE's automatic indexing under real filesystem failures, concurrent edits, and cross-platform workloads. Improve reliability and responsiveness based on measured evidence.
+
+---
+
+<task-notification>
+<task-id>bzw551cci</task-id>
+<tool-use-id>toolu_01CTFGxyEZUrRSVKLuWso9dZ</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/a02a1ec5-c9e9-4cfb-8556-bbe5c7f10182/tasks/bzw551cci.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for CI on pushed commit to finish" completed (exit code 0)</summary>
+</task-notification>
