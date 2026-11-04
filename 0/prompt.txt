@@ -1,0 +1,1 @@
+Make automatic, privacy-preserving code change tracking a core OXIDE capability. Keep indexes fresh through efficient filesystem watching and incremental updates, with reliable recovery from missed events. No manual watch command, developer monitoring, or telemetry. Own the implementation and optimization.
