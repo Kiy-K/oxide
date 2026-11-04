@@ -25,24 +25,20 @@ permissions:
 jobs:
   platform:
     name: ${{ matrix.label }}
-    # Intel macOS is the slowest runner (retired by GitHub in 2027): it runs on main
-    # pushes and manual runs, not on PRs. The label picks the runner, so exclude works.
     runs-on: >-
-      ${{ fromJSON('{"windows-x86_64": "windows-2025", "macos-x86_64": "macos-15-intel",
+      ${{ fromJSON('{"windows-x86_64": "windows-2025",
       "macos-arm64": "macos-15"}')[matrix.label] || 'ubuntu-24.04' }}
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         # ladybug 0.21.0's macOS wheels need macOS 15 or later.
-        label: [linux-x86_64, windows-x86_64, macos-x86_64, macos-arm64,
+        label: [linux-x86_64, windows-x86_64, macos-arm64,
                 linux-x86_64-py3.12, linux-x86_64-py3.14]
         # The ends of requires-python; the other rows use .python-version (3.13).
         include:
           - { label: linux-x86_64-py3.12, python: "3.12" }
           - { label: linux-x86_64-py3.14, python: "3.14" }
-        exclude:
-          - label: ${{ github.event_name == 'pull_request' && 'macos-x86_64' || 'none' }}
     env:
       UV_PYTHON: ${{ matrix.python }}  # empty: .python-version
     defaults:

@@ -10,10 +10,10 @@ and checked by `.github/workflows/platforms.yml`.
 | --- | --- | --- | --- | --- |
 | Linux x86_64 (glibc ≥ 2.28) | `ubuntu-24.04` | ladybug, tree-sitter, grammars | `linux_amd64` | supported; verified |
 | Windows x86_64 | `windows-2025` | yes, plus OpenSSL 3 (below) | `win_amd64` | supported; verified |
-| macOS 15+ Intel | `macos-15-intel` | yes (ladybug needs macOS 15) | `osx_amd64` | supported; verified |
 | macOS 15+ Apple silicon | `macos-15` | yes (ladybug needs macOS 15) | `osx_arm64` | supported; verified |
 | Linux arm64, musl, Windows arm64 | none | wheels exist | not pinned | unsupported: not tested; the lexical channel reports `unavailable` |
 | macOS < 15 | none | no ladybug wheel | — | unsupported: does not install |
+| macOS Intel | none | pyca ships no `cryptography` wheel from 49.0.0 | not tested | unsupported: dropped 2026-11-04; installing needs a Rust toolchain |
 
 The Linux job also runs on CPython 3.12 and 3.14, the ends of `requires-python`
 (rows `linux-x86_64-py3.12` and `linux-x86_64-py3.14`). Their status is pending until
@@ -140,34 +140,14 @@ instead of hiding behind a cache.
 Checkout turns off `core.autocrlf`. Fixtures and frozen spans are byte-exact, and a
 CRLF checkout would change their digests and offsets.
 
-## Intel macOS: cryptography below 49
+## Intel macOS: dropped
 
-fastmcp needs `cryptography` (through authlib, joserfc and pyjwt), and pyca stopped
-shipping Intel macOS wheels in 49.0.0. On Intel macOS, a plain `pip install` would pick
-the 50.x sdist, and building it needs a Rust toolchain. So `pyproject.toml` declares two
-requirements with environment markers. Both are in the wheel's `Requires-Dist`, so pip
-follows them as well as uv:
-
-- `cryptography<49` on `darwin`/`x86_64`, which resolves to 48.0.1 (universal2
-  wheels);
-- `cryptography>=50` everywhere else, which resolves to 50.0.2.
-
-The lock forks on these markers. Every consumer accepts 48.x (the tightest bound is
-`>=45.0.1`).
-
-The cost is that Intel macOS runs an older `cryptography`. As of 2026-10-24, 48.0.1
-carries three pyca advisories:
-
-- GHSA-g6cj-pr64-35w5: PKCS#7 decryption (`pkcs7_decrypt_*`);
-- GHSA-jwv3-5hgf-82ww and GHSA-m2h6-j472-rp4c: the X.509 path verifier
-  (`cryptography.x509.verification`).
-
-Neither OXIDE nor any installed dependency calls those APIs (searched 2026-10-24). The
-wheel also bundles OpenSSL 4.0.1, against 4.0.3 in 50.0.2. The advisories fixed in
-4.0.3 are mostly in TLS, DTLS and QUIC, which `cryptography` does not expose.
-
-The floor elsewhere keeps every other platform on the patched release. Remove both
-lines when Intel macOS support is dropped, or if pyca ships x86_64 wheels again.
+fastmcp needs `cryptography`, and pyca ships no Intel macOS wheels from 49.0.0. The
+earlier `cryptography<49` marker split kept Intel macOS on 48.0.1, which carries three
+pyca advisories (PKCS#7 decryption and the X.509 path verifier) that only 49 and later
+fix. `pyproject.toml` now requires `cryptography>=50` everywhere, so Intel macOS is
+unsupported (decided 2026-11-04): a wheel-only install fails there, and building 50.x
+from source needs a Rust toolchain. The split is recoverable at `8c5c860`.
 
 ## Platform-specific behavior
 
