@@ -1,0 +1,1 @@
+Finalize split graph/FTS indexing for production: validate Windows and macOS, ensure memory-safe builds, and resolve portability issues. Keep improvements that pass correctness and performance checks.
