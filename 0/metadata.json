@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6KA6PKEGC3RZ1TFK5645Q1S",
+  "session_id": "a02a1ec5-c9e9-4cfb-8556-bbe5c7f10182",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-04T12:58:07.650858601Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/oxide/api.py",
+    "src/oxide/tracking.py",
+    "tests/python/test_tracking.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "27c7a6473013",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 3030,
+    "cache_creation_tokens": 240157,
+    "cache_read_tokens": 2498128,
+    "output_tokens": 34014,
+    "api_call_count": 27
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 1
+  }
+}

@@ -1,0 +1,5 @@
+Make OXIDE's automatic indexing reliable and efficient across platforms and large repositories. Minimize idle overhead and query disruption while preserving consistency, freshness, and privacy.
+
+---
+
+yes, fix both, then commit
