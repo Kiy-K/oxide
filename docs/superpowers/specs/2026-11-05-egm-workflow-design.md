@@ -49,7 +49,7 @@ Tier is the maximum over the changed paths. `scripts/review_tier.py` computes it
   PR head only as diff data; if the script is absent during rollout, the PR defaults to tier 2. The
   review job fails closed on classification/action/structured-result failure, unresolved BLOCKER/MAJOR
   findings, or a missing/inadequate tier-2 feature spec. `verify` stays the automated test gate.
-- **Human:** reviews at merge. OXIDE agents never push.
+- **Human:** reviews at merge. Agents may publish a scoped branch and open a PR after the required gates pass; merge remains a human decision.
 
 ## Approaches considered
 

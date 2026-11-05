@@ -40,6 +40,32 @@ jobs:
             printf 'tier=2\nrubrics=docs/review/README.md\n' >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Materialize exact PR diff
+        if: steps.tier.outputs.tier != '0'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+        run: |
+          [[ "$BASE_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
+          [[ "$HEAD_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
+          [[ "$HEAD_REPO" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]
+          if ! git cat-file -e "${HEAD_SHA}^{commit}" 2>/dev/null; then
+            git fetch --no-tags --no-recurse-submodules \
+              "https://github.com/${HEAD_REPO}.git" "$HEAD_SHA"
+          fi
+          git diff --no-ext-diff --no-textconv --no-renames --binary \
+            "$BASE_SHA...$HEAD_SHA" -- > "$RUNNER_TEMP/oxide-pr.diff"
+
+      - name: Upload exact PR diff
+        if: steps.tier.outputs.tier != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: oxide-pr-diff-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/oxide-pr.diff
+          if-no-files-found: error
+          retention-days: 1
+
   claude-review:
     name: Risk-tiered review
     needs: classify
@@ -58,47 +84,27 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Fetch exact PR head as data
+      - name: Download exact PR diff
         if: needs.classify.result == 'success' && needs.classify.outputs.tier != '0'
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
-        run: |
-          [[ "$BASE_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
-          [[ "$HEAD_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
-          [[ "$HEAD_REPO" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]
-          git fetch --no-tags --no-recurse-submodules \
-            "https://github.com/${HEAD_REPO}.git" "$HEAD_SHA"
-
-      - name: Materialize exact PR diff
-        if: needs.classify.result == 'success' && needs.classify.outputs.tier != '0'
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          [[ "$BASE_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
-          [[ "$HEAD_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
-          git diff --no-ext-diff --no-textconv --no-renames --binary \
-            "$BASE_SHA...$HEAD_SHA" -- > "$RUNNER_TEMP/oxide-pr.diff"
+        uses: actions/download-artifact@v4
+        with:
+          name: oxide-pr-diff-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}
 
       - name: Run Claude Code Review
         id: claude-review
         if: needs.classify.result == 'success' && needs.classify.outputs.tier != '0'
         uses: anthropics/claude-code-action@v1
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ github.token }}
           allowed_non_write_users: '*'
           prompt: |
             Review PR #${{ github.event.pull_request.number }} from the exact event snapshot.
-            The trusted base is checked out and the event's exact PR head SHA was fetched as
-            Git data only; do not check out, execute, source, install, or run PR-controlled code.
-            Read the complete diff from `${{ runner.temp }}/oxide-pr.diff`; do not fetch live PR
-            metadata or diff endpoints. Review tier: ${{ needs.classify.outputs.tier }}.
+            The event's exact PR head was fetched as Git data in a separate contents:read job; no PR
+            source is checked out or executed. Review the complete run-scoped diff artifact at
+            `${{ runner.temp }}/oxide-pr.diff`; do not fetch live PR metadata or diff. Review tier:
+            ${{ needs.classify.outputs.tier }}.
             Apply these OXIDE rubrics from the trusted base: ${{ needs.classify.outputs.rubrics }}.
             Review all relevant changes for BLOCKER and MAJOR findings. For Tier 2 feature or
             behavior changes (not fixes restoring documented behavior), a missing or inadequate
