@@ -11,6 +11,22 @@ whole process for features, fixes, language work and refactors. Only changes tha
 claim a retrieval/routing/packing quality or performance improvement also need the
 ContextBench or `scripts/bench.py` runs below (see `AGENTS.md`).
 
+## Review tiers
+
+Run `mise run tier` on the final diff. It prints `tier=N` and the applicable rubric filenames.
+Tiers combine by maximum: unclassified paths default to tier 1; Markdown paths are tier 0 unless a tier-2 path rule matches.
+
+| Tier | Scope | Required before commit |
+|---|---|---|
+| 0 | Documentation changes, except agent/review/spec policy | `mise run verify` |
+| 1 | Tests, ordinary source/configuration paths, and unknown paths | Tier 0 plus an independent zero-context diff review against the printed `docs/review/` rubrics |
+| 2 | Public API, capture/storage/core policy, frozen evaluation fixtures, test harness, dependencies, CI/agent configuration, review classifier and architecture authorities | Tier 1 plus a short intent spec in `docs/superpowers/specs/`, reviewed by a zero-context agent before implementation for features/behavior changes. Bug fixes restoring documented behavior do not need a new spec. |
+
+`claude-code-review.yml` is restricted to `pull_request_target`. It checks out only the trusted base commit, fetches the event's exact PR head as Git data, and materializes the immutable diff; it never executes PR code.
+Tiers 1–2 fail closed on classification, review, structured output, or BLOCKER/MAJOR findings. Tier 2 feature/behavior PRs also block on a missing or inadequate intent spec.
+Fork reviews use non-write-user mode with best-effort secret scrubbing and comment-only tools; prompt-injection risk is reduced, not eliminated. Classification uses the base branch's copy and defaults to tier 2 during first rollout if the classifier is absent.
+CI runs `mise run verify` on every PR. Keep `Verify` required during rollout; after this workflow is deployed and its check succeeds, also require `Risk-tiered review` so setup cannot strand merges. Agents retain autonomous implementation and commits; no per-change human approval is added.
+
 ## Commands
 
 [Mise](https://mise.jdx.dev/installing-mise.html) is the one entrypoint;
