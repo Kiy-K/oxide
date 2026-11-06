@@ -1,0 +1,9 @@
+Establish trustworthy OXIDE evaluation and cross-platform correctness, resolve unexplained baseline drift, then improve coding-agent adoption and task success through evidence-driven changes.
+
+---
+
+Restore trustworthy baselines and cross-platform CI, then build a cost-controlled, reproducible coding-agent evaluation with retained traces and genuinely held-out tasks. Diagnose why agents ignore or abandon OXIDE before optimizing adoption.
+
+---
+
+Finalize and commit the verified fixes, restore the valid ContextBench baseline, and remove invalid artifacts. Push the branch, resolve CI failures autonomously, and ensure cross-platform correctness.
