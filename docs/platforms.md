@@ -38,6 +38,18 @@ directory" option. Without them every store operation fails with
 `native_unavailable` before anything is touched. The Windows job installs them the
 same way.
 
+## Windows capture cache key
+
+The capture cache reuses a file's bytes while its stat key is unchanged. On POSIX the key
+includes `st_ctime_ns`, so restoring an old mtime cannot hide an edit. On Windows `st_ctime` is
+the creation time, so the key uses the file's NTFS ChangeTime instead (`oxide._winstat`, via
+`GetFileInformationByHandleEx`), plus size, mtime, volume and file id. A file whose ChangeTime
+cannot be read is an `unreadable` skip, never served from cache. Not detected on Windows: an
+ACL change alone (no write) leaves the key unchanged, so a cached file made unreadable stays
+captured until its next edit. The Windows path is type-checked here (`mypy --platform win32`)
+and its key logic is tested with `st_ctime` as a stand-in; the Win32 calls themselves run only
+in the Platforms job.
+
 ## Windows limitation: ASCII store paths
 
 On Windows, ladybug cannot open a database or extension path with non-ASCII

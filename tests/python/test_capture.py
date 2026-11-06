@@ -116,9 +116,9 @@ def test_a_file_that_grows_after_it_is_listed_is_read_only_to_its_listed_size(
     from oxide import capture as module
 
     (tmp_path / "a.py").write_bytes(b"x" * 10)
-    expected = module._key(os.stat(tmp_path / "a.py"))
+    expected = module._key(os.stat(tmp_path / "a.py"), str(tmp_path / "a.py"))
     (tmp_path / "a.py").write_bytes(b"x" * 1_000_000)
-    monkeypatch.setattr(module, "_key", lambda st: expected)  # growth after fstat
+    monkeypatch.setattr(module, "_key", lambda *_: expected)  # growth after fstat
     sizes: list[int] = []
     real = os.fdopen
 
@@ -140,3 +140,46 @@ def test_a_file_that_grows_after_it_is_listed_is_read_only_to_its_listed_size(
     monkeypatch.setattr(os, "fdopen", Spy)
     assert module._read(tmp_path, "a.py", expected) is None
     assert sizes == [11]
+
+
+def _windows_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The Windows key on any platform, with st_ctime standing in for Windows' ChangeTime."""
+    from oxide import capture as module
+
+    def change(source: str | int) -> int:
+        st = os.fstat(source) if isinstance(source, int) else os.stat(source)
+        return st.st_ctime_ns
+
+    monkeypatch.setattr(module, "_WINDOWS", True)
+    monkeypatch.setattr(module, "change_time", change)
+
+
+def test_windows_key_sees_an_edit_that_restores_size_and_mtime(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from oxide import capture as module
+
+    _windows_key(monkeypatch)
+    write(tmp_path, {"a.py": "x = 1\n"})
+    cache: module.CaptureCache = {}
+    capture(tmp_path, cache=cache)
+    before = (tmp_path / "a.py").stat()
+    write(tmp_path, {"a.py": "x = 2\n"})
+    os.utime(tmp_path / "a.py", ns=(before.st_atime_ns, before.st_mtime_ns))
+    assert [f.data for f in capture(tmp_path, cache=cache).files] == [b"x = 2\n"]
+
+
+def test_a_file_whose_change_time_is_unavailable_is_an_unreadable_skip(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from oxide import capture as module
+
+    def refuse(source: str | int) -> int:
+        raise PermissionError("no change time")
+
+    write(tmp_path, {"a.py": "x = 1\n"})
+    monkeypatch.setattr(module, "_WINDOWS", True)
+    monkeypatch.setattr(module, "change_time", refuse)
+    captured = capture(tmp_path)
+    assert captured.files == ()
+    assert [(s.path, s.reason) for s in captured.skipped] == [("a.py", "unreadable")]
