@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import stat
+import sys
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,6 +19,7 @@ from typing import Literal
 
 import pathspec
 
+from oxide._winstat import change_time
 from oxide.models import CaptureConflict, CaptureLimit, InvalidPath, Skip, SkipReason
 
 CAPTURE_VERSION = "oxide-capture-v3"
@@ -51,11 +53,18 @@ def digest(data: bytes) -> str:
 type StatKey = tuple[int, int, int, int, int, int]
 type CaptureCache = dict[str, tuple[StatKey, CapturedFile]]
 
+_WINDOWS = sys.platform == "win32"
 
-def _key(st: os.stat_result) -> StatKey:
-    if os.name == "nt":
-        # st_ctime is the creation time there and path and handle stats disagree on mode bits.
-        return (stat.S_IFMT(st.st_mode), st.st_size, st.st_mtime_ns, st.st_dev, st.st_ino, 0)
+
+def _key(st: os.stat_result, source: str | int | None = None) -> StatKey:
+    """``source`` is the file path or descriptor ``st`` came from; without it (directories,
+    whose listing is never cached) the Windows change time is left out."""
+    if _WINDOWS:
+        # Neither the creation-time st_ctime nor mode bits (path and handle stats disagree on
+        # them) are usable here. shortcut: an ACL change keeps this key, so a cached file made
+        # unreadable stays captured until its next edit; Windows has no cheap signal for it.
+        changed = 0 if source is None else change_time(source)
+        return (stat.S_IFMT(st.st_mode), st.st_size, st.st_mtime_ns, st.st_dev, st.st_ino, changed)
     return (st.st_mode, st.st_size, st.st_mtime_ns, st.st_dev, st.st_ino, st.st_ctime_ns)
 
 
@@ -148,7 +157,10 @@ def _walk(root: Path, excluded: frozenset[tuple[int, int]]) -> _Listing:
             elif st.st_size > MAX_FILE_BYTES:
                 reason = "too_large"
             else:
-                listing.files[path] = _key(st)
+                try:
+                    listing.files[path] = _key(st, entry.path)
+                except OSError:  # no change time on Windows: never cached, so reported
+                    reason = "unreadable"
             if reason is not None:
                 listing.skipped.append(Skip(path, reason))
     listing.state.update(listing.files)
@@ -168,7 +180,7 @@ def _read(root: Path, path: str, expected: StatKey) -> bytes | Literal[False] | 
     except OSError:
         return None
     with os.fdopen(fd, "rb") as handle:
-        if _key(os.fstat(fd)) != expected:
+        if _key(os.fstat(fd), fd) != expected:
             return None
         data = handle.read(expected[1] + 1)  # a file growing after fstat stays bounded
     return data if len(data) == expected[1] else None

@@ -42,6 +42,8 @@ def test_capture_reuses_only_unchanged_bytes(
     assert source.capture(root, cache=cache) == original
     assert reads == []
     stat = (root / "a.py").stat()
+    # Windows ChangeTime can be coarser than its 100 ns representation.
+    time.sleep(0.02)
     write(root, {"a.py": "x = 2\n"})
     os.utime(root / "a.py", ns=(stat.st_atime_ns, stat.st_mtime_ns))
     assert source.capture(root, cache=cache) == source.capture(root)
@@ -84,8 +86,8 @@ def test_native_events_invalidate_bytes_even_with_coarse_timestamps(
 ) -> None:
     real_key = source._key
 
-    def coarse(stat: os.stat_result) -> source.StatKey:
-        mode, size, _, device, inode, _ = real_key(stat)
+    def coarse(stat: os.stat_result, origin: str | int | None = None) -> source.StatKey:
+        mode, size, _, device, inode, _ = real_key(stat, origin)
         return mode, size, 0, device, inode, 0
 
     monkeypatch.setattr(source, "_key", coarse)

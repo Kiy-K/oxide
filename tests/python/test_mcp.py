@@ -384,7 +384,9 @@ async def test_stateless_http_answers_independent_clients(http_server: str) -> N
 
 
 def test_http_rejects_foreign_hosts_and_origins(http_server: str) -> None:
-    body = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "ping"}).encode()
+    # The SDK refuses on Host/Origin before it reads the body; an unread body makes Windows reset
+    # the connection (WinError 10053) instead of returning the status, so send none.
+    body = b""
     for headers, status in (
         ({"Host": "evil.example"}, 421),
         ({"Origin": "http://evil.example"}, 403),
