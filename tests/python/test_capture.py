@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
 import sys
 from pathlib import Path
@@ -143,12 +144,20 @@ def test_a_file_that_grows_after_it_is_listed_is_read_only_to_its_listed_size(
 
 
 def _windows_key(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The Windows key on any platform, with st_ctime standing in for Windows' ChangeTime."""
+    """The Windows key on any platform. ChangeTime moves on every write and utime cannot restore
+    it, so a digest of the content stands in for it. st_ctime cannot: it is the creation time on
+    Windows, which is why this test failed there when it used st_ctime."""
     from oxide import capture as module
 
     def change(source: str | int) -> int:
-        st = os.fstat(source) if isinstance(source, int) else os.stat(source)
-        return st.st_ctime_ns
+        if isinstance(source, int):  # the open descriptor: read it, then restore its position
+            position = os.lseek(source, 0, os.SEEK_CUR)
+            os.lseek(source, 0, os.SEEK_SET)
+            data = b"".join(iter(lambda: os.read(source, 65536), b""))
+            os.lseek(source, position, os.SEEK_SET)
+        else:
+            data = Path(source).read_bytes()
+        return int.from_bytes(hashlib.sha256(data).digest()[:8], "big")
 
     monkeypatch.setattr(module, "_WINDOWS", True)
     monkeypatch.setattr(module, "change_time", change)

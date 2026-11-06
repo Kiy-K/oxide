@@ -47,8 +47,8 @@ the creation time, so the key uses the file's NTFS ChangeTime instead (`oxide._w
 cannot be read is an `unreadable` skip, never served from cache. Not detected on Windows: an
 ACL change alone (no write) leaves the key unchanged, so a cached file made unreadable stays
 captured until its next edit. The Windows path is type-checked here (`mypy --platform win32`)
-and its key logic is tested with `st_ctime` as a stand-in; the Win32 calls themselves run only
-in the Platforms job.
+and its key logic is tested with a content digest standing in for ChangeTime: st_ctime is the
+creation time on Windows, so it cannot stand in. The Win32 calls themselves run only in the Platforms job.
 
 ## Windows limitation: ASCII store paths
 
