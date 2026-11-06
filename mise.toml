@@ -56,6 +56,10 @@ for py in 3.12 3.14; do
 done
 '''
 
+[tasks.tier]
+description = "Classify the current change's review tier and applicable rubrics"
+run = "uv run --locked python scripts/review_tier.py"
+
 [tasks.verify]
 description = "Everything CI checks, in order: lint, typecheck, test"
 run = '''
