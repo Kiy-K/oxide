@@ -1,0 +1,3 @@
+Complete assignment thoroughly:
+
+Build the held-out task miner and generate fixtures/eval/agent-swe/heldout-tasks.json and heldout-rejections.json per the Context contract. Work in the main checkout at /home/khoi/Projects/oxide but only create the new files named in the contract.
