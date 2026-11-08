@@ -51,7 +51,15 @@ def path_for(split: str) -> Path:
 
 
 def load(split: str = "dev") -> list[dict[str, Any]]:
-    tasks: list[dict[str, Any]] = json.loads(path_for(split).read_text(encoding="utf-8"))["tasks"]
+    path = path_for(split)
+    if split == "heldout" and not path.is_file():
+        raise FileNotFoundError(
+            "held-out tasks are not in the checkout; generate and verify them with "
+            "`uv run python scripts/agent_eval/heldout.py` "
+            "(writes fixtures/eval/agent-swe/heldout-tasks.json) before "
+            "`run --split heldout --final`"
+        )
+    tasks: list[dict[str, Any]] = json.loads(path.read_text(encoding="utf-8"))["tasks"]
     return tasks
 
 
@@ -125,6 +133,26 @@ def checkout(task: dict[str, Any], work: Path) -> None:
     subprocess.run([*git, "commit", "-q", "-m", "base"], cwd=work, check=True)
 
 
+def build_hides(root: Path = ROOT) -> list[Path]:
+    """``run.hidden``, imported lazily: ``run`` imports this module."""
+    import run
+
+    return run.hidden(root)
+
+
+def confine_editable(argv: list[str], work: Path, venv: Path) -> list[str]:
+    """Editable install under bubblewrap. ``confine`` has one writable; the venv bind is spliced
+    before ``--die-with-parent`` so a setuptools hook cannot use the host."""
+    # Network stays up: resolving dependencies and running the build hook are one process.
+    wrapped = confine.confine(argv, writable=work, hide=build_hides(), net=True)
+    marker = "--die-with-parent"
+    try:
+        at = wrapped.index(marker)
+    except ValueError as error:
+        raise RuntimeError("confine.confine argv has no --die-with-parent") from error
+    return [*wrapped[:at], "--bind", str(venv), str(venv), *wrapped[at:]]
+
+
 def environment(task: dict[str, Any], work: Path, venv: Path) -> dict[str, str]:
     """A venv with the checkout installed editable; the env for processes that use it.
     A ``dated`` task resolves dependencies as of the issue's date. A task's ``build`` block
@@ -138,17 +166,29 @@ def environment(task: dict[str, Any], work: Path, venv: Path) -> dict[str, str]:
     if made.returncode:
         raise RuntimeError(f"venv: {made.stderr[-400:]}")
 
-    def install(*args: str, era: bool = True) -> subprocess.CompletedProcess[str]:
+    def install(
+        *args: str,
+        era: bool = True,
+        extra: dict[str, str] | None = None,
+        wrap: Callable[[list[str]], list[str]] = lambda argv: argv,
+    ) -> subprocess.CompletedProcess[str]:
         argv = ["uv", "pip", "install", "-q", "-p", str(venv / "bin" / "python")]
         date = ["--exclude-newer", task["created_at"]] if era and task["dated"] else []
-        return sh(*argv, *date, *args, env=env)
+        return sh(*wrap([*argv, *date, *args]), env={**env, **(extra or {})})
 
     # Dev recipe: setuptools stays below 70 because old pytest and plugins import pkg_resources.
     # A held-out recipe names its own setuptools, verified with that recipe.
+    # Only the editable install runs the task's build hooks, so only that command is confined.
     install(setuptools, "wheel", "setuptools_scm", "flit_core", era=False)
     install("pytest")
     for spec in (f"{work}[{extra}]", str(work)) if extra else (str(work),):
-        done = install("--no-build-isolation", "-e", spec)
+        done = install(
+            "--no-build-isolation",
+            "-e",
+            spec,
+            extra={"UV_CACHE_DIR": "/tmp/uv-cache"},
+            wrap=lambda argv: confine_editable(argv, work, venv),
+        )
         if done.returncode == 0:
             return {**env, "PATH": f"{venv / 'bin'}{os.pathsep}{os.environ['PATH']}"}
     raise RuntimeError(f"install: {done.stderr[-400:]}")
@@ -158,15 +198,28 @@ def changed(patch: str) -> list[str]:
     return sorted(set(re.findall(r"^\+\+\+ b/(\S+)", patch, re.MULTILINE)))
 
 
-def apply(work: Path, patch: str) -> None:
-    with tempfile.NamedTemporaryFile("w", suffix=".diff", encoding="utf-8", delete=False) as f:
+def apply(
+    work: Path,
+    patch: str,
+    wrap: Callable[[list[str]], list[str]] = list,
+    scratch: Path | None = None,
+) -> None:
+    """``git apply`` runs clean filters from the tree's own config: on an agent's tree pass a
+    confining ``wrap`` and a ``scratch`` dir that is visible inside it."""
+    with tempfile.NamedTemporaryFile(
+        "w", suffix=".diff", encoding="utf-8", dir=scratch, delete=False
+    ) as f:
         f.write(patch)
     try:
-        done = sh("git", "apply", "--whitespace=nowarn", f.name, cwd=work)
+        done = sh(*wrap(["git", "apply", "--whitespace=nowarn", f.name]), cwd=work)
     finally:
         os.unlink(f.name)
     if done.returncode:
         raise RuntimeError(f"patch: {done.stderr[-400:]}")
+
+
+class TestRunError(RuntimeError):
+    """Pytest did not produce a scoreable session. Callers must not record this as test failures."""
 
 
 def tests(
@@ -175,19 +228,47 @@ def tests(
     files: list[str],
     timeout: int = 900,
     wrap: Callable[[list[str]], list[str]] = lambda argv: argv,
+    agent_tree: bool = False,
 ) -> dict[str, str]:
-    """Outcome per node id of the given test files (pytest ``-rA`` summary). ``wrap`` confines
-    the command: agent-written ``conftest.py`` and test files execute here."""
+    """Outcome per reported node id (pytest ``-rA``). Raises ``TestRunError`` when pytest did not
+    produce a scoreable session: timeout, a confinement or launch failure, exit 3 or 4, or no
+    output. Exit 0, 1, 2, or 5 with a pytest session returns the reported nodes; an id that was
+    not collected is absent, and that is a failure. ``wrap`` confines the command.
+    ``agent_tree``: the tree is the agent's, so a hang or a broken pytest (bad conftest, addopts,
+    INTERNALERROR) is its result, not infrastructure; only a failed bubblewrap launch raises."""
     argv = wrap(["pytest", "-rA", "-q", "-p", "no:cacheprovider", *files])
     try:
         done = sh(*argv, cwd=work, env=env, timeout=timeout)
-    except subprocess.TimeoutExpired:
-        return {}
+    except subprocess.TimeoutExpired as error:
+        if agent_tree:
+            return {}
+        raise TestRunError(f"pytest timed out after {timeout}s") from error
     out: dict[str, str] = {}
     for line in done.stdout.splitlines():
         hit = RESULT.match(line)
         if hit:
             out[hit[2]] = hit[1]
+    text = f"{done.stdout}\n{done.stderr}"
+    ran = bool(out) or any(
+        marker in text
+        for marker in (
+            "test session starts",
+            "ERROR collecting",
+            "collected ",
+            "no tests ran",
+            "short test summary",
+        )
+    )
+    launch = "bwrap:" in text and not ran
+    broken = (
+        not text.strip()
+        or done.returncode in (3, 4)
+        or "INTERNALERROR" in text
+        or done.returncode not in (0, 1, 2, 5)
+    )
+    if launch or (broken and not agent_tree):
+        tail = (done.stderr or done.stdout)[-400:]
+        raise TestRunError(f"pytest exited {done.returncode} without a scoreable session: {tail}")
     return out
 
 

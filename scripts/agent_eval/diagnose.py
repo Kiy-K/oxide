@@ -21,7 +21,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-import run
+import session
 import tasks
 
 CLASSES = (
@@ -132,7 +132,7 @@ def diagnose(results: Path, arm: str = "oxide") -> str:
         cls = classify(
             calls,
             gold_paths(task["gold_patch"]),
-            row.get("oxide_tools_connected", run.connected(base / "data", arm)),
+            row.get("oxide_tools_connected", session.connected(base / "data", arm)),
         )
         counts[cls] += 1
         resolved[cls] += bool(row["resolved"])

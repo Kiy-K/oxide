@@ -85,13 +85,13 @@ def test_provider_error_event_is_not_scored_as_task_failure() -> None:
     scripts = str(Path(__file__).resolve().parents[2] / "scripts" / "agent_eval")
     sys.path.insert(0, scripts)
     try:
-        run = importlib.import_module("run")
+        events = importlib.import_module("events")
     finally:
         sys.path.remove(scripts)
 
-    events = '{"type":"error","error":{"type":"provider.auth","message":"Request failed: 400"}}'
-    assert run.agent_error(events) == "provider.auth: Request failed: 400"
-    assert run.agent_failure("exit 1", events) == "provider.auth: Request failed: 400"
+    raw = '{"type":"error","error":{"type":"provider.auth","message":"Request failed: 400"}}'
+    assert events.agent_error(raw) == "provider.auth: Request failed: 400"
+    assert events.agent_failure("exit 1", raw) == "provider.auth: Request failed: 400"
 
 
 def test_report_keeps_only_latest_attempt_for_each_run(tmp_path: Path, capsys: Any) -> None:

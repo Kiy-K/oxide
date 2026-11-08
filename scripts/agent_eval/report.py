@@ -7,6 +7,7 @@ import random
 import statistics
 from collections import defaultdict
 from pathlib import Path
+from typing import Any
 
 BOOTSTRAP = 10_000
 
@@ -16,6 +17,48 @@ def interval(diffs: list[float]) -> tuple[float, float]:
     rng = random.Random(0)
     means = sorted(statistics.fmean(rng.choices(diffs, k=len(diffs))) for _ in range(BOOTSTRAP))
     return means[int(0.025 * BOOTSTRAP)], means[int(0.975 * BOOTSTRAP) - 1]
+
+
+def plan_block(path: Path, rows: list[dict[str, Any]], scored: list[dict[str, Any]]) -> str | None:
+    """None when every planned task, arm, and repetition is scored. Without a manifest the plan is
+    unknown, so a partial run could not be told from a complete one."""
+    side = path.with_name(path.stem + ".manifest.json")
+    if not side.is_file():
+        return "provisional: no manifest beside the results, so completeness is unknown"
+    try:
+        manifest = json.loads(side.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return "invalid: unreadable manifest"
+    if not isinstance(manifest, dict):
+        return "invalid: unreadable manifest"
+    arms = manifest.get("arms")
+    tasks_n = manifest.get("tasks")
+    reps = manifest.get("reps")
+    if (
+        not isinstance(arms, list)
+        or not arms
+        or not isinstance(tasks_n, int)
+        or isinstance(tasks_n, bool)
+        or tasks_n < 0
+        or not isinstance(reps, int)
+        or isinstance(reps, bool)
+        or reps < 1
+        or any(not isinstance(arm, str) or not arm for arm in arms)
+    ):
+        return "invalid: manifest missing tasks, arms, or reps"
+    planned = [arm for arm in arms if isinstance(arm, str)]
+    task_ids = {row["task"] for row in rows}
+    scored_keys = {(row["task"], row["arm"], row["rep"]) for row in scored}
+    total = tasks_n * len(planned) * reps
+    got = sum(
+        1
+        for _task, arm, rep in scored_keys
+        if arm in planned and isinstance(rep, int) and not isinstance(rep, bool) and 0 <= rep < reps
+    )
+    # shortcut: same-size task swap still passes, upgrade when manifest lists ids
+    if len(task_ids) == tasks_n and got == total:
+        return None
+    return f"provisional: incomplete planned matrix ({got}/{total} scored)"
 
 
 def report(path: Path, test: str = "oxide", reference: str = "control") -> None:
@@ -37,8 +80,12 @@ def report(path: Path, test: str = "oxide", reference: str = "control") -> None:
     if rows and len(errors) / len(rows) > 0.10:
         print("verdict: invalid: more than 10% harness errors")
         return
+    blocked = plan_block(path, rows, scored)
+    if blocked and not blocked.startswith("provisional:"):
+        print("verdict:", blocked)
+        return
     if not diffs:
-        print("verdict: no paired tasks")
+        print("verdict:", blocked or "no paired tasks")
         return
     for arm in (reference, test):
         runs = [r for r in scored if r["arm"] == arm]
@@ -61,5 +108,8 @@ def report(path: Path, test: str = "oxide", reference: str = "control") -> None:
         f"  95% CI [{low:+.3f}, {high:+.3f}]  tasks better/worse/tied "
         f"{better}/{worse}/{len(diffs) - better - worse}"
     )
+    if blocked:
+        print("verdict:", blocked)
+        return
     verdict = f"{test} improves task success" if low > 0 else "no demonstrated improvement"
     print("verdict:", verdict)

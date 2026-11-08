@@ -5,6 +5,7 @@ checked with the real bubblewrap where it is installed, and the rest with pure f
 from __future__ import annotations
 
 import importlib
+import itertools
 import shutil
 import sqlite3
 import subprocess
@@ -62,6 +63,7 @@ def test_the_runner_passes_the_agent_only_the_clean_environment(
         return "ok", ""
 
     monkeypatch.setattr(run, "launch", fake_launch)
+    monkeypatch.setattr(confine, "require", lambda: None)
     monkeypatch.setattr(run, "credentials", lambda *_: None)
     monkeypatch.setattr(run, "credential_values", lambda *_: [])
     monkeypatch.setattr(run, "forget_credentials", lambda *_: None)
@@ -200,3 +202,108 @@ def test_a_run_directory_under_the_hidden_cache_stays_writable() -> None:
         assert (base / "out.txt").read_text(encoding="utf-8").strip() == "ok"
     finally:
         shutil.rmtree(base, ignore_errors=True)
+
+
+def _symlink(link: Path, target: Path) -> None:
+    try:
+        link.symlink_to(target)
+    except OSError:
+        pytest.skip("symlinks unavailable")
+
+
+def test_runtime_socket_mounts_hide_the_tree_and_keep_resolv(tmp_path: Path) -> None:
+    runtime = tmp_path / "run"
+    sock = runtime / "libvirt" / "libvirt.sock"
+    sock.parent.mkdir(parents=True)
+    sock.write_text("socket", encoding="utf-8")
+    resolv = runtime / "systemd" / "resolve" / "stub-resolv.conf"
+    resolv.parent.mkdir(parents=True)
+    resolv.write_text("nameserver 127.0.0.53\n", encoding="utf-8")
+    link = tmp_path / "resolv.conf"
+    _symlink(link, resolv)
+    args = confine.socket_mounts([runtime], [link, tmp_path / "absent"])
+    assert args[:2] == ["--tmpfs", str(runtime)]
+    assert str(sock) not in args
+    assert ("--dir", str(resolv.parent.parent)) in list(itertools.pairwise(args))
+    assert args[-3:] == ["--ro-bind", str(resolv), str(resolv)]
+
+
+def test_a_dangling_name_service_link_refuses_to_start(tmp_path: Path) -> None:
+    runtime = tmp_path / "run"
+    runtime.mkdir()
+    link = tmp_path / "resolv.conf"
+    _symlink(link, runtime / "missing.conf")
+    with pytest.raises(SystemExit, match="runtime sockets"):
+        confine.socket_mounts([runtime], [link])
+
+
+def test_a_runtime_directory_is_not_bound_back(tmp_path: Path) -> None:
+    runtime = tmp_path / "run"
+    runtime.mkdir()
+    link = tmp_path / "resolv.conf"
+    _symlink(link, runtime)
+    with pytest.raises(SystemExit, match="runtime sockets"):
+        confine.socket_mounts([runtime], [link])
+
+
+def test_a_symlink_runtime_dir_is_not_a_mount_point(tmp_path: Path) -> None:
+    real = tmp_path / "run"
+    real.mkdir()
+    link = tmp_path / "var-run"
+    _symlink(link, real)
+    assert confine.runtime_dirs((real, link)) == [real]
+
+
+def _host_runtime_sentinel() -> Path | None:
+    """A host path under /run that confinement must not leave visible."""
+    run_dir = Path("/run")
+    if not run_dir.is_dir() or run_dir.is_symlink():
+        return None
+    kept: set[Path] = set()
+    resolv = Path("/etc/resolv.conf")
+    if resolv.is_symlink():
+        try:
+            target = resolv.resolve()
+            kept.add(target)
+            kept.update(target.parents)
+        except OSError:
+            pass
+    try:
+        children = list(run_dir.iterdir())
+    except OSError:
+        return None
+    for child in children:
+        if child not in kept:
+            return child
+    return None
+
+
+@BWRAP
+def test_a_host_runtime_path_is_hidden_and_resolv_conf_is_kept() -> None:
+    sentinel = _host_runtime_sentinel()
+    if sentinel is None:
+        pytest.skip("no host /run entry outside the name-service restore")
+    alias = Path("/var/run") / sentinel.relative_to("/run")
+    expected = Path("/etc/resolv.conf").read_text(encoding="utf-8")
+    with home_scratch() as work:
+        probe = confine.confine(
+            [
+                sys.executable,
+                "-c",
+                "import pathlib, sys\n"
+                "missing = pathlib.Path(sys.argv[1])\n"
+                "assert not missing.exists(), missing\n"
+                "alias = pathlib.Path(sys.argv[2])\n"
+                "assert alias == missing or not alias.exists(), alias\n"
+                "got = pathlib.Path('/etc/resolv.conf').read_text(encoding='utf-8')\n"
+                "assert got == sys.argv[3]\n",
+                str(sentinel),
+                str(alias),
+                expected,
+            ],
+            writable=work,
+            hide=(),
+            net=True,
+        )
+        done = subprocess.run(probe, capture_output=True, text=True)
+        assert done.returncode == 0, done.stderr

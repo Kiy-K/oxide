@@ -17,6 +17,8 @@ SCRIPTS = str(Path(__file__).resolve().parents[2] / "scripts" / "agent_eval")
 if SCRIPTS not in sys.path:
     sys.path.insert(0, SCRIPTS)
 
+arms: ModuleType = importlib.import_module("arms")
+batch: ModuleType = importlib.import_module("batch")
 run: ModuleType = importlib.import_module("run")
 tasks: ModuleType = importlib.import_module("tasks")
 
@@ -33,7 +35,7 @@ def args(out: Path, cap: int | None) -> argparse.Namespace:
         model="m",
         timeout=1,
         final=False,
-        arms=list(run.ARMS),
+        arms=list(arms.ARMS),
         base_src=None,
         runner="opencode",
     )
@@ -52,7 +54,8 @@ def fake_runs(monkeypatch: pytest.MonkeyPatch) -> None:
         }
 
     monkeypatch.setattr(run, "run_one", run_one)
-    monkeypatch.setattr(run, "manifest", lambda *_: {"fixed": True})
+    monkeypatch.setattr(run.confine, "require", lambda: None)
+    monkeypatch.setattr(batch, "manifest", lambda *_: {"fixed": True})
 
 
 def rows(out: Path) -> list[dict[str, Any]]:

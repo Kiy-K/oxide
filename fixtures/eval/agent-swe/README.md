@@ -185,7 +185,27 @@ its own login out; a network allowlist to the model host would close this and is
 The hidden list is a denylist: the rest of the host is readable read-only, so an answer stored
 outside the listed paths would be readable to an agent.
 
+Amendment 5, before any held-out look (review of PR #52): (1) every `git` command on the agent's
+tree, including `git apply` of the hidden test patch and the editable install's build hooks, runs
+under the same bubblewrap confinement; a planted clean filter no longer runs on the host (tests
+in `tests/python/test_agent_run.py` and `test_agent_environment.py`). (2) `/run` and `/var/run`
+are masked so host sockets (docker, systemd) are unreachable; name-service files are re-bound.
+(3) Run artifacts are written with `O_EXCL | O_NOFOLLOW` after unlinking, and a symlinked OpenCode
+credential database is removed, never opened. (4) On the agent's tree only a failed bubblewrap
+launch is a harness error; a hang, a broken `conftest.py` or a collection error is the agent's
+unresolved result (gold-patch verification stays strict). (5) `report` prints `provisional` unless the
+adjacent manifest's whole task x arm x
+repetition matrix is scored, or when the manifest is missing. Residuals: the agent and build hooks
+keep network access, the hidden-test pytest runs the agent's own `conftest.py` (it could forge
+`PASSED` lines), test files are restored from the agent-writable `.git`, and sockets outside
+`/run` (for example abstract or `/tmp/.X11-unix`) are not filtered.
+
 ## Commands
+
+Before a held-out run, generate and verify its local task set with
+`uv run python scripts/agent_eval/heldout.py`; this writes
+`fixtures/eval/agent-swe/heldout-tasks.json` and a rejection log. The generator requires
+GitHub CLI access and builds candidate repositories; its selection rule is in `heldout.py`.
 
 See the docstring of `scripts/agent_eval/__main__.py`. Verdicts are one row in
 [`docs/decisions.md`](../../../docs/decisions.md).
