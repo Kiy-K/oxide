@@ -228,6 +228,7 @@ def test_runtime_socket_mounts_hide_the_tree_and_keep_resolv(tmp_path: Path) -> 
     assert args[-3:] == ["--ro-bind", str(resolv), str(resolv)]
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="runtime mask paths exist only under bwrap")
 def test_a_dangling_name_service_link_refuses_to_start(tmp_path: Path) -> None:
     runtime = tmp_path / "run"
     runtime.mkdir()

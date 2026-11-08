@@ -66,8 +66,9 @@ def test_the_editable_install_cannot_run_build_hooks_on_the_host(
     assert editable[0] == "bwrap"
     assert "--unshare-net" not in editable
     die = editable.index("--die-with-parent")
-    assert editable[die - 3 : die] == ["--bind", "/v", "/v"]
-    assert ["--bind", "/w", "/w"] in [editable[i : i + 3] for i in range(len(editable) - 2)]
+    assert editable[die - 3 : die] == ["--bind", str(Path("/v")), str(Path("/v"))]
+    bound_work = ["--bind", str(Path("/w")), str(Path("/w"))]
+    assert bound_work in [editable[i : i + 3] for i in range(len(editable) - 2)]
     assert str(tasks.ROOT / "fixtures" / "eval") in editable
     assert all(argv[0] != "bwrap" for argv in commands if "-e" not in argv)
 
