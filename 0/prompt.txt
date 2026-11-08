@@ -1,0 +1,5 @@
+Secure OXIDE's evaluation harness, retain useful Codex integration work, and verify MCP discoverability. Then investigate whether prompt guidance improves real task success using fresh development tasks and controlled spending.
+
+---
+
+Finalize and commit the secure evaluation harness independently, verify credential isolation across Codex and OpenCode, and preserve the untouched held-out set.
