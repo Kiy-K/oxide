@@ -1,0 +1,59 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6WN1MBEJTV9CEQWT26NPER8",
+  "session_id": "01a1afe7-574b-73a6-bef4-7cb782b2563e",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T04:00:45.928383124Z",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "save_step_count": 5,
+  "files_touched": [
+    ".github/workflows/claude-code-review.yml",
+    "AGENTS.md",
+    "README.md",
+    "docs/agents/workflow.md",
+    "docs/decisions.md",
+    "docs/platforms.md",
+    "docs/public-api.md",
+    "docs/review/evidence-and-benchmarks.md",
+    "fixtures/eval/agent-swe/README.md",
+    "fixtures/eval/contextbench-py/baseline-v22/README.md",
+    "fixtures/eval/contextbench-py/baseline-v22/manifest.json",
+    "fixtures/eval/contextbench-py/baseline-v22/metrics.json",
+    "fixtures/eval/contextbench-py/baseline-v22/results.json",
+    "mise.toml",
+    "scripts/agent_eval/report.py",
+    "scripts/agent_eval/run.py",
+    "scripts/smoke_dist.py",
+    "src/oxide/capture.py",
+    "src/oxide/cli.py",
+    "src/oxide/core/retrieval.py",
+    "tests/python/contextbench.py",
+    "tests/python/test_agent_eval.py",
+    "tests/python/test_capture.py",
+    "tests/python/test_cli.py",
+    "tests/python/test_jev.py",
+    "tests/python/test_tracking.py"
+  ],
+  "agent": "Oh My Pi",
+  "model": "gpt-6-luna",
+  "turn_id": "1309ef73de53",
+  "compact_transcript_start": 0,
+  "redaction": {
+    "replacements": 763,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 2,
+      "credentialed_uri": 0,
+      "entropy": 764,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 5
+  }
+}
