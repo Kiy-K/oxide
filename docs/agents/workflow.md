@@ -22,10 +22,9 @@ Tiers combine by maximum: unclassified paths default to tier 1; Markdown paths a
 | 1 | Tests, ordinary source/configuration paths, and unknown paths | Tier 0 plus an independent zero-context diff review against the printed `docs/review/` rubrics |
 | 2 | Public API, capture/storage/core policy, frozen evaluation fixtures, test harness, dependencies, CI/agent configuration, review classifier and architecture authorities | Tier 1 plus a short intent spec in `docs/superpowers/specs/`, reviewed by a zero-context agent before implementation for features/behavior changes. Bug fixes restoring documented behavior do not need a new spec. |
 
-`claude-code-review.yml` is restricted to `pull_request_target`. It checks out only the trusted base commit, fetches the event's exact PR head as Git data, and materializes the immutable diff; it never executes PR code.
-Tiers 1–2 fail closed on classification, review, structured output, or BLOCKER/MAJOR findings. Tier 2 feature/behavior PRs also block on a missing or inadequate intent spec.
-Fork reviews use non-write-user mode with best-effort secret scrubbing and comment-only tools; prompt-injection risk is reduced, not eliminated. Classification uses the base branch's copy and defaults to tier 2 during first rollout if the classifier is absent.
-CI runs `mise run verify` on every PR. Keep `Verify` required during rollout; after this workflow is deployed and its check succeeds, also require `Risk-tiered review` so setup cannot strand merges. Agents retain autonomous implementation and commits; no per-change human approval is added.
+Cursor reviews pull requests. There is no Claude Code review check in CI.
+`mise run tier` is local guidance before commit; it is not a GitHub gate.
+CI runs `mise run verify` on every PR. `Verify` is the required status check. Agents retain autonomous implementation and commits; no per-change human approval is added.
 
 ## Commands
 
