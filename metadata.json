@@ -17,16 +17,16 @@
     }
   ],
   "redaction": {
-    "replacements": 204,
+    "replacements": 227,
     "layers": {
       "betterleaks": 2,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 4,
       "credentialed_uri": 0,
-      "entropy": 187,
+      "entropy": 205,
       "key_context": 0,
-      "provider_token": 44,
+      "provider_token": 54,
       "shell_stdin": 0
     }
   }
