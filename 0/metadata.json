@@ -13,16 +13,16 @@
   "turn_id": "22efcc2353a8",
   "checkpoint_transcript_start": 757,
   "transcript_lines_at_start": 757,
-  "compact_transcript_start": 206,
+  "compact_transcript_start": 205,
   "redaction": {
-    "replacements": 254,
+    "replacements": 256,
     "layers": {
       "betterleaks": 2,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 4,
       "credentialed_uri": 0,
-      "entropy": 479,
+      "entropy": 481,
       "key_context": 0,
       "provider_token": 56,
       "shell_stdin": 0
