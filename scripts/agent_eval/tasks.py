@@ -121,16 +121,30 @@ def checkout(task: dict[str, Any], work: Path) -> None:
     """The base commit as a one-commit repository: no history, no remote, nothing to look up."""
     mirror = _mirror(task["repo"], task["base_commit"])
     work.mkdir(parents=True)
+
+    def wrap(argv: list[str]) -> list[str]:
+        return confine.confine(argv, writable=work, hide=build_hides(), net=False)
+
+    archive_argv = wrap(["git", "--git-dir", "/tmp/eval-mirror", "archive", task["base_commit"]])
+    at = archive_argv.index("/tmp") + 1
+    archive_argv[at:at] = ["--ro-bind", str(mirror), "/tmp/eval-mirror"]
     archive = subprocess.run(
-        ["git", "--git-dir", str(mirror), "archive", task["base_commit"]],
+        archive_argv,
+        cwd=work,
+        env=confine.clean_env({}),
         capture_output=True,
         check=True,
     )
-    subprocess.run(["tar", "-x", "-C", str(work)], input=archive.stdout, check=True)
+    subprocess.run(
+        wrap(["tar", "-x", "-C", str(work)]),
+        cwd=work,
+        env=confine.clean_env({}),
+        input=archive.stdout,
+        check=True,
+    )
     git = ["git", "-c", "user.name=eval", "-c", "user.email=eval@localhost"]
-    subprocess.run([*git, "init", "-q"], cwd=work, check=True)
-    subprocess.run([*git, "add", "-A"], cwd=work, check=True)
-    subprocess.run([*git, "commit", "-q", "-m", "base"], cwd=work, check=True)
+    for args in (["init", "-q"], ["add", "-A"], ["commit", "-q", "-m", "base"]):
+        subprocess.run(wrap([*git, *args]), cwd=work, env=confine.clean_env({}), check=True)
 
 
 def build_hides(root: Path = ROOT) -> list[Path]:
@@ -170,24 +184,25 @@ def environment(task: dict[str, Any], work: Path, venv: Path) -> dict[str, str]:
         *args: str,
         era: bool = True,
         extra: dict[str, str] | None = None,
-        wrap: Callable[[list[str]], list[str]] = lambda argv: argv,
     ) -> subprocess.CompletedProcess[str]:
         argv = ["uv", "pip", "install", "-q", "-p", str(venv / "bin" / "python")]
         date = ["--exclude-newer", task["created_at"]] if era and task["dated"] else []
-        return sh(*wrap([*argv, *date, *args]), env={**env, **(extra or {})})
+        return sh(
+            *confine_editable([*argv, *date, *args], work, venv),
+            env={**env, "UV_CACHE_DIR": "/tmp/uv-cache", **(extra or {})},
+        )
 
     # Dev recipe: setuptools stays below 70 because old pytest and plugins import pkg_resources.
     # A held-out recipe names its own setuptools, verified with that recipe.
-    # Only the editable install runs the task's build hooks, so only that command is confined.
-    install(setuptools, "wheel", "setuptools_scm", "flit_core", era=False)
-    install("pytest")
+    for packages in ((setuptools, "wheel", "setuptools_scm", "flit_core"), ("pytest",)):
+        done = install(*packages, era=packages == ("pytest",))
+        if done.returncode:
+            raise RuntimeError(f"install: {done.stderr[-400:]}")
     for spec in (f"{work}[{extra}]", str(work)) if extra else (str(work),):
         done = install(
             "--no-build-isolation",
             "-e",
             spec,
-            extra={"UV_CACHE_DIR": "/tmp/uv-cache"},
-            wrap=lambda argv: confine_editable(argv, work, venv),
         )
         if done.returncode == 0:
             return {**env, "PATH": f"{venv / 'bin'}{os.pathsep}{os.environ['PATH']}"}
@@ -201,11 +216,17 @@ def changed(patch: str) -> list[str]:
 def apply(
     work: Path,
     patch: str,
-    wrap: Callable[[list[str]], list[str]] = list,
+    wrap: Callable[[list[str]], list[str]] | None = None,
     scratch: Path | None = None,
 ) -> None:
-    """``git apply`` runs clean filters from the tree's own config: on an agent's tree pass a
-    confining ``wrap`` and a ``scratch`` dir that is visible inside it."""
+    """Apply a patch inside confinement, including any repository-configured Git filters."""
+    if wrap is None:
+
+        def run_confined(argv: list[str]) -> list[str]:
+            return confine.confine(argv, writable=work, hide=build_hides(), net=False)
+
+        wrap = run_confined
+        scratch = work
     with tempfile.NamedTemporaryFile(
         "w", suffix=".diff", encoding="utf-8", dir=scratch, delete=False
     ) as f:
@@ -227,7 +248,7 @@ def tests(
     env: dict[str, str],
     files: list[str],
     timeout: int = 900,
-    wrap: Callable[[list[str]], list[str]] = lambda argv: argv,
+    wrap: Callable[[list[str]], list[str]] | None = None,
     agent_tree: bool = False,
 ) -> dict[str, str]:
     """Outcome per reported node id (pytest ``-rA``). Raises ``TestRunError`` when pytest did not
@@ -236,6 +257,16 @@ def tests(
     not collected is absent, and that is a failure. ``wrap`` confines the command.
     ``agent_tree``: the tree is the agent's, so a hang or a broken pytest (bad conftest, addopts,
     INTERNALERROR) is its result, not infrastructure; only a failed bubblewrap launch raises."""
+    if wrap is None:
+
+        def run_confined(argv: list[str]) -> list[str]:
+            wrapped = confine.confine(argv, writable=work, hide=build_hides(), net=False)
+            if venv := env.get("VIRTUAL_ENV"):
+                at = wrapped.index("--die-with-parent")
+                wrapped[at:at] = ["--ro-bind", venv, venv]
+            return wrapped
+
+        wrap = run_confined
     argv = wrap(["pytest", "-rA", "-q", "-p", "no:cacheprovider", *files])
     try:
         done = sh(*argv, cwd=work, env=env, timeout=timeout)

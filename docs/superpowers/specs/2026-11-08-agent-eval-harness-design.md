@@ -18,16 +18,17 @@ scoring integrity are the requirements, not conveniences.
   bubblewrap: host mounted read-only, credential and runtime-socket paths hidden (`/run`, `/var/run`
   masked, name-service files re-bound), only the per-run work dir (and venv) writable. Missing
   bubblewrap is a hard error, never an unconfined fallback.
-- The agent receives a clean environment; credentials copied for the run are removed afterwards and
-  redacted (including nested JSON values) from retained traces. Run artifacts are written with
-  `O_EXCL | O_NOFOLLOW` after unlinking, so a planted symlink or hardlink is never followed.
+- The agent receives a clean environment; copied credentials are cleaned up after normal runs and
+  known literal values are redacted from event output. This does not prevent a network-enabled
+  agent from copying or transmitting credentials; retained traces must be treated as sensitive.
 - Scoring distinguishes agent results from infrastructure failures. On the agent's tree a hang,
   a broken collection or a broken `conftest.py` are unresolved results; only a failed bubblewrap
   launch raises `TestRunError` and is recorded as a harness error, excluded from both arms. Gold
   patch verification stays strict. A missing expected test id counts as failed.
 - `report` withholds a final verdict unless every planned task x arm x repetition recorded in
   `<results>.manifest.json` is scored; otherwise it prints `provisional` or `invalid`.
-- A per-run and total spend cap; resuming counts recorded spend.
+- A projected total token-spend threshold; resuming counts recorded spend. This is not a hard
+  provider-enforced budget or a per-run token cap.
 
 ## Non-goals
 

@@ -20,6 +20,11 @@ if SCRIPTS not in sys.path:
 tasks: ModuleType = importlib.import_module("tasks")
 
 
+@pytest.fixture(autouse=True)
+def require_sandbox(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(tasks.confine, "require", lambda: None)
+
+
 def task(**extra: Any) -> dict[str, Any]:
     return {
         "id": "psf__requests-1",
@@ -70,7 +75,51 @@ def test_the_editable_install_cannot_run_build_hooks_on_the_host(
     bound_work = ["--bind", str(Path("/w")), str(Path("/w"))]
     assert bound_work in [editable[i : i + 3] for i in range(len(editable) - 2)]
     assert str(tasks.ROOT / "fixtures" / "eval") in editable
-    assert all(argv[0] != "bwrap" for argv in commands if "-e" not in argv)
+    installs = [argv for argv in commands if "install" in argv]
+    assert all(argv[0] == "bwrap" for argv in installs)
+
+
+def test_verification_confines_patch_and_pytest(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    seen: list[tuple[list[str], dict[str, Any]]] = []
+
+    def fake_sh(*argv: str, **kwargs: Any) -> subprocess.CompletedProcess[str]:
+        seen.append((list(argv), kwargs))
+        return subprocess.CompletedProcess(argv, 0, "PASSED test_a.py::test_a\n", "")
+
+    monkeypatch.setattr(tasks, "sh", fake_sh)
+    monkeypatch.setattr(tasks.confine, "require", lambda: None)
+    work = tmp_path / "work"
+    work.mkdir()
+    tasks.apply(work, "patch")
+    assert tasks.tests(work, {}, ["test_a.py"]) == {"test_a.py::test_a": "PASSED"}
+    for argv, _ in seen:
+        assert argv[0] == "bwrap"
+        assert "--unshare-net" in argv
+        assert ["--bind", str(work), str(work)] in [argv[i : i + 3] for i in range(len(argv) - 2)]
+
+
+def test_checkout_git_commands_are_confined(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    seen: list[list[str]] = []
+    monkeypatch.setattr(tasks, "_mirror", lambda *_: tmp_path / "mirror")
+    monkeypatch.setattr(tasks.confine, "require", lambda: None)
+    monkeypatch.setattr(tasks, "build_hides", lambda: [])
+
+    def fake_run(argv: list[str], **kwargs: Any) -> subprocess.CompletedProcess[Any]:
+        seen.append(argv)
+        return subprocess.CompletedProcess(argv, 0, b"", b"")
+
+    monkeypatch.setattr(tasks.subprocess, "run", fake_run)
+    work = tmp_path / "work"
+    tasks.checkout(task(base_commit="abc"), work)
+    assert len(seen) == 5
+    assert all(argv[0] == "bwrap" and "--unshare-net" in argv for argv in seen)
+    assert ["--ro-bind", str(tmp_path / "mirror"), "/tmp/eval-mirror"] in [
+        seen[0][i : i + 3] for i in range(len(seen[0]) - 2)
+    ]
 
 
 def test_a_timeout_is_not_a_test_result(monkeypatch: pytest.MonkeyPatch) -> None:

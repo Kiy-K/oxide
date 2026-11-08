@@ -101,6 +101,13 @@ def test_an_error_inside_a_turn_that_completes_is_not_a_failure() -> None:
     assert codex.codex_agent_error(retried) is None
 
 
+def test_usage_completeness_requires_terminal_usage() -> None:
+    assert codex.codex_measure(OK_RUN)["usage_complete"] is True
+    assert codex.codex_measure('{"type":"thread.started"}')["usage_complete"] is False
+    assert codex.codex_measure('{"type":"turn.completed"}')["usage_complete"] is False
+    assert codex.codex_measure(OK_RUN + '\n{"type":"turn.failed"}')["usage_complete"] is False
+
+
 def test_the_arm_config_names_only_the_oxide_server_and_control_names_none() -> None:
     command = ["/venv/bin/python", "-m", "oxide", "mcp", "--repo", "/w", "--data-dir", "/d"]
     parsed = tomllib.loads(codex.codex_config(command, FTS))
@@ -125,6 +132,9 @@ def test_a_tool_call_from_another_server_fails_isolation() -> None:
     codex.codex_isolation("oxide", OK_RUN)
 
 
+POSIX = pytest.mark.skipif(sys.platform == "win32", reason="pinned directory descriptors are POSIX")
+
+
 def test_codex_takes_the_bare_openai_model_id_and_refuses_other_providers() -> None:
     assert codex.codex_model("openai/gpt-6-luna") == "gpt-6-luna"
     with pytest.raises(SystemExit, match="openai"):
@@ -133,6 +143,7 @@ def test_codex_takes_the_bare_openai_model_id_and_refuses_other_providers() -> N
         codex.codex_model("gpt-6-luna")
 
 
+@POSIX
 def test_the_copied_login_is_removed_after_the_run_even_when_it_fails(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -151,3 +162,100 @@ def test_the_copied_login_is_removed_after_the_run_even_when_it_fails(
         codex.codex_agent("openai/gpt-6-luna", "oxide", {"problem": "p"}, base, {}, 1, [])
     assert not (base / "codex" / "auth.json").exists()
     assert (base / "codex" / "config.toml").exists()
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="requires symlinks")
+def test_codex_cleanup_pins_login_when_parent_is_replaced(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    login = tmp_path / "login.json"
+    login.write_text('{"token": "secret-value"}', encoding="utf-8")
+    monkeypatch.setattr(codex, "CODEX_AUTH", login)
+    monkeypatch.setattr(run, "fts_location", lambda: FTS)
+    monkeypatch.setattr(run, "hidden", lambda: [])
+    monkeypatch.setattr(codex.confine, "confine", lambda argv, **_: argv)
+    base = tmp_path / "run"
+    moved = base / "moved"
+    victim = tmp_path / "victim"
+    victim.mkdir()
+    (victim / "auth.json").write_text("untouched", encoding="utf-8")
+
+    def launch(*_: object) -> tuple[str, str]:
+        (base / "codex").rename(moved)
+        (base / "codex").symlink_to(victim, target_is_directory=True)
+        return "ok", ""
+
+    monkeypatch.setattr(run, "launch", launch)
+    codex.codex_agent("openai/model", "control", {"problem": "p"}, base, {}, 1, [])
+    assert (victim / "auth.json").read_text() == "untouched"
+    assert not (moved / "auth.json").exists()
+
+
+@POSIX
+def test_codex_cleanup_does_not_truncate_replacement_hardlink(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    login = tmp_path / "login.json"
+    login.write_text('{"token": "secret-value"}', encoding="utf-8")
+    monkeypatch.setattr(codex, "CODEX_AUTH", login)
+    monkeypatch.setattr(run, "fts_location", lambda: FTS)
+    monkeypatch.setattr(run, "hidden", lambda: [])
+    monkeypatch.setattr(codex.confine, "confine", lambda argv, **_: argv)
+    base = tmp_path / "run"
+    victim = tmp_path / "victim"
+    victim.write_text("untouched", encoding="utf-8")
+    moved = base / "codex" / "moved.json"
+
+    def launch(*_: object) -> tuple[str, str]:
+        auth = base / "codex" / "auth.json"
+        auth.rename(moved)
+        auth.hardlink_to(victim)
+        return "ok", ""
+
+    monkeypatch.setattr(run, "launch", launch)
+    codex.codex_agent("openai/model", "control", {"problem": "p"}, base, {}, 1, [])
+    assert victim.read_text() == "untouched"
+    assert b"secret-value" not in moved.read_bytes()
+
+
+@POSIX
+def test_codex_removes_the_login_when_writing_it_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    login = tmp_path / "login.json"
+    login.write_text('{"token": "secret-value"}', encoding="utf-8")
+    monkeypatch.setattr(codex, "CODEX_AUTH", login)
+    monkeypatch.setattr(run, "fts_location", lambda: FTS)
+
+    def write_fails(*_: object, **__: object) -> None:
+        raise OSError("write failed")
+
+    monkeypatch.setattr(codex.os, "fdopen", write_fails)
+    base = tmp_path / "run"
+    with pytest.raises(OSError, match="write failed"):
+        codex.codex_agent("openai/model", "control", {"problem": "p"}, base, {}, 1, [])
+    assert not (base / "codex" / "auth.json").exists()
+
+
+@POSIX
+def test_a_planted_auth_link_is_refused_and_its_target_untouched(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    login = tmp_path / "login.json"
+    login.write_text('{"token": "secret-value"}', encoding="utf-8")
+    monkeypatch.setattr(codex, "CODEX_AUTH", login)
+    monkeypatch.setattr(run, "fts_location", lambda: FTS)
+    victim = tmp_path / "victim"
+    victim.write_text("untouched", encoding="utf-8")
+    real_mkdir = Path.mkdir
+
+    def mkdir_then_plant(self: Path, *args: object, **kwargs: object) -> None:
+        real_mkdir(self, *args, **kwargs)  # type: ignore[arg-type]
+        if self.name == "codex":
+            (self / "auth.json").symlink_to(victim)
+
+    monkeypatch.setattr(Path, "mkdir", mkdir_then_plant)
+    base = tmp_path / "run"
+    with pytest.raises(FileExistsError):
+        codex.codex_agent("openai/model", "control", {"problem": "p"}, base, {}, 1, [])
+    assert victim.read_text(encoding="utf-8") == "untouched"

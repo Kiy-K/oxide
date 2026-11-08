@@ -6,6 +6,7 @@ The task's editable project and tests are present; agent edits are discarded bef
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import os
 import random
@@ -31,6 +32,7 @@ import tasks
 from oxide.storage.fts import fts_location as fts_location
 
 USER_DB = Path.home() / ".local" / "share" / "opencode" / "opencode.db"
+_launch_state = threading.local()
 
 
 def git_common_dir(root: Path) -> Path:
@@ -97,37 +99,32 @@ def credential_values(db: Path) -> list[str]:
     return secrets
 
 
-def forget_credentials(db: Path) -> None:
-    """Traces are kept, so the run's copy of the provider key is removed once the agent ends.
-    VACUUM rewrites the file: a DELETE alone leaves the key bytes in free pages."""
-    if db.is_symlink():  # the agent planted it: opening it would rewrite the host's own database
-        db.unlink()
-        return
-    conn = sqlite3.connect(db, isolation_level=None)
-    try:
-        conn.execute("DELETE FROM credential")
-        conn.execute("VACUUM")
-    finally:
-        conn.close()
-
-
 def credentials(model: str, dest: Path) -> None:
     """Copy only the selected provider credential into isolated OpenCode data for this agent run."""
     db = dest / "opencode" / "opencode.db"
     db.parent.mkdir(parents=True)
-    with sqlite3.connect(f"file:{USER_DB}?mode=ro", uri=True) as user:
-        user.execute("VACUUM INTO ?", (str(db),))
-    copy = sqlite3.connect(db, isolation_level=None)
-    tables = copy.execute("SELECT name FROM sqlite_master WHERE type = 'table'").fetchall()
-    for (table,) in tables:
-        if table == "credential":
-            copy.execute("DELETE FROM credential WHERE integration_id != ?", (model.split("/")[0],))
-        elif table != "migration" and not table.startswith("sqlite_"):
-            copy.execute(f'DELETE FROM "{table}"')
-    if not copy.execute("SELECT count(*) FROM credential").fetchone()[0]:
-        raise SystemExit(f"no stored opencode credential for {model.split('/')[0]}")
-    copy.execute("VACUUM")
-    copy.close()
+    try:
+        with sqlite3.connect(f"file:{USER_DB}?mode=ro", uri=True) as user:
+            user.execute("VACUUM INTO ?", (str(db),))
+        copy = sqlite3.connect(db, isolation_level=None)
+        try:
+            tables = copy.execute("SELECT name FROM sqlite_master WHERE type = 'table'").fetchall()
+            for (table,) in tables:
+                if table == "credential":
+                    copy.execute(
+                        "DELETE FROM credential WHERE integration_id != ?", (model.split("/")[0],)
+                    )
+                elif table != "migration" and not table.startswith("sqlite_"):
+                    copy.execute(f'DELETE FROM "{table}"')
+            if not copy.execute("SELECT count(*) FROM credential").fetchone()[0]:
+                raise SystemExit(f"no stored opencode credential for {model.split('/')[0]}")
+            copy.execute("VACUUM")
+        finally:
+            copy.close()
+    except BaseException:
+        for suffix in ("", "-journal", "-wal", "-shm"):
+            Path(f"{db}{suffix}").unlink(missing_ok=True)
+        raise
 
 
 def agent(
@@ -142,7 +139,21 @@ def agent(
     work, home = base / "work", base / "config"
     prompt = arms.PROMPT.format(hint=arms.HINT[arm], problem=task["problem"].strip())
     db = base / "data" / "opencode" / "opencode.db"
-    try:  # the key must be forgotten even if a step before the launch fails
+    # Pin the original inode and directory before the agent can rename or replace either path.
+    try:
+        directory = os.open(db.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    except BaseException:
+        shutil.rmtree(db.parent)
+        raise
+    try:
+        fd = os.open(db.name, os.O_RDWR | os.O_NOFOLLOW, dir_fd=directory)
+    except BaseException:
+        try:
+            os.unlink(db.name, dir_fd=directory)
+        finally:
+            os.close(directory)
+        raise
+    try:
         secrets = credential_values(db)
         environment = confine.clean_env(
             {
@@ -170,7 +181,14 @@ def agent(
         wrapped = confine.confine(command, writable=base, hide=hidden(), net=True)
         status, raw = launch(wrapped, work, environment, timeout)
     finally:
-        forget_credentials(db)
+        try:
+            os.ftruncate(fd, 0)
+            for suffix in ("-journal", "-wal", "-shm"):
+                with contextlib.suppress(FileNotFoundError):
+                    os.unlink(db.name + suffix, dir_fd=directory)
+        finally:
+            os.close(fd)
+            os.close(directory)
     return status, confine.redact(raw, secrets)
 
 
@@ -190,12 +208,20 @@ def launch(
         errors="replace",
         start_new_session=True,
     )
+    _launch_state.started = True
+    _launch_state.raw = ""
     try:
         out, _ = process.communicate(timeout=timeout)
+        _launch_state.raw = out or ""
         return ("ok" if process.returncode == 0 else f"exit {process.returncode}"), out
-    except subprocess.TimeoutExpired:
+    except subprocess.TimeoutExpired as error:
+        if isinstance(error.output, bytes):
+            _launch_state.raw = error.output.decode("utf-8", errors="replace")
+        else:
+            _launch_state.raw = error.output or ""
         os.killpg(process.pid, signal.SIGKILL)
         out, _ = process.communicate()
+        _launch_state.raw = out or ""
         return "timeout", out or ""
 
 
@@ -214,6 +240,9 @@ def run_one(
         "split": args.split,
         "runner": args.runner,
     }
+    _launch_state.started = False
+    _launch_state.raw = ""
+    row["usage_unknown"] = False
     try:
         tasks.checkout(task, work)
         env = tasks.environment(task, work, base / "venv")
@@ -244,6 +273,10 @@ def run_one(
         row["seconds"] = round(time.monotonic() - started, 1)
         # before any trace write or failure below: a failed run still spent tokens
         row |= (codex.codex_measure if using_codex else events.measure)(raw)
+        reason = codex.codex_agent_error if using_codex else events.agent_error
+        row["usage_unknown"] = (
+            row["status"] != "ok" or not row.pop("usage_complete", False) or bool(reason(raw))
+        )
         row["spend"] = protocol.spend(row["tokens"])
         session.write_private(base / "events.jsonl", raw)
         row["events_sha256"] = protocol.sha256_bytes(raw.encode())
@@ -273,6 +306,13 @@ def run_one(
         session.write_private(base / "patch.diff", diff.stdout)
         row |= session.score(task, work, env, base)
     except (RuntimeError, subprocess.SubprocessError, OSError, sqlite3.Error) as error:
+        if _launch_state.started and "spend" not in row:
+            raw = _launch_state.raw
+            row |= (codex.codex_measure if using_codex else events.measure)(raw)
+            row.pop("usage_complete", None)
+            row["spend"] = protocol.spend(row["tokens"])
+        if _launch_state.started:
+            row["usage_unknown"] = True
         row |= {"status": "harness-error", "error": str(error)[-400:], "resolved": None}
     row["trace"] = str(base.relative_to(tasks.CACHE))  # events, patch, data: kept, never pruned
     shutil.rmtree(work, ignore_errors=True)
@@ -321,16 +361,33 @@ def run_all(args: argparse.Namespace) -> None:
     cap = args.max_tokens
     spend_seen = [protocol.row_spend(r) for r in existing if protocol.row_has_spend(r)]
     largest: int | None = max(spend_seen, default=None)
-    state = {"spent": protocol.spent(existing), "skipped": 0, "in_flight": 0}
+    state = {
+        "spent": protocol.spent(existing),
+        "skipped": 0,
+        "in_flight": 0,
+        "unknown": any(
+            r.get(
+                "usage_unknown",
+                r.get("status") != "ok" or not protocol.row_has_spend(r),
+            )
+            for r in existing
+        ),
+    }
 
     def work(job: tuple[dict[str, Any], str, int]) -> None:
         nonlocal largest
         with ready:  # a run starts only if the cap still holds with every run in flight
+            if cap is not None and state["unknown"]:
+                state["skipped"] += 1
+                return
             while not protocol.admit(state["spent"], state["in_flight"], largest, cap):
                 if state["in_flight"] == 0:  # nothing running can free budget: the cap is spent
                     state["skipped"] += 1
                     return
                 ready.wait()  # an in-flight run reports its spend; then the check repeats
+                if cap is not None and state["unknown"]:
+                    state["skipped"] += 1
+                    return
             state["in_flight"] += 1
         try:
             row = run_one(*job, args, root)
@@ -345,6 +402,7 @@ def run_all(args: argparse.Namespace) -> None:
             if "spend" in row:
                 state["spent"] += row["spend"]
                 largest = max(largest or 0, row["spend"])
+            state["unknown"] = state["unknown"] or row.get("usage_unknown", False)
             ready.notify_all()
         print(
             f"{row['task']} {row['arm']}#{row['rep']}: {row['status']} resolved={row['resolved']}"

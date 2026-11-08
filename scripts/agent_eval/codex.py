@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
+import os
 import shutil
 from pathlib import Path
 from typing import Any
@@ -79,14 +81,34 @@ def codex_agent(
     ]
     if not CODEX_AUTH.exists():
         raise SystemExit(f"no codex login at {CODEX_AUTH}: run `codex login`")
+    login = CODEX_AUTH.read_bytes()
     secrets = confine.json_secrets(CODEX_AUTH)  # the login's values, redacted from kept events
-    shutil.copy2(CODEX_AUTH, home / "auth.json")
-    (home / "auth.json").chmod(0o600)
+    directory = os.open(home, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    fd = None
     try:
+        # Exclusive no-follow create in the pinned directory: a planted link cannot redirect it.
+        fd = os.open(
+            "auth.json",
+            os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            0o600,
+            dir_fd=directory,
+        )
+        with os.fdopen(os.dup(fd), "wb") as file:
+            file.write(login)
         wrapped = confine.confine(argv, writable=base, hide=run.hidden(), net=True)
         status, raw = run.launch(wrapped, work, environment, timeout)
     finally:
-        (home / "auth.json").unlink(missing_ok=True)  # the login is never kept: traces are retained
+        try:
+            try:
+                if fd is not None:
+                    os.ftruncate(fd, 0)
+            finally:
+                with contextlib.suppress(FileNotFoundError):
+                    os.unlink("auth.json", dir_fd=directory)
+        finally:
+            if fd is not None:
+                os.close(fd)
+            os.close(directory)
     return status, confine.redact(raw, secrets)
 
 
@@ -97,7 +119,10 @@ def codex_measure(raw: str) -> dict[str, Any]:
     tokens = {"input": 0, "output": 0, "cache_read": 0, "cache_write": 0}
     calls: dict[str, int] = {}
     steps = 0
+    complete = False
     for event in events._jsonl(raw):
+        if event.get("type") in {"turn.started", "turn.failed"}:
+            complete = False
         if event.get("type") == "item.completed":
             item = event.get("item", {})
             kind = item.get("type")
@@ -107,12 +132,32 @@ def codex_measure(raw: str) -> dict[str, Any]:
             calls[str(name)] = calls.get(str(name), 0) + 1
         elif event.get("type") == "turn.completed":
             steps += 1
-            used = event.get("usage", {})
+            used = event.get("usage")
+            if not isinstance(used, dict):
+                used = {}
+            complete = all(
+                isinstance(used.get(key), int) and used[key] >= 0
+                for key in ("input_tokens", "output_tokens")
+            )
+            total = used.get("input_tokens", 0)
             cached = used.get("cached_input_tokens", 0)
-            tokens["input"] += used.get("input_tokens", 0) - cached
+            output = used.get("output_tokens", 0)
+            if not isinstance(total, int) or total < 0:
+                total = 0
+            if not isinstance(cached, int) or not 0 <= cached <= total:
+                complete = False
+                cached = 0
+            if not isinstance(output, int) or output < 0:
+                output = 0
+            tokens["input"] += total - cached
             tokens["cache_read"] += cached
-            tokens["output"] += used.get("output_tokens", 0)
-    return {"tokens": tokens, "steps": steps, "calls": calls}
+            tokens["output"] += output
+    return {
+        "tokens": tokens,
+        "steps": steps,
+        "calls": calls,
+        "usage_complete": complete and not events.incomplete_json(raw),
+    }
 
 
 def codex_agent_error(raw: str) -> str | None:

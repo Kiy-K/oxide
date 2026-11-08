@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import re
+import stat
 import subprocess
 from collections.abc import Callable
 from pathlib import Path
@@ -50,12 +51,29 @@ def confined(base: Path, net: bool) -> Callable[[list[str]], list[str]]:
     return wrap
 
 
+LOG_CAP = 8 << 20
+
+
+def log_text(path: Path) -> str:
+    """A log the agent could write, read on the host: a regular file only, bounded. A planted
+    symlink, FIFO or device reads as empty instead of hanging or exhausting the harness."""
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+    try:
+        fd = os.open(path, flags)
+    except OSError:
+        return ""
+    try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            return ""
+        with os.fdopen(os.dup(fd), "rb") as file:
+            return file.read(LOG_CAP).decode("utf-8", errors="replace")
+    finally:
+        os.close(fd)
+
+
 def isolation(arm: str, base: Path) -> None:
     """Reject runs that loaded MCPs other than the one explicitly configured for the arm."""
-    log = "\n".join(
-        p.read_text(encoding="utf-8", errors="replace")
-        for p in (base / "data" / "opencode" / "log").glob("*.log")
-    )
+    log = "\n".join(log_text(p) for p in sorted((base / "data" / "opencode" / "log").glob("*.log")))
     seen = set(re.findall(r'message="mcp connected" server=(\S+)', log))
     expected = {"oxide"} if arm in arms.OXIDE_ARMS else set()
     if seen != expected:
@@ -91,11 +109,11 @@ def connected(data: Path, arm: str) -> int:
     the tool with this count at 1 has ignored a connected tool, which is a different finding from
     one where the tool never reached the agent."""
     log = data / "opencode" / "log" / "opencode.log"
-    if arm not in arms.OXIDE_ARMS or not log.exists():
+    if arm not in arms.OXIDE_ARMS:
         return 0
     counts = [
         int(m.group(1))
-        for line in log.read_text(encoding="utf-8", errors="replace").splitlines()
+        for line in log_text(log).splitlines()
         if "mcp connected" in line and "server=oxide" in line
         if (m := re.search(r"tools=(\d+)", line))
     ]

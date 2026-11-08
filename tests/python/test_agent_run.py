@@ -106,6 +106,92 @@ def test_a_plain_credential_string_is_still_extracted(tmp_path: Path) -> None:
     assert key in run.credential_values(db)
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="requires symlinks")
+def test_agent_cleanup_pins_database_when_parent_is_replaced(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    base = tmp_path / "run"
+    db = base / "data" / "opencode" / "opencode.db"
+    db.parent.mkdir(parents=True)
+    with sqlite3.connect(db) as conn:
+        conn.execute("CREATE TABLE credential (value TEXT)")
+        conn.execute("INSERT INTO credential VALUES ('secret-value')")
+    victim = tmp_path / "victim"
+    victim.mkdir()
+    (victim / "opencode.db").write_text("untouched", encoding="utf-8")
+    moved = base / "moved"
+    monkeypatch.setattr(run, "hidden", lambda: [])
+    monkeypatch.setattr(run.confine, "confine", lambda argv, **_: argv)
+
+    def launch(*_: object) -> tuple[str, str]:
+        db.parent.rename(moved)
+        db.parent.symlink_to(victim, target_is_directory=True)
+        return "ok", ""
+
+    monkeypatch.setattr(run, "launch", launch)
+    run.agent("openai/model", "control", {"problem": "p"}, base, {}, 1)
+    assert (victim / "opencode.db").read_text() == "untouched"
+    assert b"secret-value" not in (moved / "opencode.db").read_bytes()
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="FIFOs and no-follow opens are POSIX")
+def test_a_log_the_agent_replaced_with_a_link_or_fifo_reads_as_empty(tmp_path: Path) -> None:
+    session = run.session
+    real = tmp_path / "real.log"
+    real.write_text("mcp connected", encoding="utf-8")
+    link = tmp_path / "link.log"
+    link.symlink_to(real)
+    fifo = tmp_path / "fifo.log"
+    os.mkfifo(fifo)
+    big = tmp_path / "big.log"
+    big.write_text("x" * (session.LOG_CAP + 10), encoding="utf-8")
+    assert session.log_text(real) == "mcp connected"
+    assert session.log_text(link) == ""
+    assert session.log_text(fifo) == ""  # would block a plain read forever
+    assert len(session.log_text(big)) == session.LOG_CAP
+    assert session.log_text(tmp_path / "absent.log") == ""
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="pinned directory descriptors are POSIX")
+def test_agent_cleanup_does_not_truncate_replacement_hardlink(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    base = tmp_path / "run"
+    db = base / "data" / "opencode" / "opencode.db"
+    db.parent.mkdir(parents=True)
+    with sqlite3.connect(db) as conn:
+        conn.execute("CREATE TABLE credential (value TEXT)")
+        conn.execute("INSERT INTO credential VALUES ('secret-value')")
+    victim = tmp_path / "victim"
+    victim.write_text("untouched", encoding="utf-8")
+    moved = db.with_name("moved.db")
+    monkeypatch.setattr(run, "hidden", lambda: [])
+    monkeypatch.setattr(run.confine, "confine", lambda argv, **_: argv)
+
+    def launch(*_: object) -> tuple[str, str]:
+        db.rename(moved)
+        os.link(victim, db)
+        return "ok", ""
+
+    monkeypatch.setattr(run, "launch", launch)
+    run.agent("openai/model", "control", {"problem": "p"}, base, {}, 1)
+    assert victim.read_text() == "untouched"
+    assert b"secret-value" not in moved.read_bytes()
+
+
+def test_credentials_removes_partial_copy_on_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = tmp_path / "source.db"
+    with sqlite3.connect(source) as conn:
+        conn.execute("CREATE TABLE credential (integration_id TEXT, value TEXT)")
+        conn.execute("INSERT INTO credential VALUES ('other', 'secret-value')")
+    monkeypatch.setattr(run, "USER_DB", source)
+    with pytest.raises(SystemExit, match="no stored opencode credential"):
+        run.credentials("openai/model", tmp_path / "data")
+    assert not (tmp_path / "data" / "opencode" / "opencode.db").exists()
+
+
 def test_git_on_agent_tree_is_confined(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     seen: dict[str, Any] = {}
     ran: tuple[str, ...] = ()
@@ -298,7 +384,7 @@ def test_a_planted_clean_filter_does_not_run_on_the_host_when_the_test_patch_is_
             subprocess.run(["git", *argv], cwd=work, check=True, env=env)
         (work / ".gitattributes").write_text("* filter=plant\n", encoding="utf-8")
         (work / "f.txt").write_text("x\n", encoding="utf-8")
-        tasks.apply(work, patch)  # control: unconfined, the filter runs on the host
+        tasks.apply(work, patch, wrap=list, scratch=base)  # unconfined control
         assert marker.exists()
         marker.unlink()
         (work / "f.txt").write_text("x\n", encoding="utf-8")
