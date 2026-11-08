@@ -311,8 +311,7 @@ def run_one(
             row |= (codex.codex_measure if using_codex else events.measure)(raw)
             row.pop("usage_complete", None)
             row["spend"] = protocol.spend(row["tokens"])
-        if _launch_state.started:
-            row["usage_unknown"] = True
+            row["usage_unknown"] = True  # cut off before its usage was measured
         row |= {"status": "harness-error", "error": str(error)[-400:], "resolved": None}
     row["trace"] = str(base.relative_to(tasks.CACHE))  # events, patch, data: kept, never pruned
     shutil.rmtree(work, ignore_errors=True)

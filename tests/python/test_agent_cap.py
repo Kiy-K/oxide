@@ -131,7 +131,7 @@ def test_prelaunch_error_does_not_block_cap(
     assert len(rows(out)) == 2
 
 
-@pytest.mark.parametrize("failure", ["cleanup", "timeout"])
+@pytest.mark.parametrize("failure", ["cleanup", "timeout", "score"])
 def test_incomplete_run_keeps_observed_spend(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str
 ) -> None:
@@ -151,7 +151,7 @@ def test_incomplete_run_keeps_observed_spend(
         run._launch_state.raw = raw
         if failure == "cleanup":
             raise OSError("cleanup failed")
-        return "timeout", raw
+        return ("ok" if failure == "score" else "timeout"), raw
 
     monkeypatch.setattr(run, "agent", agent)
     monkeypatch.setattr(run.session, "write_private", lambda *args: None)
@@ -160,11 +160,17 @@ def test_incomplete_run_keeps_observed_spend(
     monkeypatch.setattr(
         run.session, "git_on_agent", lambda *args, **kwargs: SimpleNamespace(stdout="")
     )
-    monkeypatch.setattr(run.session, "score", lambda *args: {"resolved": False})
+
+    def score(*args: Any) -> dict[str, Any]:
+        if failure == "score":
+            raise RuntimeError("patch: does not apply")
+        return {"resolved": False}
+
+    monkeypatch.setattr(run.session, "score", score)
     arguments = argparse.Namespace(
         runner="opencode", model="m", split="dev", base_src=None, timeout=1
     )
     row = run.run_one({"id": "t", "problem": "p"}, "control", 0, arguments, tmp_path)
     assert row["spend"] == 10
-    assert row["usage_unknown"] is True
+    assert row["usage_unknown"] is (failure != "score")  # scoring runs after usage is known
     assert row["status"] == ("timeout" if failure == "timeout" else "harness-error")

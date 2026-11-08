@@ -134,8 +134,9 @@ def test_agent_cleanup_pins_database_when_parent_is_replaced(
     assert b"secret-value" not in (moved / "opencode.db").read_bytes()
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="FIFOs and no-follow opens are POSIX")
 def test_a_log_the_agent_replaced_with_a_link_or_fifo_reads_as_empty(tmp_path: Path) -> None:
+    if sys.platform == "win32":  # a statement, not a mark: mypy then skips os.mkfifo on Windows
+        pytest.skip("FIFOs and no-follow opens are POSIX")
     session = run.session
     real = tmp_path / "real.log"
     real.write_text("mcp connected", encoding="utf-8")

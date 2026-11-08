@@ -189,7 +189,8 @@ def environment(task: dict[str, Any], work: Path, venv: Path) -> dict[str, str]:
         date = ["--exclude-newer", task["created_at"]] if era and task["dated"] else []
         return sh(
             *confine_editable([*argv, *date, *args], work, venv),
-            env={**env, "UV_CACHE_DIR": "/tmp/uv-cache", **(extra or {})},
+            # in the writable venv bind: each confined call gets a fresh /tmp, the venv persists
+            env={**env, "UV_CACHE_DIR": str(venv / ".uv-cache"), **(extra or {})},
         )
 
     # Dev recipe: setuptools stays below 70 because old pytest and plugins import pkg_resources.
