@@ -18,7 +18,7 @@ def interval(diffs: list[float]) -> tuple[float, float]:
     return means[int(0.025 * BOOTSTRAP)], means[int(0.975 * BOOTSTRAP) - 1]
 
 
-def report(path: Path) -> None:
+def report(path: Path, test: str = "oxide", reference: str = "control") -> None:
     attempts = [json.loads(line) for line in path.read_text().splitlines()]
     rows = list({(r["task"], r["arm"], r["rep"]): r for r in attempts}.values())
     errors = [
@@ -28,8 +28,8 @@ def report(path: Path) -> None:
     rate: dict[str, dict[str, list[bool]]] = defaultdict(lambda: defaultdict(list))
     for r in scored:
         rate[r["task"]][r["arm"]].append(bool(r["resolved"]))
-    both = {t: arms for t, arms in rate.items() if arms["control"] and arms["oxide"]}
-    diffs = [statistics.fmean(a["oxide"]) - statistics.fmean(a["control"]) for a in both.values()]
+    both = {t: arms for t, arms in rate.items() if arms[test] and arms[reference]}
+    diffs = [statistics.fmean(a[test]) - statistics.fmean(a[reference]) for a in both.values()]
     print(f"{len(scored)} scored runs, {len(errors)} harness errors, {len(both)} paired tasks")
     if any("provider.auth:" in str(r.get("error", "")) for r in errors):
         print("verdict: invalid: provider authentication failure")
@@ -40,26 +40,26 @@ def report(path: Path) -> None:
     if not diffs:
         print("verdict: no paired tasks")
         return
-    for arm in ("control", "oxide"):
+    for arm in (reference, test):
         runs = [r for r in scored if r["arm"] == arm]
         print(
-            f"{arm:8} resolved {sum(r['resolved'] for r in runs)}/{len(runs)}"
+            f"{arm:12} resolved {sum(r['resolved'] for r in runs)}/{len(runs)}"
             f"  median seconds {statistics.median(r['seconds'] for r in runs):.0f}"
             f"  median output tokens {statistics.median(r['tokens']['output'] for r in runs):.0f}"
             f"  median steps {statistics.median(r['steps'] for r in runs):.0f}"
         )
-    oxide_runs = [r for r in scored if r["arm"] == "oxide"]
-    used = sum(any(k.startswith("oxide") for k in r["calls"]) for r in oxide_runs)
+    test_runs = [r for r in scored if r["arm"] == test]
+    used = sum(any(k.startswith("oxide") for k in r["calls"]) for r in test_runs)
     print(
-        f"oxide tool used in {used}/{len(oxide_runs)} oxide runs; "
-        f"median index {statistics.median(r.get('index_seconds', 0) for r in oxide_runs):.1f} s"
+        f"oxide tool used in {used}/{len(test_runs)} {test} runs; "
+        f"median index {statistics.median(r.get('index_seconds', 0) for r in test_runs):.1f} s"
     )
     low, high = interval(diffs)
     better, worse = sum(d > 0 for d in diffs), sum(d < 0 for d in diffs)
     print(
-        f"paired resolve-rate difference (oxide - control): {statistics.fmean(diffs):+.3f}"
+        f"paired resolve-rate difference ({test} - {reference}): {statistics.fmean(diffs):+.3f}"
         f"  95% CI [{low:+.3f}, {high:+.3f}]  tasks better/worse/tied "
         f"{better}/{worse}/{len(diffs) - better - worse}"
     )
-    verdict = "OXIDE improves task success" if low > 0 else "no demonstrated improvement"
+    verdict = f"{test} improves task success" if low > 0 else "no demonstrated improvement"
     print("verdict:", verdict)

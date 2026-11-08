@@ -18,9 +18,12 @@ import shutil
 import subprocess
 import tempfile
 import threading
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
+
+import confine
 
 ROOT = Path(__file__).resolve().parents[2]
 # Dev: the dataset-pinned tasks every run to date has used (spent, not held-out).
@@ -66,7 +69,7 @@ def sh(
     return subprocess.run(
         [str(a) for a in argv],
         cwd=cwd,
-        env={**os.environ, **(env or {})},
+        env={**confine.clean_env({}), **(env or {})},
         capture_output=True,
         text=True,
         encoding="utf-8",
@@ -166,9 +169,16 @@ def apply(work: Path, patch: str) -> None:
         raise RuntimeError(f"patch: {done.stderr[-400:]}")
 
 
-def tests(work: Path, env: dict[str, str], files: list[str], timeout: int = 900) -> dict[str, str]:
-    """Outcome per node id of the given test files (pytest ``-rA`` summary)."""
-    argv = ["pytest", "-rA", "-q", "-p", "no:cacheprovider", *files]
+def tests(
+    work: Path,
+    env: dict[str, str],
+    files: list[str],
+    timeout: int = 900,
+    wrap: Callable[[list[str]], list[str]] = lambda argv: argv,
+) -> dict[str, str]:
+    """Outcome per node id of the given test files (pytest ``-rA`` summary). ``wrap`` confines
+    the command: agent-written ``conftest.py`` and test files execute here."""
+    argv = wrap(["pytest", "-rA", "-q", "-p", "no:cacheprovider", *files])
     try:
         done = sh(*argv, cwd=work, env=env, timeout=timeout)
     except subprocess.TimeoutExpired:

@@ -33,6 +33,9 @@ def args(out: Path, cap: int | None) -> argparse.Namespace:
         model="m",
         timeout=1,
         final=False,
+        arms=list(run.ARMS),
+        base_src=None,
+        runner="opencode",
     )
 
 

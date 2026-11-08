@@ -31,11 +31,14 @@ def main() -> None:
     verify.add_argument("--jobs", type=int, default=4)
     verify.add_argument("--only", action="append", default=[], help="instance id (repeatable)")
     go = commands.add_parser("run", help="run every task in every arm")
-    go.add_argument("--model", required=True, help="opencode provider/model")
+    go.add_argument("--model", required=True, help="provider/model, e.g. openai/gpt-6-luna")
+    go.add_argument("--runner", choices=run.RUNNERS, default="opencode", help="agent CLI to drive")
     go.add_argument("--tasks", type=int, default=20, help="first N tasks in the predeclared order")
     go.add_argument("--reps", type=int, default=3)
     go.add_argument("--jobs", type=int, default=4)
     go.add_argument("--timeout", type=int, default=1200, help="seconds per agent run")
+    go.add_argument("--arms", nargs="+", choices=run.ARM_NAMES, default=list(run.ARMS))
+    go.add_argument("--base-src", type=Path, default=None, help="oxide-base: snapshot of src/oxide")
     go.add_argument("--out", type=Path, default=None)
     go.add_argument("--only", action="append", default=[], help="instance id (repeatable)")
     go.add_argument("--split", choices=("dev", "heldout"), default="dev")
@@ -45,8 +48,11 @@ def main() -> None:
     go.add_argument("--final", action="store_true", help="open a held-out set: one look per set")
     summary = commands.add_parser("report", help="paired comparison of a results file")
     summary.add_argument("results", type=Path)
+    summary.add_argument("--test", default="oxide", choices=run.ARM_NAMES)
+    summary.add_argument("--reference", default="control", choices=run.ARM_NAMES)
     diag = commands.add_parser("diagnose", help="classify OXIDE-arm runs from retained traces")
     diag.add_argument("results", type=Path)
+    diag.add_argument("--arm", default="oxide", choices=run.ARM_NAMES)
     args = parser.parse_args()
     if args.command == "fetch":
         tasks.fetch(args.parquet, args.out)
@@ -55,9 +61,9 @@ def main() -> None:
     elif args.command == "run":
         run.run_all(args)
     elif args.command == "report":
-        report.report(args.results)
+        report.report(args.results, args.test, args.reference)
     else:
-        print(diagnose.diagnose(args.results))
+        print(diagnose.diagnose(args.results, args.arm))
 
 
 if __name__ == "__main__":

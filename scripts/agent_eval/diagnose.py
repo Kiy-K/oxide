@@ -49,6 +49,17 @@ def calls_of(events: str) -> list[dict[str, Any]]:
                     "output": str(state.get("output", "")),
                 }
             )
+        elif event.get("type") == "item.completed" and event["item"].get("type") == "mcp_tool_call":
+            # Codex: MCP calls only. Its shell calls are not mapped to the builtin "read" class.
+            item = event["item"]
+            content = (item.get("result") or {}).get("content") or []
+            calls.append(
+                {
+                    "tool": item.get("tool", "?"),
+                    "input": item.get("arguments") or {},
+                    "output": "".join(str(part.get("text", "")) for part in content),
+                }
+            )
     return calls
 
 
@@ -90,7 +101,7 @@ def classify(calls: list[dict[str, Any]], gold: set[str], connected: int) -> str
 
 def trace_dir(row: dict[str, Any]) -> Path:
     if "trace" in row:
-        return tasks.CACHE / row["trace"]
+        return tasks.CACHE / str(row["trace"])
     key = f"{row['task']}.{row['arm']}.{row['rep']}"
     roots = sorted(
         (d for d in (tasks.CACHE / "runs").iterdir() if (d / key / "events.jsonl").exists()),
@@ -101,7 +112,7 @@ def trace_dir(row: dict[str, Any]) -> Path:
     return roots[-1] / key
 
 
-def diagnose(results: Path) -> str:
+def diagnose(results: Path, arm: str = "oxide") -> str:
     rows = [json.loads(line) for line in results.read_text(encoding="utf-8").splitlines()]
     latest: dict[tuple[str, str, int], dict[str, Any]] = {}
     for row in rows:
@@ -114,11 +125,15 @@ def diagnose(results: Path) -> str:
     reasons: collections.Counter[str] = collections.Counter()
     calls_per_run: list[int] = []
     control = [r for r in scored if r["arm"] == "control"]
-    for row in (r for r in scored if r["arm"] == "oxide"):
+    for row in (r for r in scored if r["arm"] == arm):
         base = trace_dir(row)
         calls = calls_of((base / "events.jsonl").read_text(encoding="utf-8"))
         task = by_split[row.get("split", "dev")][row["task"]]
-        cls = classify(calls, gold_paths(task["gold_patch"]), run.connected(base / "data", "oxide"))
+        cls = classify(
+            calls,
+            gold_paths(task["gold_patch"]),
+            row.get("oxide_tools_connected", run.connected(base / "data", arm)),
+        )
         counts[cls] += 1
         resolved[cls] += bool(row["resolved"])
         oxide_outputs = [c["output"] for c in calls if c["tool"].startswith("oxide")]
@@ -127,7 +142,7 @@ def diagnose(results: Path) -> str:
             reasons.update(degraded(output))
     lines = [
         f"control resolved {sum(bool(r['resolved']) for r in control)}/{len(control)}",
-        f"oxide arm: {sum(r['arm'] == 'oxide' for r in scored)} scored latest attempts",
+        f"{arm} arm: {sum(r['arm'] == arm for r in scored)} scored latest attempts",
         "",
         "| class | runs | resolved |",
         "|---|---:|---:|",

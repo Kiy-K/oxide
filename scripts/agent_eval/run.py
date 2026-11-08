@@ -17,10 +17,12 @@ import subprocess
 import sys
 import threading
 import time
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
+import confine
 import protocol
 import tasks
 
@@ -28,8 +30,15 @@ from oxide.storage.fts import fts_location
 
 OPENCODE = Path(shutil.which("opencode") or "opencode").resolve()
 USER_DB = Path.home() / ".local" / "share" / "opencode" / "opencode.db"
+# Codex runs use the ChatGPT login in CODEX_HOME/auth.json, copied into each run's isolated home.
+CODEX = Path(shutil.which("codex") or "codex")
+CODEX_AUTH = Path.home() / ".codex" / "auth.json"
+RUNNERS = ("opencode", "codex")
 
 ARMS = ("control", "oxide")
+# oxide-base: the oxide arm with the tool description of a --base-src snapshot (an A/B control).
+ARM_NAMES = (*ARMS, "oxide-base")
+OXIDE_ARMS = ("oxide", "oxide-base")
 PROMPT = """You are in a Python repository at the current directory. Resolve the issue below by \
 editing the source code in place. Do not edit or add tests: the maintainers' tests are hidden. \
 A virtual environment with the project installed (editable) and pytest is active, so you can \
@@ -38,32 +47,68 @@ run code and the existing tests. Stop when the fix is complete.{hint}
 <issue>
 {problem}
 </issue>"""
-HINT = {
-    "control": "",
-    "oxide": "\nAn OXIDE code-search tool is available: mode `search` lists the code locations "
-    "for a query, mode `context` returns their source.",
-}
+OXIDE_HINT = (
+    "\nAn OXIDE code-search tool is available: mode `search` lists the code locations "
+    "for a query, mode `context` returns their source."
+)
+HINT = {"control": "", "oxide": OXIDE_HINT, "oxide-base": OXIDE_HINT}
 # Equal in both arms: no web (the fixes are public), no skills, no questions to a human.
 DENY = {"webfetch": "deny", "websearch": "deny", "skill": "deny", "question": "deny"}
 
 
-def config(arm: str, work: Path, data: Path) -> dict[str, Any]:
+BOOT = (
+    "import runpy, sys; sys.path.insert(0, sys.argv[1]); "
+    "sys.argv = ['oxide', *sys.argv[2:]]; runpy.run_module('oxide', run_name='__main__')"
+)
+
+
+def oxide_command(arm: str, base_src: Path | None, *args: str | Path) -> list[str]:
+    """The ``oxide`` CLI as argv. The base arm imports the snapshot in ``base_src`` instead of
+    the checkout's package, so the two OXIDE arms differ only in that source."""
+    if arm == "oxide-base":
+        if base_src is None:
+            raise RuntimeError("oxide-base needs --base-src")
+        return [sys.executable, "-c", BOOT, str(base_src), *map(str, args)]
+    return [sys.executable, "-m", "oxide", *map(str, args)]
+
+
+def mcp_command(arm: str, work: Path, data: Path, base_src: Path | None = None) -> list[str]:
+    """The argv of this arm's OXIDE MCP server; no server for control."""
+    if arm not in OXIDE_ARMS:
+        return []
+    return oxide_command(arm, base_src, "mcp", "--repo", work, "--data-dir", data)
+
+
+def config(arm: str, work: Path, data: Path, base_src: Path | None = None) -> dict[str, Any]:
     cfg: dict[str, Any] = {"autoupdate": False, "permission": DENY}
-    if arm == "oxide":
-        command = [
-            sys.executable,
-            "-m",
-            "oxide",
-            "mcp",
-            "--repo",
-            str(work),
-            "--data-dir",
-            str(data),
-        ]
+    if command := mcp_command(arm, work, data, base_src):
         # codemode off: a direct tool call, not a script run through `execute`.
         server = {"type": "local", "command": command, "enabled": True, "codemode": False}
         cfg["mcp"] = {"oxide": server}
     return cfg
+
+
+def codex_config(command: list[str], fts: Path) -> str:
+    """Codex config for one arm: the OXIDE server alone, or no server for control. JSON strings
+    are valid TOML basic strings for these paths, so the arrays are written as JSON."""
+    if not command:
+        return ""
+    return (
+        "[mcp_servers.oxide]\n"
+        f"command = {json.dumps(command[0])}\n"
+        f"args = {json.dumps(command[1:])}\n"
+        f"env = {{ OXIDE_FTS_EXTENSION = {json.dumps(str(fts))} }}\n"
+    )
+
+
+def _jsonl(events: str) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for line in events.splitlines():
+        try:
+            out.append(json.loads(line))
+        except ValueError:
+            continue
+    return out
 
 
 def measure(events: str) -> dict[str, Any]:
@@ -101,10 +146,79 @@ def agent_error(events: str) -> str | None:
     return None
 
 
-def agent_failure(status: str, events: str) -> str | None:
-    if error := agent_error(events):
-        return error
+def agent_failure(
+    status: str, events: str, error: Callable[[str], str | None] = agent_error
+) -> str | None:
+    if message := error(events):
+        return message
     return f"agent exited with {status}" if status not in {"ok", "timeout"} else None
+
+
+def git_common_dir(root: Path) -> Path:
+    """The object store every checkout of this repository shares. A linked worktree's ``.git`` is
+    only a pointer to it, so hiding the checkout's own ``.git`` leaves the history readable."""
+    done = subprocess.run(
+        ["git", "-C", str(root), "rev-parse", "--path-format=absolute", "--git-common-dir"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return Path(done.stdout.strip())
+
+
+def checkouts(root: Path) -> list[Path]:
+    """Every checkout of this repository. Each one holds its own copy of the task files."""
+    done = subprocess.run(
+        ["git", "-C", str(root), "worktree", "list", "--porcelain"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return [
+        Path(line.removeprefix("worktree "))
+        for line in done.stdout.splitlines()
+        if line.startswith("worktree ")
+    ]
+
+
+def hidden(root: Path = tasks.ROOT) -> list[Path]:
+    """Paths no confined process may read: every run's trace and mirror (their patches and the
+    upstream fix commits), the answers in each checkout's task files, the repository's git history
+    (earlier answers and held-out results are in it), and the host's credential stores."""
+    trees = [root, *checkouts(root)]
+    return [
+        tasks.CACHE,
+        tasks.MIRRORS,
+        git_common_dir(root),
+        *(tree / "fixtures" / "eval" for tree in trees),
+        *confine.secret_hides(),
+    ]
+
+
+def confined(base: Path, net: bool) -> Callable[[list[str]], list[str]]:
+    return lambda argv: confine.confine(argv, writable=base, hide=hidden(), net=net)
+
+
+def credential_values(db: Path) -> list[str]:
+    """The provider key in a run's kept OpenCode copy, so its events can be redacted."""
+    with sqlite3.connect(db) as conn:
+        rows = conn.execute("SELECT * FROM credential").fetchall()
+    return [s for row in rows for value in row for s in confine.secret_values(value)]
+
+
+def forget_credentials(db: Path) -> None:
+    """Traces are kept, so the run's copy of the provider key is removed once the agent ends.
+    VACUUM rewrites the file: a DELETE alone leaves the key bytes in free pages."""
+    conn = sqlite3.connect(db, isolation_level=None)
+    try:
+        conn.execute("DELETE FROM credential")
+        conn.execute("VACUUM")
+    finally:
+        conn.close()
+
+
+# Git on an agent's tree: its hooks and fsmonitor program are the agent's, so they stay off.
+GIT_SAFE = ("-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null")
 
 
 def credentials(model: str, dest: Path) -> None:
@@ -137,17 +251,19 @@ def agent(
     """Runs opencode with isolated config/data and the selected provider credential."""
     work, home = base / "work", base / "config"
     prompt = PROMPT.format(hint=HINT[arm], problem=task["problem"].strip())
-    environment = {
-        **os.environ,
-        **env,
-        "HOME": str(base / "home"),
-        "PWD": str(work),
-        "XDG_CONFIG_HOME": str(home),
-        "XDG_DATA_HOME": str(base / "data"),
-        "XDG_CACHE_HOME": str(base / "home" / ".cache"),
-        "XDG_STATE_HOME": str(base / "home" / ".local" / "state"),
-        "OXIDE_FTS_EXTENSION": str(fts_location()),
-    }
+    secrets = credential_values(base / "data" / "opencode" / "opencode.db")
+    environment = confine.clean_env(
+        {
+            **env,
+            "HOME": str(base / "home"),
+            "PWD": str(work),
+            "XDG_CONFIG_HOME": str(home),
+            "XDG_DATA_HOME": str(base / "data"),
+            "XDG_CACHE_HOME": str(base / "home" / ".cache"),
+            "XDG_STATE_HOME": str(base / "home" / ".local" / "state"),
+            "OXIDE_FTS_EXTENSION": str(fts_location()),
+        }
+    )
     command = [
         str(OPENCODE),
         "run",
@@ -159,9 +275,21 @@ def agent(
         model,
         prompt,
     ]
+    wrapped = confine.confine(command, writable=base, hide=hidden(), net=True)
+    try:
+        status, events = launch(wrapped, work, environment, timeout)
+    finally:
+        forget_credentials(base / "data" / "opencode" / "opencode.db")
+    return status, confine.redact(events, secrets)
+
+
+def launch(
+    command: list[str], cwd: Path, environment: dict[str, str], timeout: int
+) -> tuple[str, str]:
+    """Runs one agent CLI to completion or timeout; a timeout kills its whole process group."""
     process = subprocess.Popen(
         command,
-        cwd=work,
+        cwd=cwd,
         env=environment,
         stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
@@ -180,6 +308,124 @@ def agent(
         return "timeout", out or ""
 
 
+def codex_model(model: str) -> str:
+    """Codex takes the bare model id under a ChatGPT login; only the openai provider is routed
+    through it, so any other provider is refused rather than silently remapped."""
+    provider, _, name = model.partition("/")
+    if provider != "openai" or not name:
+        raise SystemExit(f"--runner codex needs an openai/<model> id, got {model!r}")
+    return name
+
+
+def codex_agent(
+    model: str,
+    arm: str,
+    task: dict[str, Any],
+    base: Path,
+    env: dict[str, str],
+    timeout: int,
+    command: list[str],
+) -> tuple[str, str]:
+    """Runs ``codex exec`` with an isolated home: the ChatGPT login and this arm's MCP server only.
+    User config, user MCP servers and user instructions are not read."""
+    work, home = base / "work", base / "codex"
+    prompt = PROMPT.format(hint=HINT[arm], problem=task["problem"].strip())
+    home.mkdir(parents=True)
+    (home / "config.toml").write_text(codex_config(command, fts_location()), encoding="utf-8")
+    if not CODEX_AUTH.exists():
+        raise SystemExit(f"no codex login at {CODEX_AUTH}: run `codex login`")
+    shutil.copy2(CODEX_AUTH, home / "auth.json")
+    (home / "auth.json").chmod(0o600)
+    secrets = confine.json_secrets(CODEX_AUTH)  # the login's values, redacted from kept events
+    environment = confine.clean_env(
+        {
+            **env,
+            "CODEX_HOME": str(home),
+            "HOME": str(base / "home"),
+            "OXIDE_FTS_EXTENSION": str(fts_location()),
+        }
+    )
+    argv = [
+        str(CODEX),
+        "exec",
+        "--json",
+        "--ephemeral",
+        "--skip-git-repo-check",
+        "-m",
+        codex_model(model),
+        "-s",
+        "workspace-write",
+        "-C",
+        str(work),
+        prompt,
+    ]
+    try:
+        wrapped = confine.confine(argv, writable=base, hide=hidden(), net=True)
+        status, events = launch(wrapped, work, environment, timeout)
+    finally:
+        (home / "auth.json").unlink()  # the login is never kept: traces are retained
+    return status, confine.redact(events, secrets)
+
+
+def codex_measure(events: str) -> dict[str, Any]:
+    """Tokens, steps and tool calls from ``codex exec --json``. Codex counts cached input inside
+    input_tokens, so the uncached share is recorded as input and cache_read is not billed twice.
+    Output tokens already include reasoning."""
+    tokens = {"input": 0, "output": 0, "cache_read": 0, "cache_write": 0}
+    calls: dict[str, int] = {}
+    steps = 0
+    for event in _jsonl(events):
+        if event.get("type") == "item.completed":
+            item = event.get("item", {})
+            kind = item.get("type")
+            if kind in {"agent_message", "reasoning", "error"}:
+                continue
+            name = item.get("tool") if kind == "mcp_tool_call" else kind
+            calls[str(name)] = calls.get(str(name), 0) + 1
+        elif event.get("type") == "turn.completed":
+            steps += 1
+            used = event.get("usage", {})
+            cached = used.get("cached_input_tokens", 0)
+            tokens["input"] += used.get("input_tokens", 0) - cached
+            tokens["cache_read"] += cached
+            tokens["output"] += used.get("output_tokens", 0)
+    return {"tokens": tokens, "steps": steps, "calls": calls}
+
+
+def codex_agent_error(events: str) -> str | None:
+    """A failed turn, or an error with no completed turn. An error inside a turn that then
+    completed is a retry, not a failure."""
+    stream = _jsonl(events)
+    failed = [
+        e.get("error", {}).get("message", "turn failed")
+        for e in stream
+        if e.get("type") == "turn.failed"
+    ]
+    if failed:
+        return str(failed[-1])
+    if any(e.get("type") == "turn.completed" for e in stream):
+        return None
+    errors = [str(e.get("message", "agent error")) for e in stream if e.get("type") == "error"]
+    return errors[-1] if errors else None
+
+
+def codex_isolation(arm: str, events: str) -> None:
+    """Reject runs whose MCP tool calls came from a server other than the arm's own."""
+    servers = {
+        str(e["item"].get("server"))
+        for e in _jsonl(events)
+        if e.get("type") == "item.completed" and e.get("item", {}).get("type") == "mcp_tool_call"
+    }
+    if not servers <= ({"oxide"} if arm in OXIDE_ARMS else set()):
+        raise RuntimeError(f"isolation: unexpected MCP servers {sorted(servers)}")
+
+
+def codex_connected(arm: str) -> int:
+    """OXIDE tools configured for this arm. Codex's JSON stream does not log MCP startup, so this
+    is the configured count, not an observed one; the calls themselves are observed in events."""
+    return 1 if arm in OXIDE_ARMS else 0
+
+
 def isolation(arm: str, base: Path) -> None:
     """Reject runs that loaded MCPs other than the one explicitly configured for the arm."""
     log = "\n".join(
@@ -187,21 +433,22 @@ def isolation(arm: str, base: Path) -> None:
         for p in (base / "data" / "opencode" / "log").glob("*.log")
     )
     connected = set(re.findall(r'message="mcp connected" server=(\S+)', log))
-    expected = {"oxide"} if arm == "oxide" else set()
+    expected = {"oxide"} if arm in OXIDE_ARMS else set()
     if connected != expected:
         raise RuntimeError(f"isolation: unexpected MCP servers {sorted(connected)}")
 
 
-def score(task: dict[str, Any], work: Path, env: dict[str, str]) -> dict[str, Any]:
-    """Hidden tests on the agent's tree: its own test edits are reverted first."""
+def score(task: dict[str, Any], work: Path, env: dict[str, str], base: Path) -> dict[str, Any]:
+    """Hidden tests on the agent's tree: its own test edits are reverted first. The tree is the
+    agent's, so git runs with its hooks and fsmonitor off, and pytest runs confined."""
     for path in task["test_files"]:
-        tracked = tasks.sh("git", "cat-file", "-e", f"HEAD:{path}", cwd=work).returncode == 0
-        if tracked:
-            tasks.sh("git", "checkout", "HEAD", "--", path, cwd=work)
+        listed = tasks.sh("git", *GIT_SAFE, "cat-file", "-e", f"HEAD:{path}", cwd=work)
+        if listed.returncode == 0:
+            tasks.sh("git", *GIT_SAFE, "checkout", "HEAD", "--", path, cwd=work)
         else:
             (work / path).unlink(missing_ok=True)
     tasks.apply(work, task["test_patch"])
-    outcome = tasks.tests(work, env, task["test_files"])
+    outcome = tasks.tests(work, env, task["test_files"], wrap=confined(base, net=False))
     failed = [t for t in task["fail_to_pass"] if outcome.get(t) != "PASSED"]
     broken = [t for t in task["pass_to_pass"] if outcome.get(t) != "PASSED"]
     return {
@@ -216,7 +463,7 @@ def connected(data: Path, arm: str) -> int:
     the tool with this count at 1 has ignored a connected tool, which is a different finding from
     one where the tool never reached the agent."""
     log = data / "opencode" / "log" / "opencode.log"
-    if arm != "oxide" or not log.exists():
+    if arm not in OXIDE_ARMS or not log.exists():
         return 0
     counts = [
         int(m.group(1))
@@ -232,50 +479,75 @@ def run_one(
 ) -> dict[str, Any]:
     key = f"{task['id']}.{arm}.{rep}"
     base = root / key
-    work, data, home = base / "work", base / "oxide-data", base / "config" / "opencode"
+    work, data = base / "work", base / "oxide-data"
+    codex = args.runner == "codex"
     row: dict[str, Any] = {
         "task": task["id"],
         "arm": arm,
         "rep": rep,
         "model": args.model,
         "split": args.split,
+        "runner": args.runner,
     }
     try:
         tasks.checkout(task, work)
         env = tasks.environment(task, work, base / "venv")
-        home.mkdir(parents=True)
-        (home / "opencode.jsonc").write_text(json.dumps(config(arm, work, data)), encoding="utf-8")
-        if arm == "oxide":  # indexed before the clock starts; its cost is reported separately
+        if not codex:
+            home = base / "config" / "opencode"
+            home.mkdir(parents=True)
+            cfg = config(arm, work, data, args.base_src)
+            (home / "opencode.jsonc").write_text(json.dumps(cfg), encoding="utf-8")
+        if arm in OXIDE_ARMS:  # indexed before the clock starts; its cost is reported separately
             started = time.monotonic()
             indexed = tasks.sh(
-                sys.executable,
-                "-m",
-                "oxide",
-                "index",
-                work,
-                "--data-dir",
-                data,
+                *oxide_command(arm, args.base_src, "index", work, "--data-dir", data),
                 env={"OXIDE_DATA_DIR": str(data)},
             )
             row["index_seconds"] = round(time.monotonic() - started, 2)
             if indexed.returncode:
                 raise RuntimeError(f"oxide index: {indexed.stderr[-300:]}")
-        credentials(args.model, base / "data")
-        started = time.monotonic()
-        row["status"], events = agent(args.model, arm, task, base, env, args.timeout)
+        if codex:
+            started = time.monotonic()
+            command = mcp_command(arm, work, data, args.base_src)
+            row["status"], events = codex_agent(
+                args.model, arm, task, base, env, args.timeout, command
+            )
+        else:
+            credentials(args.model, base / "data")
+            started = time.monotonic()
+            row["status"], events = agent(args.model, arm, task, base, env, args.timeout)
         row["seconds"] = round(time.monotonic() - started, 1)
         (base / "events.jsonl").write_text(events, encoding="utf-8")
         row["events_sha256"] = protocol.sha256_bytes(events.encode())
-        row |= measure(events)  # before any failure below: a failed run still spent tokens
+        # before any failure below: a failed run still spent tokens
+        row |= (codex_measure if codex else measure)(events)
         row["spend"] = protocol.spend(row["tokens"])
-        row["oxide_tools_connected"] = connected(base / "data", arm)
-        if failure := agent_failure(row["status"], events):
+        row["oxide_tools_connected"] = (
+            codex_connected(arm) if codex else connected(base / "data", arm)
+        )
+        reason = codex_agent_error if codex else agent_error
+        if failure := agent_failure(row["status"], events, reason):
             raise RuntimeError(failure)
-        isolation(arm, base)
-        tasks.sh("git", "add", "-A", cwd=work)
-        diff = tasks.sh("git", "diff", "--cached", "HEAD", "--", ".", ":!*.egg-info", cwd=work)
+        if codex:
+            codex_isolation(arm, events)
+        else:
+            isolation(arm, base)
+        tasks.sh("git", *GIT_SAFE, "add", "-A", cwd=work)
+        diff = tasks.sh(
+            "git",
+            *GIT_SAFE,
+            "diff",
+            "--cached",
+            "--no-ext-diff",
+            "--no-textconv",
+            "HEAD",
+            "--",
+            ".",
+            ":!*.egg-info",
+            cwd=work,
+        )
         (base / "patch.diff").write_text(diff.stdout, encoding="utf-8")
-        row |= score(task, work, env)
+        row |= score(task, work, env, base)
     except (RuntimeError, subprocess.SubprocessError, OSError, sqlite3.Error) as error:
         row |= {"status": "harness-error", "error": str(error)[-400:], "resolved": None}
     row["trace"] = str(base.relative_to(tasks.CACHE))  # events, patch, data: kept, never pruned
@@ -284,8 +556,9 @@ def run_one(
     return row
 
 
-def opencode_version() -> str:
-    done = subprocess.run([str(OPENCODE), "--version"], capture_output=True, text=True, check=True)
+def runner_version(runner: str) -> str:
+    binary = CODEX if runner == "codex" else OPENCODE
+    done = subprocess.run([str(binary), "--version"], capture_output=True, text=True, check=True)
     return done.stdout.strip()
 
 
@@ -307,6 +580,14 @@ def source_sha256() -> str:
     return protocol.sha256_bytes(b"\0".join(parts))
 
 
+def tree_sha256(root: Path) -> str:
+    """Identity of a source tree: every Python file's relative path and bytes, in path order."""
+    parts: list[bytes] = []
+    for path in sorted(root.rglob("*.py")):
+        parts += [str(path.relative_to(root)).encode(), path.read_bytes()]
+    return protocol.sha256_bytes(b"\0".join(parts))
+
+
 def manifest(args: argparse.Namespace, chosen: list[dict[str, Any]]) -> dict[str, Any]:
     """Everything a result depends on. Spend cap and parallelism are not in it: they change how
     many runs happen, not what each run is."""
@@ -325,16 +606,32 @@ def manifest(args: argparse.Namespace, chosen: list[dict[str, Any]]) -> dict[str
         ),
         "arm_config_sha256": protocol.sha256_bytes(
             json.dumps(
-                {a: config(a, placeholder, placeholder) for a in ARMS}, sort_keys=True
+                {
+                    a: codex_config(
+                        mcp_command(a, placeholder, placeholder, placeholder), fts_location()
+                    )
+                    if args.runner == "codex"
+                    else config(a, placeholder, placeholder, placeholder)
+                    for a in ARM_NAMES
+                },
+                sort_keys=True,
             ).encode()
         ),
-        "deny": DENY,
-        "opencode": opencode_version(),
+        "arms": list(args.arms),
+        "base_src_sha256": tree_sha256(args.base_src) if args.base_src else None,
+        # OpenCode enforces DENY through its config; Codex does not read that config and runs
+        # under its workspace-write sandbox, so no DENY is recorded for it.
+        "deny": DENY if args.runner == "opencode" else None,
+        "runner": args.runner,
+        "runner_version": runner_version(args.runner),
         "harness_source_sha256": source_sha256(),
     }
 
 
 def run_all(args: argparse.Namespace) -> None:
+    confine.require()
+    if "oxide-base" in args.arms and args.base_src is None:
+        raise SystemExit("oxide-base needs --base-src: the snapshot whose tool description it runs")
     pool = sorted(tasks.load(args.split), key=tasks.order)
     chosen = [t for t in pool if not args.only or t["id"] in args.only][: args.tasks]
     root = tasks.CACHE / "runs" / time.strftime("%Y%m%dT%H%M%S")
@@ -358,39 +655,39 @@ def run_all(args: argparse.Namespace) -> None:
         (t, a, r)
         for r in range(args.reps)
         for t in chosen
-        for a in ARMS
+        for a in args.arms
         if (t["id"], a, r) not in done
     ]
     random.Random(0).shuffle(jobs)  # arms and tasks interleave: drift hits both alike
-    lock = threading.Lock()
+    ready = threading.Condition()  # guards the spend state; wakes waiting jobs as spend lands
+    cap = args.max_tokens
     spend_seen = [protocol.row_spend(r) for r in existing if protocol.row_has_spend(r)]
-    state = {
-        "spent": protocol.spent(existing),
-        "skipped": 0,
-        "in_flight": 0,
-        "largest": max(spend_seen, default=None),
-    }
+    largest: int | None = max(spend_seen, default=None)
+    state = {"spent": protocol.spent(existing), "skipped": 0, "in_flight": 0}
 
     def work(job: tuple[dict[str, Any], str, int]) -> None:
-        with lock:  # a run starts only if the cap still holds with every run in flight
-            if not protocol.admit(
-                state["spent"], state["in_flight"], state["largest"], args.max_tokens
-            ):
-                state["skipped"] += 1
-                return
+        nonlocal largest
+        with ready:  # a run starts only if the cap still holds with every run in flight
+            while not protocol.admit(state["spent"], state["in_flight"], largest, cap):
+                if state["in_flight"] == 0:  # nothing running can free budget: the cap is spent
+                    state["skipped"] += 1
+                    return
+                ready.wait()  # an in-flight run reports its spend; then the check repeats
             state["in_flight"] += 1
         try:
             row = run_one(*job, args, root)
         except BaseException:
-            with lock:
+            with ready:
                 state["in_flight"] -= 1
+                ready.notify_all()
             raise
-        with lock, out.open("a", encoding="utf-8") as file:
+        with ready, out.open("a", encoding="utf-8") as file:
             file.write(json.dumps(row) + "\n")
             state["in_flight"] -= 1  # same lock as the spend: the cap is never blind
             if "spend" in row:
                 state["spent"] += row["spend"]
-                state["largest"] = max(state["largest"] or 0, row["spend"])
+                largest = max(largest or 0, row["spend"])
+            ready.notify_all()
         print(
             f"{row['task']} {row['arm']}#{row['rep']}: {row['status']} resolved={row['resolved']}"
             f" spend={row.get('spend', 0)}",

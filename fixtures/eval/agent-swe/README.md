@@ -115,6 +115,76 @@ Changes made after the run 3 diagnosis, recorded before any new result is read. 
 The held-out set is not used for any change until the change is fixed and recorded. Results from
 the dev set are for diagnosis and must not be reported as held-out results.
 
+## Discoverability pilot (amendment, pre-registered)
+
+Changed: the `oxide_search` tool description and server instructions in
+`src/oxide/mcp_server.py`. Nothing else: model, prompt, tools, budget and task order are the
+same. Arms: `oxide` (the new description) and `oxide-base` (a snapshot of the previous source,
+`run --base-src`). Their tree hashes are in the manifest. Dev tasks only (`--split dev`, which
+is spent and used here only to choose and screen a change): the first 8 in the predeclared
+order, 2 repetitions, 1,200 s per run, `--max-tokens 6000000`.
+
+Decision rule, fixed before any result is read. Amended once, before any result: the first two
+attempts failed at authorization and produced no resolve data. The rule first written kept a
+change whose tool calls rose with flat success. That is the call-frequency target this pilot is
+meant to avoid, so the rule now keys on success alone.
+
+1. Invalid if the report's harness-error or provider-auth check fails.
+2. Primary measure: the paired resolve-rate difference `oxide - oxide-base` over paired tasks,
+   with its bootstrap interval.
+3. Keep the change only if the point estimate is above 0. A zero or negative estimate reverts
+   it, whatever the tool-call counts. Tool calls are reported to explain the result, not to
+   decide it.
+4. A kept change is not a success claim. Eight tasks and two repetitions cannot exclude a
+   large gain or loss. Success claims need the dev repeats or the one held-out look.
+
+Token spend is recorded, not gated. Traces are kept under the cache.
+
+Amendment 2, before any pilot result (approved by the user): the pinned OpenAI credential in
+OpenCode returns HTTP 400 for every model (`openai/gpt-5.6-luna` and `openai/gpt-6-luna` both
+fail on a one-word call). The pilot therefore runs through the Codex CLI (`codex exec --json`,
+ChatGPT login, isolated `CODEX_HOME` with only `auth.json` copied, `--ignore-user-config`,
+`--ephemeral`, workspace-write sandbox) on model `gpt-6-luna`. The decision rule above is
+unchanged. The 32 runs of attempt 2 are invalid (provider auth) and are not results. Run-3
+OpenCode numbers are not comparable to this pilot; the comparison is paired within Codex.
+For Codex, `oxide_tools_connected` is the configured count: Codex's JSON stream does not log MCP
+startup. Tool calls are observed. `deny` is not recorded for Codex: it is an OpenCode config
+policy, and Codex runs under its `workspace-write` sandbox instead. Each Codex copy of the login is
+deleted when its run ends, so kept traces do not hold it.
+
+Amendment 3, before any pilot result under this harness (recorded by the user's request to secure
+the harness): every agent process and the hidden-test pytest run are confined with bubblewrap
+(`scripts/agent_eval/confine.py`). The host is read-only; `fixtures/eval`, the task caches and
+bare mirrors (which hold upstream fix commits and other runs' patches), and the host's credential
+stores are hidden; only the run directory is writable. Agents inherit an allowlisted environment
+with no API keys. The kept OpenCode copy's credential row is deleted after each run and the
+credential is redacted from events. Git on the agent's tree runs with hooks and fsmonitor off.
+Both arms run under the same confinement, so the comparison stays paired. Runs before this
+amendment were not confined and are not comparable to pilot runs.
+
+Amendment 4, verified before any held-out look (credential isolation for Codex and OpenCode). Three
+gaps were found and fixed, each covered by a test in `tests/python/test_agent_confine.py`: (1)
+`forget_credentials` deleted the OpenCode credential row but left the key in SQLite free pages; it
+now runs `VACUUM`. (2) The hidden list held a checkout's own `.git`, but a linked worktree's `.git`
+is only a pointer, so the shared object store (dev answers, older held-out results) was readable. It
+now hides the common git directory and every checkout's `fixtures/eval`, which also covers the
+protocol worktree's copy of the held-out set. (3) The agent's tree is a standalone `git init` from
+the task archive, so hiding the shared store does not touch it.
+
+Verified without a model call: a confined process cannot read the host Codex login or OpenCode
+database, sees no credential-named environment variable, and cannot read the held-out copy in either
+checkout. The OpenCode copy holds 0 of 18 provider values after forgetting (2 of 18 before). Verified
+live, one Codex run (control arm, `openai/gpt-6-luna`): the agent's own shell reported both host
+stores denied and a credential-variable count of 0; its 5 login values were in 0 kept files and 0
+events; its login copy was removed after the run. Not verified live: OpenCode. Its provider returned
+HTTP 400 on the pinned OpenAI credential before any tool call (`provider.auth`), as Amendment 2
+recorded, so there is no OpenCode tool run to inspect.
+
+Accepted residuals: an agent can read its own login copy and has network access, so it could send
+its own login out; a network allowlist to the model host would close this and is not implemented.
+The hidden list is a denylist: the rest of the host is readable read-only, so an answer stored
+outside the listed paths would be readable to an agent.
+
 ## Commands
 
 See the docstring of `scripts/agent_eval/__main__.py`. Verdicts are one row in
