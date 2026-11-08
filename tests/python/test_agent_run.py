@@ -65,7 +65,10 @@ def test_base_src_rejects_a_directory_that_is_not_the_package(tmp_path: Path) ->
         arms.check_base_src(tmp_path)
 
 
-def test_the_manifest_builds_for_every_arm_without_a_base_snapshot() -> None:
+def test_the_manifest_builds_for_every_arm_without_a_base_snapshot(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(batch, "runner_version", lambda runner: "test")
     args = argparse.Namespace(
         split="dev",
         reps=1,
