@@ -67,6 +67,12 @@ sources-only `corpora/` only reproduces v1). Its scorer cases run in `verify`; t
 needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
 `verify`. Run it under the limits below before and after any TypeScript retrieval,
 resolution, routing or packing change.
+`uv run python scripts/agent_eval {verify,run,report,diagnose}` is the paired task-success eval (the
+same agent fixes real bugs with and without `oxide mcp`); protocol, pinned model and the
+pass/fail rule are in [`fixtures/eval/agent-swe/`](../../fixtures/eval/agent-swe/README.md). It
+makes billed model calls and needs `opencode` with an API-backed provider. `run` takes
+`--max-tokens` (a projected spend cap) and `--split dev|heldout`; a held-out set needs `--final`
+and is opened once. `diagnose RESULTS` classifies OXIDE-arm runs from their retained traces.
 Dependencies live in `pyproject.toml` with a committed `uv.lock`; add them
 with `uv add`, never by hand-editing the lock. Keep heavy local runs within
 `CPUQuota=200%`/`MemoryMax=3G` (`systemd-run --user --scope`).
