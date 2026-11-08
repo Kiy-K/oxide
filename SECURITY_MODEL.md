@@ -17,7 +17,7 @@ OXIDE is a local, single-user Python library, CLI, and MCP server. It captures a
 | **API/CLI** | `src/oxide/api.py`, `models.py`, `cli.py` | Public Python API and `oxide` CLI. |
 | **MCP server** | `src/oxide/mcp_server.py` | FastMCP `oxide_search` over stdio, or stateless HTTP restricted to loopback. Optional `--repo` allowlist. |
 | **JEV** | `src/oxide/jev.py` | Optional, per-repo consent (`judge.json` in the store). POSTs query + ≤64 capsules (≤1 KiB source each) to `api.typesafe.ai` with `TYPESAFE_API_KEY`, from a child process. |
-| **CI/Release** | `.github/workflows/*.yml`, `pyproject.toml`, `uv.lock`, `docs/fts-mirror` | CI, platforms matrix, PyPI trusted publishing (OIDC). Includes `claude.yml` (issue/comment `@claude` trigger) and `claude-code-review.yml` (`pull_request_target`, uses `CLAUDE_CODE_OAUTH_TOKEN`). |
+| **CI/Release** | `.github/workflows/*.yml`, `pyproject.toml`, `uv.lock`, `docs/fts-mirror` | CI, platforms matrix, PyPI trusted publishing (OIDC). Includes `claude.yml` (issue/comment `@claude` trigger, uses `CLAUDE_CODE_OAUTH_TOKEN`). PR review is Cursor's, not a repo workflow. |
 
 ## Trust boundaries and entry points
 
@@ -28,7 +28,7 @@ OXIDE is a local, single-user Python library, CLI, and MCP server. It captures a
 5. **Network → local machine.** `prepare_fts` downloads a native library from GitHub releases and checks its SHA-256 (`fts.py`). It is loaded with `LOAD EXTENSION` on every use, after a re-check (`fts_unavailable`).
 6. **Local machine → TypeSafe.** JEV upload only with stored consent bound to `MANIFEST_DIGEST`.
 7. **Data dir.** `$OXIDE_DATA_DIR` / XDG holds stores, generations, retained source blobs, `judge.json`, `store.lock` (0600). Contents are trusted only after digest checks (fail-closed on foreign or damaged files).
-8. **GitHub events → Actions.** Issue/PR comments, PRs from forks (`pull_request_target`), and tag pushes reach workflows holding `CLAUDE_CODE_OAUTH_TOKEN` and PyPI OIDC.
+8. **GitHub events → Actions.** Issue/PR comments and tag pushes reach workflows holding `CLAUDE_CODE_OAUTH_TOKEN` and PyPI OIDC. There is no `pull_request_target` review workflow.
 
 ## Assets
 
@@ -43,7 +43,7 @@ OXIDE is a local, single-user Python library, CLI, and MCP server. It captures a
 
 - **Malicious repository author.** Gets a user or agent to index a crafted repo: path traversal, symlink/TOCTOU races, parser crashes or resource exhaustion, query-literal injection via indexed terms, prompt injection through bundles.
 - **Untrusted MCP caller.** A local process, another local user, or a web page that reaches the loopback HTTP server. Also a compromised or prompt-injected agent on stdio requesting arbitrary `repository` paths or crafted hints.
-- **Supply-chain / CI attacker.** Fork-PR author or commenter targeting `pull_request_target`/`@claude` workflows. Network attacker on the FTS download. Dependency compromise via `uv.lock`. Tag/release tampering.
+- **Supply-chain / CI attacker.** Commenter targeting the `@claude` workflow. Network attacker on the FTS download. Dependency compromise via `uv.lock`. Tag/release tampering.
 
 ## Existing controls
 
@@ -54,7 +54,6 @@ OXIDE is a local, single-user Python library, CLI, and MCP server. It captures a
 - Storage: exclusive OS file lock (0600), sealed generations with digests, fail-closed on foreign or damaged files, retained source verified by digest.
 - JEV: off by default, not reachable from CLI/MCP, consent per repo bound to manifest digest, child process with minimal env and a 2 s kill deadline, key passed via stdin.
 - Release: PyPI trusted publishing (OIDC, no token), `contents: read` default, actions pinned by SHA in `release.yml`.
-- `claude-code-review.yml` (`pull_request_target`): the classifier runs `scripts/review_tier.py` from the trusted base. The PR head is fetched as Git data only, never checked out or executed, and SHA/repo inputs are regex-validated. Claude reads the diff artifact with Bash/Edit/Write disallowed, using `pull-requests: write`, `allowed_non_write_users: '*'` and `CLAUDE_CODE_OAUTH_TOKEN`. A fork PR's diff therefore becomes model input: prompt injection could influence inline comments and the `blocking_findings` review gate. Actions there are pinned by tag (`@v7`, `@v4`, `@v1`), not SHA.
 - `claude.yml`: triggered by any `@claude` issue/comment, including from non-collaborators, subject to the action's own permission checks. It has read-only repo permissions plus `id-token: write`.
 
 ## Out of scope / accepted risk
@@ -64,4 +63,4 @@ Owner: nothing is out of scope (2026-11-06).
 ## Open questions
 
 - Is `oxide mcp --http` expected to be used without `--repo` (any path on disk servable to any loopback caller)?
-- Are fork PRs and outside commenters expected to trigger the Claude workflows? `allowed_non_write_users: '*'` in the review workflow suggests yes, for review only.
+- Are outside commenters expected to trigger `claude.yml`? It runs on any `@claude` issue or comment, subject to the action's permission checks.
