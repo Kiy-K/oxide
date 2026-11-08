@@ -1,6 +1,6 @@
 # Risk-tiered review (Elephant-Goldfish adaptation) — design
 
-Date: 2026-11-05. Status: implemented design; the user selected trusted base-branch review for fork-safe CI.
+Date: 2026-11-05. Status: retired 2026-11-08. The Claude review workflow was removed; Cursor reviews PRs. `scripts/review_tier.py` remains local guidance only.
 
 ## Intent
 
