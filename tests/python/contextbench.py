@@ -365,6 +365,21 @@ def fetch(corpora: dict[str, dict[str, str]]) -> None:
         os.replace(partial, target)
 
 
+def check_pristine(name: str, root: Path) -> None:
+    """A fetched corpus holds only its pinned ``*.py`` files. Observed: a ``__pycache__`` and
+    ``.pytest_cache`` left in ``psf__requests`` changed its snapshot id and reordered lexical
+    hits for psf__requests-1142 while ``identity`` still matched, which is how baseline-v22 was
+    recorded. Fail instead of scoring a polluted corpus."""
+    stray = sorted(
+        p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file() and p.suffix != ".py"
+    )
+    if stray:
+        raise RuntimeError(
+            f"corpus {name} holds non-pinned files {stray[:3]}; "
+            f"delete {root} and run `mise run bootstrap`"
+        )
+
+
 def identity(root: Path) -> dict[str, Any]:
     """The corpus independent of OXIDE: its ``*.py`` files and their digests."""
     files = sorted(p for p in root.rglob("*.py") if p.is_file())
@@ -619,6 +634,8 @@ def evaluate(tasks: dict[str, Any], data: Path) -> dict[str, Any]:
         if not root.is_dir():
             raise FileNotFoundError(f"corpus {name} missing at {root}: run `mise run bootstrap`")
         with oxide.open_repository(root, data_dir=data) as repo:
+            if "url" in corpus:
+                check_pristine(name, root)
             report = repo.index()
             corpora[name] = {
                 **{k: v for k, v in corpus.items() if k != "path"},
