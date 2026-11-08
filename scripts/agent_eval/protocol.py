@@ -43,15 +43,16 @@ def spent(rows: list[dict[str, Any]]) -> int:
 def admit(spent_so_far: int, in_flight: int, observed_max: int | None, cap: int | None) -> bool:
     """Whether one more run may start under the token cap.
 
-    Before any run has reported its spend there is nothing to project from, so one run at a
-    time calibrates the cost. After that a run starts only if the spend so far plus every
-    in-flight run and this one, each at the largest observed run cost, still fits the cap.
-    A start-time check alone let a first wave of parallel runs overshoot a cap ~1.8x."""
+    Capped runs are serialized: an estimate cannot bound multiple simultaneous unknown costs.
+    One run calibrates the estimate; a later run starts only if its estimated cost fits.
+    Even serialized admission cannot enforce a hard limit on an individual run."""
     if cap is None:
         return True
+    if in_flight:
+        return False
     if observed_max is None:
-        return in_flight == 0 and spent_so_far < cap
-    return spent_so_far + (in_flight + 1) * observed_max <= cap
+        return spent_so_far < cap
+    return spent_so_far + observed_max <= cap
 
 
 def check_manifest(path: Path, manifest: dict[str, Any]) -> None:

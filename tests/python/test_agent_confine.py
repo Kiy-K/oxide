@@ -7,7 +7,6 @@ from __future__ import annotations
 import importlib
 import itertools
 import shutil
-import sqlite3
 import subprocess
 import sys
 import uuid
@@ -50,6 +49,7 @@ def test_the_agent_environment_holds_no_host_api_key(monkeypatch: pytest.MonkeyP
     assert env["HOME"] == "/h"
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="pinned directory descriptors are POSIX")
 def test_the_runner_passes_the_agent_only_the_clean_environment(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -66,9 +66,11 @@ def test_the_runner_passes_the_agent_only_the_clean_environment(
     monkeypatch.setattr(confine, "require", lambda: None)
     monkeypatch.setattr(run, "credentials", lambda *_: None)
     monkeypatch.setattr(run, "credential_values", lambda *_: [])
-    monkeypatch.setattr(run, "forget_credentials", lambda *_: None)
     base = tmp_path / "base"
     (base / "work").mkdir(parents=True)
+    db = base / "data" / "opencode" / "opencode.db"
+    db.parent.mkdir(parents=True)
+    db.touch()
     run.agent("openai/m", "control", {"problem": "p"}, base, {"PATH": "/venv/bin"}, 1)
     assert "ANTHROPIC_API_KEY" not in seen["environment"]
 
@@ -122,26 +124,6 @@ def test_a_path_outside_the_writable_dir_cannot_be_written() -> None:
 def test_redaction_removes_a_secret_from_kept_text() -> None:
     key = "sk-live-0123456789abcdef"
     assert confine.redact(f"auth {key} done", [key]) == "auth [redacted] done"
-
-
-def test_forgetting_credentials_empties_the_kept_copy(tmp_path: Path) -> None:
-    db = tmp_path / "opencode.db"
-    with sqlite3.connect(db) as conn:
-        conn.execute("CREATE TABLE credential (integration_id TEXT, value TEXT)")
-        conn.execute("INSERT INTO credential VALUES ('openai', 'sk-live-0123456789abcdef')")
-    run.forget_credentials(db)
-    with sqlite3.connect(db) as conn:
-        assert conn.execute("SELECT count(*) FROM credential").fetchone()[0] == 0
-
-
-def test_forgetting_credentials_leaves_no_key_bytes_in_the_kept_file(tmp_path: Path) -> None:
-    key = "sk-live-0123456789abcdef-tail"
-    db = tmp_path / "opencode.db"
-    with sqlite3.connect(db) as conn:
-        conn.execute("CREATE TABLE credential (integration_id TEXT, value TEXT)")
-        conn.execute("INSERT INTO credential VALUES ('openai', ?)", (key,))
-    run.forget_credentials(db)
-    assert key.encode() not in db.read_bytes()
 
 
 def test_the_hidden_paths_cover_git_history_and_every_checkout_task_files(tmp_path: Path) -> None:

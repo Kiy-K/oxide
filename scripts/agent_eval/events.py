@@ -17,27 +17,52 @@ def _jsonl(events: str) -> list[dict[str, Any]]:
     return out
 
 
+def incomplete_json(events: str) -> bool:
+    for line in events.splitlines():
+        if not line.lstrip().startswith("{"):
+            continue
+        try:
+            json.loads(line)
+        except ValueError:
+            return True
+    return False
+
+
 def measure(events: str) -> dict[str, Any]:
     """Tokens, steps and tool calls from opencode's JSON event stream."""
     tokens = {"input": 0, "output": 0, "cache_read": 0, "cache_write": 0}
     calls: dict[str, int] = {}
     steps = 0
+    complete = False
     for line in events.splitlines():
         try:
             event = json.loads(line)
         except ValueError:
             continue
         part = event.get("part", {})
+        if event.get("type") in {"step_start", "error"}:
+            complete = False
         if event.get("type") == "tool_use":
             calls[part.get("tool", "?")] = calls.get(part.get("tool", "?"), 0) + 1
+            complete = False
         elif event.get("type") == "step_finish":
             steps += 1
             used = part.get("tokens", {})
+            complete = (
+                part.get("reason") in {"stop", "end_turn"}
+                and isinstance(used, dict)
+                and all(isinstance(used.get(key), int) for key in ("input", "output"))
+            )
             tokens["input"] += used.get("input", 0)
             tokens["output"] += used.get("output", 0) + used.get("reasoning", 0)
             tokens["cache_read"] += used.get("cache", {}).get("read", 0)
             tokens["cache_write"] += used.get("cache", {}).get("write", 0)
-    return {"tokens": tokens, "steps": steps, "calls": calls}
+    return {
+        "tokens": tokens,
+        "steps": steps,
+        "calls": calls,
+        "usage_complete": complete and not incomplete_json(events),
+    }
 
 
 def agent_error(events: str) -> str | None:

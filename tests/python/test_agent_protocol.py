@@ -32,10 +32,10 @@ def test_the_first_wave_is_one_run_until_a_run_reports_its_cost() -> None:
     assert not protocol.admit(0, 1, None, 450_000)
 
 
-def test_a_run_is_admitted_only_if_every_run_in_flight_fits_at_the_largest_cost() -> None:
-    assert not protocol.admit(283_167, 0, 283_167, 450_000)  # a second 283k run would not fit
-    assert protocol.admit(0, 1, 200_000, 450_000)  # 0 + 2 * 200k fits
-    assert not protocol.admit(0, 2, 200_000, 450_000)  # 0 + 3 * 200k does not
+def test_capped_runs_are_serialized_and_must_fit_the_largest_observed_cost() -> None:
+    assert not protocol.admit(283_167, 0, 283_167, 450_000)
+    assert protocol.admit(0, 0, 200_000, 450_000)
+    assert not protocol.admit(0, 1, 200_000, 450_000)
 
 
 def test_a_row_without_spend_data_is_not_a_zero_cost_run() -> None:

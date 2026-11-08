@@ -95,12 +95,15 @@ Changes made after the run 3 diagnosis, recorded before any new result is read. 
 - **Build recipes.** A task may carry `build: {python, setuptools}`. Held-out tasks do, because
   the frozen REPOS recipe fails on current PRs. Their fail-to-pass tests were verified with that
   recipe, and the agent receives the same one. Dev tasks keep the REPOS recipe.
-- **Cost cap.** `--max-tokens N` caps billed-equivalent tokens (input, output, cache read and
-  cache write, unweighted). Admission is projected: until a run reports its cost only one run is
-  in flight; after that a run starts only if the spend so far plus every in-flight run at the
-  largest observed cost fits. Realized spend can still exceed the cap by one run's cost when a
-  run's cost is larger than any seen before. The first v2 pilot had no projection and spent 809k
-  against a 450k cap; that file is kept as evidence (`results/pilot-v2-smoke.jsonl`).
+- **Cost threshold.** `--max-tokens N` uses recorded billed-equivalent tokens (input, output,
+  cache read and cache write, unweighted) for projected admission. Capped runs are serialized;
+  a new run starts only if its estimated cost fits the remaining threshold. A single run can
+  exceed the threshold: this is not a hard provider-enforced budget or a per-run token limit.
+  A run whose usage may be incomplete (timeout, failure, or a stream cut before its final usage
+  event) is recorded with `usage_unknown`; its tokens are a lower bound. Under a cap, no further
+  run starts after one, including on resume.
+  The first v2 pilot had no projection and spent 809k against a 450k cap; that file is kept as
+  evidence (`results/pilot-v2-smoke.jsonl`).
 - **Manifest.** Each results file writes `<results>.manifest.json`: split, task-file and task-id
   hashes, model, prompt and arm-configuration hashes, the opencode version, and a hash of the
   engine and harness source (HEAD, uncommitted edits, untracked files). Resuming under a changed
@@ -108,7 +111,10 @@ Changes made after the run 3 diagnosis, recorded before any new result is read. 
 - **Traces.** Each row names its run directory (`trace`), the events hash, its `spend`, and
   `oxide_tools_connected`, which is read from the agent's own log. A run that never calls a
   connected tool is recorded as ignoring it; a run where the tool never connected is a different
-  finding. Trace directories are kept, not pruned: events, patch, and OpenCode and OXIDE data.
+  finding. Trace directories are kept, not pruned: events, patch, OXIDE data and OpenCode logs.
+  The OpenCode database is emptied after the run, since it holds the provider login; its session
+  records are not kept (the events file is the record). Treat traces as sensitive: literal
+  redaction cannot remove copied, encoded or refreshed secrets.
 - **Diagnosis.** `scripts/agent_eval diagnose RESULTS` classifies each OXIDE-arm run from its trace
   against the gold patch's files, with the decision rule in `diagnose.py`.
 
@@ -149,8 +155,8 @@ unchanged. The 32 runs of attempt 2 are invalid (provider auth) and are not resu
 OpenCode numbers are not comparable to this pilot; the comparison is paired within Codex.
 For Codex, `oxide_tools_connected` is the configured count: Codex's JSON stream does not log MCP
 startup. Tool calls are observed. `deny` is not recorded for Codex: it is an OpenCode config
-policy, and Codex runs under its `workspace-write` sandbox instead. Each Codex copy of the login is
-deleted when its run ends, so kept traces do not hold it.
+policy, and Codex runs under its `workspace-write` sandbox instead. The original Codex login copy
+is removed after a normal run; the agent can still copy or transmit it during execution.
 
 Amendment 3, before any pilot result under this harness (recorded by the user's request to secure
 the harness): every agent process and the hidden-test pytest run are confined with bubblewrap
@@ -163,9 +169,9 @@ Both arms run under the same confinement, so the comparison stays paired. Runs b
 amendment were not confined and are not comparable to pilot runs.
 
 Amendment 4, verified before any held-out look (credential isolation for Codex and OpenCode). Three
-gaps were found and fixed, each covered by a test in `tests/python/test_agent_confine.py`: (1)
-`forget_credentials` deleted the OpenCode credential row but left the key in SQLite free pages; it
-now runs `VACUUM`. (2) The hidden list held a checkout's own `.git`, but a linked worktree's `.git`
+gaps were found and fixed: (1) deleting the OpenCode credential row left the key in SQLite free
+pages; cleanup originally used `VACUUM` and now truncates the pinned database inode to avoid
+agent-controlled path traversal. (2) The hidden list held a checkout's own `.git`, but a linked worktree's `.git`
 is only a pointer, so the shared object store (dev answers, older held-out results) was readable. It
 now hides the common git directory and every checkout's `fixtures/eval`, which also covers the
 protocol worktree's copy of the held-out set. (3) The agent's tree is a standalone `git init` from

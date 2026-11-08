@@ -8,7 +8,7 @@ import importlib
 import json
 import sys
 from pathlib import Path
-from types import ModuleType
+from types import ModuleType, SimpleNamespace
 from typing import Any
 
 import pytest
@@ -84,3 +84,93 @@ def test_without_a_cap_every_planned_run_is_recorded(tmp_path: Path, fake_runs: 
     out = tmp_path / "r.jsonl"
     run.run_all(args(out, cap=None))
     assert sorted(r["arm"] for r in rows(out)) == ["control", "oxide"]
+
+
+@pytest.mark.parametrize("resume", [False, True])
+def test_unknown_usage_stops_capped_admissions(
+    tmp_path: Path, fake_runs: None, monkeypatch: pytest.MonkeyPatch, resume: bool
+) -> None:
+    out = tmp_path / "r.jsonl"
+
+    def incomplete(task: dict[str, Any], arm: str, rep: int, _: Any, __: Any) -> dict[str, Any]:
+        return {
+            "task": task["id"],
+            "arm": arm,
+            "rep": rep,
+            "status": "timeout",
+            "resolved": False,
+            "spend": 12,
+            "usage_unknown": True,
+        }
+
+    monkeypatch.setattr(run, "run_one", incomplete)
+    run.run_all(args(out, cap=500))
+    if resume:
+        run.run_all(args(out, cap=500))
+    assert len(rows(out)) == 1
+    assert rows(out)[0]["spend"] == 12
+
+
+def test_prelaunch_error_does_not_block_cap(
+    tmp_path: Path, fake_runs: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    out = tmp_path / "r.jsonl"
+
+    def prelaunch(task: dict[str, Any], arm: str, rep: int, _: Any, __: Any) -> dict[str, Any]:
+        return {
+            "task": task["id"],
+            "arm": arm,
+            "rep": rep,
+            "status": "harness-error",
+            "resolved": None,
+            "usage_unknown": False,
+        }
+
+    monkeypatch.setattr(run, "run_one", prelaunch)
+    run.run_all(args(out, cap=500))
+    assert len(rows(out)) == 2
+
+
+@pytest.mark.parametrize("failure", ["cleanup", "timeout", "score"])
+def test_incomplete_run_keeps_observed_spend(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str
+) -> None:
+    monkeypatch.setattr(run.tasks, "CACHE", tmp_path)
+    monkeypatch.setattr(run.tasks, "checkout", lambda task, work: work.mkdir(parents=True))
+    monkeypatch.setattr(run.tasks, "environment", lambda *args: {})
+    monkeypatch.setattr(run, "credentials", lambda *args: None)
+    raw = json.dumps(
+        {
+            "type": "step_finish",
+            "part": {"reason": "stop", "tokens": {"input": 7, "output": 3}},
+        }
+    )
+
+    def agent(*args: Any) -> tuple[str, str]:
+        run._launch_state.started = True
+        run._launch_state.raw = raw
+        if failure == "cleanup":
+            raise OSError("cleanup failed")
+        return ("ok" if failure == "score" else "timeout"), raw
+
+    monkeypatch.setattr(run, "agent", agent)
+    monkeypatch.setattr(run.session, "write_private", lambda *args: None)
+    monkeypatch.setattr(run.session, "connected", lambda *args: 0)
+    monkeypatch.setattr(run.session, "isolation", lambda *args: None)
+    monkeypatch.setattr(
+        run.session, "git_on_agent", lambda *args, **kwargs: SimpleNamespace(stdout="")
+    )
+
+    def score(*args: Any) -> dict[str, Any]:
+        if failure == "score":
+            raise RuntimeError("patch: does not apply")
+        return {"resolved": False}
+
+    monkeypatch.setattr(run.session, "score", score)
+    arguments = argparse.Namespace(
+        runner="opencode", model="m", split="dev", base_src=None, timeout=1
+    )
+    row = run.run_one({"id": "t", "problem": "p"}, "control", 0, arguments, tmp_path)
+    assert row["spend"] == 10
+    assert row["usage_unknown"] is (failure != "score")  # scoring runs after usage is known
+    assert row["status"] == ("timeout" if failure == "timeout" else "harness-error")
