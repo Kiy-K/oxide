@@ -16,16 +16,16 @@
   "turn_id": "7dc92c0a9a3c",
   "checkpoint_transcript_start": 734,
   "transcript_lines_at_start": 734,
-  "compact_transcript_start": 200,
+  "compact_transcript_start": 199,
   "redaction": {
-    "replacements": 218,
+    "replacements": 227,
     "layers": {
       "betterleaks": 2,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 4,
       "credentialed_uri": 0,
-      "entropy": 193,
+      "entropy": 205,
       "key_context": 0,
       "provider_token": 54,
       "shell_stdin": 0
