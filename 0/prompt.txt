@@ -1,0 +1,9 @@
+Make OXIDE's CLI and MCP interfaces genuinely useful for human developers and coding agents. Research first
+
+---
+
+A now then B
+
+---
+
+Keep MCP minimal: remove oxide_impact and integrate impact analysis into oxide_search as a third mode, with mode-specific arguments and validation. Preserve the CLI impact command and existing MCP compatibility. Complete the independent review, update the evaluation protocol, and verify before committing.

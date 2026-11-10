@@ -1,0 +1,44 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M72E58KZKQ4ERX8PM35BKDQS",
+  "session_id": "01a1c4a4-c925-72b4-96c0-e4fae93752c3",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-10T09:55:51.495041094Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "docs/public-api.md",
+    "docs/superpowers/specs/2026-11-10-cli-mcp-usability-design.md",
+    "scripts/smoke_dist.py",
+    "src/oxide/api.py",
+    "src/oxide/cli.py",
+    "src/oxide/mcp_server.py",
+    "src/oxide/models.py",
+    "tests/python/test_cli.py",
+    "tests/python/test_mcp.py",
+    "tests/python/test_native.py",
+    "tests/python/test_retrieval.py"
+  ],
+  "agent": "Oh My Pi",
+  "model": "claude-haiku-5-5",
+  "turn_id": "7615d8f4092b",
+  "compact_transcript_start": 0,
+  "redaction": {
+    "replacements": 75,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 117,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 2
+  }
+}
