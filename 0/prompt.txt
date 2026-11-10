@@ -1,0 +1,9 @@
+Make OXIDE measurably improve real coding-agent task success. Address diagnosed MCP usability and context-quality weaknesses, experiment autonomously on development tasks, and validate improvements on untouched held-out tasks.
+
+---
+
+Improve OXIDE's MCP discoverability, starting with its tool description. Run a bounded A/B pilot on development tasks, preserve full traces, and optimize coding-task success rather than call frequency. Keep the held-out set untouched and commit verified improvements.
+
+---
+
+Resume the user's latest intent. Re-read kept recent messages above the summary to confirm the latest request. If it supersedes earlier plans in the summary, follow it. If no work remains, say so briefly; do not invent work.
