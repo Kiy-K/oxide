@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Nothing to authenticate or reconnect: OXIDE is offline and vectorless. Just confirm the
+# toolchain survived the wake.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+command -v mise >/dev/null && command -v uv >/dev/null && [ -x .venv/bin/python ]

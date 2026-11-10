@@ -7,3 +7,4 @@ CLAUDE.local.md
 .env
 # Anchored: only the repository root's node_modules.
 /node_modules/
+.amp/portals/*
