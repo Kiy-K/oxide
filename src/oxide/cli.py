@@ -185,7 +185,8 @@ def main(argv: list[str] | None = None) -> int:
                 ]
                 hints = [f"hint: {h.kind} {h.hint}: {h.issue}" for h in result.hints]
                 status = f"lexical {result.lexical.state}: {result.lexical.detail}"
-                text = "\n".join([*lines, *hints, status])
+                blast = [f"blast {root.line()}" for root in result.blast]
+                text = "\n".join([*lines, *hints, status, *blast])
             elif args.command == "impact":
                 result = repo.impact(
                     args.key, direction=args.direction, depth=args.depth, limit=args.limit
@@ -203,6 +204,8 @@ def main(argv: list[str] | None = None) -> int:
                         print(line, file=sys.stderr)
                 for issue in result.hints:
                     print(f"hint: {issue.kind} {issue.hint}: {issue.issue}", file=sys.stderr)
+                for root in result.blast:
+                    print(f"blast {root.line()}", file=sys.stderr)
                 text = result.payload
             output = json.dumps(_plain(result), indent=2, ensure_ascii=False) if args.json else text
             print(output.rstrip("\n"))

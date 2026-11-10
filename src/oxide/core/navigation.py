@@ -23,12 +23,12 @@ itself; ``Walk.stopped_by`` says whether it is complete. NetworkX is imported la
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Literal, Protocol
 
 if TYPE_CHECKING:
     import networkx as nx
 
-    from oxide.storage.ladybug import Adjacent, View
+    from oxide.storage.ladybug import Adjacent
 
 NAVIGATION_VERSION = "oxide-impact-bfs-v2"
 MAX_EDGES = 20_000  # adjacency rows examined per pass
@@ -53,6 +53,14 @@ class Walk:
     graph: nx.DiGraph[str]  # the walked edges, traversal direction, edge attr ``via``
 
 
+class Relations(Protocol):
+    """The edges a walk reads: the read view, or the in-memory graph used at publication."""
+
+    def adjacency(
+        self, keys: list[str], allowance: int | None = None, kinds: tuple[str, ...] = ()
+    ) -> dict[str, tuple[Adjacent, Adjacent]]: ...
+
+
 def _steps(
     direction: Direction, key: str, out: Adjacent, into: Adjacent, proven_only: bool
 ) -> list[tuple[str, str]]:
@@ -65,7 +73,7 @@ def _steps(
     return sorted({(n, via) for n, via, p in found if p or not proven_only})
 
 
-def _roots(view: View, key: str) -> list[str]:
+def _roots(view: Relations, key: str) -> list[str]:
     """``key``, its physical descendants and, for a file, its logical modules."""
     roots, layer = [key], [key]
     while layer:
@@ -79,7 +87,12 @@ def _roots(view: View, key: str) -> list[str]:
 
 
 def _bfs(
-    view: View, roots: list[str], direction: Direction, depth: int, limit: int, proven_only: bool
+    view: Relations,
+    roots: list[str],
+    direction: Direction,
+    depth: int,
+    limit: int,
+    proven_only: bool,
 ) -> tuple[dict[str, tuple[int, str]], nx.DiGraph[str], str | None]:
     import networkx as nx
 
@@ -116,7 +129,7 @@ def _bfs(
     return found, graph, None
 
 
-def walk(view: View, key: str, direction: Direction, depth: int, limit: int) -> Walk:
+def walk(view: Relations, key: str, direction: Direction, depth: int, limit: int) -> Walk:
     import networkx as nx
 
     roots = _roots(view, key)

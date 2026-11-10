@@ -4,13 +4,16 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from pathlib import Path
+from types import SimpleNamespace
+from typing import Any
 
 import pytest
 from conftest import python, write
 
 import oxide
-from oxide.core import navigation
-from oxide.models import InvalidArgument
+from oxide.core import blast, navigation
+from oxide.core.blast import BLAST_DEPTH, BLAST_FILES, BLAST_LIMIT
+from oxide.models import BlastRoot, InvalidArgument
 from oxide.storage.ladybug import unresolved_key
 
 SOURCES = {
@@ -40,6 +43,27 @@ def repo(tmp_path: Path) -> Iterator[oxide.Repository]:
 
 def hops(impact: oxide.Impact) -> dict[str, tuple[int, int | None]]:
     return {h.entity.key: (h.depth, h.proven_depth) for h in impact.hops}
+
+
+def test_mentions_counts_each_unresolved_site_once_by_exact_name_or_suffix() -> None:
+    # The indexed lookup replaces a scan with this rule: a site counts when its name is the
+    # target's name or ends with ``.name`` or ``::name``, and each site counts once per query.
+    sites = [("calls", s) for s in ("get", "obj.get", "pkg::mod.get", "getter", "x::get.z")]
+    sites += [("calls", s) for s in ("a.b", "q.a.b", "a::b")] + [("imports", "get")]
+    entities: list[Any] = [SimpleNamespace(key="k")]  # Graph reads only ``key``
+    edges: list[Any] = [
+        SimpleNamespace(
+            source="k", targets=(), kind=kind, resolution="unresolved", basis="syntactic", name=name
+        )
+        for kind, name in sites
+    ]
+    graph = blast.Graph(entities, edges)
+    assert graph.mentions(["get"], ("calls",)) == 3
+    assert graph.mentions(["get"], ("imports",)) == 1
+    assert graph.mentions(["a.b"], ("calls",)) == 2
+    assert graph.mentions(["b"], ("calls",)) == 3
+    assert graph.mentions(["get", "b"], ("calls",)) == 6
+    assert graph.mentions([], ("calls",)) == 0
 
 
 def test_upstream_reaches_callers_and_tests_by_depth(
@@ -151,3 +175,36 @@ def test_store_reads_stop_at_the_edge_allowance_and_say_so(
     assert repo.impact(low).stopped_by == "edges"
     monkeypatch.setattr(routing, "MAX_ROWS", 0)
     assert routing.route(view, [low]).stopped_by == "edges"
+
+
+def test_search_and_context_carry_the_stored_blast_of_their_first_entry_points(
+    repo: oxide.Repository,
+) -> None:
+    found = repo.search("low", symbols=["low"])
+    bundle = repo.build_context("low", 1024, symbols=["low"])
+    assert found.blast == bundle.blast
+    assert [b.key for b in found.blast] == [e.entity.key for e in found.entries][:3]
+    assert "symbol:pkg/core.py#low" in {b.key for b in found.blast}
+
+
+def test_stored_blast_radius_equals_the_impact_walk_of_every_entity(
+    repo: oxide.Repository,
+) -> None:
+    # Computed at publication from the in-memory relations; the store's own walk must agree.
+    view = repo._view()
+    keys = sorted(row[0] for row in view._query("MATCH (e:Entity) RETURN e.key"))
+    stored = {key: root for key, (_, root) in view.entries(keys).items()}
+    assert set(stored) == set(keys)
+    for key in keys:
+        walked = repo.impact(key, depth=BLAST_DEPTH, limit=BLAST_LIMIT)
+        paths = sorted({h.entity.source.path for h in walked.hops if h.entity.source is not None})
+        expected = BlastRoot(
+            key,
+            len(walked.hops),
+            sum(h.entity.test for h in walked.hops),
+            tuple(paths[:BLAST_FILES]),
+            len(paths),
+            walked.unresolved,
+            walked.stopped_by,
+        )
+        assert stored[key] == expected, key

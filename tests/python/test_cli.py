@@ -159,3 +159,15 @@ def test_search_and_context_show_hint_issues(tmp_path: Path, fts: Path) -> None:
     assert shown == ["hint: symbol NoSuchThing: not_found"]
     notes = [line for line in context.stderr.splitlines() if line.startswith("hint: ")]
     assert notes == shown
+
+
+def test_search_and_context_print_the_blast_radius_of_their_entries(
+    tmp_path: Path, fts: Path
+) -> None:
+    data = tmp_path / "cli-data"
+    target = (str(FIXTURE), "--data-dir", str(data))
+    assert oxide(data, "index", *target).returncode == 0
+    found = oxide(data, "search", *target, "RetryPolicy")
+    assert "blast symbol:oxidepy/retry.py#RetryPolicy: " in found.stdout, found.stdout
+    context = oxide(data, "context", *target, "RetryPolicy", "--budget", "300")
+    assert "blast symbol:oxidepy/retry.py#RetryPolicy: " in context.stderr, context.stderr

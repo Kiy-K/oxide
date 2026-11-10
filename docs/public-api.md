@@ -91,7 +91,7 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
   heuristic `calls`/`references` edges.
 - `SearchResult`: `entries` (`EntryPoint`: entity, `lexical_rank`,
   `lexical_score`, `seeds`), `lexical` (`ChannelStatus`: `ran` with the scorer
-  name, or `disabled`/`unavailable` with a reason, never a zero score), `hints`.
+  name, or `disabled`/`unavailable` with a reason, never a zero score), `hints`, `blast`.
 - `IndexReport`: `status` (`built`/`unchanged`), counts, `partial` paths,
   `unsupported`, `skipped`, `case_collisions`, `lexical`, `seconds`; and, for a
   build, `previous` (the `Snapshot` it replaced, None without a readable one),
@@ -101,10 +101,14 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
   `complete` and `reason`, `units`, `text`; a `file:` entity in an item is a run of
   that file's module-level source, never `complete`), `payload`, `budget`, `used`,
   `units` (`oxide-units-v1`), `omissions` (stage and reason), `route`
-  (`RouteSummary`), `lexical`, `hints`, `degradations`, `versions`.
+  (`RouteSummary`), `lexical`, `hints`, `degradations`, `blast`, `versions`.
 - `Impact`: `root` entity, `direction`, `roots` (the keys standing for it), `hops`
   (`ImpactHop`: `entity`, `depth`, `proven_depth`, `via`, `cyclic`), `unresolved`,
   `stopped_by` (§ Impact).
+- `BlastRoot` (`SearchResult.blast`, `ContextBundle.blast`): the stored upstream walk of
+  § Impact from each of the first three entries in result order, at depth 2 and limit 20:
+  `dependents`, `tests`, `file_count` and the first 8 `files`, `unresolved`, `stopped_by`.
+  Written with the generation (ADR-0014); `impact` gives the full walk.
 - `StructuralResult`: `language`, `matches` (`StructuralMatch`: `source`
   `SourceRef`, 1-based `start_line`/`end_line`, `entity` the innermost declaration
   key or None at module level, `preview` the line the match starts on), `truncated`,
@@ -338,6 +342,8 @@ and malformed command lines print argparse usage and also exit 2. Any exit 1
 with a traceback is a bug. `search`, `context` and `impact` open with `create=False`, so
 they never leave an empty store behind. Hint issues print as `hint: <kind> <hint>: <issue>`
 (`search` to stdout, `context` to stderr); an error with a known fix adds a `hint:` line to stderr.
+Blast lines print as `blast <key>: <dependents> dependents …` for the first three entries, after
+the hints (`search` to stdout, `context` to stderr).
 
 ## MCP
 
@@ -351,12 +357,9 @@ It serves one tool. `oxide_search`'s `mode` picks one API operation (table below
 | --- | --- | --- |
 | `search` (default) | `query` (required, ≤ 2000 chars), `repository`, `limit` (0–100, default 20), `paths`, `symbols` (≤ 32 × ≤ 1024 chars) | `Repository.search`: `SearchResult` as structured content and compact JSON text, led by `entries_returned` and `more_available` (the lexical limit was hit or a symbol hint was capped); locations, never source |
 | `context` | `query` (required), `repository`, `budget` (0–32768 units, default 2048), `paths`, `symbols` | `Repository.build_context`: `ContextBundle` as structured content; the text is a one-line summary, any degradations and hint issues, then `payload` |
-| `impact` | `key` (required, ≤ 1024 chars, an entity key from a `search` entry), `repository`, `direction` (`upstream` default, or `downstream`), `depth` (0–8, default 3), `limit` (0–100, default 25) | `Repository.impact`: `Impact` as structured content, led by `hops_returned` in the text; `stopped_by` names the bound that cut the walk; locations and relations, never source |
 
 Arguments that do not apply to a mode are `invalid_argument` errors, never silently ignored:
-`limit` with `context`; `budget` with `search` or `impact`; `paths` and `symbols` with `impact`;
-`query` with `impact`; `key`, `direction` and `depth` outside `impact`. The output schema is any
-of the three result types (`anyOf`).
+`limit` with `context`; `budget` with `search`. The output schema is either result type (`anyOf`).
 
 A blank `query` without `paths` or `symbols` is `invalid_argument` over MCP.
 
@@ -365,9 +368,9 @@ A blank `query` without `paths` or `symbols` is `invalid_argument` over MCP.
 the old tool's, byte for byte. A call without `mode` is the old `oxide_search`, with
 the same arguments, defaults and output (as of that change). Since 2026-11-10 `oxide_search`
 changed: a blank `query` with no `paths` or `symbols` is `invalid_argument`,
-context text adds `# hint` lines for unmatched hints, and `mode="impact"` was added. A separate
-`oxide_impact` tool existed only in uncommitted work and was folded into `mode="impact"` before
-commit, so the server advertises one tool.
+context text adds `# hint` lines for unmatched hints. `mode="impact"` was added on 2026-11-10 and
+retired by ADR-0014 (2026-11-11): `search` and `context` carry each entry point's `blast`; the
+detailed walk is `oxide impact` (CLI) and `Repository.impact` (API), so the server advertises one tool.
 
 Structural search (`Repository.structural_search`) is **not** an MCP mode. In a
 preregistered agent trial, agents given it matched what they already found with grep
