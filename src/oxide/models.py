@@ -147,6 +147,39 @@ class EntryPoint:
 
 
 @dataclass(frozen=True, slots=True)
+class BlastRoot:
+    """What depends on one entry point, from a short upstream walk (ADR-0014): ``dependents``
+    reached, ``tests`` among them, ``files`` the first few of ``file_count`` distinct paths
+    they sit in, ``unresolved`` same-name call sites OXIDE could not resolve, and
+    ``stopped_by`` the bound that cut the walk (None when the walk was exhausted)."""
+
+    key: str
+    dependents: int
+    tests: int
+    files: tuple[str, ...]
+    file_count: int
+    unresolved: int
+    stopped_by: str | None
+
+    def line(self) -> str:
+        """One line for text clients."""
+        if not self.dependents:
+            text = f"{self.key}: no dependents"
+        else:
+            more = self.file_count - len(self.files)
+            shown = ", ".join(self.files) + (f", +{more} more" if more else "")
+            text = (
+                f"{self.key}: {self.dependents} dependents ({self.tests} tests) in "
+                f"{self.file_count} files: {shown}"
+            )
+        if self.unresolved:
+            text += f"; {self.unresolved} unresolved"
+        if self.stopped_by:
+            text += f"; stopped by {self.stopped_by}"
+        return text
+
+
+@dataclass(frozen=True, slots=True)
 class SearchResult:
     """Entry points, not context: seeds in hint order, then lexical rank."""
 
@@ -155,6 +188,7 @@ class SearchResult:
     entries: tuple[EntryPoint, ...]
     lexical: ChannelStatus
     hints: tuple[HintIssue, ...]
+    blast: tuple[BlastRoot, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -266,6 +300,7 @@ class ContextBundle:
     hints: tuple[HintIssue, ...]
     route: RouteSummary
     degradations: tuple[str, ...]
+    blast: tuple[BlastRoot, ...] = ()
     versions: dict[str, str] = field(default_factory=dict)
 
     @property
@@ -336,3 +371,42 @@ class InvalidArgument(OxideError, ValueError):
     """A malformed or out-of-range argument; still a ``ValueError`` for callers."""
 
     code = "invalid_argument"
+
+
+# What a caller can do about each expected failure. ``{index}`` is the command that indexes
+# the repository the caller read, including its data location when one was given.
+ADVICE = {
+    "invalid_path": "the repository path does not exist or is not a directory",
+    "not_indexed": "run `{index}` first",
+    "ownership_conflict": (
+        "another OXIDE process (e.g. `oxide index`) holds the repository; retry shortly"
+    ),
+    "incompatible_index": "the index was built by another OXIDE version; run `{index}`",
+    "store_corrupt": "the index is damaged; rebuild it with `{index}`",
+}
+
+
+def _arg(value: str) -> str:
+    """A command-line argument for a copy-paste: double quotes around paths with spaces, which
+    cmd, PowerShell and POSIX shells all accept."""
+    return f'"{value}"' if any(c in value for c in " \t") else value
+
+
+def advice(
+    error: OxideError,
+    repository: str,
+    data_dir: str | None = None,
+    *,
+    private_data_dir: bool = False,
+) -> str | None:
+    """The next command for an expected failure, copy-pasteable; None when there is none.
+    ``private_data_dir`` says a non-default data location is in use without naming it."""
+    template = ADVICE.get(error.code)
+    if template is None:
+        return None
+    index = f"oxide index {_arg(repository)}"
+    if data_dir is not None:
+        index += f" --data-dir {_arg(data_dir)}"
+    elif private_data_dir:
+        index += " --data-dir <the server's data location>"
+    return template.format(index=index)

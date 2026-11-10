@@ -7,7 +7,7 @@
 whole capture. No compiler, preprocessor, build system, `compile_commands.json` or
 repository code runs during indexing or querying. The ordinary Python API, CLI,
 retrieval, graph, router and context packer serve these files unchanged, and MCP remains
-exactly one tool, `oxide_search`, with `search` and `context` modes.
+exactly one tool, `oxide_search`, with `search`, `context` and `impact` modes.
 
 ## Files
 

@@ -68,8 +68,8 @@ with oxide.open_repository("path/to/repo") as repo:   # owns the store until clo
 ### MCP
 
 `oxide mcp` serves one read-only tool, `oxide_search`, over stdio (FastMCP). Its
-`mode` is `search` (ranked locations, the default) or `context` (a budgeted source
-bundle); `oxide_context` was folded into it on 2026-10-18. It never indexes: run
+`mode` is `search` (ranked locations, the default), `context` (a budgeted source bundle) or
+`impact` (what depends on an entity); `oxide_context` was folded into it on 2026-10-18. It never indexes: run
 `oxide index` first, and again whenever you want fresher results, even while the
 server runs.
 

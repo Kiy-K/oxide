@@ -10,6 +10,8 @@ from pathlib import Path
 
 from conftest import FIXTURE, env
 
+from oxide.models import InvalidArgument, NotIndexed, advice
+
 
 def oxide(
     data: Path, *args: str, extra: dict[str, str] | None = None
@@ -104,3 +106,68 @@ def test_output_is_utf_8_whatever_the_stream_encoding(tmp_path: Path) -> None:
     )
     assert run.returncode == 0, run.stderr
     assert f"oxide: capturing {repo}" in run.stderr
+
+
+def test_impact_lists_dependents_as_text_and_json(tmp_path: Path, fts: Path) -> None:
+    data = tmp_path / "cli-data"
+    target = (str(FIXTURE), "--data-dir", str(data))
+    assert oxide(data, "index", *target).returncode == 0
+    key = "symbol:oxidepy/auth.py#decode_claims"
+    test = "symbol:tests/test_auth.py#test_decode_claims_parses_payload"
+    text = oxide(data, "impact", *target, key)
+    assert text.returncode == 0 and test in text.stdout, text.stderr
+    dependents = json.loads(oxide(data, "impact", *target, key, "--json").stdout)
+    assert test in {h["entity"]["key"] for h in dependents["hops"]}
+    assert dependents["root"]["key"] == key
+
+
+def test_impact_and_empty_query_failures_exit_2_with_advice(tmp_path: Path, fts: Path) -> None:
+    data = tmp_path / "cli-data"
+    target = (str(FIXTURE), "--data-dir", str(data))
+    unindexed = oxide(data, "search", *target, "x")
+    assert unindexed.returncode == 2 and "error[not_indexed]" in unindexed.stderr
+    assert f"hint: run `oxide index {FIXTURE} --data-dir {data}` first" in unindexed.stderr
+    assert oxide(data, "index", *target).returncode == 0
+    unknown = oxide(data, "impact", *target, "symbol:nope")
+    assert unknown.returncode == 2 and "error[invalid_argument]" in unknown.stderr
+    assert "find keys with oxide search" in unknown.stderr
+    empty = oxide(data, "search", *target, "")
+    assert empty.returncode == 2 and "query is empty" in empty.stderr
+
+
+def test_advice_is_a_copy_pasteable_recovery_command() -> None:
+    error = NotIndexed("not indexed")
+    assert advice(error, "/tmp/my repo") == 'run `oxide index "/tmp/my repo"` first'
+    assert advice(error, "/repo", "/data") == "run `oxide index /repo --data-dir /data` first"
+    assert advice(error, "/repo", private_data_dir=True) == (
+        "run `oxide index /repo --data-dir <the server's data location>` first"
+    )
+    assert advice(InvalidArgument("bad"), "/repo") is None
+
+
+def test_search_and_context_show_hint_issues(tmp_path: Path, fts: Path) -> None:
+    data = tmp_path / "cli-data"
+    target = (str(FIXTURE), "--data-dir", str(data))
+    assert oxide(data, "index", *target).returncode == 0
+    hinted = ("RetryPolicy", "--symbol", "NoSuchThing")
+    found = oxide(data, "search", *target, *hinted)
+    context = oxide(data, "context", *target, *hinted)
+    issues = json.loads(oxide(data, "search", *target, *hinted, "--json").stdout)["hints"]
+    assert found.returncode == 0 and context.returncode == 0
+    shown = [line for line in found.stdout.splitlines() if line.startswith("hint: ")]
+    assert shown == [f"hint: {i['kind']} {i['hint']}: {i['issue']}" for i in issues]
+    assert shown == ["hint: symbol NoSuchThing: not_found"]
+    notes = [line for line in context.stderr.splitlines() if line.startswith("hint: ")]
+    assert notes == shown
+
+
+def test_search_and_context_print_the_blast_radius_of_their_entries(
+    tmp_path: Path, fts: Path
+) -> None:
+    data = tmp_path / "cli-data"
+    target = (str(FIXTURE), "--data-dir", str(data))
+    assert oxide(data, "index", *target).returncode == 0
+    found = oxide(data, "search", *target, "RetryPolicy")
+    assert "blast symbol:oxidepy/retry.py#RetryPolicy: " in found.stdout, found.stdout
+    context = oxide(data, "context", *target, "RetryPolicy", "--budget", "300")
+    assert "blast symbol:oxidepy/retry.py#RetryPolicy: " in context.stderr, context.stderr

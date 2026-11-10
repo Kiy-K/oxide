@@ -5,7 +5,7 @@
 TypeScript syntax in JavaScript. No Node, Bun, compiler, package manager or
 repository code runs during indexing or querying. The ordinary Python API, CLI,
 retrieval, graph, router and context packer serve these files. MCP remains exactly
-one tool, `oxide_search`, with `search` and `context` modes; the structural MCP
+one tool, `oxide_search`, with `search`, `context` and `impact` modes; the structural MCP
 trial's REJECT decision is unchanged.
 
 ## Extraction and identity
