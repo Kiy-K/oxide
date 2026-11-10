@@ -92,9 +92,12 @@ def _hints(
             "selection end", end, _MAX_OFFSET
         ):
             raise InvalidArgument(f"selection start {start} is after its end {end}")
-    return Hints(
-        selection, _texts("paths", paths), _texts("symbols", symbols), _texts("changed", changed)
-    )
+    seed_paths = _texts("paths", paths)
+    seed_symbols = _texts("symbols", symbols)
+    seed_changed = _texts("changed", changed)
+    if not query.strip() and not (selection or seed_paths or seed_symbols or seed_changed):
+        raise InvalidArgument("query is empty: give words or identifiers, or a path or symbol hint")
+    return Hints(selection, seed_paths, seed_symbols, seed_changed)
 
 
 class Repository:
@@ -225,7 +228,9 @@ class Repository:
         view = self._view()
         root = view.entities([key]).get(key)
         if root is None:
-            raise InvalidArgument(f"no entity {key!r} in this snapshot")
+            raise InvalidArgument(
+                f"no entity {key!r} in this snapshot; find keys with oxide search"
+            )
         found = navigation.walk(view, key, direction, depth, limit)
         known = view.entities(h.key for h in found.hops)
         names = [e.name for e in view.entities(found.roots).values() if e.category == "symbol"]

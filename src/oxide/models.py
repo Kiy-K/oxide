@@ -336,3 +336,42 @@ class InvalidArgument(OxideError, ValueError):
     """A malformed or out-of-range argument; still a ``ValueError`` for callers."""
 
     code = "invalid_argument"
+
+
+# What a caller can do about each expected failure. ``{index}`` is the command that indexes
+# the repository the caller read, including its data location when one was given.
+ADVICE = {
+    "invalid_path": "the repository path does not exist or is not a directory",
+    "not_indexed": "run `{index}` first",
+    "ownership_conflict": (
+        "another OXIDE process (e.g. `oxide index`) holds the repository; retry shortly"
+    ),
+    "incompatible_index": "the index was built by another OXIDE version; run `{index}`",
+    "store_corrupt": "the index is damaged; rebuild it with `{index}`",
+}
+
+
+def _arg(value: str) -> str:
+    """A command-line argument for a copy-paste: double quotes around paths with spaces, which
+    cmd, PowerShell and POSIX shells all accept."""
+    return f'"{value}"' if any(c in value for c in " \t") else value
+
+
+def advice(
+    error: OxideError,
+    repository: str,
+    data_dir: str | None = None,
+    *,
+    private_data_dir: bool = False,
+) -> str | None:
+    """The next command for an expected failure, copy-pasteable; None when there is none.
+    ``private_data_dir`` says a non-default data location is in use without naming it."""
+    template = ADVICE.get(error.code)
+    if template is None:
+        return None
+    index = f"oxide index {_arg(repository)}"
+    if data_dir is not None:
+        index += f" --data-dir {_arg(data_dir)}"
+    elif private_data_dir:
+        index += " --data-dir <the server's data location>"
+    return template.format(index=index)

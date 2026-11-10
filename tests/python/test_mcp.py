@@ -74,17 +74,21 @@ def assert_unlocked(repo: Path, data: Path | None = None) -> None:
 
 async def test_one_tool_is_discoverable_with_bounded_schemas(indexed: Path) -> None:
     async with Client(server([str(indexed)])) as client:
-        (tool,) = await client.list_tools()
-    assert tool.name == "oxide_search"
+        tools = {t.name: t for t in await client.list_tools()}
+    assert set(tools) == {"oxide_search"}
+    tool = tools["oxide_search"]
     assert tool.annotations is not None and tool.annotations.read_only_hint
     assert tool.description and tool.output_schema
-    assert tool.input_schema["required"] == ["query"]
+    assert "query" not in tool.input_schema.get("required", [])
     schema = tool.input_schema["properties"]
-    assert schema["mode"]["enum"] == ["search", "context"]
+    assert schema["mode"]["enum"] == ["search", "context", "impact"]
     assert schema["mode"]["default"] == "search"
     assert {o.get("maximum") for o in schema["limit"]["anyOf"]} >= {mcp_server.MAX_RESULTS}
     assert {o.get("maximum") for o in schema["budget"]["anyOf"]} >= {mcp_server.MAX_BUDGET}
-    assert schema["query"]["maxLength"] == 2000 and schema["symbols"]["maxItems"] == 32
+    assert {o.get("maximum") for o in schema["depth"]["anyOf"]} >= {8}
+    assert {o.get("maxLength") for o in schema["key"]["anyOf"]} >= {1024}
+    assert schema["query"]["anyOf"][0]["maxLength"] == 2000
+    assert schema["symbols"]["maxItems"] == 32
 
 
 async def test_search_and_context_return_structured_evidence(indexed: Path) -> None:
@@ -141,7 +145,7 @@ async def test_bad_arguments_and_repositories_are_tool_errors(
             ({"mode": "context", "budget": mcp_server.MAX_BUDGET + 1}, "budget"),
             ({"mode": "nearest"}, "mode"),
             ({"budget": 10}, "`budget` applies to mode=context only"),
-            ({"mode": "context", "limit": 3}, "`limit` applies to mode=search only"),
+            ({"mode": "context", "limit": 3}, "`limit` applies to mode=search and mode=impact"),
             ({"mode": "structural", "language": "python"}, "mode"),
         ]
         for arguments, expected in cases:
@@ -267,7 +271,7 @@ async def test_stdio_server_tracks_until_shutdown(
         sys.executable, mcp_command(repo_copy, data), env=env(data), keep_alive=False
     )
     async with Client(transport) as client:
-        assert [t.name for t in await client.list_tools()] == ["oxide_search"]
+        assert {t.name for t in await client.list_tools()} == {"oxide_search"}
         found = await call(client, "oxide_search", query="RetryPolicy")
         assert found.structured_content["entries"][0]["entity"]["key"] == RETRY
         assert "ownership_conflict" in cli(data, "index", str(repo_copy)).stderr
@@ -297,6 +301,7 @@ async def test_stdio_corruption_fails_closed_and_releases_for_repair(
         damaged = await call(client, "oxide_search", mode="context", query="RetryPolicy")
         assert damaged.is_error and "error[store_corrupt]" in text(damaged)
         assert str(data) not in text(damaged)
+        assert "--data-dir <the server's data location>" in text(damaged)
         rebuilt = cli(data, "index", str(repo_copy))
         assert rebuilt.returncode == 0 and rebuilt.stdout.startswith("built:")
         again = await call(client, "oxide_search", mode="context", query="RetryPolicy", budget=300)
@@ -437,3 +442,69 @@ async def test_context_text_names_the_judge_when_source_was_sent(
     )
     assert "# judged by typesafe/jev-1.14.0@oxide-capsule-v1\n" in text(judged)
     assert "fell back" not in text(judged)
+
+
+async def test_impact_names_callers_with_proven_depth(indexed: Path) -> None:
+    async with Client(server([str(indexed)])) as client:
+        found = await call(
+            client, "oxide_search", mode="impact", key="symbol:oxidepy/auth.py#decode_claims"
+        )
+    assert not found.is_error
+    value = found.structured_content
+    proven = {h["entity"]["key"]: h["proven_depth"] for h in value["hops"]}
+    assert proven["symbol:tests/test_auth.py#test_decode_claims_parses_payload"] == 1
+    assert value["stopped_by"] is None and value["hops_returned"] == len(value["hops"])
+    assert json.loads(text(found))["hops_returned"] == value["hops_returned"]
+
+
+async def test_impact_rejects_unknown_keys_and_out_of_range_bounds(indexed: Path) -> None:
+    key = "symbol:oxidepy/auth.py#decode_claims"
+    async with Client(server([str(indexed)])) as client:
+        unknown = await call(client, "oxide_search", mode="impact", key="symbol:nope.py#missing")
+        too_deep = await call(client, "oxide_search", mode="impact", key=key, depth=9)
+        too_many = await call(client, "oxide_search", mode="impact", key=key, limit=101)
+    assert unknown.is_error and "error[invalid_argument]" in text(unknown)
+    assert "find keys with oxide search" in text(unknown)
+    assert too_deep.is_error and too_many.is_error
+
+
+async def test_each_mode_accepts_only_its_own_arguments(indexed: Path) -> None:
+    key = "symbol:oxidepy/auth.py#decode_claims"
+    rejected: dict[str, dict[str, Any]] = {
+        "impact without key": {"mode": "impact"},
+        "impact with query": {"mode": "impact", "key": key, "query": "decode"},
+        "impact with budget": {"mode": "impact", "key": key, "budget": 100},
+        "impact with paths": {"mode": "impact", "key": key, "paths": ["oxidepy/auth.py"]},
+        "impact with symbols": {"mode": "impact", "key": key, "symbols": ["decode_claims"]},
+        "search with key": {"query": "decode", "key": key},
+        "search with direction": {"query": "decode", "direction": "downstream"},
+        "context with depth": {"mode": "context", "query": "decode", "depth": 2},
+        "context with limit": {"mode": "context", "query": "decode", "limit": 2},
+        "search without query": {"mode": "search"},
+        "search with budget": {"query": "decode", "budget": 100},
+    }
+    async with Client(server([str(indexed)])) as client:
+        results = {
+            name: await call(client, "oxide_search", **args) for name, args in rejected.items()
+        }
+    for name, result in results.items():
+        assert result.is_error and "error[invalid_argument]" in text(result), name
+    assert "does not apply to mode=impact" in text(results["impact with query"])
+    assert "required for mode=search" in text(results["search without query"])
+    assert "applies to mode=search and mode=impact" in text(results["context with limit"])
+
+
+async def test_empty_query_needs_a_seed_and_hint_issues_are_reported(indexed: Path) -> None:
+    async with Client(server([str(indexed)])) as client:
+        empty = await call(client, "oxide_search", query="   ")
+        seeded = await call(client, "oxide_search", query="", paths=["oxidepy/retry.py"])
+        missing = await call(
+            client, "oxide_search", mode="context", query="RetryPolicy", symbols=["NoSuchThing"]
+        )
+    assert empty.is_error and "query is empty" in text(empty)
+    assert not seeded.is_error and seeded.structured_content["entries"]
+    shown = [line for line in text(missing).splitlines() if line.startswith("# hint ")]
+    expected = [
+        f"# hint {h['kind']} {h['hint']}: {h['issue']}" for h in missing.structured_content["hints"]
+    ]
+    assert shown == expected == ["# hint symbol NoSuchThing: not_found"]

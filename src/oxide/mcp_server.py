@@ -22,8 +22,8 @@ from fastmcp.tools import ToolResult
 from mcp.types import ToolAnnotations
 from pydantic import Field, TypeAdapter
 
-from oxide.api import Repository, open_repository
-from oxide.models import ContextBundle, OxideError, SearchResult
+from oxide.api import MAX_DEPTH, Repository, open_repository
+from oxide.models import ContextBundle, Impact, OxideError, SearchResult, advice
 
 log = logging.getLogger(__name__)
 
@@ -32,20 +32,9 @@ MAX_RESULTS = 100
 MAX_BUDGET = 32_768
 DEFAULT_LIMIT = 20
 DEFAULT_BUDGET = 2048
+DEFAULT_IMPACT = 25
+DEFAULT_DEPTH = 3
 LOOPBACK = ("127.0.0.1", "localhost", "::1")
-
-# What a caller can do about each expected failure. Engine messages name store
-# directories and native errors, so they go to the server log only.
-_ADVICE = {
-    "invalid_path": "the repository path does not exist or is not a directory",
-    "not_indexed": "the repository is not indexed; run `oxide index <repository>` first",
-    "ownership_conflict": "another OXIDE process (e.g. `oxide index`) holds the repository; "
-    "retry shortly",
-    "incompatible_index": "the index was built by another OXIDE version; "
-    "run `oxide index <repository>`",
-    "store_corrupt": "the index is damaged; run `oxide index <repository>` "
-    "(the server log has details)",
-}
 
 # shortcut: one lock serializes calls across all repositories; use per-store locks if
 # multi-repository throughput ever matters.
@@ -72,10 +61,24 @@ Symbols = Annotated[
     Field(description="Symbol names or dotted suffixes (`Class.method`).", max_length=32),
 ]
 Mode = Annotated[
-    Literal["search", "context"],
+    Literal["search", "context", "impact"],
     Field(
-        description="search: ranked locations, never source (default). context: a "
-        "source bundle within `budget`."
+        description="search: ranked locations, never source (default). context: a source "
+        "bundle within `budget`. impact: what depends on the entity `key`."
+    ),
+]
+Key = Annotated[
+    str,
+    Field(
+        max_length=1024,
+        description="impact: entity key from a mode=search entry, e.g. `symbol:pkg/core.py#low`.",
+    ),
+]
+Direction = Annotated[
+    Literal["upstream", "downstream"],
+    Field(
+        description="upstream: what depends on the entity (callers, importers, tests). "
+        "downstream: what the entity depends on."
     ),
 ]
 READ_ONLY = ToolAnnotations(read_only_hint=True, open_world_hint=False)
@@ -119,8 +122,12 @@ def _read[T](
                 raise
         except OxideError as error:
             log.warning("%s: %s", error.code, error)
-            advice = str(error) if error.code == "invalid_argument" else _ADVICE.get(error.code)
-            raise ToolError(f"error[{error.code}]: {advice or 'request failed'}") from None
+            detail = (
+                str(error)
+                if error.code == "invalid_argument"
+                else advice(error, repository, private_data_dir=data_dir is not None)
+            )
+            raise ToolError(f"error[{error.code}]: {detail or 'request failed'}") from None
 
 
 def _invalid(message: str) -> ToolError:
@@ -131,9 +138,9 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
     """The MCP server; non-empty ``repos`` restricts which repositories calls may name.
 
     One tool, ``oxide_search``, whose ``mode`` picks one API operation: ``search``
-    (``Repository.search``) or ``context`` (``build_context``). Structural search stays
-    a Python API: an agent trial found no benefit over grep (docs/decisions.md,
-    structural-mcp-trial).
+    (``Repository.search``), ``context`` (``build_context``) or ``impact``
+    (``Repository.impact``). Structural search stays a Python API: an agent trial found no
+    benefit over grep (docs/decisions.md, structural-mcp-trial).
     """
     resolve = _resolver(repos)
     handles: dict[str, Repository] = {}
@@ -155,18 +162,18 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
         "oxide",
         instructions="Structural code context for an indexed repository (`oxide index` "
         "builds the initial index; local tracking keeps it fresh). oxide_search finds what "
-        "is defined (mode=search), or builds a budgeted bundle of the relevant source "
-        "with provenance (mode=context).",
+        "is defined (mode=search), builds a budgeted bundle of the relevant source with "
+        "provenance (mode=context), or lists what depends on an entity (mode=impact).",
         # Unexpected exceptions reach the client as a generic message, never their text.
         mask_error_details=True,
         lifespan=lifespan,
     )
-    results = TypeAdapter(SearchResult | ContextBundle).json_schema()
+    results = TypeAdapter(SearchResult | ContextBundle | Impact).json_schema()
     output = {"type": "object", **results}
 
     @app.tool(annotations=READ_ONLY, output_schema=output)
     def oxide_search(
-        query: Query,
+        query: Query | None = None,
         repository: Repo = None,
         mode: Mode = "search",
         limit: Annotated[
@@ -174,7 +181,8 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
             Field(
                 ge=0,
                 le=MAX_RESULTS,
-                description=f"search: lexical hits (default {DEFAULT_LIMIT}).",
+                description=f"search: lexical hits (default {DEFAULT_LIMIT}). impact: entities "
+                f"returned (default {DEFAULT_IMPACT}).",
             ),
         ] = None,
         budget: Annotated[
@@ -187,6 +195,16 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
         ] = None,
         paths: Paths = (),
         symbols: Symbols = (),
+        key: Key | None = None,
+        direction: Direction | None = None,
+        depth: Annotated[
+            int | None,
+            Field(
+                ge=0,
+                le=MAX_DEPTH,
+                description=f"impact: hops to follow (default {DEFAULT_DEPTH}).",
+            ),
+        ] = None,
     ) -> ToolResult:
         """Search an indexed repository. mode=search (default) finds candidate symbols,
         files and modules: hint seeds first, then BM25 rank; locations (path, byte range,
@@ -194,8 +212,42 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
         source-backed bundle: relevant declarations and their enclosing headers, each
         under a `### path:first-last` heading, within `budget` units; the structured
         result adds omissions, routing, degradations and the snapshot. `paths` and
-        `symbols` are hints that seed both."""
+        `symbols` are hints that seed both. mode=impact lists what depends on the entity
+        `key` from a mode=search entry: upstream (default) callers, importers and tests, or
+        downstream what it calls. Hops come nearest first with their proven depth;
+        `stopped_by` names the bound that cut the walk; `unresolved` counts same-name call
+        sites OXIDE could not resolve, so dependents may be missing. Locations, never source.
+        `query` is required for search and context; `key` for impact. Not needed to find
+        where one name is defined: use mode=search."""
         target = resolve(repository)
+        if mode == "impact":
+            for name, given in (("query", query), ("budget", budget)):
+                if given is not None:
+                    raise _invalid(f"`{name}` does not apply to mode=impact")
+            if paths or symbols:
+                raise _invalid("`paths` and `symbols` do not apply to mode=impact")
+            if not key:
+                raise _invalid("mode=impact needs `key`, an entity key from a mode=search entry")
+            entity = key
+            walk = _read(
+                target,
+                data_dir,
+                lambda repo: repo.impact(
+                    entity,
+                    direction=direction or "upstream",
+                    depth=DEFAULT_DEPTH if depth is None else depth,
+                    limit=DEFAULT_IMPACT if limit is None else limit,
+                ),
+                handles,
+            )
+            value = {"hops_returned": len(walk.hops)} | dataclasses.asdict(walk)
+            text = json.dumps(value, separators=(",", ":"), ensure_ascii=False)
+            return ToolResult(content=text, structured_content=value)
+        if key is not None or direction is not None or depth is not None:
+            raise _invalid("`key`, `direction` and `depth` apply to mode=impact only")
+        if query is None:
+            raise _invalid("`query` is required for mode=search and mode=context")
+        words = query
         if mode == "search":
             if budget is not None:
                 raise _invalid("`budget` applies to mode=context only")
@@ -203,7 +255,7 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
             found = _read(
                 target,
                 data_dir,
-                lambda repo: repo.search(query, limit=count, paths=paths, symbols=symbols),
+                lambda repo: repo.search(words, limit=count, paths=paths, symbols=symbols),
                 handles,
             )
             # The status leads: clients that clip the tail (OpenCode code mode) keep it
@@ -214,12 +266,12 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
             text = json.dumps(value, separators=(",", ":"), ensure_ascii=False)
             return ToolResult(content=text, structured_content=value)
         if limit is not None:
-            raise _invalid("`limit` applies to mode=search only")
+            raise _invalid("`limit` applies to mode=search and mode=impact only")
         size = DEFAULT_BUDGET if budget is None else budget
         bundle = _read(
             target,
             data_dir,
-            lambda repo: repo.build_context(query, size, paths=paths, symbols=symbols),
+            lambda repo: repo.build_context(words, size, paths=paths, symbols=symbols),
             handles,
         )
         head = (
@@ -230,6 +282,7 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
         if "judge" in bundle.versions:  # this repository's source went to the judge
             head += f"# judged by {bundle.versions['judge']}\n"
         head += "".join(f"# degraded: {d}\n" for d in bundle.degradations)
+        head += "".join(f"# hint {h.kind} {h.hint}: {h.issue}\n" for h in bundle.hints)
         # The model reads the payload as text; applications get the whole bundle.
         return ToolResult(
             content=head + bundle.payload, structured_content=dataclasses.asdict(bundle)

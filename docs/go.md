@@ -5,7 +5,7 @@ extracts syntax facts with `tree-sitter-go==0.25.0`, `core/languages/go_resolve.
 them over the whole capture. No Go toolchain, `go list`, `gopls`, module download
 or repository code runs during indexing or querying. The ordinary Python API, CLI,
 retrieval, graph, router and context packer serve these files unchanged, and MCP
-remains exactly one tool, `oxide_search`, with `search` and `context` modes.
+remains exactly one tool, `oxide_search`, with `search`, `context` and `impact` modes.
 
 ## Extraction and identity
 

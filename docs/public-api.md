@@ -234,6 +234,8 @@ an `OxideError` (`invalid_argument`) and a `ValueError`:
 - `query`: a `str`. `paths`, `symbols`, `changed`: iterables of `str`, never a
   bare `str`. `selection`: a `(str, int, int)` tuple with
   `0 <= start <= end < 2**63`.
+- A blank `query` is `invalid_argument` in `search` and `build_context` unless `paths`,
+  `symbols`, `changed` or `selection` gives a seed.
 
 ## Errors
 
@@ -326,16 +328,16 @@ Damage is classified like this:
 
 ## CLI
 
-`oxide index|search|context|judge <path> [...] [--data-dir D] [--json]` and
-`oxide prepare`. `judge` shows the optional judge's status, what it sends and how to
+`oxide index|search|context|judge <path> [...] [--data-dir D] [--json]`, `oxide impact <path> <key> [--direction upstream|downstream] [--depth 0-8] [--limit 0-1000] [--data-dir D] [--json]` and `oxide prepare`. `impact` lists what depends on an entity (callers, importers, tests; nearest first, each with its proven depth); `key` comes from `search` output. `judge` shows the optional judge's status, what it sends and how to
 disable it. `--enable` and `--disable` switch it (§ Optional judge). `index` prints its progress to stderr and a summary to stdout:
 counts, changes since the last index, source files parsed and reused (`sources:`), then any
 partial parses, skips, unsupported files and case collisions. `context` prints the
 payload to stdout and `used/budget units` to stderr, plus `judged by …` or the
 judge's fallback line when a judge is enabled. OXIDE errors print `error[<code>]: <message>` to stderr and exit 2,
 and malformed command lines print argparse usage and also exit 2. Any exit 1
-with a traceback is a bug. `search` and `context` open with `create=False`, so
-they never leave an empty store behind.
+with a traceback is a bug. `search`, `context` and `impact` open with `create=False`, so
+they never leave an empty store behind. Hint issues print as `hint: <kind> <hint>: <issue>`
+(`search` to stdout, `context` to stderr); an error with a known fix adds a `hint:` line to stderr.
 
 ## MCP
 
@@ -343,20 +345,29 @@ they never leave an empty store behind.
 (`src/oxide/mcp_server.py`, FastMCP 4.1) is another client of this API: it never
 parses, routes, selects or packs.
 
-It serves exactly one tool, `oxide_search`. Its `mode` picks one API operation:
+It serves one tool. `oxide_search`'s `mode` picks one API operation (table below):
 
 | `mode` | Arguments (bounds) | Result |
 | --- | --- | --- |
-| `search` (default) | `query` (≤ 2000 chars), `repository`, `limit` (0–100, default 20), `paths`, `symbols` (≤ 32 × ≤ 1024 chars) | `Repository.search`: `SearchResult` as structured content and compact JSON text, led by `entries_returned` and `more_available` (the lexical limit was hit or a symbol hint was capped); locations, never source |
-| `context` | `query`, `repository`, `budget` (0–32768 units, default 2048), `paths`, `symbols` | `Repository.build_context`: `ContextBundle` as structured content; the text is a one-line summary, any degradations, then `payload` |
+| `search` (default) | `query` (required, ≤ 2000 chars), `repository`, `limit` (0–100, default 20), `paths`, `symbols` (≤ 32 × ≤ 1024 chars) | `Repository.search`: `SearchResult` as structured content and compact JSON text, led by `entries_returned` and `more_available` (the lexical limit was hit or a symbol hint was capped); locations, never source |
+| `context` | `query` (required), `repository`, `budget` (0–32768 units, default 2048), `paths`, `symbols` | `Repository.build_context`: `ContextBundle` as structured content; the text is a one-line summary, any degradations and hint issues, then `payload` |
+| `impact` | `key` (required, ≤ 1024 chars, an entity key from a `search` entry), `repository`, `direction` (`upstream` default, or `downstream`), `depth` (0–8, default 3), `limit` (0–100, default 25) | `Repository.impact`: `Impact` as structured content, led by `hops_returned` in the text; `stopped_by` names the bound that cut the walk; locations and relations, never source |
 
-`limit` with `mode="context"` and `budget` with `mode="search"` are `invalid_argument`
-errors, never silently ignored. The output schema is either result type (`anyOf`).
+Arguments that do not apply to a mode are `invalid_argument` errors, never silently ignored:
+`limit` with `context`; `budget` with `search` or `impact`; `paths` and `symbols` with `impact`;
+`query` with `impact`; `key`, `direction` and `depth` outside `impact`. The output schema is any
+of the three result types (`anyOf`).
+
+A blank `query` without `paths` or `symbols` is `invalid_argument` over MCP.
 
 **Migration (2026-10-18, intentional break).** `oxide_context` is gone. Call
 `oxide_search` with `mode="context"`: the arguments, text and structured result are
 the old tool's, byte for byte. A call without `mode` is the old `oxide_search`, with
-the same arguments, defaults and output. Clients that list tools now see one.
+the same arguments, defaults and output (as of that change). Since 2026-11-10 `oxide_search`
+changed: a blank `query` with no `paths` or `symbols` is `invalid_argument`,
+context text adds `# hint` lines for unmatched hints, and `mode="impact"` was added. A separate
+`oxide_impact` tool existed only in uncommitted work and was folded into `mode="impact"` before
+commit, so the server advertises one tool.
 
 Structural search (`Repository.structural_search`) is **not** an MCP mode. In a
 preregistered agent trial, agents given it matched what they already found with grep
