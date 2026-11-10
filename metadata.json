@@ -1,0 +1,48 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M72V0Y8CXZVCDZ6N6CD6F576",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 8,
+  "files_touched": [
+    "docs/adr/0014-precomputed-blast-radius.md",
+    "docs/decisions.md",
+    "docs/public-api.md",
+    "docs/superpowers/specs/2026-11-11-blast-radius-in-search-design.md",
+    "src/oxide/api.py",
+    "src/oxide/cli.py",
+    "src/oxide/core/blast.py",
+    "src/oxide/core/navigation.py",
+    "src/oxide/mcp_server.py",
+    "src/oxide/models.py",
+    "src/oxide/storage/ladybug.py",
+    "src/oxide/storage/store.py",
+    "tests/python/test_cli.py",
+    "tests/python/test_impact.py",
+    "tests/python/test_mcp.py",
+    "tests/python/test_persistence.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "redaction": {
+    "replacements": 322,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 545,
+      "key_context": 0,
+      "provider_token": 12,
+      "shell_stdin": 0
+    }
+  }
+}

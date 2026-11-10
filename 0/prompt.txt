@@ -1,0 +1,33 @@
+Make blast-radius intelligence an automatic, bounded part of OXIDE search and context results instead of a separate MCP mode. Keep oxide impact for detailed CLI exploration, reuse the existing proven graph relationships, and preserve compact structured outputs. Benchmark latency, token overhead, and navigation usefulness before retaining the change.
+
+---
+
+I think the problem in your code, man
+
+---
+
+Blast radius is using from impact, not a new one
+
+---
+
+So rewrite it, reuse what you can
+
+---
+
+It reuse if possible, minimal code change
+
+---
+
+2
+
+---
+
+/cok
+
+---
+
+Resume the user's latest intent. Re-read kept recent messages above the summary to confirm the latest request. If it supersedes earlier plans in the summary, follow it. If no work remains, say so briefly; do not invent work.
+
+---
+
+Validate ADR-0014 before final acceptance. Separate navigation recall from actual context-payload recall, explain the reported improvement despite identical payloads, and benchmark precomputed blast radius on a large repository for indexing cost, memory, storage, and query latency. Preserve the existing design unless evidence identifies a regression.
