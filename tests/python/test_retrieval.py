@@ -121,3 +121,13 @@ def test_limit_bounds_are_inclusive(repo: oxide.Repository) -> None:
     assert repo.search("retry", limit=0).lexical.returned == 0
     assert repo.search("retry", limit=1000).lexical.state == "ran"
     assert repo.build_context("retry", 0).used == 0
+
+
+def test_an_empty_query_is_valid_only_with_a_seed_hint(repo: oxide.Repository) -> None:
+    with pytest.raises(InvalidArgument, match="query is empty"):
+        repo.search("  ")
+    with pytest.raises(InvalidArgument, match="query is empty"):
+        repo.build_context("", 100)
+    assert [e.entity.key for e in repo.search("", paths=["oxidepy/retry.py"]).entries][:1] == [
+        "file:oxidepy/retry.py"
+    ]

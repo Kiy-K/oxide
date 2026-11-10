@@ -20,6 +20,7 @@ from oxide.storage.ladybug import _literal
 STRESS = textwrap.dedent(
     r"""
     import json, sys, oxide
+    from oxide.models import InvalidArgument
     queries = [
         "RetryPolicy", "where failed HTTP requests are retried", "", "   ", "a'b", "\\",
         "'); MATCH (n) DETACH DELETE n; //", "${x} $keys", "naïve café 東京", "\x00\x01",
@@ -30,7 +31,11 @@ STRESS = textwrap.dedent(
         repo.index()
         for round in range(25):
             for query in queries:
-                result = repo.search(query, limit=10)
+                try:
+                    result = repo.search(query, limit=10)
+                except InvalidArgument:
+                    assert not query.strip(), query  # only blank queries are refused
+                    continue
                 keys = [(e.entity.key, e.lexical_score) for e in result.entries]
                 assert seen.setdefault(query, keys) == keys, query
         count = len(repo.files())

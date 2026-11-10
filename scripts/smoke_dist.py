@@ -236,7 +236,10 @@ def main(fixtures: Path) -> None:
         responses = {r.get("id"): r for r in replies}
         check(set(responses) == {1, 2, 3}, f"mcp replies: {replies}")
         tools = responses[3]["result"]["tools"]
-        check([t["name"] for t in tools] == ["oxide_search"], f"mcp tools: {tools}")
+        check(
+            sorted(t["name"] for t in tools) == ["oxide_search"],
+            f"mcp tools: {tools}",
+        )
         entries = responses[2]["result"]["structuredContent"]["entries"]
         check(entries[0]["entity"]["key"].endswith("#TTLCache"), f"mcp search: {entries[:1]}")
         print("smoke: mcp stdio ok")

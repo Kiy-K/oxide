@@ -8,7 +8,7 @@
 `rust-analyzer`, build script, proc macro or repository code runs while indexing or
 querying; `Cargo.toml` files are read as data with the standard library. The ordinary
 Python API, CLI, retrieval, graph, router and context packer serve these files unchanged,
-and MCP remains exactly one tool, `oxide_search`, with `search` and `context` modes.
+and MCP remains exactly one tool, `oxide_search`, with `search`, `context` and `impact` modes.
 
 ## Extraction and identity
 

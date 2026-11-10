@@ -5,7 +5,7 @@ extracts syntax facts with `tree-sitter-c==0.24.2`, and `core/languages/c_resolv
 resolves them over the whole capture. No compiler, preprocessor, build system,
 `compile_commands.json` or repository code runs during indexing or querying. The ordinary
 Python API, CLI, retrieval, graph, router and context packer serve these files unchanged,
-and MCP remains exactly one tool, `oxide_search`, with `search` and `context` modes.
+and MCP remains exactly one tool, `oxide_search`, with `search`, `context` and `impact` modes.
 
 ## Extraction and identity
 

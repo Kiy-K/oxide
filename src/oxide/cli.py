@@ -16,7 +16,7 @@ import sys
 from typing import Any
 
 from oxide.api import open_repository, prepare
-from oxide.models import IndexReport, JudgeStatus, OxideError
+from oxide.models import Impact, IndexReport, JudgeStatus, OxideError, advice
 
 
 def _plain(item: Any) -> Any:
@@ -89,6 +89,21 @@ def _judge_summary(status: JudgeStatus, path: str) -> str:
     )
 
 
+def _impact_summary(impact: Impact) -> str:
+    stop = impact.stopped_by or "none"
+    lines = [
+        f"{impact.direction} of {impact.root.key}: {len(impact.hops)} reached; "
+        f"stopped by {stop}; unresolved call sites {impact.unresolved}"
+    ]
+    if impact.roots != (impact.root.key,):
+        lines.append(f"roots: {_paths(impact.roots)}")
+    for hop in impact.hops:
+        proven = "-" if hop.proven_depth is None else str(hop.proven_depth)
+        cyclic = "  (cyclic)" if hop.cyclic else ""
+        lines.append(f"{hop.depth:>3} {proven:>3} {hop.entity.key}  via {hop.via}{cyclic}")
+    return "\n".join(lines)
+
+
 def main(argv: list[str] | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):  # Windows pipes default to the ANSI code page
         if isinstance(stream, io.TextIOWrapper):
@@ -109,12 +124,13 @@ def main(argv: list[str] | None = None) -> int:
         ("judge", "show, enable or disable the optional JEV judge (sends source)"),
         ("search", "show entry-point candidates for a query"),
         ("context", "build a bounded context bundle for a query"),
+        ("impact", "what depends on an entity (callers, importers, tests) or what it depends on"),
     ):
         command = commands.add_parser(name, help=text)
         command.add_argument("path")
         command.add_argument("--data-dir", help="data location (default: OXIDE_DATA_DIR or XDG)")
         command.add_argument("--json", action="store_true", help="print the typed result as JSON")
-        if name not in ("index", "judge"):
+        if name not in ("index", "judge", "impact"):
             command.add_argument("query")
             command.add_argument("--symbol", action="append", default=[], help="symbol hint")
             command.add_argument("--file", action="append", default=[], help="path hint")
@@ -126,6 +142,17 @@ def main(argv: list[str] | None = None) -> int:
             switch = command.add_mutually_exclusive_group()
             switch.add_argument("--enable", action="store_true", help="authorize sending")
             switch.add_argument("--disable", action="store_true", help="revoke it")
+        if name == "impact":
+            command.add_argument(
+                "key", help="entity key from oxide_search, e.g. symbol:pkg/core.py#low"
+            )
+            command.add_argument(
+                "--direction", choices=("upstream", "downstream"), default="upstream"
+            )
+            command.add_argument("--depth", type=int, default=3, help="hops to follow (0-8)")
+            command.add_argument(
+                "--limit", type=int, default=200, help="entities to return (0-1000)"
+            )
     args = parser.parse_args(argv)
     try:
         if args.command == "prepare":
@@ -156,8 +183,15 @@ def main(argv: list[str] | None = None) -> int:
                     f"{e.lexical_rank or '-':>3} {e.lexical_score or 0:8.3f} {e.entity.key}"
                     for e in result.entries
                 ]
+                hints = [f"hint: {h.kind} {h.hint}: {h.issue}" for h in result.hints]
                 status = f"lexical {result.lexical.state}: {result.lexical.detail}"
-                text = "\n".join([*lines, status])
+                blast = [f"blast {root.line()}" for root in result.blast]
+                text = "\n".join([*lines, *hints, status, *blast])
+            elif args.command == "impact":
+                result = repo.impact(
+                    args.key, direction=args.direction, depth=args.depth, limit=args.limit
+                )
+                text = _impact_summary(result)
             else:
                 result = repo.build_context(
                     args.query, args.budget, paths=args.file, symbols=args.symbol
@@ -168,10 +202,18 @@ def main(argv: list[str] | None = None) -> int:
                 for line in result.degradations:
                     if line.startswith("judge "):
                         print(line, file=sys.stderr)
+                for issue in result.hints:
+                    print(f"hint: {issue.kind} {issue.hint}: {issue.issue}", file=sys.stderr)
+                for root in result.blast:
+                    print(f"blast {root.line()}", file=sys.stderr)
                 text = result.payload
             output = json.dumps(_plain(result), indent=2, ensure_ascii=False) if args.json else text
             print(output.rstrip("\n"))
     except OxideError as error:
         print(f"error[{error.code}]: {error}", file=sys.stderr)
+        repository = getattr(args, "path", None)
+        data_dir = getattr(args, "data_dir", None)
+        if repository is not None and (hint := advice(error, repository, data_dir)):
+            print(f"hint: {hint}", file=sys.stderr)
         return 2
     return 0

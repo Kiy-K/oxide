@@ -18,6 +18,7 @@ from typing import Any
 import ladybug
 
 from oxide.capture import Capture, digest
+from oxide.core import blast
 from oxide.core.indexing import FACTS_FORMAT, Derived, derivation_id
 from oxide.core.languages.python_resolve import Edge
 from oxide.core.retrieval import document
@@ -364,10 +365,10 @@ class Store:
         none = SourceRef("", -1, -1, "")
 
         def entities() -> Iterator[tuple[object, ...]]:
-            for e in derived.entities:
+            for e, root in zip(derived.entities, roots, strict=True):
                 src = e.source or none
                 row = (e.key, e.category, e.kind, e.name, e.signature or "", src.path, src.start)
-                yield (*row, src.end, src.digest, e.test)
+                yield (*row, src.end, src.digest, e.test, *blast.blast_columns(root))
 
         unresolved: dict[str, tuple[object, ...]] = {}
 
@@ -394,9 +395,14 @@ class Store:
                     unresolved.setdefault(node, (node, node[2:]))
                     yield (edge.source, node, edge.kind, edge.basis, *tail(site, edge))
 
+        roots = blast.compute(derived.entities, derived.edges)
         written = {
             table: _write_csv(staging / f"{table}.csv", rows)
-            for table, rows in (("Entity", entities()), ("Rel", rels()), ("Opaque", opaque()))
+            for table, rows in (
+                ("Entity", entities()),
+                ("Rel", rels()),
+                ("Opaque", opaque()),
+            )
         }
         # Filled while Opaque was written; COPY still loads nodes before relationships.
         written["Unresolved"] = _write_csv(staging / "Unresolved.csv", unresolved.values())

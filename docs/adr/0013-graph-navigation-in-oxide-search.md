@@ -2,12 +2,17 @@
 
 ## Status
 
-**Proposed**, 2026-10-25. Nothing is implemented in `src/oxide`. The experimental server
+**Proposed**, 2026-10-25; `mode=impact` implemented 2026-11-10 (see below). The experimental server
 lives only in `docs/phase-6/agc-v4/scripts/server.py` (at `013e791`). AGC v4, the study
 that was to decide it, stopped at stage 1 without promoting the interface
 ([docs/phase-6/agc-v4](https://github.com/Kiy-K/oxide/blob/013e7910d6fe8b9df9ba753bd68e2b6468bb4e51/docs/phase-6/agc-v4/README.md)):
 there is no evidence for this proposal yet. It can become Accepted only through a new
 preregistered study that promotes it, and the maintainer's agreement.
+
+**Partly implemented, 2026-11-10:** `oxide_search` has `mode=impact` over `Repository.impact`, with
+the entity `key` as an argument (not `callers`/`callees` in `query`), and `oxide impact` is the CLI
+counterpart. The rest stays Proposed: `callers`/`callees` with relation evidence, `outline`, and
+downstream unresolved calls need the study below.
 
 ## Context
 

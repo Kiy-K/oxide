@@ -35,8 +35,10 @@ from typing import Any
 import ladybug
 
 from oxide.capture import digest
+from oxide.core.blast import BLAST_VERSION, blast_from_columns
 from oxide.core.indexing import FACTS_FORMAT, components
 from oxide.models import (
+    BlastRoot,
     Closed,
     Entity,
     FileInfo,
@@ -56,7 +58,7 @@ from oxide.storage.fts import (
     fts_unavailable,
 )
 
-SCHEMA_VERSION = "oxide-ladybug-py-v4"
+SCHEMA_VERSION = "oxide-ladybug-py-v5"
 STORAGE_FORMAT = 47
 # The pool of every read view, and the floor of a load's. A load holds what it copies
 # in the pool until it commits: measured ~1.6 MiB per CSV MiB (VS Code, 554k relations,
@@ -89,6 +91,7 @@ def storage_components(lexical: bool) -> dict[str, str]:
         "storage-format": str(STORAGE_FORMAT),
         "ladybug": version("ladybug"),
         "lexical": FTS_COMPONENT if lexical else "unavailable",
+        "blast": BLAST_VERSION,
     }
 
 
@@ -157,7 +160,8 @@ def _write_atomic(path: Path, data: bytes) -> None:
 _SCHEMA = (
     "CREATE NODE TABLE Entity(key STRING PRIMARY KEY, category STRING, kind STRING, name STRING, "
     "signature STRING, path STRING, start_byte INT64, end_byte INT64, digest STRING, "
-    "test BOOLEAN)",
+    "test BOOLEAN, blast_dependents INT64, blast_tests INT64, blast_file_count INT64, "
+    "blast_files STRING, blast_unresolved INT64, blast_stopped_by STRING)",
     "CREATE NODE TABLE Unresolved(key STRING PRIMARY KEY, name STRING)",
     # One row: the generation identity, so a swapped-in foreign graph fails closed.
     "CREATE NODE TABLE Identity(key STRING PRIMARY KEY)",
@@ -346,6 +350,18 @@ class View:
             return {}
         query = f"MATCH (e:Entity) WHERE e.key IN $keys RETURN {_ENTITY}"
         return {row[0]: _entity(row) for row in self._query(query, {"keys": wanted})}
+
+    def entries(self, keys: Iterable[str]) -> dict[str, tuple[Entity, BlastRoot]]:
+        wanted = sorted(set(keys))
+        if not wanted:
+            return {}
+        rows = self._query(
+            f"MATCH (e:Entity) WHERE e.key IN $keys RETURN {_ENTITY}, e.blast_dependents, "
+            "e.blast_tests, e.blast_file_count, e.blast_files, "
+            "e.blast_unresolved, e.blast_stopped_by",
+            {"keys": wanted},
+        )
+        return {row[0]: (_entity(row[:10]), blast_from_columns(row[0], row[10:])) for row in rows}
 
     def named(self, name: str, limit: int) -> tuple[list[str], bool]:
         rows = self._query(
