@@ -15,9 +15,9 @@ built single-threaded while the graph loads (LadybugDB has one writer per databa
 
 A generation is built in ``<g>.staging``, bulk-loaded with ``COPY``, read back and
 compared, checkpointed, fsynced and renamed; only then does ``CURRENT`` move. A
-failure leaves the previous generation current. On open, anything but the current
-generation is deleted. A crash inside a same-name rebuild is undone; any other
-``CURRENT`` naming a missing generation fails closed and nothing is deleted.
+failure leaves the previous generation current. On open and publish, unpinned
+(pins.py) non-current generations are deleted. A crash inside a same-name rebuild
+is undone; any other ``CURRENT`` naming a missing generation fails closed.
 """
 
 from __future__ import annotations

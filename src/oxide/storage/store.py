@@ -8,7 +8,6 @@ import json
 import os
 import secrets
 import shutil
-import sys
 import weakref
 from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor
@@ -31,12 +30,6 @@ from oxide.models import (
     SourceRef,
     StoreCorrupt,
 )
-
-if sys.platform == "win32":
-    import msvcrt
-else:
-    import fcntl
-
 from oxide.storage.fts import fts_location
 from oxide.storage.ladybug import (
     _HEX64,
@@ -55,6 +48,8 @@ from oxide.storage.ladybug import (
     load_pool,
     unresolved_key,
 )
+from oxide.storage.pins import sweep, try_lock
+from oxide.storage.reader import read_repo_id
 
 
 def _link(retained: Path, blob: Path, data: bytes) -> bool:
@@ -104,17 +99,9 @@ class Store:
         self.dir.mkdir(parents=True, exist_ok=True)
         # Not inherited by child processes (PEP 446), so only this process owns it.
         lock = os.open(self.dir / "store.lock", os.O_RDWR | os.O_CREAT, 0o600)
-        try:
-            if sys.platform == "win32":
-                try:
-                    msvcrt.locking(lock, msvcrt.LK_NBLCK, 1)
-                except OSError as error:  # held by another handle
-                    raise BlockingIOError(*error.args) from error
-            else:
-                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError as error:
+        if not try_lock(lock):
             os.close(lock)
-            raise OwnershipConflict(f"{root}: its store is open in another OXIDE") from error
+            raise OwnershipConflict(f"{root}: its store is open in another OXIDE")
         self._release = weakref.finalize(self, os.close, lock)
         self._view: View | None = None
         try:
@@ -135,16 +122,7 @@ class Store:
             repo_id = secrets.token_hex(16)
             _write_atomic(path, json.dumps({"repo_id": repo_id, "root": str(self.root)}).encode())
             return repo_id
-        try:
-            meta = json.loads(path.read_bytes())
-            root, repo_id = meta["root"], meta["repo_id"]
-        except (OSError, ValueError, KeyError, TypeError) as error:
-            raise StoreCorrupt(f"{path}: unreadable ({error!r}); remove {self.dir}") from error
-        if root != str(self.root):
-            raise StoreCorrupt(f"{self.dir}: belongs to {root!r}")
-        if not (isinstance(repo_id, str) and repo_id):
-            raise StoreCorrupt(f"{path}: invalid repo_id {repo_id!r}; remove {self.dir}")
-        return repo_id
+        return read_repo_id(self.dir, self.root)
 
     def _restore(self, name: str) -> None:
         """Undoes publish's first rename when its second one never happened."""
@@ -170,10 +148,8 @@ class Store:
             if not (self.generations / current / "MANIFEST.json").is_file():
                 # Ambiguous: nothing is deleted, nothing is served.
                 raise StoreCorrupt(f"{pointer} names a missing generation; remove {self.dir}")
-        # No view can be pinned before this owner existed: everything else is garbage.
-        for entry in self.generations.iterdir():
-            if entry.name != current:
-                shutil.rmtree(entry, ignore_errors=True)
+        # Everything else is garbage unless a live reader pins it (storage/pins.py).
+        sweep(self.dir, self.generations, current)
         return current
 
     def view(self) -> View:
@@ -283,10 +259,9 @@ class Store:
             self._restore(name)
             raise
         _write_atomic(self.dir / "CURRENT", name.encode())
-        previous, self.current = self.current, name
+        self.current = name
         self._drop_view()
-        for stale in {previous, f"{name}.replaced"} - {name, None}:
-            shutil.rmtree(self.generations / str(stale), ignore_errors=True)
+        sweep(self.dir, self.generations, name)
 
     def _retain(self, staging: Path, capture: Capture) -> None:
         """Makes the captured bytes durable in the staging's ``source`` directory."""

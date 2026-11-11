@@ -9,7 +9,8 @@
         print(bundle.payload)
 
 Every result names the snapshot it was read from. A ``Repository`` owns its store
-exclusively (a second owner, in any process, gets ``OwnershipConflict``). Calls are
+exclusively (a second owner, in any process, gets ``OwnershipConflict``, unless it opens
+with ``shared=True`` and reads the owner's published generations). Calls are
 serialized with automatic local filesystem updates.
 """
 
@@ -25,10 +26,12 @@ from types import TracebackType
 from typing import Any, Literal
 
 from oxide import _index, jev
+from oxide._args import count as _count
+from oxide._args import hints as _hints
+from oxide._args import texts as _texts
 from oxide.capture import CaptureCache
-from oxide.core import navigation, ordering, packing, retrieval, routing, structural
+from oxide.core import lookup, navigation, ordering, packing, retrieval, routing, structural
 from oxide.core.blast import BLAST_ROOTS
-from oxide.core.retrieval import Hints
 from oxide.models import (
     BlastRoot,
     Closed,
@@ -42,14 +45,18 @@ from oxide.models import (
     InvalidArgument,
     InvalidPath,
     JudgeStatus,
+    OwnershipConflict,
     Relation,
     RouteSummary,
     SearchResult,
     Snapshot,
     StructuralResult,
 )
+from oxide.models_nav import Inspection, Outline, References
+from oxide.storage import nav
 from oxide.storage.fts import prepare_fts
 from oxide.storage.ladybug import View, default_data_dir
+from oxide.storage.reader import Reader
 from oxide.storage.store import Store
 from oxide.tracking import RECONCILE_SECONDS, Tracking, serialized
 
@@ -57,49 +64,6 @@ from oxide.tracking import RECONCILE_SECONDS, Tracking, serialized
 MAX_LIMIT = 1000
 MAX_BUDGET = 1 << 20
 MAX_DEPTH = 8
-_MAX_OFFSET = (1 << 63) - 1  # LadybugDB INT64
-
-
-def _count(name: str, value: object, high: int) -> int:
-    if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= high:
-        raise InvalidArgument(f"{name} must be an integer in [0, {high}], got {value!r}")
-    return value
-
-
-def _texts(name: str, values: Iterable[str]) -> tuple[str, ...]:
-    try:
-        out = () if isinstance(values, str) else tuple(values)
-    except TypeError:
-        out = None
-    if out is None or isinstance(values, str) or not all(isinstance(v, str) for v in out):
-        raise InvalidArgument(f"{name} must be an iterable of strings, got {values!r}")
-    return out
-
-
-def _hints(
-    query: str,
-    paths: Iterable[str],
-    symbols: Iterable[str],
-    selection: tuple[str, int, int] | None,
-    changed: Iterable[str],
-) -> Hints:
-    if not isinstance(query, str):
-        raise InvalidArgument(f"query must be a string, got {query!r}")
-    if selection is not None:
-        if not (isinstance(selection, tuple) and len(selection) == 3):
-            raise InvalidArgument(f"selection must be (path, start, end), got {selection!r}")
-        path, start, end = selection
-        _texts("selection path", [path])
-        if _count("selection start", start, _MAX_OFFSET) > _count(
-            "selection end", end, _MAX_OFFSET
-        ):
-            raise InvalidArgument(f"selection start {start} is after its end {end}")
-    seed_paths = _texts("paths", paths)
-    seed_symbols = _texts("symbols", symbols)
-    seed_changed = _texts("changed", changed)
-    if not query.strip() and not (selection or seed_paths or seed_symbols or seed_changed):
-        raise InvalidArgument("query is empty: give words or identifiers, or a path or symbol hint")
-    return Hints(selection, seed_paths, seed_symbols, seed_changed)
 
 
 def _blast(known: Mapping[str, tuple[Entity, BlastRoot]], keys: list[str]) -> tuple[BlastRoot, ...]:
@@ -113,6 +77,7 @@ class Repository:
         path: str | os.PathLike[str],
         data_dir: str | os.PathLike[str] | None = None,
         create: bool = True,
+        shared: bool = False,
     ) -> None:
         try:
             root = Path(path).resolve(strict=True)
@@ -122,12 +87,19 @@ class Repository:
             raise InvalidPath(f"{root}: not a directory")
         self.root = root
         data = Path(data_dir or default_data_dir()).absolute()
-        self._store: Store | None = Store(root, data, create)
+        self._store: Store | Reader | None
+        try:
+            self._store = Store(root, data, create)
+        except OwnershipConflict:
+            if not shared:
+                raise
+            # Another process owns the store: read its pinned generations; never index or watch.
+            self._store = Reader(root, data)
         self._lock = threading.RLock()
         self._cache: CaptureCache = {}
         self._active = False
-        self._tracking = Tracking(self, data)
-        self._finalizer = weakref.finalize(self, self._tracking.close)
+        self._watch = Tracking(self, data) if isinstance(self._store, Store) else None
+        self._finalizer = weakref.finalize(self, self._watch.close) if self._watch else None
 
     def __enter__(self) -> Repository:
         return self
@@ -141,20 +113,40 @@ class Repository:
         self.close()
 
     def close(self) -> None:
-        self._tracking.stop.set()
+        if self._watch is not None:
+            self._watch.stop.set()
         with self._lock:
             if self._store is not None:
                 self._store.close()
                 self._store = None
                 self._cache.clear()
-        self._tracking.close()
-        self._finalizer.detach()
+        if self._watch is not None and self._finalizer is not None:
+            self._watch.close()
+            self._finalizer.detach()
 
     @property
-    def store(self) -> Store:
+    def _tracking(self) -> Tracking:
+        return self._watch  # type: ignore[return-value]  # None only when read-only
+
+    @property
+    def read_only(self) -> bool:
+        """True when another process owns the store and this handle only reads it."""
+        return self._watch is None
+
+    @property
+    def store(self) -> Store | Reader:
         if self._store is None:
             raise Closed(f"{self.root}: repository is closed")
         return self._store
+
+    def _owned(self) -> tuple[Store, Tracking]:
+        if not isinstance(self._store, Store) or self._watch is None:
+            if self._store is None:
+                raise Closed(f"{self.root}: repository is closed")
+            raise InvalidArgument(
+                f"{self.root}: another process owns this store; this handle only reads"
+            )
+        return self._store, self._watch
 
     @property
     def repo_id(self) -> str:
@@ -163,23 +155,25 @@ class Repository:
     @serialized
     def index(self, *, progress: Callable[[str], None] | None = None) -> IndexReport:
         """Fully reconcile captured bytes and publish atomically, reusing unchanged parse facts."""
+        self._owned()
         return self._index(True, progress, rehash=True)
 
     def _index(
         self, full: bool, progress: Callable[[str], None] | None = None, *, rehash: bool = False
     ) -> IndexReport:
-        self._tracking.dirty.clear()
+        store, tracking = self._owned()
+        tracking.dirty.clear()
         if rehash:  # periodic reconciliation only re-walks; stat keys decide which bytes to re-read
             self._cache.clear()
         try:
-            report = _index.index(self.root, self.store, self._cache, progress)
+            report = _index.index(self.root, store, self._cache, progress)
         except Exception:
-            self._tracking.dirty.set()
+            tracking.dirty.set()
             raise
         self._active = True
-        self._tracking.error = None
+        tracking.error = None
         if full:
-            self._tracking.last_full = time.monotonic()
+            tracking.last_full = time.monotonic()
         return report
 
     @serialized
@@ -192,10 +186,13 @@ class Repository:
 
     def _view(self) -> View:
         # Preserve explicit not-indexed, incompatible and corrupt-store failures on first read.
-        self.store.view()
-        full = not self._active or time.monotonic() - self._tracking.last_full >= RECONCILE_SECONDS
-        if full or self._tracking.dirty.is_set() or self._tracking.failed:
-            self._index(full or self._tracking.failed)
+        view = self.store.view()
+        tracking = self._watch
+        if tracking is None:  # read-only: the owner publishes, this handle follows
+            return view
+        full = not self._active or time.monotonic() - tracking.last_full >= RECONCILE_SECONDS
+        if full or tracking.dirty.is_set() or tracking.failed:
+            self._index(full or tracking.failed)
         return self.store.view()
 
     @property
@@ -253,6 +250,37 @@ class Repository:
             view.mentions(names, ("calls", "references")) if direction == "upstream" else 0,
             found.stopped_by,
         )
+
+    @serialized
+    def outline(self, target: str | None = None, *, limit: int = 500) -> Outline:
+        """Declarations of the indexed file ``target``, or of the files under that directory
+        (``None``: the whole repository), in path then source order, with lines and
+        signatures from the captured snapshot. At most ``limit`` declarations."""
+        if target is not None:
+            _texts("target", [target])
+        view = self._view()
+        return lookup.outline(
+            view,
+            lambda paths: nav.declarations(view, paths),
+            target,
+            _count("limit", limit, MAX_LIMIT),
+        )
+
+    @serialized
+    def inspect(self, symbol: str, *, limit: int = 20) -> Inspection:
+        """Resolve a name, ``Outer.inner``, ``path``, ``path:line``, ``path#Outer.inner`` or
+        entity key. One match is described (kind, signature, lines, parent, members, relation
+        counts by label); several are returned as ranked candidates, never guessed between."""
+        _texts("symbol", [symbol])
+        return lookup.inspect(self._view(), symbol, _count("limit", limit, MAX_LIMIT))
+
+    @serialized
+    def refs(self, symbol: str, *, limit: int = 50) -> References:
+        """Relations of the one entity ``symbol`` resolves to (as ``inspect``): callers,
+        references, imports and tests in; callees and imports out. Each is labelled proven,
+        heuristic, ambiguous or unresolved. Evidence, not an exhaustive claim."""
+        _texts("symbol", [symbol])
+        return lookup.refs(self._view(), symbol, _count("limit", limit, MAX_LIMIT))
 
     @serialized
     def search(
@@ -328,6 +356,7 @@ class Repository:
         if enable is not None and not isinstance(enable, bool):
             raise InvalidArgument(f"enable must be True, False or None, got {enable!r}")
         if enable is not None:
+            self._owned()  # the authorization is a write to the owner's store
             (jev.authorize if enable else jev.revoke)(self)
         return jev.status(self)
 
@@ -447,12 +476,15 @@ def open_repository(
     *,
     data_dir: str | os.PathLike[str] | None = None,
     create: bool = True,
+    shared: bool = False,
 ) -> Repository:
     """Opens (and exclusively owns) the store of the repository at ``path``. Nothing is
     indexed until ``index()``; reads before that raise ``NotIndexed``. With
     ``create=False`` (read-only clients) a repository without a store raises
-    ``NotIndexed`` here, and nothing is written."""
-    return Repository(path, data_dir, create)
+    ``NotIndexed`` here, and nothing is written. With ``shared=True`` an owned store
+    does not raise ``OwnershipConflict``: the handle reads the owner's latest published
+    generation, pinned (``Repository.read_only``; it neither indexes nor watches)."""
+    return Repository(path, data_dir, create, shared)
 
 
 def index_repository(

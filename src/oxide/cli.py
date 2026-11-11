@@ -16,6 +16,7 @@ import sys
 from typing import Any
 
 from oxide.api import open_repository, prepare
+from oxide.cli_nav import inspect_text, outline_text, refs_text
 from oxide.models import Impact, IndexReport, JudgeStatus, OxideError, advice
 
 
@@ -125,12 +126,15 @@ def main(argv: list[str] | None = None) -> int:
         ("search", "show entry-point candidates for a query"),
         ("context", "build a bounded context bundle for a query"),
         ("impact", "what depends on an entity (callers, importers, tests) or what it depends on"),
+        ("outline", "declarations of an indexed file or directory, with lines"),
+        ("inspect", "resolve a name, path or path:line to its definition and relations"),
+        ("refs", "callers, references and imports of a name, labelled by evidence"),
     ):
         command = commands.add_parser(name, help=text)
         command.add_argument("path")
         command.add_argument("--data-dir", help="data location (default: OXIDE_DATA_DIR or XDG)")
         command.add_argument("--json", action="store_true", help="print the typed result as JSON")
-        if name not in ("index", "judge", "impact"):
+        if name not in ("index", "judge", "impact", "outline", "inspect", "refs"):
             command.add_argument("query")
             command.add_argument("--symbol", action="append", default=[], help="symbol hint")
             command.add_argument("--file", action="append", default=[], help="path hint")
@@ -142,6 +146,12 @@ def main(argv: list[str] | None = None) -> int:
             switch = command.add_mutually_exclusive_group()
             switch.add_argument("--enable", action="store_true", help="authorize sending")
             switch.add_argument("--disable", action="store_true", help="revoke it")
+        if name == "outline":
+            command.add_argument("target", nargs="?", help="indexed file or directory")
+            command.add_argument("--limit", type=int, default=500, help="declarations (0-1000)")
+        if name in ("inspect", "refs"):
+            command.add_argument("symbol", help="name, Outer.inner, path:line or entity key")
+            command.add_argument("--limit", type=int, default=20 if name == "inspect" else 50)
         if name == "impact":
             command.add_argument(
                 "key", help="entity key from oxide_search, e.g. symbol:pkg/core.py#low"
@@ -165,8 +175,18 @@ def main(argv: list[str] | None = None) -> int:
             serve_mcp(args.repo, args.data_dir, args.http, args.host, args.port)
             return 0
         # Reads never leave an empty store behind.
+        code = 0
         create = args.command == "index" or getattr(args, "enable", False)
-        with open_repository(args.path, data_dir=args.data_dir, create=create) as repo:
+        # Navigation reads attach to a running owner (e.g. `oxide mcp`) instead of failing.
+        shared = args.command in ("outline", "inspect", "refs")
+        with open_repository(
+            args.path, data_dir=args.data_dir, create=create, shared=shared
+        ) as repo:
+            if repo.read_only:
+                print(
+                    "oxide: another process owns the store; reading its latest snapshot",
+                    file=sys.stderr,
+                )
             result: Any
             if args.command == "index":
                 result = repo.index(progress=lambda line: print(f"oxide: {line}", file=sys.stderr))
@@ -187,6 +207,17 @@ def main(argv: list[str] | None = None) -> int:
                 status = f"lexical {result.lexical.state}: {result.lexical.detail}"
                 blast = [f"blast {root.line()}" for root in result.blast]
                 text = "\n".join([*lines, *hints, status, *blast])
+            elif args.command == "outline":
+                result = repo.outline(args.target, limit=args.limit)
+                text = outline_text(result)
+            elif args.command == "inspect":
+                result = repo.inspect(args.symbol, limit=args.limit)
+                text = inspect_text(result)
+                code = 0 if result.status == "resolved" else 1
+            elif args.command == "refs":
+                result = repo.refs(args.symbol, limit=args.limit)
+                text = refs_text(result)
+                code = 0 if result.status == "resolved" else 1
             elif args.command == "impact":
                 result = repo.impact(
                     args.key, direction=args.direction, depth=args.depth, limit=args.limit
@@ -209,6 +240,7 @@ def main(argv: list[str] | None = None) -> int:
                 text = result.payload
             output = json.dumps(_plain(result), indent=2, ensure_ascii=False) if args.json else text
             print(output.rstrip("\n"))
+            return code
     except OxideError as error:
         print(f"error[{error.code}]: {error}", file=sys.stderr)
         repository = getattr(args, "path", None)
