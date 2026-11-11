@@ -1,0 +1,47 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M75A6DH8YD7B3QZTSX3A7YXS",
+  "session_id": "01a1ca9a-5be4-77c2-ab8f-7af49a4afa05",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-11T12:44:17.027081023Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "docs/public-api.md",
+    "docs/spec/SPEC.md",
+    "src/oxide/__init__.py",
+    "src/oxide/api.py",
+    "src/oxide/cli.py",
+    "src/oxide/storage/ladybug.py",
+    "src/oxide/storage/store.py"
+  ],
+  "agent": "Pi",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "5c8a64e870ab",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 5237,
+    "cache_creation_tokens": 144117,
+    "cache_read_tokens": 2906556,
+    "output_tokens": 19445,
+    "api_call_count": 37
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 1
+  }
+}
