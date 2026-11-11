@@ -48,7 +48,8 @@ cannot help, and nothing told a caller that the index was intact (issue #55 hit 
 - `oxide.models.ResourceExhausted(OxideError)` with `code = "resource_exhausted"`, and an
   `ADVICE` entry. Both clients handle it generically by `code`: MCP prints
   `error[<code>]: <advice>`; the CLI prints `error[<code>]: <message>` and a `hint:` line
-  with the advice. Neither client has a test for this code.
+  with the advice. Both have a test with a 64 KiB pool, in process (the pool size is a
+  module value); the MCP one also checks that a retry on the same server succeeds.
 - `oxide.storage.read_failure(directory, error, what)` is the one classifier. It matches the
   native message phrase `buffer pool is full` (ladybug 0.21) and returns `ResourceExhausted`,
   else `StoreCorrupt`. `View._query` and both open-time `except RuntimeError` blocks in

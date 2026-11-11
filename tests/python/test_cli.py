@@ -8,8 +8,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 from conftest import FIXTURE, env
 
+import oxide.storage.ladybug as storage
+from oxide.cli import main
 from oxide.models import InvalidArgument, NotIndexed, advice
 
 
@@ -133,6 +136,26 @@ def test_impact_and_empty_query_failures_exit_2_with_advice(tmp_path: Path, fts:
     assert "find keys with oxide search" in unknown.stderr
     empty = oxide(data, "search", *target, "")
     assert empty.returncode == 2 and "query is empty" in empty.stderr
+
+
+def test_a_full_read_pool_exits_2_with_its_own_code_and_a_retry_hint(
+    repo_copy: Path,
+    tmp_path: Path,
+    fts: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    # In process: the pool size is a module value, and a subprocess cannot shrink it.
+    target = (str(repo_copy), "--data-dir", str(tmp_path / "cli-data"))
+    assert main(["index", *target]) == 0
+    capsys.readouterr()
+    with monkeypatch.context() as patch:
+        patch.setattr(storage, "BUFFER_POOL", 64 << 10)
+        assert main(["search", *target, "RetryPolicy"]) == 2
+    err = capsys.readouterr().err
+    assert err.startswith("error[resource_exhausted]:") and "buffer pool is full" in err
+    assert "hint: " in err and "retry" in err and "oxide index" not in err
+    assert main(["search", *target, "RetryPolicy"]) == 0  # intact: the next run just works
 
 
 def test_advice_is_a_copy_pasteable_recovery_command() -> None:

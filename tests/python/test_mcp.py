@@ -117,6 +117,24 @@ async def test_search_and_context_return_structured_evidence(indexed: Path) -> N
     assert "### oxidepy/retry.py:" in payload
 
 
+async def test_a_full_read_pool_is_a_retryable_tool_error_not_damage(
+    indexed: Path, monkeypatch: pytest.MonkeyPatch, private_data: Path
+) -> None:
+    import oxide.storage.ladybug as storage
+
+    async with Client(server([str(indexed)])) as served:
+        with monkeypatch.context() as patch:
+            patch.setattr(storage, "BUFFER_POOL", 64 << 10)
+            full = await call(served, "oxide_search", query="RetryPolicy")
+        assert full.is_error and "error[resource_exhausted]" in text(full)
+        assert "retry" in text(full) and "oxide index" not in text(full)
+        assert str(private_data) not in text(full)
+        # The failed handle was evicted and closed, so a retry reopens and succeeds.
+        again = await call(served, "oxide_search", query="RetryPolicy")
+        assert not again.is_error and again.structured_content["entries"]
+    assert_unlocked(indexed)
+
+
 async def test_empty_results_are_successes(indexed: Path) -> None:
     async with Client(server([str(indexed)])) as client:
         found = await call(client, "oxide_search", query="zzqqxxvv")
