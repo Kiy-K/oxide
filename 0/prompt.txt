@@ -1,0 +1,66 @@
+Read https://github.com/Kiy-K/oxide/issues/60 and implement it, be cautious with your new code even you wrote it and later use a good subagent to review your code
+
+---
+
+Delegated task node:delegated-task:command%3Amcp%3A9169f31f-c295-4861-b354-ade7785f33e9%3Adelegate-task%3Ae0851965-2d4e-4106-9595-f5fe32dfb395 (Review issue #60 nav CLI + shared reader) [completed]:
+## Review of the uncommitted navigation and reader changes (issue #60)
+
+I found no blockers. The race findings are inferred from reading the code. I did not reproduce any of them in a test.
+
+### Major
+
+1. **A reader's cached view can survive a same-name rebuild and then point at a deleted directory.** This is inferred.
+   - `Reader.view()` returns the cached `View` whenever the CURRENT string equals `self.current` (`storage/reader.py`, `view()`).
+   - `Store.publish` can rebuild a generation under the same name when the current one is unreadable or stale. It renames `generations/N` to `N.replaced`, renames staging to `N` and rewrites CURRENT with the same value.
+   - It then calls `pins.sweep`. `N.replaced` is not a 64-hex name, so sweep always deletes it, even while a reader has `N` pinned (`storage/pins.py:84-91`).
+   - Scenario:
+     1. A reader holds a view on `N`.
+     2. The owner rebuilds `N`.
+     3. The reader's CURRENT check still matches, so it keeps serving the old, now-deleted directory.
+     4. The next lazy `View.source` read raises `StoreCorrupt` ("retained source missing").
+   - Fix: key the reader's cache on `(CURRENT, os.stat(generations/N).st_ino/st_dev)`. Alternatively, have sweep skip `<N>.replaced` while `N` is pinned.
+
+2. **An unlinked-but-locked pin can hide a live reader from the owner.** This is inferred.
+   - In `pinned()` (`storage/pins.py:70-78`) the owner closes its probe fd, which releases the flock, and only then unlinks the entry.
+   - In that gap a reader's `pin()` can win the lock and pass its `st_nlink` check (`pins.py:48`). The owner then unlinks the file.
+   - The reader now holds a lock on an unlinked file, so no later sweep sees it. The next publish deletes the reader's generation under its open `View`.
+   - The `st_nlink` check only covers an unlink that happened before the lock.
+   - Fix: unlink while still holding the probe lock, then close. On POSIX that closes the window. On Windows an unlink of a locked file fails, which the existing `except OSError` already treats as "live".
+
+### Minor
+
+3. **Pin scan fails open.** `pinned()` does `except OSError: continue` on `os.open` (`pins.py:67-69`). EMFILE, EACCES or EIO then count as "not pinned", and the generation is swept. Treat any open failure other than `FileNotFoundError` as pinned.
+4. **Lock errors are misreported.** `try_lock` maps every `OSError` to "held" (`pins.py:34`). ENOLCK or EIO on the store lock now surfaces as `OwnershipConflict` ("open in another OXIDE") instead of the real error. Catch `BlockingIOError` on POSIX. On Windows, catch `OSError` and check `errno` for EACCES or EDEADLOCK. The original `from error` was also dropped.
+5. **Pin leak in `Reader.view()`.** The `_current()` call after `pin()` can raise `StoreCorrupt` without unpinning, so the pin fd and file leak. Wrap the post-pin steps in try/except BaseException.
+6. **Reader writes to the store, and failures are unmapped.** `pin()` calls `mkdir` and `O_CREAT` inside the store. On a read-only filesystem, or with ENOSPC or EACCES, the caller gets a raw `OSError` instead of an `OxideError`, and the CLI promises "exit 1 with a traceback is a bug" (`cli.py:6`). Map these to a domain error.
+7. **The retry loop has no backoff.** `ATTEMPTS=5` runs back to back (`reader.py`). During a rebuild window the reader can spuriously fail with `OwnershipConflict` ("the index changed under every read"). A short sleep or jitter would help.
+8. **No finalizer for the reader path.** `Repository.__init__` only registers a `weakref.finalize` when it is the owner (`api.py`). A leaked read-only handle keeps its pin until process exit.
+9. **`core/lookup.py` resolution nits (all inferred):**
+   - A path query such as `src/oxide/core/lookup.py` also runs `view.named("py")`. A symbol named `py` would turn an exact path into "ambiguous".
+   - `path:0` is treated as a plain path and resolves silently.
+   - `outline(limit=0)` on a single file with no symbols sets `truncated=True` wrongly.
+   - An unsupported single file returns an empty `Outline` with `unsupported=1` instead of an error.
+   - Targets are not normalised for `./` or backslashes.
+   - A lone `\r` is not handled as a line break. CRLF is.
+10. **Label mismatch.** An ambiguous relation with `basis=heuristic` (Python dispatch candidates) is labelled just "ambiguous" (`lookup.py:216`). `ladybug.py:426` counts it as heuristic. `refs` also cannot group alternatives of one ambiguous site, because `Reference` does not expose `site`.
+11. **`inspect` loads every relation of an entity.** `view.relations(key)` is unbounded, so hub entities are expensive. `Inspection.truncated` also means "candidates cut" or "members cut" depending on status.
+12. **`refs` ordering can vary.** Ties on `(label, path, line, kind, other_key)` fall back to database order.
+13. **Terminal escapes.** `cli_nav.py` prints raw signatures from the repo, so control or ANSI characters pass through. Sanitise for text output only.
+14. **File size.** `api.py` and `storage/ladybug.py` are both exactly 500 lines, so the next change breaks the cap.
+
+### Tests (`tests/python/test_navigation.py`)
+
+- There is no coverage of any race: pin versus sweep, CURRENT moving between read and pin, a stale pin, a same-name rebuild, or the `ATTEMPTS` exhaustion path. Findings 1 and 2 would go unnoticed.
+- The final assertion in `test_a_reader_follows_the_owner...` is `not (…).glob("*") or not list(…iterdir())`. `glob()` returns a generator, which is always truthy, so the first clause is always false. The check is confusing and equivalent to just the second clause. Assert the pins directory is empty directly.
+- Nothing tests that a reader fails closed when the pin scan hits EMFILE, or that a read-only filesystem gives a domain error.
+- `test_cli_navigation_errors_are_typed` and the language round-trip tests exist. I did not check their assertions for strength.
+
+### Verified by reading the code
+
+- The reader opens its databases with `read_only=True` (`ladybug.py:256,277`) and takes no store lock.
+- The pin-then-recheck-CURRENT loop correctly handles a CURRENT change between read and pin.
+- `Repository(shared=True)` falls back to a `Reader` only on `OwnershipConflict`. Writers raise `InvalidArgument` ("only reads") through `_owned()`.
+- `proven`, `heuristic`, `ambiguous` and `unresolved` agree with `core/blast.py:49-50` and `docs/public-api.md:82-90` for resolved edges.
+- Resolution never guesses on ambiguity. It returns ranked candidates.
+
+Ponytail note: I did not run or reproduce any race, test Windows `msvcrt` semantics, or read `cli_nav.py` and `models_nav.py` line by line beyond the first pass. Findings 1 and 2 are the ones to prove with a test before merge, since they can serve or delete a generation under a live reader.
