@@ -265,7 +265,7 @@ class View:
             owner = [r[0] for r in _rows(self._conn, "MATCH (i:Identity) RETURN i.key")]
         except RuntimeError as error:
             self.close()
-            raise StoreCorrupt(f"{directory}: unreadable database ({error})") from error
+            raise read_failure(directory, error, "unreadable database") from error
         if owner != [identity(self.snapshot)]:
             self.close()
             raise StoreCorrupt(f"{directory}: database belongs to another generation")
@@ -285,7 +285,7 @@ class View:
                 owner = [r[0] for r in _rows(self._lexical, "MATCH (i:Identity) RETURN i.key")]
             except RuntimeError as error:
                 self.close()
-                raise StoreCorrupt(f"{directory}: unreadable lexical index ({error})") from error
+                raise read_failure(directory, error, "unreadable lexical index") from error
             if owner != [manifest.get("lexical")] or docs != entities:
                 self.close()
                 raise StoreCorrupt(f"{directory}: lexical index belongs to another generation")

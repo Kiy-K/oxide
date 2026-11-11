@@ -214,16 +214,26 @@ def test_a_full_read_pool_is_resource_exhaustion_and_other_native_failures_are_d
     import oxide.storage.ladybug as storage
 
     full = "Buffer manager exception: Unable to allocate memory! The buffer pool is full"
-    for message, expected in ((full, ResourceExhausted), ("Corrupted page", StoreCorrupt)):
+    root = repo.root
+    cases = ((full, ResourceExhausted), ("Corrupted page", StoreCorrupt))
+    for message, expected in cases:
 
         def fail(*_: object, message: str = message) -> list[Any]:
             raise RuntimeError(message)
 
-        monkeypatch.setattr(storage, "_rows", fail)
-        with pytest.raises(expected) as caught:
-            repo.impact("symbol:pkg/core.py#low")
-        assert type(caught.value) is expected  # distinct: not a subclass of the other
-    assert caught.value.code == "store_corrupt"
+        with monkeypatch.context() as patch:
+            patch.setattr(storage, "_rows", fail)
+            with pytest.raises(expected) as caught:  # on a read of the open view
+                repo.impact("symbol:pkg/core.py#low")
+            assert type(caught.value) is expected  # distinct: neither subclasses the other
+        repo.close()  # and on opening the view
+        with monkeypatch.context() as patch:
+            patch.setattr(storage, "_rows", fail)
+            with pytest.raises(expected) as caught, oxide.open_repository(root) as again:
+                again.snapshot  # noqa: B018 - the first read opens the view
+            assert type(caught.value) is expected
+        repo = oxide.open_repository(root)
+    repo.close()
     assert ResourceExhausted.code == "resource_exhausted"
     assert advice(ResourceExhausted("full"), "/repo")
 

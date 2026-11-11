@@ -391,12 +391,11 @@ ADVICE = {
 }
 
 
-def read_failure(directory: object, error: RuntimeError) -> OxideError:
-    """The error for a native failure reading a sealed generation: a full buffer pool is
-    resource exhaustion, which reopening cures; anything else is damage and fails closed."""
-    if "buffer pool is full" in str(error):
-        return ResourceExhausted(f"{directory}: read failed ({error})")
-    return StoreCorrupt(f"{directory}: read failed ({error})")
+def read_failure(directory: object, error: RuntimeError, what: str = "read failed") -> OxideError:
+    """The error for a native failure opening or reading a sealed generation: a full buffer
+    pool is resource exhaustion, which reopening cures; anything else is damage."""
+    kind = ResourceExhausted if "buffer pool is full" in str(error) else StoreCorrupt
+    return kind(f"{directory}: {what} ({error})")
 
 
 def _arg(value: str) -> str:
