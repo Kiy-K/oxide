@@ -49,8 +49,8 @@ from oxide.models import (
     Snapshot,
     SourceRef,
     StoreCorrupt,
-    read_failure,
 )
+from oxide.storage import read_failure
 from oxide.storage.fts import (
     FTS_COMPONENT,
     FTS_SCORER,

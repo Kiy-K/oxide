@@ -206,8 +206,9 @@ def test_distinct_query_limits_do_not_exhaust_the_read_pool(repo: oxide.Reposito
     whole = view.adjacency([low])[low]
     for allowance in range(10, 510):
         assert view.adjacency([low], allowance) == {low: whole}
+    first = view.named("low", 1)[0]
     for limit in range(1, 501):  # the same holds for the name lookup's limit
-        view.named("low", limit)
+        assert view.named("low", limit)[0][:1] == first
 
 
 def test_a_full_read_pool_is_resource_exhaustion_and_other_native_failures_are_damage(
@@ -215,29 +216,59 @@ def test_a_full_read_pool_is_resource_exhaustion_and_other_native_failures_are_d
 ) -> None:
     import oxide.storage.ladybug as storage
 
+    real = storage._rows
     full = "Buffer manager exception: Unable to allocate memory! The buffer pool is full"
+    near = "Buffer manager exception: Failed to read page"  # a buffer error that is damage
+    cases = ((full, ResourceExhausted), ("Corrupted page", StoreCorrupt), (near, StoreCorrupt))
     root = repo.root
-    cases = ((full, ResourceExhausted), ("Corrupted page", StoreCorrupt))
+    repo._view()
     for message, expected in cases:
 
-        def fail(*_: object, message: str = message) -> list[Any]:
-            raise RuntimeError(message)
+        def failing(match: str, message: str = message) -> Any:
+            def rows(conn: Any, query: str, params: Any = None) -> list[Any]:
+                if match in query:
+                    raise RuntimeError(message)
+                return real(conn, query, params)
+
+            return rows
 
         with monkeypatch.context() as patch:
-            patch.setattr(storage, "_rows", fail)
-            with pytest.raises(expected) as caught:  # on a read of the open view
+            patch.setattr(storage, "_rows", failing("e.key"))
+            with pytest.raises(expected) as caught:  # a read of the open view
                 repo.impact("symbol:pkg/core.py#low")
-            assert type(caught.value) is expected  # distinct: neither subclasses the other
-        repo.close()  # and on opening the view
-        with monkeypatch.context() as patch:
-            patch.setattr(storage, "_rows", fail)
-            with pytest.raises(expected) as caught, oxide.open_repository(root) as again:
-                again.snapshot  # noqa: B018 - the first read opens the view
             assert type(caught.value) is expected
+        repo.close()
+        for match in ("MATCH (e:Entity) RETURN count(e)", "MATCH (d:Doc) RETURN count(d)"):
+            with monkeypatch.context() as patch:  # opening the graph, then the lexical index
+                patch.setattr(storage, "_rows", failing(match))
+                with pytest.raises(expected) as caught, oxide.open_repository(root) as again:
+                    again.snapshot  # noqa: B018 - the first read opens the view
+                assert type(caught.value) is expected
         repo = oxide.open_repository(root)
+        repo._view()
     repo.close()
+    assert not issubclass(ResourceExhausted, StoreCorrupt)  # or index() would rebuild on it
     assert ResourceExhausted.code == "resource_exhausted"
-    assert advice(ResourceExhausted("full"), "/repo")
+    hint = advice(ResourceExhausted("full"), "/repo")
+    assert hint and "retry" in hint and "oxide index" not in hint  # a rebuild does not cure it
+
+
+def test_a_pool_too_small_to_open_is_resource_exhaustion_and_index_rebuilds_nothing(
+    repo: oxide.Repository, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import oxide.storage.ladybug as storage
+
+    root = repo.root
+    repo.close()
+    with monkeypatch.context() as patch:  # LadybugDB's own message, not a fake
+        patch.setattr(storage, "BUFFER_POOL", 64 << 10)
+        with oxide.open_repository(root) as small:
+            with pytest.raises(ResourceExhausted, match="buffer pool is full"):
+                small.snapshot  # noqa: B018 - the first read opens the view
+            with pytest.raises(ResourceExhausted):
+                small.index()
+    with oxide.open_repository(root) as again:  # the generation is still current
+        assert again.index().status == "unchanged"
 
 
 def test_search_and_context_carry_the_stored_blast_of_their_first_entry_points(

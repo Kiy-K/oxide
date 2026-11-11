@@ -258,7 +258,8 @@ Spike and test findings at `ladybug==0.21.2`:
   Escaping `\` and `'` round-trips byte-exactly, including control and
   non-ASCII characters, so such paths are now escaped instead of refused. Every
   native failure surfaces as `RuntimeError`, which OXIDE maps to `store_corrupt`
-  for sealed generations. An empty `graph.lbug` opens as an empty database, so
+  for sealed generations (2026-11-11: except a full read buffer pool, which maps to
+  `resource_exhausted`; `docs/public-api.md` § Errors). An empty `graph.lbug` opens as an empty database, so
   a view compares the stored entity count with the manifest.
 
 ## What was removed, retained, replaced

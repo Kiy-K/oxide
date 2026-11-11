@@ -50,7 +50,9 @@ truncated, empty, missing or foreign `graph.lbug`, a malformed or foreign
 Reads raise `store_corrupt` until then, and `index()` never reports such a
 generation `unchanged`. `incompatible_index` is raised when the current
 generation was built by another derivation or store schema; `index()`
-rebuilds. `not_indexed` is raised before the first `index()`.
+rebuilds. `not_indexed` is raised before the first `index()`. A full read buffer pool
+is `resource_exhausted`, not damage: the generation stays current and nothing is rebuilt;
+every other native read failure stays `store_corrupt`.
 
 **What constitutes a violation:** waving a torn or foreign store through as
 healthy; reporting `unchanged` for a corrupt store; treating missing source
