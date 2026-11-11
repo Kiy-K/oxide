@@ -49,6 +49,7 @@ from oxide.models import (
     Snapshot,
     SourceRef,
     StoreCorrupt,
+    read_failure,
 )
 from oxide.storage.fts import (
     FTS_COMPONENT,
@@ -60,9 +61,8 @@ from oxide.storage.fts import (
 
 SCHEMA_VERSION = "oxide-ladybug-py-v5"
 STORAGE_FORMAT = 47
-# The pool of every read view, and the floor of a load's. A load holds what it copies
-# in the pool until it commits: measured ~1.6 MiB per CSV MiB (VS Code, 554k relations,
-# needs 288 MiB), so a load gets twice its CSV bytes more (docs/large-repositories.md).
+# The pool of every read view, and the floor of a load's: a load holds what it copies until
+# commit (~1.6 MiB per CSV MiB), so it gets twice its CSV bytes more (docs/large-repositories.md).
 BUFFER_POOL = 128 << 20
 LOAD_POOL_PER_BYTE = 2
 # CREATE_FTS_INDEX needs far more per document byte: measured on VS Code's documents
@@ -321,7 +321,7 @@ class View:
         try:
             return _rows(conn, query, params)
         except RuntimeError as error:
-            raise StoreCorrupt(f"{self.directory}: read failed ({error})") from error
+            raise read_failure(self.directory, error) from error
 
     def facts(self) -> dict[str, Any]:
         """The parse facts sealed with this generation, by dialect and file digest; empty

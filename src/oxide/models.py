@@ -351,6 +351,10 @@ class StoreCorrupt(OxideError):
     code = "store_corrupt"
 
 
+class ResourceExhausted(OxideError):
+    code = "resource_exhausted"
+
+
 class CaptureConflict(OxideError):
     code = "capture_conflict"
 
@@ -383,7 +387,16 @@ ADVICE = {
     ),
     "incompatible_index": "the index was built by another OXIDE version; run `{index}`",
     "store_corrupt": "the index is damaged; rebuild it with `{index}`",
+    "resource_exhausted": "the read buffer pool is full; reopen the repository and retry",
 }
+
+
+def read_failure(directory: object, error: RuntimeError) -> OxideError:
+    """The error for a native failure reading a sealed generation: a full buffer pool is
+    resource exhaustion, which reopening cures; anything else is damage and fails closed."""
+    if "buffer pool is full" in str(error):
+        return ResourceExhausted(f"{directory}: read failed ({error})")
+    return StoreCorrupt(f"{directory}: read failed ({error})")
 
 
 def _arg(value: str) -> str:

@@ -15,7 +15,7 @@ from oxide.capture import capture
 from oxide.core import blast, navigation
 from oxide.core.blast import BLAST_DEPTH, BLAST_FILES, BLAST_LIMIT
 from oxide.core.indexing import derive
-from oxide.models import BlastRoot, InvalidArgument
+from oxide.models import BlastRoot, InvalidArgument, ResourceExhausted, StoreCorrupt, advice
 from oxide.storage.ladybug import unresolved_key
 
 SOURCES = {
@@ -206,6 +206,26 @@ def test_distinct_edge_allowances_do_not_exhaust_the_read_pool(repo: oxide.Repos
     whole = view.adjacency([low])[low]
     for allowance in range(10, 510):
         assert view.adjacency([low], allowance) == {low: whole}
+
+
+def test_a_full_read_pool_is_resource_exhaustion_and_other_native_failures_are_damage(
+    repo: oxide.Repository, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import oxide.storage.ladybug as storage
+
+    full = "Buffer manager exception: Unable to allocate memory! The buffer pool is full"
+    for message, expected in ((full, ResourceExhausted), ("Corrupted page", StoreCorrupt)):
+
+        def fail(*_: object, message: str = message) -> list[Any]:
+            raise RuntimeError(message)
+
+        monkeypatch.setattr(storage, "_rows", fail)
+        with pytest.raises(expected) as caught:
+            repo.impact("symbol:pkg/core.py#low")
+        assert type(caught.value) is expected  # distinct: not a subclass of the other
+    assert caught.value.code == "store_corrupt"
+    assert ResourceExhausted.code == "resource_exhausted"
+    assert advice(ResourceExhausted("full"), "/repo")
 
 
 def test_search_and_context_carry_the_stored_blast_of_their_first_entry_points(
