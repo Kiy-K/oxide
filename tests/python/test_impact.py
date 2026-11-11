@@ -248,6 +248,7 @@ def test_a_full_read_pool_is_resource_exhaustion_and_other_native_failures_are_d
         repo._view()
     repo.close()
     assert not issubclass(ResourceExhausted, StoreCorrupt)  # or index() would rebuild on it
+    assert not issubclass(StoreCorrupt, ResourceExhausted)
     assert ResourceExhausted.code == "resource_exhausted"
     hint = advice(ResourceExhausted("full"), "/repo")
     assert hint and "retry" in hint and "oxide index" not in hint  # a rebuild does not cure it
@@ -269,6 +270,13 @@ def test_a_pool_too_small_to_open_is_resource_exhaustion_and_index_rebuilds_noth
                 small.index()
     with oxide.open_repository(root) as again:  # the generation is still current
         assert again.index().status == "unchanged"
+    (root / "pkg" / "extra.py").write_text("def extra():\n    pass\n")  # a changed worktree
+    with monkeypatch.context() as patch:
+        patch.setattr(storage, "BUFFER_POOL", 64 << 10)
+        with oxide.open_repository(root) as small, pytest.raises(ResourceExhausted):
+            small.index()  # nothing is rebuilt from an empty previous generation
+    with oxide.open_repository(root) as again:
+        assert again.index().status == "built"
 
 
 def test_search_and_context_carry_the_stored_blast_of_their_first_entry_points(
