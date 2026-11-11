@@ -56,26 +56,27 @@ class Graph:
                     self._into.setdefault(target, []).append(
                         (edge.kind, edge.source, proven, heuristic)
                     )
+        for table in (self._out, self._into):  # sorted once: every walk reads them in order
+            for rows in table.values():
+                rows.sort()
 
     def adjacency(
         self, keys: list[str], allowance: int | None = None, kinds: tuple[str, ...] = ()
     ) -> dict[str, tuple[Adjacent, Adjacent]]:
         found: dict[str, tuple[Adjacent, Adjacent]] = {key: ([], []) for key in keys}
         cut: str | None = None  # the first key whose edges an allowance may have cut
+        ordered = sorted(set(keys))
         for direction, table in enumerate((self._out, self._into)):
-            rows = sorted(
-                (key, *row)
-                for key in set(keys)
-                for row in table.get(key, [])
-                if not kinds or row[0] in kinds
-            )
-            if allowance is not None:
-                rows = rows[: max(allowance, 0) + 1]
-                if len(rows) > allowance:
-                    edge = rows[allowance][0]
-                    cut = edge if cut is None else min(cut, edge)
-            for key, kind, other, proven, heuristic in rows:
-                found[key][direction].append((kind, other, proven, heuristic))
+            taken = 0  # rows read so far, in key order, as the read view's ``ORDER BY k LIMIT``
+            for key in ordered:
+                rows = table.get(key, ())
+                if kinds:
+                    rows = [row for row in rows if row[0] in kinds]
+                if allowance is not None and taken + len(rows) > max(allowance, 0):
+                    cut = key if cut is None else min(cut, key)
+                    break
+                taken += len(rows)
+                found[key][direction].extend(rows)
         return found if cut is None else {k: v for k, v in found.items() if k < cut}
 
     def mentions(self, names: list[str], kinds: tuple[str, ...]) -> int:

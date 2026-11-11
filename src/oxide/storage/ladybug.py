@@ -348,7 +348,7 @@ class View:
         wanted = sorted(set(keys))
         if not wanted:
             return {}
-        query = f"MATCH (e:Entity) WHERE e.key IN $keys RETURN {_ENTITY}"
+        query = f"UNWIND $keys AS k MATCH (e:Entity {{key: k}}) RETURN {_ENTITY}"
         return {row[0]: _entity(row) for row in self._query(query, {"keys": wanted})}
 
     def entries(self, keys: Iterable[str]) -> dict[str, tuple[Entity, BlastRoot]]:
@@ -356,9 +356,9 @@ class View:
         if not wanted:
             return {}
         rows = self._query(
-            f"MATCH (e:Entity) WHERE e.key IN $keys RETURN {_ENTITY}, e.blast_dependents, "
-            "e.blast_tests, e.blast_file_count, e.blast_files, "
-            "e.blast_unresolved, e.blast_stopped_by",
+            f"UNWIND $keys AS k MATCH (e:Entity {{key: k}}) RETURN {_ENTITY}, e.blast_dependents, "
+            "e.blast_tests, e.blast_file_count, e.blast_files, e.blast_unresolved, "
+            "e.blast_stopped_by",
             {"keys": wanted},
         )
         return {row[0]: (_entity(row[:10]), blast_from_columns(row[0], row[10:])) for row in rows}
@@ -420,11 +420,11 @@ class View:
         found: dict[str, tuple[Adjacent, Adjacent]] = {key: ([], []) for key in keys}
         if not keys:
             return found
-        params: dict[str, Any] = {"keys": sorted(set(keys)), "kinds": list(kinds)}
+        params = {"keys": sorted(set(keys)), "kinds": list(kinds), "n": max(allowance or 0, 0) + 1}
         match = "MATCH (a:Entity)-[r:Rel]->(b:Entity) WHERE "
         match += "r.kind IN $kinds AND " if kinds else ""
         flags = "r.resolution = 'resolved' AND r.basis <> 'heuristic', r.basis = 'heuristic'"
-        bound = "" if allowance is None else f" ORDER BY k LIMIT {max(allowance, 0) + 1}"
+        bound = "" if allowance is None else " ORDER BY k LIMIT $n"  # a literal leaks pool: #55
         out = match + f"a.key IN $keys RETURN a.key AS k, r.kind, b.key, {flags}{bound}"
         into = match + f"b.key IN $keys RETURN b.key AS k, r.kind, a.key, {flags}{bound}"
         cut: str | None = None  # the first key whose edges may be incomplete
