@@ -138,6 +138,7 @@ There is no embedding, vector or model-runner boundary (ADR-0011 § 5). Reintrod
 | Lexical index or extension unavailable | Report the lexical channel `unavailable` with its reason; structural seeds and routing continue |
 | Decision timeout, bad schema, missing candidate, abstention (when a judge is configured) | Heuristic value for affected candidates, with reason |
 | Knowledge store corruption or publication failure | Fail closed (`store_corrupt`); keep the last valid generation when safe, otherwise require rebuild |
+| Read buffer pool full while opening or reading a sealed generation | `resource_exhausted`; the generation is intact and stays current, nothing is rebuilt (`index()` raises it too); other native read failures stay `store_corrupt` |
 | Generation from another store schema or derivation | `incompatible_index`; rebuilt by the next index, never migrated |
 | Zero valid candidates | Valid empty bundle with reasons and accounting |
 | Tiny/zero budget | Empty or smaller valid bundle; never exceed budget to force an item |

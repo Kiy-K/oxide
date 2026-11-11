@@ -351,6 +351,10 @@ class StoreCorrupt(OxideError):
     code = "store_corrupt"
 
 
+class ResourceExhausted(OxideError):
+    code = "resource_exhausted"
+
+
 class CaptureConflict(OxideError):
     code = "capture_conflict"
 
@@ -383,6 +387,10 @@ ADVICE = {
     ),
     "incompatible_index": "the index was built by another OXIDE version; run `{index}`",
     "store_corrupt": "the index is damaged; rebuild it with `{index}`",
+    "resource_exhausted": (
+        "the read buffer pool is full and the index is intact; retry (close and reopen a "
+        "long-lived Repository first), and report it if it recurs on a fresh open"
+    ),
 }
 
 

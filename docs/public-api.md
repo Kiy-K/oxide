@@ -253,6 +253,7 @@ an `OxideError` (`invalid_argument`) and a `ValueError`:
 | `not_indexed` | A read before the first `index()`, or `open_repository(..., create=False)` of a repository without a store |
 | `incompatible_index` | The current generation was built by another derivation (component versions, including `ladybug`) or store schema. Checked from the manifest before the database is opened. `index()` rebuilds |
 | `store_corrupt` | Damage (below). Reads fail closed |
+| `resource_exhausted` | A read, the opening of the view, or `index()`'s check of the current generation filled the 128 MiB read buffer pool (LadybugDB: `Buffer manager exception ... buffer pool is full`). Not damage: the generation is intact and stays current, and nothing is rebuilt, so `index()` raises it too. Use of a long-lived `Repository` accumulates pool use; closing and reopening it cures that. If it recurs on a fresh open, one read or the open itself needs more than the pool. Any other native failure stays `store_corrupt` |
 | `capture_conflict` | The worktree kept changing during capture, or a `.gitignore` is unreadable |
 | `capture_limit` | More than 1 GiB in scope |
 | `native_unavailable` | LadybugDB's native library cannot load (on Windows: OpenSSL 3 DLLs missing, docs/platforms.md), or `structural_search` without the `structural` extra. Nothing is touched |
