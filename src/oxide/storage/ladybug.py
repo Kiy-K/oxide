@@ -365,8 +365,8 @@ class View:
 
     def named(self, name: str, limit: int) -> tuple[list[str], bool]:
         rows = self._query(
-            f"MATCH (e:Entity) WHERE e.name = $name RETURN e.key ORDER BY e.key LIMIT {limit + 1}",
-            {"name": name},
+            "MATCH (e:Entity) WHERE e.name = $name RETURN e.key ORDER BY e.key LIMIT $n",
+            {"name": name, "n": limit + 1},
         )
         return [r[0] for r in rows[:limit]], len(rows) > limit
 

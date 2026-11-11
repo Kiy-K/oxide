@@ -199,13 +199,15 @@ def test_the_in_memory_graph_cuts_at_the_allowance_as_the_store_does(
     assert cuts  # the comparison reached the cut path
 
 
-def test_distinct_edge_allowances_do_not_exhaust_the_read_pool(repo: oxide.Repository) -> None:
+def test_distinct_query_limits_do_not_exhaust_the_read_pool(repo: oxide.Repository) -> None:
     # #55: an allowance inlined in the query text kept ~1 MiB of the 128 MiB read pool per
     # distinct value, so a long-lived repository's walks ended in store_corrupt.
     view, low = repo._view(), "symbol:pkg/core.py#low"
     whole = view.adjacency([low])[low]
     for allowance in range(10, 510):
         assert view.adjacency([low], allowance) == {low: whole}
+    for limit in range(1, 501):  # the same holds for the name lookup's limit
+        view.named("low", limit)
 
 
 def test_a_full_read_pool_is_resource_exhaustion_and_other_native_failures_are_damage(
