@@ -105,6 +105,63 @@ def _impact_summary(impact: Impact) -> str:
     return "\n".join(lines)
 
 
+def _option_takes_value(option: str) -> bool:
+    """Whether ``option`` (possibly abbreviated) takes a following argument."""
+    if "=" in option:
+        return False
+    valued = (
+        "--data-dir",
+        "--limit",
+        "--budget",
+        "--depth",
+        "--direction",
+        "--host",
+        "--port",
+        "--file",
+        "--symbol",
+        "--repo",
+    )
+    flags = ("--json", "--enable", "--disable", "--http")
+    if option in valued:
+        return True
+    if option in flags:
+        return False
+    # argparse allows unambiguous long-option abbreviations by default.
+    value_hits = [name for name in valued if name.startswith(option)]
+    flag_hits = [name for name in flags if name.startswith(option)]
+    return len(value_hits) == 1 and not flag_hits
+
+
+def _front_positionals(argv: list[str]) -> list[str]:
+    """Put bare tokens that follow options back with the other positionals.
+
+    Python 3.12 ``argparse`` rejects ``cmd PATH --data-dir D target``; 3.13 accepts it.
+    Rewrite to ``cmd PATH target --data-dir D`` so both accept the same command lines.
+    """
+    if len(argv) < 2 or argv[0] in ("prepare", "mcp") or argv[0].startswith("-"):
+        return argv
+    cmd, leading, trailing, options = argv[0], [], [], []
+    seen_option, i = False, 0
+    rest = argv[1:]
+    while i < len(rest):
+        tok = rest[i]
+        if tok == "--":
+            options.extend(rest[i:])
+            break
+        if tok.startswith("-"):
+            seen_option = True
+            options.append(tok)
+            if _option_takes_value(tok) and i + 1 < len(rest):
+                i += 1
+                options.append(rest[i])
+        elif seen_option:
+            trailing.append(tok)
+        else:
+            leading.append(tok)
+        i += 1
+    return [cmd, *leading, *trailing, *options]
+
+
 def main(argv: list[str] | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):  # Windows pipes default to the ANSI code page
         if isinstance(stream, io.TextIOWrapper):
@@ -132,10 +189,20 @@ def main(argv: list[str] | None = None) -> int:
     ):
         command = commands.add_parser(name, help=text)
         command.add_argument("path")
+        # Positionals before options so a flags-last line parses on every supported Python.
+        if name not in ("index", "judge", "impact", "outline", "inspect", "refs"):
+            command.add_argument("query")
+        if name == "outline":
+            command.add_argument("target", nargs="?", help="indexed file or directory")
+        if name in ("inspect", "refs"):
+            command.add_argument("symbol", help="name, Outer.inner, path:line or entity key")
+        if name == "impact":
+            command.add_argument(
+                "key", help="entity key from oxide_search, e.g. symbol:pkg/core.py#low"
+            )
         command.add_argument("--data-dir", help="data location (default: OXIDE_DATA_DIR or XDG)")
         command.add_argument("--json", action="store_true", help="print the typed result as JSON")
         if name not in ("index", "judge", "impact", "outline", "inspect", "refs"):
-            command.add_argument("query")
             command.add_argument("--symbol", action="append", default=[], help="symbol hint")
             command.add_argument("--file", action="append", default=[], help="path hint")
         if name == "search":
@@ -147,15 +214,10 @@ def main(argv: list[str] | None = None) -> int:
             switch.add_argument("--enable", action="store_true", help="authorize sending")
             switch.add_argument("--disable", action="store_true", help="revoke it")
         if name == "outline":
-            command.add_argument("target", nargs="?", help="indexed file or directory")
             command.add_argument("--limit", type=int, default=500, help="declarations (0-1000)")
         if name in ("inspect", "refs"):
-            command.add_argument("symbol", help="name, Outer.inner, path:line or entity key")
             command.add_argument("--limit", type=int, default=20 if name == "inspect" else 50)
         if name == "impact":
-            command.add_argument(
-                "key", help="entity key from oxide_search, e.g. symbol:pkg/core.py#low"
-            )
             command.add_argument(
                 "--direction", choices=("upstream", "downstream"), default="upstream"
             )
@@ -163,7 +225,7 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument(
                 "--limit", type=int, default=200, help="entities to return (0-1000)"
             )
-    args = parser.parse_args(argv)
+    args = parser.parse_args(_front_positionals(list(argv) if argv is not None else sys.argv[1:]))
     try:
         if args.command == "prepare":
             print(prepare())
