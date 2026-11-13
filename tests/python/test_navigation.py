@@ -30,7 +30,6 @@ from oxide.models import (
 from oxide.storage import pins
 from oxide.storage import reader as reader_mod
 from oxide.storage.reader import Reader
-from oxide.storage.store import Store
 
 HEX = "a" * 64
 
@@ -225,16 +224,12 @@ def test_a_reader_notices_a_same_name_rebuild(
     reader = Reader(repo_copy, private_data)
     first = reader.view()
     assert reader.current is not None
-    # Rename the store generation (not the view directory): on Windows the view is a
-    # private copy so the owner can rebuild without Access Denied. Close the owner's
-    # Ladybug handles first, as Store.publish does via _drop_view.
+    # Same content-addressed name with damaged retained bytes: publish replaces the
+    # generation (Store._drop_view then rename). On Windows the reader holds a private
+    # copy, so the owner's rebuild is not blocked by the open view.
     generation = store_dir(private_data) / "generations" / reader.current[0]
-    shutil.copytree(generation, generation.with_suffix(".copy"))
-    store = owned.store
-    assert isinstance(store, Store)
-    store._drop_view()
-    generation.rename(generation.with_suffix(".replaced"))  # as Store.publish does
-    generation.with_suffix(".copy").rename(generation)
+    next((generation / "source").iterdir()).unlink()
+    assert owned.index().status == "built"
     assert reader.view() is not first
     reader.close()
 
@@ -356,13 +351,9 @@ def test_windows_reader_views_a_private_copy(
     held = reader.view()
     assert held.directory.parent.name == "reader-views"
     generation = store_dir(private_data) / "generations" / reader.current[0]  # type: ignore[index]
-    replaced = generation.with_suffix(".replaced")
-    store = owned.store
-    assert isinstance(store, Store)
-    store._drop_view()  # as Store.publish before a same-name rebuild
-    generation.rename(replaced)  # as a same-name rebuild would on Windows
+    next((generation / "source").iterdir()).unlink()
+    assert owned.index().status == "built"  # same-name rebuild under the open private copy
     assert held.entities(["symbol:oxidepy/retry.py#RetryPolicy"])
-    replaced.rename(generation)  # restore for the owner fixture
     reader.close()
     assert list((store_dir(private_data) / "reader-views").iterdir()) == []
 
