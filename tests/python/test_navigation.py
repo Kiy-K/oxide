@@ -229,6 +229,63 @@ def test_owner_can_republish_while_a_reader_holds_a_prior_replaced_twin(
     reader.close()
 
 
+def test_republish_reuses_a_pinned_generation_so_source_stays_reachable(
+    owned: oxide.Repository,
+    repo_copy: Path,
+    private_data: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A→B→A must keep generations/A in place: View.source reads that path, not ``.replaced``."""
+    reader = Reader(repo_copy, private_data)
+    held = reader.view()
+    assert reader.current is not None
+    name = reader.current[0]
+    generation = store_dir(private_data) / "generations" / name
+    inode = generation.stat().st_ino
+    path, info = next(iter(held.files.items()))
+    ref = SourceRef(path, 0, 0, info.digest)
+    assert held.source(ref)
+
+    real_rename = os.rename
+
+    def guarded(src: str | os.PathLike[str], dst: str | os.PathLike[str]) -> None:
+        if Path(src).resolve() == generation.resolve():
+            raise AssertionError(f"pinned generation {name} must stay reachable")
+        real_rename(src, dst)
+
+    monkeypatch.setattr("oxide.storage.store.os.rename", guarded)
+    write(repo_copy, {"oxidepy/extra.py": "def extra():\n    return 1\n"})
+    owned.index()
+    (repo_copy / "oxidepy" / "extra.py").unlink()
+    owned.index()
+    assert generation.stat().st_ino == inode
+    assert held.source(ref)
+    assert held.entities(["symbol:oxidepy/retry.py#RetryPolicy"])
+    reader.close()
+
+
+def test_damaged_pinned_generation_is_replaced_on_republish(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path
+) -> None:
+    """Reuse requires an intact retained twin; a missing source falls through to replace."""
+    reader = Reader(repo_copy, private_data)
+    assert reader.current is not None
+    name = reader.current[0]
+    generation = store_dir(private_data) / "generations" / name
+    inode = generation.stat().st_ino
+    write(repo_copy, {"oxidepy/extra.py": "def extra():\n    return 1\n"})
+    owned.index()
+    blob = next((generation / "source").iterdir())
+    blob.unlink()
+    (repo_copy / "oxidepy" / "extra.py").unlink()
+    report = owned.index()
+    assert report.status == "built"
+    assert generation.stat().st_ino != inode
+    owned.store.view().verify_sources()
+    assert owned.inspect("RetryPolicy").status == "resolved"
+    reader.close()
+
+
 def test_a_reader_needs_a_published_store(repo_copy: Path, private_data: Path) -> None:
     with pytest.raises(NotIndexed):
         Reader(repo_copy, private_data)

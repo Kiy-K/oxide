@@ -193,6 +193,20 @@ class Store:
             self._drop_view()
             return None
 
+    def _readable(self, directory: Path) -> bool:
+        """Whether ``directory`` is a sealed generation this OXIDE can serve with sources."""
+        try:
+            view = View(directory, self.repo_id)
+        except (IncompatibleIndex, StoreCorrupt):
+            return False
+        try:
+            view.verify_sources()
+            return True
+        except StoreCorrupt:
+            return False
+        finally:
+            view.close()
+
     def publish(
         self,
         capture: Capture,
@@ -245,19 +259,29 @@ class Store:
             }
             self._seal(staging, manifest)
             target = self.generations / name
-            if target.exists():
-                # The unreadable generation this rebuild replaces. A crash between the two
-                # renames is undone on the next open (_recover); a failure, just below.
-                # Close our own view of it first: Windows can't rename a directory with
-                # open files. A live reader may still hold a prior ``.replaced`` twin from
-                # an earlier same-name rebuild; move that aside before renaming again.
+            if target.exists() and self.current != name and self._readable(target):
+                # Same content-addressed generation is still on disk and intact (a reader
+                # pins it while CURRENT points elsewhere). Reuse it so View.directory stays
+                # valid for source hydration; renaming it to ``.replaced`` would raise
+                # StoreCorrupt for that reader between the two renames. A damaged retained
+                # twin falls through to replacement (STORE-003).
                 self._drop_view()
-                replaced = self.generations / f"{name}.replaced"
-                if replaced.exists():
-                    aside = self.generations / f"{name}.replaced.{secrets.token_hex(8)}"
-                    os.rename(replaced, aside)
-                os.rename(target, replaced)
-            os.rename(staging, target)
+                shutil.rmtree(staging, ignore_errors=True)
+            else:
+                if target.exists():
+                    # The unreadable generation this rebuild replaces. A crash between the
+                    # two renames is undone on the next open (_recover); a failure, just
+                    # below. Close our own view of it first: Windows can't rename a
+                    # directory with open files. A live reader may still hold a prior
+                    # ``.replaced`` twin from an earlier same-name rebuild; move that
+                    # aside before renaming again.
+                    self._drop_view()
+                    replaced = self.generations / f"{name}.replaced"
+                    if replaced.exists():
+                        aside = self.generations / f"{name}.replaced.{secrets.token_hex(8)}"
+                        os.rename(replaced, aside)
+                    os.rename(target, replaced)
+                os.rename(staging, target)
             _fsync(self.generations)
         except BaseException:
             shutil.rmtree(staging, ignore_errors=True)
