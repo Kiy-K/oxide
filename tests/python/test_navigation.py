@@ -15,6 +15,7 @@ import pytest
 from conftest import FIXTURE, env, write
 
 import oxide
+from oxide.cli import _front_positionals
 from oxide.core import lookup
 from oxide.models import (
     Entity,
@@ -27,6 +28,7 @@ from oxide.models import (
     StoreCorrupt,
 )
 from oxide.storage import pins
+from oxide.storage import reader as reader_mod
 from oxide.storage.reader import Reader
 
 HEX = "a" * 64
@@ -200,7 +202,10 @@ def test_a_reader_notices_a_same_name_rebuild(
 ) -> None:
     reader = Reader(repo_copy, private_data)
     first = reader.view()
-    generation = first.directory
+    assert reader.current is not None
+    # Rename the store generation (not the view directory): on Windows the view is a
+    # private copy so the owner can rebuild without Access Denied.
+    generation = store_dir(private_data) / "generations" / reader.current[0]
     shutil.copytree(generation, generation.with_suffix(".copy"))
     generation.rename(generation.with_suffix(".replaced"))  # as Store.publish does
     generation.with_suffix(".copy").rename(generation)
@@ -257,6 +262,23 @@ def test_a_shared_handle_is_the_owner_when_nobody_is(repo_copy: Path) -> None:
     oxide.index_repository(repo_copy)
     with oxide.open_repository(repo_copy, create=False, shared=True) as repo:
         assert not repo.read_only
+
+
+def test_windows_reader_views_a_private_copy(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Windows cannot rename a generation while LadybugDB holds it open; readers copy first."""
+    monkeypatch.setattr(reader_mod, "_WINDOWS", True)
+    reader = Reader(repo_copy, private_data)
+    held = reader.view()
+    assert held.directory.parent.name == "reader-views"
+    generation = store_dir(private_data) / "generations" / reader.current[0]  # type: ignore[index]
+    replaced = generation.with_suffix(".replaced")
+    generation.rename(replaced)  # as a same-name rebuild would on Windows
+    assert held.entities(["symbol:oxidepy/retry.py#RetryPolicy"])
+    replaced.rename(generation)  # restore for the owner fixture
+    reader.close()
+    assert list((store_dir(private_data) / "reader-views").iterdir()) == []
 
 
 # --- outline --------------------------------------------------------------------
@@ -431,3 +453,10 @@ def test_cli_navigation_errors_are_typed(repo_copy: Path, private_data: Path) ->
     assert oxide_cli(private_data, "index", *target).returncode == 0
     bad = oxide_cli(private_data, "outline", *target, "nope")
     assert bad.returncode == 2 and "error[invalid_argument]" in bad.stderr
+
+
+def test_cli_accepts_a_target_after_options() -> None:
+    """Python 3.12 argparse rejects optional positionals after options without a reorder."""
+    assert _front_positionals(
+        ["outline", "/repo", "--data-dir", "/data", "oxidepy/retry.py", "--limit", "10"]
+    ) == ["outline", "/repo", "oxidepy/retry.py", "--data-dir", "/data", "--limit", "10"]

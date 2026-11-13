@@ -3,6 +3,10 @@
 A ``Reader`` takes no ``store.lock``, writes nothing but its pin, and serves the latest
 published generation; each ``view()`` call re-reads ``CURRENT`` so a long-lived reader
 follows the owner's publications. Same failure semantics as ``Store(create=False)``.
+
+On Windows a reader copies the generation into a private cache before opening it: LadybugDB
+holds files open, and Windows refuses to rename a directory with open handles, so a shared
+read would otherwise block the owner's same-name rebuild.
 """
 
 from __future__ import annotations
@@ -10,6 +14,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
+import sys
 import time
 import weakref
 from pathlib import Path
@@ -19,11 +25,14 @@ from oxide.storage.ladybug import _HEX64, View, _literal
 from oxide.storage.pins import pin, unpin
 
 ATTEMPTS = 5
+_WINDOWS = sys.platform == "win32"
 
 
-def _unpin_all(pins: list[tuple[int, Path]]) -> None:
+def _cleanup(pins: list[tuple[int, Path]], caches: list[Path]) -> None:
     while pins:
         unpin(*pins.pop())
+    while caches:
+        shutil.rmtree(caches.pop(), ignore_errors=True)
 
 
 def read_repo_id(directory: Path, root: Path) -> str:
@@ -70,7 +79,8 @@ class Reader:
         self.repo_id = read_repo_id(self.dir, root)
         self._view: View | None = None
         self._pins: list[tuple[int, Path]] = []  # shared with the finalizer: a leak still unpins
-        self._finalizer = weakref.finalize(self, _unpin_all, self._pins)
+        self._caches: list[Path] = []
+        self._finalizer = weakref.finalize(self, _cleanup, self._pins, self._caches)
         self.current: tuple[str, int] | None = None
         self.view()  # fail now, as Store(create=False) does
 
@@ -83,6 +93,19 @@ class Reader:
             return name, (self.dir / "generations" / name).stat().st_ino
         except FileNotFoundError:
             return name, 0
+
+    def _open(self, name: str, pin_path: Path) -> View:
+        directory = self.dir / "generations" / name
+        if _WINDOWS:
+            # Private copy: Windows denies renaming a generation while this process
+            # holds LadybugDB files open inside it (Store.publish same-name rebuild).
+            cache = self.dir / "reader-views" / pin_path.name
+            cache.parent.mkdir(exist_ok=True)
+            shutil.rmtree(cache, ignore_errors=True)
+            shutil.copytree(directory, cache)
+            self._caches.append(cache)
+            directory = cache
+        return View(directory, self.repo_id)
 
     def view(self) -> View:
         if self._view is not None and self._identity() == self.current:
@@ -104,7 +127,7 @@ class Reader:
                 # still names the generation after the pin is held.
                 identity = self._identity()
                 if identity is not None and identity[0] == name and identity[1]:
-                    self._view = View(self.dir / "generations" / name, self.repo_id)
+                    self._view = self._open(name, held[1])
                     self.current = identity
                     return self._view
             except BaseException:
@@ -117,7 +140,7 @@ class Reader:
         if self._view is not None:
             self._view.close()
             self._view = None
-        _unpin_all(self._pins)
+        _cleanup(self._pins, self._caches)
         self.current = None
 
     def close(self) -> None:
