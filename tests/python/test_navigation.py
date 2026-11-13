@@ -30,6 +30,7 @@ from oxide.models import (
 from oxide.storage import pins
 from oxide.storage import reader as reader_mod
 from oxide.storage.reader import Reader
+from oxide.storage.store import Store
 
 HEX = "a" * 64
 
@@ -133,6 +134,27 @@ def test_a_live_pin_protects_its_generation_and_a_dead_one_does_not(tmp_path: Pa
     assert [p.name for p in generations.iterdir()] == ["c" * 64]
 
 
+def test_sweep_reclaims_orphaned_reader_views(tmp_path: Path) -> None:
+    """A crashed Windows reader leaves reader-views/<pin>; sweep removes it once the pin is gone."""
+    generations = tmp_path / "generations"
+    (generations / HEX).mkdir(parents=True)
+    (generations / ("c" * 64)).mkdir()
+    fd, path = pins.pin(tmp_path, HEX)
+    views = tmp_path / "reader-views"
+    orphan = views / f"{HEX}.deadbeef"
+    orphan.mkdir(parents=True)
+    (orphan / "leftover").write_text("x")
+    held = views / path.name
+    held.mkdir()
+    (held / "ok").write_text("y")
+    pins.sweep(tmp_path, generations, "c" * 64)
+    assert held.is_dir() and not orphan.exists()  # live pin keeps its cache
+    os.close(fd)
+    path.unlink()  # pin already gone, as pinned() removes a dead lock holder
+    pins.sweep(tmp_path, generations, "c" * 64)
+    assert not held.exists() and list(views.iterdir()) == []
+
+
 def test_sweep_keeps_the_replaced_twin_of_a_pinned_generation(tmp_path: Path) -> None:
     generations = tmp_path / "generations"
     aside = HEX + ".replaced." + "d" * 16
@@ -204,9 +226,13 @@ def test_a_reader_notices_a_same_name_rebuild(
     first = reader.view()
     assert reader.current is not None
     # Rename the store generation (not the view directory): on Windows the view is a
-    # private copy so the owner can rebuild without Access Denied.
+    # private copy so the owner can rebuild without Access Denied. Close the owner's
+    # Ladybug handles first, as Store.publish does via _drop_view.
     generation = store_dir(private_data) / "generations" / reader.current[0]
     shutil.copytree(generation, generation.with_suffix(".copy"))
+    store = owned.store
+    assert isinstance(store, Store)
+    store._drop_view()
     generation.rename(generation.with_suffix(".replaced"))  # as Store.publish does
     generation.with_suffix(".copy").rename(generation)
     assert reader.view() is not first
@@ -331,6 +357,9 @@ def test_windows_reader_views_a_private_copy(
     assert held.directory.parent.name == "reader-views"
     generation = store_dir(private_data) / "generations" / reader.current[0]  # type: ignore[index]
     replaced = generation.with_suffix(".replaced")
+    store = owned.store
+    assert isinstance(store, Store)
+    store._drop_view()  # as Store.publish before a same-name rebuild
     generation.rename(replaced)  # as a same-name rebuild would on Windows
     assert held.entities(["symbol:oxidepy/retry.py#RetryPolicy"])
     replaced.rename(generation)  # restore for the owner fixture
@@ -524,6 +553,15 @@ def test_cli_accepts_a_target_after_options() -> None:
         "t.py",
         "--lim",
         "10",
+    ]
+    # Abbreviations are scoped to the active subcommand: --di is impact's --direction,
+    # not judge's --disable.
+    assert _front_positionals(["impact", "/repo", "symbol:x.py#f", "--di", "upstream"]) == [
+        "impact",
+        "/repo",
+        "symbol:x.py#f",
+        "--di",
+        "upstream",
     ]
 
 

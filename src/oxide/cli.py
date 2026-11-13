@@ -105,28 +105,31 @@ def _impact_summary(impact: Impact) -> str:
     return "\n".join(lines)
 
 
-def _option_takes_value(option: str) -> bool:
-    """Whether ``option`` (possibly abbreviated) takes a following argument."""
+# Long options per subcommand: abbreviations are unambiguous only within that set
+# (argparse's default), so ``oxide impact … --di upstream`` must not collide with
+# judge's ``--disable``.
+_COMMAND_OPTIONS: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
+    "mcp": (("--data-dir", "--host", "--port", "--repo"), ("--http",)),
+    "index": (("--data-dir",), ("--json",)),
+    "judge": (("--data-dir",), ("--json", "--enable", "--disable")),
+    "search": (("--data-dir", "--limit", "--file", "--symbol"), ("--json",)),
+    "context": (("--data-dir", "--budget", "--file", "--symbol"), ("--json",)),
+    "impact": (("--data-dir", "--direction", "--depth", "--limit"), ("--json",)),
+    "outline": (("--data-dir", "--limit"), ("--json",)),
+    "inspect": (("--data-dir", "--limit"), ("--json",)),
+    "refs": (("--data-dir", "--limit"), ("--json",)),
+}
+
+
+def _option_takes_value(option: str, command: str) -> bool:
+    """Whether ``option`` (possibly abbreviated) takes a following argument for ``command``."""
     if "=" in option:
         return False
-    valued = (
-        "--data-dir",
-        "--limit",
-        "--budget",
-        "--depth",
-        "--direction",
-        "--host",
-        "--port",
-        "--file",
-        "--symbol",
-        "--repo",
-    )
-    flags = ("--json", "--enable", "--disable", "--http")
+    valued, flags = _COMMAND_OPTIONS.get(command, ((), ()))
     if option in valued:
         return True
     if option in flags:
         return False
-    # argparse allows unambiguous long-option abbreviations by default.
     value_hits = [name for name in valued if name.startswith(option)]
     flag_hits = [name for name in flags if name.startswith(option)]
     return len(value_hits) == 1 and not flag_hits
@@ -151,7 +154,7 @@ def _front_positionals(argv: list[str]) -> list[str]:
         if tok.startswith("-"):
             seen_option = True
             options.append(tok)
-            if _option_takes_value(tok) and i + 1 < len(rest):
+            if _option_takes_value(tok, cmd) and i + 1 < len(rest):
                 i += 1
                 options.append(rest[i])
         elif seen_option:

@@ -103,7 +103,8 @@ def sweep(store_dir: Path, generations: Path, current: str | None) -> None:
     """Deletes every generation entry but ``current`` and the pinned ones. A pinned
     generation's ``.replaced`` twin (a same-name rebuild) is what its reader may still be
     reading, so it stays too — including ``.replaced.<token>`` sidecars from repeated
-    publications; staging leftovers are never pinned."""
+    publications; staging leftovers are never pinned. Abandoned Windows ``reader-views``
+    caches whose pin file is gone are removed too (crashed readers leave them behind)."""
     live = pinned(store_dir)
     for entry in generations.iterdir():
         base, _, suffix = entry.name.partition(".")
@@ -111,3 +112,9 @@ def sweep(store_dir: Path, generations: Path, current: str | None) -> None:
         if entry.name == current or (_HEX64.fullmatch(base) and base in live and keeps):
             continue
         shutil.rmtree(entry, ignore_errors=True)
+    views = store_dir / "reader-views"
+    pins = store_dir / "pins"
+    if views.is_dir():
+        for cache in views.iterdir():
+            if not (pins / cache.name).exists():
+                shutil.rmtree(cache, ignore_errors=True)
