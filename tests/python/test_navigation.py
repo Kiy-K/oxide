@@ -264,6 +264,28 @@ def test_republish_reuses_a_pinned_generation_so_source_stays_reachable(
     reader.close()
 
 
+def test_damaged_pinned_generation_is_replaced_on_republish(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path
+) -> None:
+    """Reuse requires an intact retained twin; a missing source falls through to replace."""
+    reader = Reader(repo_copy, private_data)
+    assert reader.current is not None
+    name = reader.current[0]
+    generation = store_dir(private_data) / "generations" / name
+    inode = generation.stat().st_ino
+    write(repo_copy, {"oxidepy/extra.py": "def extra():\n    return 1\n"})
+    owned.index()
+    blob = next((generation / "source").iterdir())
+    blob.unlink()
+    (repo_copy / "oxidepy" / "extra.py").unlink()
+    report = owned.index()
+    assert report.status == "built"
+    assert generation.stat().st_ino != inode
+    owned.store.view().verify_sources()
+    assert owned.inspect("RetryPolicy").status == "resolved"
+    reader.close()
+
+
 def test_a_reader_needs_a_published_store(repo_copy: Path, private_data: Path) -> None:
     with pytest.raises(NotIndexed):
         Reader(repo_copy, private_data)
