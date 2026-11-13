@@ -480,7 +480,7 @@ def test_windows_reader_cleans_a_failed_generation_copy(
         (dst / "partial").write_text("x")
         raise OSError("disk full")
 
-    monkeypatch.setattr(reader_mod.shutil, "copytree", boom)
+    monkeypatch.setattr("oxide.storage.reader.shutil.copytree", boom)
     with pytest.raises(OSError, match="disk full"):
         Reader(repo_copy, private_data)
     assert list((store_dir(private_data) / "reader-views").iterdir()) == []
