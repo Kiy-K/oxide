@@ -32,7 +32,7 @@ excluded too. Lexical search needs the pinned FTS extension: run `oxide prepare`
 
 | Operation | Returns | Notes |
 | --- | --- | --- |
-| `open_repository(path, *, data_dir=None, create=True)` | `Repository` | Takes the store's exclusive lock; a second owner in any process gets `OwnershipConflict`. `create=False` raises `NotIndexed` without creating an absent store; existing indexes are automatically refreshed |
+| `open_repository(path, *, data_dir=None, create=True, shared=False)` | `Repository` | Takes the store's exclusive lock; a second owner in any process gets `OwnershipConflict`, unless `shared=True`, which falls back to a read-only handle (`read_only`) that pins the owner's latest published generation: reads work, `index()`/`judge(enable)` raise `InvalidArgument`. `create=False` raises `NotIndexed` without creating an absent store; existing indexes are automatically refreshed |
 | `Repository.index(*, progress=None)` | `IndexReport` | Capture → derive → publish a new generation atomically; `unchanged` when snapshot and derivation are already current. Incremental: Python and TypeScript files whose bytes the current generation parsed reuse their parse facts; resolution and publication always cover the whole snapshot, so the result equals a full rebuild. `progress(line)` is called as each stage starts |
 | `Repository.search(query, *, limit, paths, symbols, selection, changed)` | `SearchResult` | Entry points for inspection: seeds in hint order, then BM25 rank; never final context |
 | `Repository.build_context(query, budget, *, paths, symbols, selection, changed)` | `ContextBundle` | Retrieval → TreeRouter → deterministic selection → packing |
@@ -114,6 +114,14 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
   key or None at module level, `preview` the line the match starts on), `truncated`,
   `files` searched, `partial` (searched files whose index parse had errors, so matches
   inside them may be missing) and `skipped` (not UTF-8, not searched).
+
+## Navigation
+
+`outline(target=None, *, limit=500)`, `inspect(symbol, *, limit=20)` and `refs(symbol, *, limit=50)` read indexed facts of the current snapshot (line numbers come from the captured bytes, never the worktree); each result names its `Snapshot`.
+
+- `outline`: `Outline(files: OutlineFile(path, language, coverage, declarations: Declaration(key, kind, name, signature, location, test, depth)), unsupported, truncated)` for a file or directory (`None`/`.` = whole repository), in path then source order, members nested by `depth`. `limit` caps declarations; `truncated` says so.
+- `inspect`: resolves an entity key, a file path (suffixes allowed), `path:LINE`, `path#Qual.name`, a dotted module or a symbol name. `status` is `resolved`, `ambiguous` (ranked `candidates` with `why` = key/path/line/qualified/suffix/name; never a guess) or `not_found`. A resolved result adds `parent`, `members` and per-kind `links` counts (`proven`/`heuristic`/`ambiguous`/`unresolved`, in/out).
+- `refs`: same resolution, then `Reference(kind, direction, label, other, at, text)` for `calls`/`references`/`imports`/`tested_by`, labelled `proven`, `heuristic`, `ambiguous` or `unresolved`, with the evidence line. `unresolved_same_name` counts unresolved sites with the same name; the list is evidence from the graph, not an exhaustive claim.
 
 ## Impact
 
@@ -305,7 +313,7 @@ Damage is classified like this:
 - One owner per store across processes (`flock`). Other owners, including CLI
   indexing, receive `ownership_conflict` until the handle closes. MCP retains one
   handle per requested repository until server shutdown; stop it before explicit
-  CLI repair. Concurrent API calls on the same handle are serialized internally.
+  CLI repair, except the read-only navigation commands (`shared=True`). Concurrent API calls on the same handle are serialized internally.
 
 ## Platform and native limitations
 
@@ -333,7 +341,7 @@ Damage is classified like this:
 
 ## CLI
 
-`oxide index|search|context|judge <path> [...] [--data-dir D] [--json]`, `oxide impact <path> <key> [--direction upstream|downstream] [--depth 0-8] [--limit 0-1000] [--data-dir D] [--json]` and `oxide prepare`. `impact` lists what depends on an entity (callers, importers, tests; nearest first, each with its proven depth); `key` comes from `search` output. `judge` shows the optional judge's status, what it sends and how to
+`oxide index|search|context|judge <path> [...] [--data-dir D] [--json]`, `oxide impact <path> <key> [--direction upstream|downstream] [--depth 0-8] [--limit 0-1000] [--data-dir D] [--json]` `oxide outline <path> [target]`, `oxide inspect <path> <symbol>`, `oxide refs <path> <symbol>` (each `[--limit N] [--data-dir D] [--json]`; they open with `shared=True`, so they read the running owner's latest snapshot and note that on stderr; exit 1 for `ambiguous`/`not_found`) and `oxide prepare`. `impact` lists what depends on an entity (callers, importers, tests; nearest first, each with its proven depth); `key` comes from `search` output. `judge` shows the optional judge's status, what it sends and how to
 disable it. `--enable` and `--disable` switch it (§ Optional judge). `index` prints its progress to stderr and a summary to stdout:
 counts, changes since the last index, source files parsed and reused (`sources:`), then any
 partial parses, skips, unsupported files and case collisions. `context` prints the

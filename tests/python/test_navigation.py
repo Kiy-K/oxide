@@ -1,0 +1,572 @@
+"""Pinned shared reads, and ``outline`` / ``inspect`` / ``refs`` over indexed facts."""
+
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import subprocess
+import sys
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import pytest
+from conftest import FIXTURE, env, write
+
+import oxide
+from oxide.cli import _front_positionals
+from oxide.core import lookup
+from oxide.models import (
+    Entity,
+    FileInfo,
+    InvalidArgument,
+    NotIndexed,
+    Relation,
+    Snapshot,
+    SourceRef,
+    StoreCorrupt,
+)
+from oxide.storage import pins
+from oxide.storage import reader as reader_mod
+from oxide.storage.reader import Reader
+
+HEX = "a" * 64
+
+
+@dataclass
+class _FakeFacts:
+    """Minimal ``Facts`` for lookup bounds: many same-named symbols in key order."""
+
+    snapshot: Snapshot = field(default_factory=lambda: Snapshot("r", "s", "d"))
+    files: dict[str, FileInfo] = field(default_factory=dict)
+    catalog: dict[str, Entity] = field(default_factory=dict)
+    bodies: dict[str, bytes] = field(default_factory=dict)
+
+    def entities(self, keys: Iterable[str]) -> dict[str, Entity]:
+        return {k: self.catalog[k] for k in keys if k in self.catalog}
+
+    def named(
+        self, name: str, limit: int, paths: Sequence[str] | None = None
+    ) -> tuple[list[str], bool]:
+        keys = sorted(
+            k
+            for k, e in self.catalog.items()
+            if e.name == name and (paths is None or (e.source and e.source.path in paths))
+        )
+        return keys[:limit], len(keys) > limit
+
+    def innermost(self, path: str, start: int, end: int) -> str | None:
+        return None
+
+    def relations(self, key: str) -> list[Relation]:
+        return []
+
+    def mentions(self, names: list[str], kinds: tuple[str, ...]) -> int:
+        return 0
+
+    def source(self, ref: SourceRef) -> bytes:
+        return self.bodies[ref.path]
+
+
+def _symbol(path: str, qual: str, start: int = 0) -> Entity:
+    name = qual.rsplit(".", 1)[-1]
+    key = f"symbol:{path}#{qual}"
+    return Entity(
+        key, "symbol", "function", name, None, SourceRef(path, start, start + 1, "x"), False
+    )
+
+
+def _facts_with_many_runs(n: int = lookup._NAMED + 10) -> _FakeFacts:
+    facts = _FakeFacts()
+    for i in range(n):
+        path = f"a{i:03d}.py"
+        facts.files[path] = FileInfo(path, "x", 1, "python", "complete", ())
+        facts.bodies[path] = b"def run():\n    pass\n"
+        entity = _symbol(path, "run", 0)
+        facts.catalog[entity.key] = entity
+    path = "z_late.py"
+    facts.files[path] = FileInfo(path, "x", 1, "python", "complete", ())
+    facts.bodies[path] = b"class C:\n    def run(self):\n        pass\n"
+    target = _symbol(path, "C.run", 10)
+    facts.catalog[target.key] = target
+    return facts
+
+
+def oxide_cli(data: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, "-m", "oxide", *args],
+        env=env(data),
+        capture_output=True,
+        encoding="utf-8",
+        check=False,
+    )
+
+
+@pytest.fixture
+def owned(repo_copy: Path) -> oxide.Repository:
+    repo = oxide.open_repository(repo_copy)
+    repo.index()
+    return repo
+
+
+def store_dir(data: Path) -> Path:
+    (directory,) = (data / "repos").iterdir()
+    return directory
+
+
+# --- pins -----------------------------------------------------------------------
+
+
+def test_a_live_pin_protects_its_generation_and_a_dead_one_does_not(tmp_path: Path) -> None:
+    generations = tmp_path / "generations"
+    for name in (HEX, "b" * 64, "c" * 64, "d" * 64 + ".staging"):
+        (generations / name).mkdir(parents=True)
+    fd, path = pins.pin(tmp_path, HEX)
+    other_fd, other = pins.pin(tmp_path, "b" * 64)
+    os.close(other_fd)  # a crashed reader: its lock dies with the descriptor
+    pins.sweep(tmp_path, generations, "c" * 64)
+    assert sorted(p.name for p in generations.iterdir()) == [HEX, "c" * 64]
+    assert path.exists() and not other.exists()
+    pins.unpin(fd, path)
+    pins.sweep(tmp_path, generations, "c" * 64)
+    assert [p.name for p in generations.iterdir()] == ["c" * 64]
+
+
+def test_sweep_reclaims_orphaned_reader_views(tmp_path: Path) -> None:
+    """A crashed Windows reader leaves reader-views/<pin>; sweep removes it once the pin is gone."""
+    generations = tmp_path / "generations"
+    (generations / HEX).mkdir(parents=True)
+    (generations / ("c" * 64)).mkdir()
+    fd, path = pins.pin(tmp_path, HEX)
+    views = tmp_path / "reader-views"
+    orphan = views / f"{HEX}.deadbeef"
+    orphan.mkdir(parents=True)
+    (orphan / "leftover").write_text("x")
+    held = views / path.name
+    held.mkdir()
+    (held / "ok").write_text("y")
+    pins.sweep(tmp_path, generations, "c" * 64)
+    assert held.is_dir() and not orphan.exists()  # live pin keeps its cache
+    os.close(fd)
+    path.unlink()  # pin already gone, as pinned() removes a dead lock holder
+    pins.sweep(tmp_path, generations, "c" * 64)
+    assert not held.exists() and list(views.iterdir()) == []
+
+
+def test_sweep_keeps_the_replaced_twin_of_a_pinned_generation(tmp_path: Path) -> None:
+    generations = tmp_path / "generations"
+    aside = HEX + ".replaced." + "d" * 16
+    for name in (HEX, HEX + ".replaced", aside, HEX + ".staging", "c" * 64):
+        (generations / name).mkdir(parents=True)
+    fd, path = pins.pin(tmp_path, HEX)
+    pins.sweep(tmp_path, generations, "c" * 64)
+    assert sorted(p.name for p in generations.iterdir()) == [
+        HEX,
+        HEX + ".replaced",
+        aside,
+        "c" * 64,
+    ]
+    pins.unpin(fd, path)
+
+
+def test_the_pin_scan_unlinks_stale_pins_and_fails_closed_on_unreadable_ones(
+    tmp_path: Path,
+) -> None:
+    fd, path = pins.pin(tmp_path, HEX)
+    assert pins.pinned(tmp_path) == {HEX} and path.exists()
+    os.close(fd)
+    assert pins.pinned(tmp_path) == set() and not path.exists()
+    unreadable = tmp_path / "pins" / ("b" * 64 + ".x")
+    unreadable.write_text("")
+    unreadable.chmod(0)
+    if os.access(unreadable, os.R_OK):  # running as root: permissions do not bite
+        return
+    assert pins.pinned(tmp_path) == {"b" * 64}
+
+
+def test_stale_pin_scan_on_windows_closes_before_unlink(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Windows cannot unlink a path while our scan still holds it open."""
+    fd, path = pins.pin(tmp_path, HEX)
+    os.close(fd)
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr(pins, "try_lock", lambda _fd: True)
+    assert pins.pinned(tmp_path) == set() and not path.exists()
+
+
+# --- readers --------------------------------------------------------------------
+
+
+def test_a_reader_follows_the_owner_and_keeps_its_pinned_generation(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path
+) -> None:
+    reader = Reader(repo_copy, private_data)
+    first = reader.view()
+    before = first.snapshot
+    write(repo_copy, {"oxidepy/extra.py": "def extra():\n    return 1\n"})
+    owned.index()
+    assert first.snapshot == before and "oxidepy/extra.py" not in first.files  # still readable
+    assert first.directory.is_dir()
+    second = reader.view()
+    assert "oxidepy/extra.py" in second.files and second.snapshot != before
+    write(repo_copy, {"oxidepy/more.py": "def more():\n    return 2\n"})
+    owned.index()  # the next publication sweeps what no reader pins any more
+    assert not first.directory.exists()
+    reader.close()
+    assert list((store_dir(private_data) / "pins").iterdir()) == []
+
+
+def test_a_reader_notices_a_same_name_rebuild(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path
+) -> None:
+    reader = Reader(repo_copy, private_data)
+    first = reader.view()
+    assert reader.current is not None
+    # Same content-addressed name with damaged retained bytes: publish replaces the
+    # generation (Store._drop_view then rename). On Windows the reader holds a private
+    # copy, so the owner's rebuild is not blocked by the open view.
+    generation = store_dir(private_data) / "generations" / reader.current[0]
+    next((generation / "source").iterdir()).unlink()
+    assert owned.index().status == "built"
+    assert reader.view() is not first
+    reader.close()
+
+
+def test_owner_can_republish_while_a_reader_holds_a_prior_replaced_twin(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path
+) -> None:
+    """A→B→A→B→A while a reader keeps the first A must not collide on ``.replaced``."""
+    reader = Reader(repo_copy, private_data)
+    held = reader.view()
+    for _ in range(2):
+        write(repo_copy, {"oxidepy/extra.py": "def extra():\n    return 1\n"})
+        owned.index()
+        (repo_copy / "oxidepy" / "extra.py").unlink()
+        owned.index()
+    assert held.directory.is_dir()
+    assert held.entities(["symbol:oxidepy/retry.py#RetryPolicy"])
+    reader.close()
+
+
+def test_republish_reuses_a_pinned_generation_so_source_stays_reachable(
+    owned: oxide.Repository,
+    repo_copy: Path,
+    private_data: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A→B→A must keep generations/A in place: View.source reads that path, not ``.replaced``."""
+    reader = Reader(repo_copy, private_data)
+    held = reader.view()
+    assert reader.current is not None
+    name = reader.current[0]
+    generation = store_dir(private_data) / "generations" / name
+    inode = generation.stat().st_ino
+    path, info = next(iter(held.files.items()))
+    ref = SourceRef(path, 0, 0, info.digest)
+    assert held.source(ref)
+
+    real_rename = os.rename
+
+    def guarded(src: str | os.PathLike[str], dst: str | os.PathLike[str]) -> None:
+        if Path(src).resolve() == generation.resolve():
+            raise AssertionError(f"pinned generation {name} must stay reachable")
+        real_rename(src, dst)
+
+    monkeypatch.setattr("oxide.storage.store.os.rename", guarded)
+    write(repo_copy, {"oxidepy/extra.py": "def extra():\n    return 1\n"})
+    owned.index()
+    (repo_copy / "oxidepy" / "extra.py").unlink()
+    owned.index()
+    assert generation.stat().st_ino == inode
+    assert held.source(ref)
+    assert held.entities(["symbol:oxidepy/retry.py#RetryPolicy"])
+    reader.close()
+
+
+def test_damaged_pinned_generation_is_replaced_on_republish(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path
+) -> None:
+    """Reuse requires an intact retained twin; a missing source falls through to replace."""
+    reader = Reader(repo_copy, private_data)
+    assert reader.current is not None
+    name = reader.current[0]
+    generation = store_dir(private_data) / "generations" / name
+    inode = generation.stat().st_ino
+    write(repo_copy, {"oxidepy/extra.py": "def extra():\n    return 1\n"})
+    owned.index()
+    blob = next((generation / "source").iterdir())
+    blob.unlink()
+    (repo_copy / "oxidepy" / "extra.py").unlink()
+    report = owned.index()
+    assert report.status == "built"
+    assert generation.stat().st_ino != inode
+    owned.store.view().verify_sources()
+    assert owned.inspect("RetryPolicy").status == "resolved"
+    reader.close()
+
+
+def test_a_reader_needs_a_published_store(repo_copy: Path, private_data: Path) -> None:
+    with pytest.raises(NotIndexed):
+        Reader(repo_copy, private_data)
+    repo = oxide.open_repository(repo_copy)
+    repo.index()
+    (store_dir(private_data) / "repo.json").write_text("{")
+    with pytest.raises(StoreCorrupt):
+        Reader(repo_copy, private_data)
+
+
+# --- shared repositories ----------------------------------------------------------
+
+
+def test_a_shared_handle_reads_while_another_owns_and_cannot_write(
+    owned: oxide.Repository, repo_copy: Path
+) -> None:
+    with pytest.raises(oxide.OxideError):
+        oxide.open_repository(repo_copy)
+    with oxide.open_repository(repo_copy, create=False, shared=True) as reader:
+        assert reader.read_only and not owned.read_only
+        assert reader.snapshot == owned.snapshot
+        assert reader.inspect("RetryPolicy").status == "resolved"
+        with pytest.raises(InvalidArgument, match="only reads"):
+            reader.index()
+        with pytest.raises(InvalidArgument, match="only reads"):
+            reader.judge(True)
+    assert not owned.read_only
+
+
+def test_a_shared_handle_is_the_owner_when_nobody_is(repo_copy: Path) -> None:
+    oxide.index_repository(repo_copy)
+    with oxide.open_repository(repo_copy, create=False, shared=True) as repo:
+        assert not repo.read_only
+
+
+def test_windows_reader_views_a_private_copy(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Windows cannot rename a generation while LadybugDB holds it open; readers copy first."""
+    monkeypatch.setattr(reader_mod, "_WINDOWS", True)
+    reader = Reader(repo_copy, private_data)
+    held = reader.view()
+    assert held.directory.parent.name == "reader-views"
+    generation = store_dir(private_data) / "generations" / reader.current[0]  # type: ignore[index]
+    next((generation / "source").iterdir()).unlink()
+    assert owned.index().status == "built"  # same-name rebuild under the open private copy
+    assert held.entities(["symbol:oxidepy/retry.py#RetryPolicy"])
+    reader.close()
+    assert list((store_dir(private_data) / "reader-views").iterdir()) == []
+
+
+# --- outline --------------------------------------------------------------------
+
+
+def test_outline_of_a_file_nests_members_with_lines(owned: oxide.Repository) -> None:
+    result = owned.outline("oxidepy/retry.py")
+    (file,) = result.files
+    shape = [(d.depth, d.kind, d.name, d.location.start_line) for d in file.declarations]  # type: ignore[union-attr]
+    assert shape[:3] == [
+        (0, "class", "TooManyAttemptsError", 7),
+        (1, "method", "__init__", 10),
+        (0, "class", "RetryPolicy", 15),
+    ]
+    policy = next(d for d in file.declarations if d.name == "RetryPolicy")
+    assert policy.signature and policy.signature.startswith("class RetryPolicy")
+    assert result.snapshot == owned.snapshot and not result.truncated
+
+
+def test_outline_of_a_directory_is_deterministic_and_bounded(owned: oxide.Repository) -> None:
+    whole = owned.outline()
+    assert [f.path for f in whole.files] == sorted(f.path for f in whole.files)
+    assert whole == owned.outline(".") == owned.outline("")
+    cut = owned.outline("oxidepy", limit=3)
+    assert cut.truncated and sum(len(f.declarations) for f in cut.files) == 3
+    assert owned.outline("oxidepy", limit=0).truncated
+    with pytest.raises(InvalidArgument, match="no indexed file or directory"):
+        owned.outline("nope")
+    with pytest.raises(InvalidArgument):
+        owned.outline(limit=-1)
+
+
+def test_outline_counts_files_it_cannot_parse(repo_copy: Path) -> None:
+    write(repo_copy, {"notes.xyz": "text\n"})
+    with oxide.open_repository(repo_copy) as repo:
+        repo.index()
+        assert repo.outline().unsupported >= 1
+        assert all(f.path != "notes.xyz" for f in repo.outline().files)
+
+
+# --- inspect and refs -------------------------------------------------------------
+
+
+def test_path_qualified_lookup_is_not_hidden_by_the_global_name_cap() -> None:
+    facts = _facts_with_many_runs()
+    target = "symbol:z_late.py#C.run"
+    found = lookup.inspect(facts, "z_late.py#C.run", 10)
+    assert found.status == "resolved" and found.candidates[0].declaration.key == target
+    assert lookup.inspect(facts, "C.run", 10).status == "resolved"
+    exact = lookup.inspect(facts, target, 10)
+    assert exact.status == "resolved" and not exact.truncated
+
+
+def test_inspect_resolves_every_spelling_of_one_symbol(owned: oxide.Repository) -> None:
+    key = "symbol:oxidepy/retry.py#RetryPolicy.should_retry"
+    for query in (
+        key,
+        "RetryPolicy.should_retry",
+        "retry.py#RetryPolicy.should_retry",
+        "oxidepy/retry.py#RetryPolicy.should_retry",
+        "./oxidepy/retry.py#RetryPolicy.should_retry",
+        r"oxidepy\retry.py#RetryPolicy.should_retry",
+        "oxidepy/retry.py:32",
+    ):
+        found = owned.inspect(query)
+        assert found.status == "resolved", query
+        assert found.candidates[0].declaration.key == key
+    found = owned.inspect("RetryPolicy")
+    assert found.parent and found.parent.kind == "file"
+    assert [m.name for m in found.members][:2] == ["__init__", "exhausted"]
+    assert any(
+        link.kind == "calls" and link.direction == "in" and link.proven for link in found.links
+    )
+    assert owned.inspect("oxidepy/retry.py").candidates[0].why == "path"
+    assert owned.inspect("./oxidepy/retry.py").candidates[0].why == "path"
+    assert owned.outline(r".\oxidepy\retry.py").files[0].path == "oxidepy/retry.py"
+    assert owned.inspect("oxidepy/retry.py:1000").status == "not_found"
+
+
+def test_an_ambiguous_name_is_never_guessed(owned: oxide.Repository) -> None:
+    found = owned.inspect("__init__")
+    assert found.status == "ambiguous" and len(found.candidates) > 1 and not found.members
+    keys = [c.declaration.key for c in found.candidates]
+    assert keys == [c.declaration.key for c in owned.inspect("__init__").candidates]
+    assert owned.refs("__init__").status == "ambiguous"
+    assert owned.refs("__init__").references == ()
+    capped = owned.inspect("__init__", limit=2)
+    assert len(capped.candidates) == 2 and capped.truncated
+    assert owned.inspect("definitely_missing").status == "not_found"
+    with pytest.raises(InvalidArgument, match="empty query"):
+        owned.inspect("  ")
+
+
+def test_refs_labels_evidence_and_never_claims_completeness(owned: oxide.Repository) -> None:
+    result = owned.refs("RetryPolicy")
+    assert result.status == "resolved" and result.references
+    assert {r.label for r in result.references} <= {
+        "proven",
+        "heuristic",
+        "ambiguous",
+        "unresolved",
+    }
+    callers = [r for r in result.references if r.kind == "calls" and r.direction == "in"]
+    assert callers and all(r.at and r.text and r.other for r in callers)
+    labels = [r.label for r in result.references]
+    assert labels == sorted(labels, key=("proven", "heuristic", "ambiguous", "unresolved").index)
+    outward = owned.refs("oxidepy/retry.py#RetryPolicy.wait")
+    assert any(r.direction == "out" for r in outward.references)
+    few = owned.refs("RetryPolicy", limit=1)
+    assert few.truncated and len(few.references) == 1
+    # locations are lines of the captured bytes
+    for r in result.references:
+        assert r.at is None or (r.at.start_line >= 1 and r.at.end_line >= r.at.start_line)
+
+
+def test_navigation_reads_the_snapshot_not_the_worktree(
+    owned: oxide.Repository, repo_copy: Path
+) -> None:
+    before = owned.inspect("RetryPolicy")
+    path = repo_copy / "oxidepy" / "retry.py"
+    path.write_text("\n" * 50 + path.read_text())
+    owned.index()
+    after = owned.inspect("RetryPolicy")
+    assert after.candidates[0].declaration.location.start_line == (  # type: ignore[union-attr]
+        before.candidates[0].declaration.location.start_line + 50  # type: ignore[union-attr]
+    )
+
+
+@pytest.mark.parametrize("repo", ["js_repo", "go_repo", "rust_repo", "java_repo", "c_repo"])
+def test_navigation_works_in_every_language(repo: str, tmp_path: Path) -> None:
+    copy = tmp_path / repo
+    shutil.copytree(FIXTURE.parent / repo, copy)
+    with oxide.open_repository(copy) as handle:
+        handle.index()
+        files = [f for f in handle.outline().files if f.declarations]
+        assert files
+        first = files[0].declarations[0]
+        found = handle.inspect(first.key)
+        assert found.status == "resolved" and found.candidates[0].declaration == first
+        assert handle.refs(first.key).status == "resolved"
+        assert handle.outline() == handle.outline()
+
+
+# --- command line -----------------------------------------------------------------
+
+
+def test_cli_navigation_round_trip_beside_a_running_owner(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path
+) -> None:
+    target = (str(repo_copy), "--data-dir", str(private_data))
+    listed = oxide_cli(private_data, "outline", *target, "oxidepy/retry.py")
+    assert listed.returncode == 0, listed.stderr
+    assert "RetryPolicy" in listed.stdout and "reading its latest snapshot" in listed.stderr
+    found = oxide_cli(private_data, "inspect", *target, "RetryPolicy.should_retry", "--json")
+    assert found.returncode == 0, found.stderr
+    data = json.loads(found.stdout)
+    assert data["status"] == "resolved"
+    assert data["candidates"][0]["declaration"]["location"]["path"] == "oxidepy/retry.py"
+    refs = oxide_cli(private_data, "refs", *target, "RetryPolicy", "--limit", "2")
+    assert refs.returncode == 0 and "not an exhaustive list" in refs.stdout
+    ambiguous = oxide_cli(private_data, "inspect", *target, "__init__")
+    assert ambiguous.returncode == 1 and "ambiguous" in ambiguous.stdout
+    assert oxide_cli(private_data, "refs", *target, "nothing_here").returncode == 1
+    # the owner was not disturbed
+    assert owned.inspect("RetryPolicy").status == "resolved"
+
+
+def test_cli_navigation_errors_are_typed(repo_copy: Path, private_data: Path) -> None:
+    target = (str(repo_copy), "--data-dir", str(private_data))
+    missing = oxide_cli(private_data, "inspect", *target, "x")
+    assert missing.returncode == 2 and "error[not_indexed]" in missing.stderr
+    assert oxide_cli(private_data, "index", *target).returncode == 0
+    bad = oxide_cli(private_data, "outline", *target, "nope")
+    assert bad.returncode == 2 and "error[invalid_argument]" in bad.stderr
+
+
+def test_cli_accepts_a_target_after_options() -> None:
+    """Python 3.12 argparse rejects optional positionals after options without a reorder."""
+    assert _front_positionals(
+        ["outline", "/repo", "--data-dir", "/data", "oxidepy/retry.py", "--limit", "10"]
+    ) == ["outline", "/repo", "oxidepy/retry.py", "--data-dir", "/data", "--limit", "10"]
+    # Unambiguous abbreviations must keep their values (argparse allow_abbrev).
+    assert _front_positionals(["outline", "/repo", "--lim", "10", "t.py"]) == [
+        "outline",
+        "/repo",
+        "t.py",
+        "--lim",
+        "10",
+    ]
+    # Abbreviations are scoped to the active subcommand: --di is impact's --direction,
+    # not judge's --disable.
+    assert _front_positionals(["impact", "/repo", "symbol:x.py#f", "--di", "upstream"]) == [
+        "impact",
+        "/repo",
+        "symbol:x.py#f",
+        "--di",
+        "upstream",
+    ]
+
+
+def test_windows_reader_cleans_a_failed_generation_copy(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(reader_mod, "_WINDOWS", True)
+
+    def boom(src: Path, dst: Path) -> None:
+        dst.mkdir(parents=True)
+        (dst / "partial").write_text("x")
+        raise OSError("disk full")
+
+    monkeypatch.setattr("oxide.storage.reader.shutil.copytree", boom)
+    with pytest.raises(OSError, match="disk full"):
+        Reader(repo_copy, private_data)
+    assert list((store_dir(private_data) / "reader-views").iterdir()) == []

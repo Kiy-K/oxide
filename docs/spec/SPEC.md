@@ -124,7 +124,7 @@ Core invariants:
 
 A `Repository` opened through the public API owns its store for its lifetime: database handles, the pinned read view, and the store's exclusive lock. Each request pins one published generation and one effective derivation; a request never mixes source, entities, relationships or lexical data from different generations. Readers see a complete published generation or an explicit error; unfinished writes are never visible.
 
-One read/write owner per store, across processes, enforced by an OS lock that OXIDE takes itself (the database's own protection is weaker; ADR-0002, ADR-0011). A second owner receives a typed `ownership_conflict`, never a wait or a second writer. A `Repository` serializes API reads, indexing and automatic updates in-process; native connections are never used concurrently.
+One read/write owner per store, across processes, enforced by an OS lock that OXIDE takes itself (the database's own protection is weaker; ADR-0002, ADR-0011). A second owner receives a typed `ownership_conflict`, never a wait or a second writer. A reader that does not own the store (`open_repository(..., shared=True)`, used by the navigation CLI beside a running owner) takes no store lock: it pins the published generation with a per-reader lock file, and the owner's publish and recovery delete only unpinned generations, so a reader never sees a deleted or mixed generation and can never write. A `Repository` serializes API reads, indexing and automatic updates in-process; native connections are never used concurrently.
 
 There is no embedding, vector or model-runner boundary (ADR-0011 § 5). Reintroducing one requires a new ADR with paired evidence.
 
