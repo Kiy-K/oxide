@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 from bisect import bisect_right
 from collections import Counter
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Sequence
 from typing import Protocol
 
 from oxide.models import Entity, FileInfo, InvalidArgument, Relation, Snapshot, SourceRef
@@ -31,6 +31,7 @@ from oxide.models_nav import (
 
 MAX_TEXT = 160  # characters of evidence text
 _NAMED = 200  # name matches fetched per lookup before ranking
+_NAMED_MAX = 10_000  # hard cap when a filter forces paging past ``_NAMED``
 _STRUCTURAL = ("contains", "contains_logical", "defines")
 _WHY = ("key", "path", "line", "qualified", "suffix", "name")
 _ORDER: tuple[Label, ...] = ("proven", "heuristic", "ambiguous", "unresolved")
@@ -45,11 +46,18 @@ class Facts(Protocol):
     files: dict[str, FileInfo]
 
     def entities(self, keys: Iterable[str]) -> dict[str, Entity]: ...
-    def named(self, name: str, limit: int) -> tuple[list[str], bool]: ...
+    def named(
+        self, name: str, limit: int, paths: Sequence[str] | None = None
+    ) -> tuple[list[str], bool]: ...
     def innermost(self, path: str, start: int, end: int) -> str | None: ...
     def relations(self, key: str) -> list[Relation]: ...
     def mentions(self, names: list[str], kinds: tuple[str, ...]) -> int: ...
     def source(self, ref: SourceRef) -> bytes: ...
+
+
+def _repo_path(value: str) -> str:
+    """Slash-normalized worktree path without a leading ``./``."""
+    return value.replace("\\", "/").removeprefix("./")
 
 
 Declared = Callable[[list[str]], list[Entity]]
@@ -107,7 +115,7 @@ def _qualified(entity: Entity) -> str:
 def outline(view: Facts, declared: Declared, target: str | None, limit: int) -> Outline:
     """Files at or under ``target`` (``None``: all) with their declarations, at most
     ``limit`` declarations in all. A directory lists only files that declare something."""
-    name = (target or "").strip().removeprefix("./").replace("\\", "/").strip("/")
+    name = _repo_path((target or "").strip()).strip("/")
     name = "" if name == "." else name
     single = name in view.files
     paths = [name] if single else [p for p in sorted(view.files) if p.startswith(name + "/")]
@@ -153,6 +161,63 @@ def _in_file(entity: Entity, name: str) -> bool:
     return path == name or path.endswith("/" + name)
 
 
+def _paths_named(name: str, files: Iterable[str]) -> list[str]:
+    return [p for p in sorted(files) if p == name or p.endswith("/" + name)]
+
+
+def _classify(entity: Entity, qual: str, file_part: str, scoped: bool) -> str | None:
+    if scoped and not _in_file(entity, file_part):
+        return None
+    own = _qualified(entity)
+    if own == qual:
+        return "qualified"
+    if own.endswith("." + qual):
+        return "suffix"
+    if entity.name == qual:
+        return "name"
+    return None
+
+
+def _name_matches(
+    view: Facts,
+    name: str,
+    qual: str,
+    file_part: str,
+    scope: Sequence[str] | None,
+) -> tuple[list[tuple[str, Entity]], bool]:
+    """Entities named ``name`` that pass the path/qualified filters.
+
+    When ``scope`` is set, ``named`` applies the path restriction before its cap. When a
+    global name search is truncated before any filtered hit appears, the fetch grows until
+    a hit shows up or the name is exhausted (bounded by ``_NAMED_MAX``).
+    """
+    scoped = scope is not None
+    limit, hits, cut = _NAMED, [], True
+    while True:
+        keys, cut = view.named(name, limit, paths=scope)
+        hits = [
+            (why, entity)
+            for entity in view.entities(keys).values()
+            if (why := _classify(entity, qual, file_part, scoped))
+        ]
+        if hits or not cut or limit >= _NAMED_MAX:
+            return hits, cut
+        limit = min(limit * 2, _NAMED_MAX)
+
+
+def _rank(found: dict[str, tuple[str, Entity]]) -> list[tuple[str, Entity]]:
+    return sorted(
+        found.values(),
+        key=lambda i: (
+            _WHY.index(i[0]),
+            i[1].test,
+            i[1].source.path if i[1].source else "",
+            i[1].source.start if i[1].source else -1,
+            i[1].key,
+        ),
+    )
+
+
 def _resolve(view: Facts, query: str, limit: int) -> tuple[list[tuple[str, Entity]], bool, _Lines]:
     """Entities ``query`` may mean as (why, entity), best first, and whether a bound cut them."""
     text = query.strip()
@@ -165,12 +230,18 @@ def _resolve(view: Facts, query: str, limit: int) -> tuple[list[tuple[str, Entit
         for entity in entities:
             found.setdefault(entity.key, (why, entity))
 
-    add("key", view.entities([text]).values())
-    path, line = text.removeprefix("./").replace("\\", "/"), None
+    exact = view.entities([text])
+    add("key", exact.values())
+    if exact:
+        # A full entity key is exact: an unrelated name-search cap must not widen its status.
+        ranked = _rank(found)
+        return ranked[:limit], len(ranked) > limit, lines
+
+    path, line = _repo_path(text), None
     m = _LINE.fullmatch(path)
     if m and any(p == m[1] or p.endswith("/" + m[1]) for p in view.files):
         path, line = m[1], int(m[2])
-    files = [p for p in sorted(view.files) if p == path or p.endswith("/" + path)]
+    files = _paths_named(path, view.files)
     if line is not None:
         for p in files:
             start = lines.code_start(p, line)
@@ -181,32 +252,17 @@ def _resolve(view: Facts, query: str, limit: int) -> tuple[list[tuple[str, Entit
         add("path", view.entities([f"file:{p}" for p in files]).values())
     truncated = False
     if line is None and path not in view.files:  # an exact path names no symbol
-        file_part, hash_, qual = text.partition("#")
-        qual = (qual if hash_ else text).replace("::", ".")
-        # a module is named by its whole dotted path, a symbol by its last component
-        for name in dict.fromkeys([qual, qual.rsplit(".", 1)[-1]]):
-            keys, cut = view.named(name, _NAMED)
-            truncated = truncated or cut
-            for entity in view.entities(keys).values():
-                if hash_ and not _in_file(entity, file_part):
-                    continue
-                own = _qualified(entity)
-                if own == qual:
-                    add("qualified", [entity])
-                elif own.endswith("." + qual):
-                    add("suffix", [entity])
-                elif entity.name == qual:
-                    add("name", [entity])
-    ranked = sorted(
-        found.values(),
-        key=lambda i: (
-            _WHY.index(i[0]),
-            i[1].test,
-            i[1].source.path if i[1].source else "",
-            i[1].source.start if i[1].source else -1,
-            i[1].key,
-        ),
-    )
+        file_part, hash_, qual = path.partition("#")
+        qual = (qual if hash_ else path).replace("::", ".")
+        scope = _paths_named(file_part, view.files) if hash_ else None
+        if not (hash_ and not scope):
+            # a module is named by its whole dotted path, a symbol by its last component
+            for name in dict.fromkeys([qual, qual.rsplit(".", 1)[-1]]):
+                hits, cut = _name_matches(view, name, qual, file_part, scope)
+                truncated = truncated or cut
+                for why, entity in hits:
+                    add(why, [entity])
+    ranked = _rank(found)
     return ranked[:limit], truncated or len(ranked) > limit, lines
 
 

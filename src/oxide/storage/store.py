@@ -249,9 +249,14 @@ class Store:
                 # The unreadable generation this rebuild replaces. A crash between the two
                 # renames is undone on the next open (_recover); a failure, just below.
                 # Close our own view of it first: Windows can't rename a directory with
-                # open files.
+                # open files. A live reader may still hold a prior ``.replaced`` twin from
+                # an earlier same-name rebuild; move that aside before renaming again.
                 self._drop_view()
-                os.rename(target, self.generations / f"{name}.replaced")
+                replaced = self.generations / f"{name}.replaced"
+                if replaced.exists():
+                    aside = self.generations / f"{name}.replaced.{secrets.token_hex(8)}"
+                    os.rename(replaced, aside)
+                os.rename(target, replaced)
             os.rename(staging, target)
             _fsync(self.generations)
         except BaseException:
