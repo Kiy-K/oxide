@@ -105,15 +105,11 @@ def _impact_summary(impact: Impact) -> str:
     return "\n".join(lines)
 
 
-def _front_positionals(argv: list[str]) -> list[str]:
-    """Put bare tokens that follow options back with the other positionals.
-
-    Python 3.12 ``argparse`` rejects ``cmd PATH --data-dir D target``; 3.13 accepts it.
-    Rewrite to ``cmd PATH target --data-dir D`` so both accept the same command lines.
-    """
-    if len(argv) < 2 or argv[0] in ("prepare", "mcp") or argv[0].startswith("-"):
-        return argv
-    valued = {
+def _option_takes_value(option: str) -> bool:
+    """Whether ``option`` (possibly abbreviated) takes a following argument."""
+    if "=" in option:
+        return False
+    valued = (
         "--data-dir",
         "--limit",
         "--budget",
@@ -124,7 +120,26 @@ def _front_positionals(argv: list[str]) -> list[str]:
         "--file",
         "--symbol",
         "--repo",
-    }
+    )
+    flags = ("--json", "--enable", "--disable", "--http")
+    if option in valued:
+        return True
+    if option in flags:
+        return False
+    # argparse allows unambiguous long-option abbreviations by default.
+    value_hits = [name for name in valued if name.startswith(option)]
+    flag_hits = [name for name in flags if name.startswith(option)]
+    return len(value_hits) == 1 and not flag_hits
+
+
+def _front_positionals(argv: list[str]) -> list[str]:
+    """Put bare tokens that follow options back with the other positionals.
+
+    Python 3.12 ``argparse`` rejects ``cmd PATH --data-dir D target``; 3.13 accepts it.
+    Rewrite to ``cmd PATH target --data-dir D`` so both accept the same command lines.
+    """
+    if len(argv) < 2 or argv[0] in ("prepare", "mcp") or argv[0].startswith("-"):
+        return argv
     cmd, leading, trailing, options = argv[0], [], [], []
     seen_option, i = False, 0
     rest = argv[1:]
@@ -136,8 +151,7 @@ def _front_positionals(argv: list[str]) -> list[str]:
         if tok.startswith("-"):
             seen_option = True
             options.append(tok)
-            key = tok.split("=", 1)[0]
-            if key in valued and "=" not in tok and i + 1 < len(rest):
+            if _option_takes_value(tok) and i + 1 < len(rest):
                 i += 1
                 options.append(rest[i])
         elif seen_option:

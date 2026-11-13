@@ -460,3 +460,27 @@ def test_cli_accepts_a_target_after_options() -> None:
     assert _front_positionals(
         ["outline", "/repo", "--data-dir", "/data", "oxidepy/retry.py", "--limit", "10"]
     ) == ["outline", "/repo", "oxidepy/retry.py", "--data-dir", "/data", "--limit", "10"]
+    # Unambiguous abbreviations must keep their values (argparse allow_abbrev).
+    assert _front_positionals(["outline", "/repo", "--lim", "10", "t.py"]) == [
+        "outline",
+        "/repo",
+        "t.py",
+        "--lim",
+        "10",
+    ]
+
+
+def test_windows_reader_cleans_a_failed_generation_copy(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(reader_mod, "_WINDOWS", True)
+
+    def boom(src: Path, dst: Path) -> None:
+        dst.mkdir(parents=True)
+        (dst / "partial").write_text("x")
+        raise OSError("disk full")
+
+    monkeypatch.setattr(reader_mod.shutil, "copytree", boom)
+    with pytest.raises(OSError, match="disk full"):
+        Reader(repo_copy, private_data)
+    assert list((store_dir(private_data) / "reader-views").iterdir()) == []

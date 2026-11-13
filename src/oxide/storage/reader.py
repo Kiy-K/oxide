@@ -102,8 +102,8 @@ class Reader:
             cache = self.dir / "reader-views" / pin_path.name
             cache.parent.mkdir(exist_ok=True)
             shutil.rmtree(cache, ignore_errors=True)
+            self._caches.append(cache)  # register before copy so a failed copy is cleaned up
             shutil.copytree(directory, cache)
-            self._caches.append(cache)
             directory = cache
         return View(directory, self.repo_id)
 
