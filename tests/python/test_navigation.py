@@ -7,17 +7,88 @@ import os
 import shutil
 import subprocess
 import sys
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import pytest
 from conftest import FIXTURE, env, write
 
 import oxide
-from oxide.models import InvalidArgument, NotIndexed, StoreCorrupt
+from oxide.core import lookup
+from oxide.models import (
+    Entity,
+    FileInfo,
+    InvalidArgument,
+    NotIndexed,
+    Relation,
+    Snapshot,
+    SourceRef,
+    StoreCorrupt,
+)
 from oxide.storage import pins
 from oxide.storage.reader import Reader
 
 HEX = "a" * 64
+
+
+@dataclass
+class _FakeFacts:
+    """Minimal ``Facts`` for lookup bounds: many same-named symbols in key order."""
+
+    snapshot: Snapshot = field(default_factory=lambda: Snapshot("r", "s", "d"))
+    files: dict[str, FileInfo] = field(default_factory=dict)
+    catalog: dict[str, Entity] = field(default_factory=dict)
+    bodies: dict[str, bytes] = field(default_factory=dict)
+
+    def entities(self, keys: Iterable[str]) -> dict[str, Entity]:
+        return {k: self.catalog[k] for k in keys if k in self.catalog}
+
+    def named(
+        self, name: str, limit: int, paths: Sequence[str] | None = None
+    ) -> tuple[list[str], bool]:
+        keys = sorted(
+            k
+            for k, e in self.catalog.items()
+            if e.name == name and (paths is None or (e.source and e.source.path in paths))
+        )
+        return keys[:limit], len(keys) > limit
+
+    def innermost(self, path: str, start: int, end: int) -> str | None:
+        return None
+
+    def relations(self, key: str) -> list[Relation]:
+        return []
+
+    def mentions(self, names: list[str], kinds: tuple[str, ...]) -> int:
+        return 0
+
+    def source(self, ref: SourceRef) -> bytes:
+        return self.bodies[ref.path]
+
+
+def _symbol(path: str, qual: str, start: int = 0) -> Entity:
+    name = qual.rsplit(".", 1)[-1]
+    key = f"symbol:{path}#{qual}"
+    return Entity(
+        key, "symbol", "function", name, None, SourceRef(path, start, start + 1, "x"), False
+    )
+
+
+def _facts_with_many_runs(n: int = lookup._NAMED + 10) -> _FakeFacts:
+    facts = _FakeFacts()
+    for i in range(n):
+        path = f"a{i:03d}.py"
+        facts.files[path] = FileInfo(path, "x", 1, "python", "complete", ())
+        facts.bodies[path] = b"def run():\n    pass\n"
+        entity = _symbol(path, "run", 0)
+        facts.catalog[entity.key] = entity
+    path = "z_late.py"
+    facts.files[path] = FileInfo(path, "x", 1, "python", "complete", ())
+    facts.bodies[path] = b"class C:\n    def run(self):\n        pass\n"
+    target = _symbol(path, "C.run", 10)
+    facts.catalog[target.key] = target
+    return facts
 
 
 def oxide_cli(data: Path, *args: str) -> subprocess.CompletedProcess[str]:
@@ -62,11 +133,17 @@ def test_a_live_pin_protects_its_generation_and_a_dead_one_does_not(tmp_path: Pa
 
 def test_sweep_keeps_the_replaced_twin_of_a_pinned_generation(tmp_path: Path) -> None:
     generations = tmp_path / "generations"
-    for name in (HEX, HEX + ".replaced", HEX + ".staging", "c" * 64):
+    aside = HEX + ".replaced." + "d" * 16
+    for name in (HEX, HEX + ".replaced", aside, HEX + ".staging", "c" * 64):
         (generations / name).mkdir(parents=True)
     fd, path = pins.pin(tmp_path, HEX)
     pins.sweep(tmp_path, generations, "c" * 64)
-    assert sorted(p.name for p in generations.iterdir()) == [HEX, HEX + ".replaced", "c" * 64]
+    assert sorted(p.name for p in generations.iterdir()) == [
+        HEX,
+        HEX + ".replaced",
+        aside,
+        "c" * 64,
+    ]
     pins.unpin(fd, path)
 
 
@@ -83,6 +160,17 @@ def test_the_pin_scan_unlinks_stale_pins_and_fails_closed_on_unreadable_ones(
     if os.access(unreadable, os.R_OK):  # running as root: permissions do not bite
         return
     assert pins.pinned(tmp_path) == {"b" * 64}
+
+
+def test_stale_pin_scan_on_windows_closes_before_unlink(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Windows cannot unlink a path while our scan still holds it open."""
+    fd, path = pins.pin(tmp_path, HEX)
+    os.close(fd)
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr(pins, "try_lock", lambda _fd: True)
+    assert pins.pinned(tmp_path) == set() and not path.exists()
 
 
 # --- readers --------------------------------------------------------------------
@@ -117,6 +205,22 @@ def test_a_reader_notices_a_same_name_rebuild(
     generation.rename(generation.with_suffix(".replaced"))  # as Store.publish does
     generation.with_suffix(".copy").rename(generation)
     assert reader.view() is not first
+    reader.close()
+
+
+def test_owner_can_republish_while_a_reader_holds_a_prior_replaced_twin(
+    owned: oxide.Repository, repo_copy: Path, private_data: Path
+) -> None:
+    """A→B→A→B→A while a reader keeps the first A must not collide on ``.replaced``."""
+    reader = Reader(repo_copy, private_data)
+    held = reader.view()
+    for _ in range(2):
+        write(repo_copy, {"oxidepy/extra.py": "def extra():\n    return 1\n"})
+        owned.index()
+        (repo_copy / "oxidepy" / "extra.py").unlink()
+        owned.index()
+    assert held.directory.is_dir()
+    assert held.entities(["symbol:oxidepy/retry.py#RetryPolicy"])
     reader.close()
 
 
@@ -196,6 +300,16 @@ def test_outline_counts_files_it_cannot_parse(repo_copy: Path) -> None:
 # --- inspect and refs -------------------------------------------------------------
 
 
+def test_path_qualified_lookup_is_not_hidden_by_the_global_name_cap() -> None:
+    facts = _facts_with_many_runs()
+    target = "symbol:z_late.py#C.run"
+    found = lookup.inspect(facts, "z_late.py#C.run", 10)
+    assert found.status == "resolved" and found.candidates[0].declaration.key == target
+    assert lookup.inspect(facts, "C.run", 10).status == "resolved"
+    exact = lookup.inspect(facts, target, 10)
+    assert exact.status == "resolved" and not exact.truncated
+
+
 def test_inspect_resolves_every_spelling_of_one_symbol(owned: oxide.Repository) -> None:
     key = "symbol:oxidepy/retry.py#RetryPolicy.should_retry"
     for query in (
@@ -203,6 +317,8 @@ def test_inspect_resolves_every_spelling_of_one_symbol(owned: oxide.Repository) 
         "RetryPolicy.should_retry",
         "retry.py#RetryPolicy.should_retry",
         "oxidepy/retry.py#RetryPolicy.should_retry",
+        "./oxidepy/retry.py#RetryPolicy.should_retry",
+        r"oxidepy\retry.py#RetryPolicy.should_retry",
         "oxidepy/retry.py:32",
     ):
         found = owned.inspect(query)
@@ -215,6 +331,8 @@ def test_inspect_resolves_every_spelling_of_one_symbol(owned: oxide.Repository) 
         link.kind == "calls" and link.direction == "in" and link.proven for link in found.links
     )
     assert owned.inspect("oxidepy/retry.py").candidates[0].why == "path"
+    assert owned.inspect("./oxidepy/retry.py").candidates[0].why == "path"
+    assert owned.outline(r".\oxidepy\retry.py").files[0].path == "oxidepy/retry.py"
     assert owned.inspect("oxidepy/retry.py:1000").status == "not_found"
 
 

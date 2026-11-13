@@ -81,25 +81,33 @@ def pinned(store_dir: Path) -> set[str]:
             if not try_lock(fd):
                 live.add(name)
                 continue
-            # Unlink while still holding the lock, so a reader cannot lock this file in
-            # between and be left pinning an unlinked name that no scan can see.
+            # Stale: we hold the only lock. ``pin()`` only creates new O_EXCL names, so
+            # closing before unlink cannot hand this file to a reader. Windows refuses to
+            # unlink a path another handle of ours still has open.
+            if sys.platform == "win32":
+                os.close(fd)
+                fd = -1
             try:
                 entry.unlink(missing_ok=True)
-            except OSError:  # Windows refuses to unlink a file another handle just locked
-                live.add(name)
+            except OSError:
+                if sys.platform != "win32":
+                    live.add(name)
+                # On Windows leave the file for a later scan; never treat it as live.
         finally:
-            os.close(fd)
+            if fd >= 0:
+                os.close(fd)
     return live
 
 
 def sweep(store_dir: Path, generations: Path, current: str | None) -> None:
     """Deletes every generation entry but ``current`` and the pinned ones. A pinned
     generation's ``.replaced`` twin (a same-name rebuild) is what its reader may still be
-    reading, so it stays too; staging leftovers are never pinned."""
+    reading, so it stays too — including ``.replaced.<token>`` sidecars from repeated
+    publications; staging leftovers are never pinned."""
     live = pinned(store_dir)
     for entry in generations.iterdir():
         base, _, suffix = entry.name.partition(".")
-        keeps = entry.name if suffix in ("", "replaced") else ""
+        keeps = suffix == "" or suffix == "replaced" or suffix.startswith("replaced.")
         if entry.name == current or (_HEX64.fullmatch(base) and base in live and keeps):
             continue
         shutil.rmtree(entry, ignore_errors=True)

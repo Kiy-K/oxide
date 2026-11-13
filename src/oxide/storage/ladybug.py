@@ -27,7 +27,7 @@ import math
 import os
 import re
 import sys
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any
@@ -363,12 +363,12 @@ class View:
         )
         return {row[0]: (_entity(row[:10]), blast_from_columns(row[0], row[10:])) for row in rows}
 
-    def named(self, name: str, limit: int) -> tuple[list[str], bool]:
-        rows = self._query(
-            "MATCH (e:Entity) WHERE e.name = $name RETURN e.key ORDER BY e.key LIMIT $n",
-            {"name": name, "n": limit + 1},
-        )
-        return [r[0] for r in rows[:limit]], len(rows) > limit
+    def named(
+        self, name: str, limit: int, paths: Sequence[str] | None = None
+    ) -> tuple[list[str], bool]:
+        from oxide.storage.nav import named as _named
+
+        return _named(self, name, limit, paths)
 
     def innermost(self, path: str, start: int, end: int) -> str | None:
         """The smallest declaration of ``path`` whose range contains ``[start, end)``."""
