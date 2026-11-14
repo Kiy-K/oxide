@@ -15,9 +15,9 @@ results. They MUST NOT parse source, implement TreeIndex/TreeRouter or graph
 traversal, rank candidates, derive judgments, apply relevance thresholds,
 choose context items, truncate source to fit budgets, or read LadybugDB
 directly. Display filtering must not silently become a second selector.
-The MCP server is stateless: each request opens the repository, reads it
-without creating a store, and closes it, so no ownership, lock or session
-state outlives a request.
+The MCP server keeps one repository handle per served repository, opened without creating
+a store, until shutdown: ownership outlives a request, but no session state does, and
+stopping the server (including by SIGINT or SIGTERM) releases every handle.
 
 **What constitutes a violation:** any import of `oxide.core` or
 `oxide.storage` outside the engine; any second selector or ranking in a

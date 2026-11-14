@@ -10,10 +10,13 @@ from __future__ import annotations
 
 import argparse
 import dataclasses
+import difflib
 import io
 import json
+import re
 import sys
-from typing import Any
+from importlib.metadata import PackageNotFoundError, version
+from typing import Any, NoReturn
 
 from oxide.api import open_repository, prepare, repository_status
 from oxide.cli_nav import inspect_text, outline_text, refs_text
@@ -214,12 +217,53 @@ def _front_positionals(argv: list[str]) -> list[str]:
     return [cmd, *leading, *trailing, *options]
 
 
+_EPILOG = """\
+examples:
+  oxide index .                          index the repository in the current directory
+  oxide search . "where are retries"     list entry points for a query
+  oxide context . "fix retry bug"        build a bounded bundle of relevant source
+  oxide mcp --repo .                     serve the oxide_search tool to MCP clients
+
+`oxide <command> --help` lists a command's options. `--json` prints the typed result.
+Errors print `error[<code>]: <message>` to stderr and exit 2.
+Docs:   https://github.com/Kiy-K/oxide/blob/main/docs/public-api.md
+Issues: https://github.com/Kiy-K/oxide/issues
+"""
+
+
+class _Parser(argparse.ArgumentParser):
+    """Adds a "Did you mean" line to a mistyped command (Python 3.14 does it itself)."""
+
+    commands: tuple[str, ...] = ()
+
+    def error(self, message: str) -> NoReturn:
+        typo = re.search(r"argument command: invalid choice: '([^']*)'", message)
+        close = difflib.get_close_matches(typo[1], self.commands, n=1) if typo else []
+        if close and "maybe you meant" not in message:
+            message += f"\nDid you mean '{close[0]}'?"
+        super().error(message)
+
+
+def _version() -> str:
+    try:
+        return version("oxide-agent")
+    except PackageNotFoundError:  # run from a source tree that is not installed
+        return "unknown"
+
+
 def main(argv: list[str] | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):  # Windows pipes default to the ANSI code page
         if isinstance(stream, io.TextIOWrapper):
             stream.reconfigure(encoding="utf-8")
-    parser = argparse.ArgumentParser(prog="oxide", description=__doc__)
-    commands = parser.add_subparsers(dest="command", required=True)
+    parser = _Parser(
+        prog="oxide",
+        description="Structural code context for coding agents and humans: index a "
+        "repository, then search it or build a bounded, source-backed context bundle.",
+        epilog=_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("-V", "--version", action="version", version=f"oxide {_version()}")
+    commands = parser.add_subparsers(dest="command", metavar="command")
     commands.add_parser("prepare", help="fetch and verify the pinned LadybugDB FTS extension")
     serve = commands.add_parser("mcp", help="serve the oxide_search tool over MCP")
     serve.add_argument(
@@ -244,7 +288,12 @@ def main(argv: list[str] | None = None) -> int:
         ("refs", "callers, references and imports of a name, labelled by evidence"),
     ):
         command = commands.add_parser(name, help=text)
-        command.add_argument("path")
+        if name == "index":
+            command.add_argument(
+                "path", nargs="?", default=".", help="repository root (default: .)"
+            )
+        else:
+            command.add_argument("path")
         # Positionals before options so a flags-last line parses on every supported Python.
         if name not in ("index", "judge", "impact", "outline", "inspect", "refs"):
             command.add_argument("query")
@@ -281,7 +330,11 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument(
                 "--limit", type=int, default=200, help="entities to return (0-1000)"
             )
+    parser.commands = tuple(commands.choices)
     args = parser.parse_args(_front_positionals(list(argv) if argv is not None else sys.argv[1:]))
+    if args.command is None:
+        parser.print_help()
+        return 0
     try:
         if args.command == "prepare":
             print(prepare())

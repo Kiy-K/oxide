@@ -364,6 +364,11 @@ they never leave an empty store behind. Hint issues print as `hint: <kind> <hint
 Blast lines print as `blast <key>: <dependents> dependents …` for the first three entries, after
 the hints (`search` to stdout, `context` to stderr).
 
+`oxide --version` (`-V`) prints `oxide <version of the oxide-agent distribution>`. `oxide` with no
+command prints the help (commands, examples, documentation and issue links) and exits 0. `index`
+takes an optional path (default `.`), like `status`. A mistyped command exits 2 and names the
+closest valid command.
+
 ## MCP
 
 `oxide mcp [--repo PATH]... [--data-dir D] [--http [--host H] [--port P]]`
@@ -380,7 +385,9 @@ It serves one tool. `oxide_search`'s `mode` picks one API operation (table below
 Arguments that do not apply to a mode are `invalid_argument` errors, never silently ignored:
 `limit` with `context`; `budget` with `search`. The output schema is either result type (`anyOf`).
 
-A blank `query` without `paths` or `symbols` is `invalid_argument` over MCP.
+A blank `query` without `paths` or `symbols` is `invalid_argument` over MCP. `query` itself is a
+required property of the input schema; a call without it is rejected by schema validation before
+the tool runs.
 
 **Migration (2026-10-18, intentional break).** `oxide_context` is gone. Call
 `oxide_search` with `mode="context"`: the arguments, text and structured result are
@@ -413,6 +420,12 @@ preregistered agent trial, agents given it matched what they already found with 
   (`127.0.0.1`, `localhost`, `::1`), with Host/Origin validation (foreign Host →
   421, foreign Origin → 403). It is unauthenticated, so it never listens beyond
   this machine.
+- **Shutdown.** SIGINT (Ctrl-C) and SIGTERM close every retained handle, print
+  `oxide: stopping` to stderr and exit with 128 plus the signal number. On stdio a second
+  signal exits at once; under `--http`, uvicorn takes the first signals for its graceful
+  shutdown and OXIDE then closes the handles. Closing stdin ends a stdio server with exit 0.
+  Started from a terminal, stdio prints a short hint to stderr that a client is meant to
+  launch it.
 - **No source mutation.** Naming an unindexed directory is `not_indexed` and
   leaves nothing under the data location. Existing indexes can be refreshed by
   the engine; repository files are never changed.

@@ -10,9 +10,12 @@ import dataclasses
 import json
 import logging
 import os
+import signal
+import sys
 import threading
 from collections.abc import AsyncIterator, Callable, Sequence
 from contextlib import asynccontextmanager
+from types import FrameType
 from typing import Annotated, Literal
 
 import anyio.from_thread
@@ -118,14 +121,8 @@ def _invalid(message: str) -> ToolError:
     return ToolError(f"error[invalid_argument]: {message}")
 
 
-def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
-    """The MCP server; non-empty ``repos`` restricts which repositories calls may name.
-
-    One tool, ``oxide_search``, whose ``mode`` picks one API operation: ``search``
-    (``Repository.search``) or ``context`` (``build_context``). Both carry the blast radius
-    of the first entry points. Structural search stays a Python API: an agent trial found no
-    benefit over grep (docs/decisions.md, structural-mcp-trial).
-    """
+def _build(repos: Sequence[str], data_dir: str | None) -> tuple[FastMCP, Callable[[], None]]:
+    """The server and the function that closes its retained repository handles."""
     resolve = _resolver(repos)
     handles: dict[str, Repository] = {}
 
@@ -157,7 +154,7 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
 
     @app.tool(annotations=READ_ONLY, output_schema=output)
     def oxide_search(
-        query: Query | None = None,
+        query: Query,
         repository: Repo = None,
         mode: Mode = "search",
         limit: Annotated[
@@ -179,20 +176,20 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
         paths: Paths = (),
         symbols: Symbols = (),
     ) -> ToolResult:
-        """Search an indexed repository. mode=search (default) finds candidate symbols,
-        files and modules: hint seeds first, then BM25 rank; locations (path, byte range,
-        digest) and symbol metadata, never source text. mode=context builds a bounded,
-        source-backed bundle: relevant declarations and their enclosing headers, each
-        under a `### path:first-last` heading, within `budget` units; the structured
-        result adds omissions, routing, degradations and the snapshot. `paths` and
-        `symbols` are hints that seed both. Both modes add `blast`: what depends on the
-        first entry points (callers, importers, tests) within two hops. `unresolved`
-        counts same-name call sites OXIDE could not resolve, so dependents may be missing;
-        `stopped_by` names a bound that cut the walk. Locations, never source. `query` is
-        required."""
+        """Search an indexed repository. Read-only: never indexes; on error[not_indexed]
+        ask the user to run `oxide index <path>`. `query` is required (words or
+        identifiers); it may be blank only when `paths` or `symbols` seed the call.
+        mode=search (default) finds candidate symbols, files and modules: hint seeds
+        first, then BM25 rank; returns locations (path, byte range, digest) and symbol
+        metadata, no source text. mode=context builds a bounded, source-backed bundle:
+        relevant declarations and their enclosing headers, each under a
+        `### path:first-last` heading, within `budget` units; the structured result adds
+        omissions, routing, degradations and the snapshot. `paths` and `symbols` are
+        hints that seed both. Both modes add `blast`: what depends on the first entry
+        points (callers, importers, tests) within two hops. `unresolved` counts
+        same-name call sites OXIDE could not resolve, so dependents may be missing;
+        `stopped_by` names a bound that cut the walk."""
         target = resolve(repository)
-        if query is None:
-            raise _invalid("`query` is required for mode=search and mode=context")
         words = query
         if mode == "search":
             if budget is not None:
@@ -235,18 +232,62 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
             content=head + bundle.payload, structured_content=dataclasses.asdict(bundle)
         )
 
-    return app
+    return app, close_handles
+
+
+def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
+    """The MCP server; non-empty ``repos`` restricts which repositories calls may name.
+
+    One tool, ``oxide_search``, whose ``mode`` picks one API operation: ``search``
+    (``Repository.search``) or ``context`` (``build_context``). Both carry the blast radius
+    of the first entry points. Structural search stays a Python API: an agent trial found no
+    benefit over grep (docs/decisions.md, structural-mcp-trial).
+    """
+    return _build(repos, data_dir)[0]
+
+
+def _stop_on_signal(close: Callable[[], None]) -> None:
+    """Release the repositories and exit on SIGINT or SIGTERM.
+
+    Neither FastMCP nor asyncio unwinds the server on these (SIGTERM kills it with the
+    lifespan unrun; SIGINT needs several presses and ends in a traceback), and the
+    non-daemon worker thread would keep a normal exit waiting. Exit code is 128 + signal.
+    On stdio a second signal skips the close (a call may hold the store); uvicorn
+    consumes the signals itself under ``--http`` and re-raises them here once it is down.
+    """
+    stopping = False
+
+    def handler(signum: int, _frame: FrameType | None) -> None:
+        nonlocal stopping
+        try:
+            if not stopping:
+                stopping = True
+                print("oxide: stopping", file=sys.stderr, flush=True)
+                close()
+        finally:
+            os._exit(128 + signum)
+
+    for name in (signal.SIGINT, signal.SIGTERM):
+        signal.signal(name, handler)
 
 
 def serve(repos: Sequence[str], data_dir: str | None, http: bool, host: str, port: int) -> None:
     """Runs until stdin closes (stdio) or the process is interrupted (HTTP)."""
-    app = server(repos, data_dir)
-    if not http:
-        app.run(show_banner=False)
-        return
-    if host not in LOOPBACK:
+    if http and host not in LOOPBACK:
         # Unauthenticated: never listen beyond this machine.
         raise ValueError(f"--host must be one of {', '.join(LOOPBACK)}")
+    app, close = _build(repos, data_dir)
+    _stop_on_signal(close)
+    if not http:
+        if sys.stdin.isatty():
+            print(
+                "oxide: MCP server on stdio. An MCP client starts and talks to it; this "
+                "terminal only shows logs. Ctrl-C stops it.\n"
+                "oxide: setup: https://github.com/Kiy-K/oxide#mcp-server",
+                file=sys.stderr,
+            )
+        app.run(show_banner=False)
+        return
     app.run(
         transport="http",
         host=host,
