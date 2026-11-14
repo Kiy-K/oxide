@@ -1,7 +1,7 @@
 # OXIDE public Python API
 
 The public API is what `oxide` (`src/oxide/__init__.py`) exports:
-`open_repository`, `index_repository`, `Repository`, the result types in
+`open_repository`, `index_repository`, `repository_status`, `Repository`, the result types in
 `oxide.models` and `OxideError`. Integrations (the CLI, `oxide mcp`, future editor
 adapters, SDK users) depend on these only, never on `oxide.core` or
 `oxide.storage`. Decision: [ADR-0011](adr/0011-python-engine-vectorless.md).
@@ -27,6 +27,16 @@ source, even inside the repository: the data directory and its `repos/` are
 excluded by device and inode, so symlinked or differently spelled paths to it are
 excluded too. Lexical search needs the pinned FTS extension: run `oxide prepare`
 (or `oxide.api.prepare()`) once.
+
+`oxide.repository_status(path, data_dir=...)` returns a `RepositoryStatus` from one
+pinned published generation without capturing or indexing the worktree. It verifies retained
+source bytes against their digests. It includes
+snapshot identity, file coverage and diagnostics, counts, skipped files, case
+collisions and lexical availability. It raises `NotIndexed` when no snapshot exists;
+other storage and path failures remain typed errors. The CLI `oxide status [PATH]`
+(default `.`; `--data-dir`, `--json`) displays this last published snapshot, not a
+freshness check; for an unindexed repository it displays an indexing instruction.
+Temporary reader pins (and Windows reader copies) are cleaned up on close.
 
 ## Operations
 

@@ -89,6 +89,17 @@ class Skip:
 
 
 @dataclass(frozen=True, slots=True)
+class RepositoryStatus:
+    snapshot: Snapshot
+    files: tuple[FileInfo, ...]
+    entities: int
+    relations: int
+    skipped: tuple[Skip, ...]
+    case_collisions: tuple[tuple[str, ...], ...]
+    lexical_unavailable: str | None
+
+
+@dataclass(frozen=True, slots=True)
 class IndexReport:
     snapshot: Snapshot
     status: Literal["built", "unchanged"]

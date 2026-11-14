@@ -100,10 +100,13 @@ class Reader:
             # Private copy: Windows denies renaming a generation while this process
             # holds LadybugDB files open inside it (Store.publish same-name rebuild).
             cache = self.dir / "reader-views" / pin_path.name
-            cache.parent.mkdir(exist_ok=True)
-            shutil.rmtree(cache, ignore_errors=True)
-            self._caches.append(cache)  # register before copy so a failed copy is cleaned up
-            shutil.copytree(directory, cache)
+            try:
+                cache.parent.mkdir(exist_ok=True)
+                shutil.rmtree(cache, ignore_errors=True)
+                self._caches.append(cache)  # register before copy so a failed copy is cleaned up
+                shutil.copytree(directory, cache)
+            except (OSError, shutil.Error) as error:
+                raise ResourceExhausted(f"{cache}: cannot copy generation ({error})") from error
             directory = cache
         return View(directory, self.repo_id)
 
@@ -111,6 +114,7 @@ class Reader:
         if self._view is not None and self._identity() == self.current:
             return self._view
         self._release()
+        missing: list[str | None] = []
         for attempt in range(ATTEMPTS):
             if attempt:
                 time.sleep(0.02 * attempt)
@@ -126,6 +130,7 @@ class Reader:
                 # The owner moves CURRENT before it sweeps, so a pin counts only if CURRENT
                 # still names the generation after the pin is held.
                 identity = self._identity()
+                missing.append(name if identity == (name, 0) else None)
                 if identity is not None and identity[0] == name and identity[1]:
                     self._view = self._open(name, held[1])
                     self.current = identity
@@ -134,6 +139,8 @@ class Reader:
                 self._release()
                 raise
             self._release()
+        if missing and missing[0] is not None and all(item == missing[0] for item in missing):
+            raise StoreCorrupt(f"{self.dir}: CURRENT names missing generation {missing[0]}")
         raise OwnershipConflict(f"{self.root}: the index changed under every read; retry")
 
     def _release(self) -> None:

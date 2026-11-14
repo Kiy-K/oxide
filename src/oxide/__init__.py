@@ -1,6 +1,6 @@
 """OXIDE v2: a structural context engine for agents (docs/spec/SPEC.md, ADR-0011)."""
 
-from oxide.api import Repository, index_repository, open_repository
+from oxide.api import Repository, index_repository, open_repository, repository_status
 from oxide.models import (
     ChannelStatus,
     ContextBundle,
@@ -17,6 +17,7 @@ from oxide.models import (
     Omission,
     OxideError,
     Relation,
+    RepositoryStatus,
     RouteSummary,
     SearchResult,
     Seed,
@@ -64,6 +65,7 @@ __all__ = [
     "References",
     "Relation",
     "Repository",
+    "RepositoryStatus",
     "RouteSummary",
     "SearchResult",
     "Seed",
@@ -74,4 +76,5 @@ __all__ = [
     "StructuralResult",
     "index_repository",
     "open_repository",
+    "repository_status",
 ]
