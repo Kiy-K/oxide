@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
 import sys
+from importlib.metadata import version
 from pathlib import Path
 
 import pytest
@@ -17,12 +19,12 @@ from oxide.models import InvalidArgument, NotIndexed, advice
 
 
 def oxide(
-    data: Path, *args: str, extra: dict[str, str] | None = None
+    data: Path, *args: str, extra: dict[str, str] | None = None, cwd: Path | None = None
 ) -> subprocess.CompletedProcess[str]:
     command = [sys.executable, "-m", "oxide", *args]
     environment = env(data) | (extra or {})
     return subprocess.run(
-        command, env=environment, capture_output=True, encoding="utf-8", check=False
+        command, env=environment, capture_output=True, encoding="utf-8", check=False, cwd=cwd
     )
 
 
@@ -49,6 +51,35 @@ def test_errors_exit_2_with_a_stable_code(tmp_path: Path) -> None:
     assert result.returncode == 2
     assert result.stderr.startswith("error[not_indexed]:")
     assert not data.exists()  # a read leaves no empty store behind
+
+
+def test_version_is_the_installed_distribution_version(tmp_path: Path) -> None:
+    for flag in ("--version", "-V"):
+        result = oxide(tmp_path / "data", flag)
+        assert result.returncode == 0 and result.stdout == f"oxide {version('oxide-agent')}\n"
+
+
+def test_bare_oxide_lists_the_commands_instead_of_failing(tmp_path: Path) -> None:
+    result = oxide(tmp_path / "data")
+    assert result.returncode == 0 and result.stderr == ""
+    assert all(name in result.stdout for name in ("index", "search", "context", "mcp"))
+
+
+def test_a_mistyped_command_names_the_closest_one(tmp_path: Path) -> None:
+    result = oxide(tmp_path / "data", "serch", ".", "x")
+    assert result.returncode == 2 and re.search(r"mean(?:t)? 'search'", result.stderr)
+    unrelated = oxide(tmp_path / "data", "zzzz")
+    assert unrelated.returncode == 2 and "mean" not in unrelated.stderr
+
+
+def test_index_without_a_path_indexes_the_current_directory(
+    tmp_path: Path, repo_copy: Path, fts: Path
+) -> None:
+    data = tmp_path / "cli-data"
+    result = oxide(data, "index", "--data-dir", str(data), cwd=repo_copy)
+    assert result.returncode == 0 and result.stdout.startswith("built:"), result.stderr
+    found = oxide(data, "search", str(repo_copy), "RetryPolicy", "--data-dir", str(data))
+    assert found.returncode == 0 and "RetryPolicy" in found.stdout
 
 
 def test_expected_errors_never_print_a_traceback(tmp_path: Path, fts: Path) -> None:
