@@ -577,10 +577,11 @@ def test_a_signal_stops_the_server_promptly_and_cleanly(
     assert cli(data, "index", str(repo_copy)).returncode == 0  # the store was released
 
 
-@posix_only
 def test_a_terminal_launch_says_what_it_is_and_ctrl_c_stops_it(
     repo_copy: Path, tmp_path: Path, fts: Path
 ) -> None:
+    if sys.platform == "win32":  # in the body, so mypy skips the POSIX-only pty on Windows
+        pytest.skip("POSIX pty")
     import pty
 
     data = tmp_path / "data"
