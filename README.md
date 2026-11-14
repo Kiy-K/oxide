@@ -1,59 +1,70 @@
 # OXIDE
 
-A structural context engine for coding agents.
+[![PyPI](https://img.shields.io/pypi/v/oxide-agent?include_prereleases)](https://pypi.org/project/oxide-agent/) [![CI](https://github.com/Kiy-K/oxide/actions/workflows/ci.yml/badge.svg)](https://github.com/Kiy-K/oxide/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Kiy-K/oxide/blob/main/LICENSE)
 
-OXIDE captures a repository, derives a typed graph of its files, modules, symbols, and
-relations, persists that graph in LadybugDB, and answers "what code matters for this
-task?" with a bounded, source-backed context bundle. Retrieval is vectorless: BM25 over
-code-aware terms plus structural seeds from typed hints, then TreeRouter and
-deterministic selection and packing. No embeddings, model runners, or network access on
-the query path.
+OXIDE indexes a repository into a graph of files, modules, symbols and relations, stores it in LadybugDB, and answers "what code matters for this task?" with a bounded context bundle of real source. It is made for coding agents and the people who work with them.
 
-Status: pre-release, on `main`. Python, TypeScript/TSX, JavaScript/JSX, Go, Rust,
-Java, C and C++ have parser slices ([TypeScript](docs/typescript.md), [JavaScript](docs/javascript.md),
-[Go](docs/go.md), [Rust](docs/rust.md), [Java](docs/java.md), [C](docs/c.md), [C++](docs/cpp.md)); other files are kept as
-unsupported file evidence. The public Python API is the product boundary
-([docs/public-api.md](docs/public-api.md)). The legacy v1 implementation and its README
-are pinned at commit
-[`ac985b28`](https://github.com/Kiy-K/oxide/tree/ac985b28fcff7663aedadf2db5b40aa2dc325580);
-the original documentation remains available in
-[the pinned v1 README](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/README.md).
+Retrieval needs no embeddings, no model calls and no network. It combines BM25 over code-aware terms with structural seeds from typed hints, then applies TreeRouter and deterministic selection and packing.
+
+## Status
+
+0.2.0rc1 is a release candidate. Python, TypeScript/TSX, JavaScript/JSX, Go, Rust, Java, C and C++ have parser slices ([TypeScript](https://github.com/Kiy-K/oxide/blob/main/docs/typescript.md), [JavaScript](https://github.com/Kiy-K/oxide/blob/main/docs/javascript.md), [Go](https://github.com/Kiy-K/oxide/blob/main/docs/go.md), [Rust](https://github.com/Kiy-K/oxide/blob/main/docs/rust.md), [Java](https://github.com/Kiy-K/oxide/blob/main/docs/java.md), [C](https://github.com/Kiy-K/oxide/blob/main/docs/c.md), [C++](https://github.com/Kiy-K/oxide/blob/main/docs/cpp.md)). Other files are kept as unsupported file evidence.
+
+Upgrading from 0.1.1? Read the [changelog](https://github.com/Kiy-K/oxide/blob/main/CHANGELOG.md) first. It lists the breaking changes and what to do about each.
 
 ## Install
 
-OXIDE needs CPython 3.12-3.14. Development uses [mise](https://mise.jdx.dev) and
-[uv](https://docs.astral.sh/uv/):
+OXIDE needs CPython 3.12 to 3.14 on Linux x86_64, macOS 15 or later (arm64) or Windows x86_64 ([platform details](https://github.com/Kiy-K/oxide/blob/main/docs/platforms.md)). It needs no Rust, Node.js or compiler.
+
+The PyPI project is `oxide-agent`; the import package and the command are `oxide`. This is a pre-release, so the commands pin the exact version.
+
+With [uv](https://docs.astral.sh/uv/):
 
 ```bash
-git clone https://github.com/Kiy-K/oxide && cd oxide
-mise run bootstrap        # uv sync --locked + `oxide prepare`
+uv tool install oxide-agent==0.2.0rc1
 ```
 
-Without mise, run `uv sync --locked`, then `uv run oxide prepare`. `oxide prepare` is
-the only network access OXIDE makes. It downloads the pinned LadybugDB FTS extension for
-your platform (Linux x86_64, macOS 15+ arm64, Windows x86_64;
-[docs/platforms.md](docs/platforms.md)) and checks its SHA-256. Without that extension,
-the lexical channel reports `unavailable` and structural seeds and routing still work.
-
-Outside the checkout, install the `oxide-agent` distribution (`pip install oxide-agent`
-once it is published, or build it with `uv build` and `pip install dist/oxide_agent-*.whl`),
-then run `oxide prepare`. That needs only Python and the native wheels. It does not need Rust,
-Node.js, or a compiler. On Windows, LadybugDB also needs the OpenSSL 3 x64 DLLs in the
-system directory. It opens only ASCII paths there, so with a non-ASCII user name, set
-`OXIDE_DATA_DIR` and `OXIDE_FTS_EXTENSION` ([docs/platforms.md](docs/platforms.md)).
-
-## Use
+With pipx or pip:
 
 ```bash
-uv run oxide index  path/to/repo                      # built | unchanged
-uv run oxide search path/to/repo "where are failed requests retried" --limit 20
-uv run oxide context path/to/repo "where are failed requests retried" --budget 1024 \
+pipx install oxide-agent==0.2.0rc1
+pip install oxide-agent==0.2.0rc1
+```
+
+To try it once without installing, name the command separately because it differs from the distribution:
+
+```bash
+uvx --from oxide-agent==0.2.0rc1 oxide --help
+```
+
+Explicit structural search (`Repository.structural_search`) needs the optional `structural` extra, which adds ast-grep (about 46 MB):
+
+```bash
+uv tool install 'oxide-agent[structural]==0.2.0rc1'
+```
+
+Then fetch the lexical-search extension once:
+
+```bash
+oxide prepare
+```
+
+`oxide prepare` is the only network access OXIDE makes. It downloads the pinned LadybugDB FTS extension for your platform and checks its SHA-256. Without it the lexical channel reports `unavailable`, and structural seeds and routing still work.
+
+On Windows, LadybugDB also needs the OpenSSL 3 x64 DLLs in the system directory, and it opens only ASCII paths. With a non-ASCII user name, set `OXIDE_DATA_DIR` and `OXIDE_FTS_EXTENSION` ([details](https://github.com/Kiy-K/oxide/blob/main/docs/platforms.md)).
+
+## Quick start
+
+```bash
+oxide index  path/to/repo                      # built | unchanged
+oxide search path/to/repo "where are failed requests retried" --limit 20
+oxide context path/to/repo "where are failed requests retried" --budget 1024 \
     --symbol RetryPolicy --file src/http/client.py
 ```
 
-Every command takes `--json` (the typed result) and `--data-dir`. `context` prints
-the payload on stdout and `used/budget units` on stderr. Errors print
-`error[<code>]: <message>` and exit 2.
+Every command takes `--json` (the typed result) and `--data-dir`. `context` prints the payload on stdout and `used/budget units` on stderr. Errors print `error[<code>]: <message>` and exit 2.
+
+The same operations are available from Python:
 
 ```python
 import oxide
@@ -65,52 +76,55 @@ with oxide.open_repository("path/to/repo") as repo:   # owns the store until clo
     print(bundle.payload)                             # used <= budget
 ```
 
-### MCP
+`oxide status` shows the last published snapshot without touching the worktree. `oxide impact` lists what depends on an entity, and `search` and `context` results carry a short `blast` summary per entry point. `oxide outline`, `oxide inspect` and `oxide refs` read indexed facts, and they can read the snapshot of a process that is already running. While a handle is open, filesystem events keep its index fresh, so you rarely need to index again by hand.
 
-`oxide mcp` serves one read-only tool, `oxide_search`, over stdio (FastMCP). Its
-`mode` is `search` (ranked locations, the default), `context` (a budgeted source bundle) or
-`impact` (what depends on an entity); `oxide_context` was folded into it on 2026-10-18. It never indexes: run
-`oxide index` first, and again whenever you want fresher results, even while the
-server runs.
+## MCP server
+
+`oxide mcp` serves one read-only tool, `oxide_search`, over stdio (FastMCP). Its `mode` is `search` for ranked locations (the default) or `context` for a budgeted source bundle. It never indexes, so run `oxide index` first.
 
 ```bash
-uv run oxide mcp --repo path/to/repo                      # stdio, for a local agent
-uv run oxide mcp --repo path/to/repo --http --port 8765   # stateless HTTP, loopback only
+oxide mcp --repo path/to/repo                      # stdio, for a local agent
+oxide mcp --repo path/to/repo --http --port 8765   # stateless HTTP, loopback only
 ```
 
-For example, in Claude Code: `claude mcp add oxide -- uv run --directory /path/to/oxide
-oxide mcp --repo /path/to/repo`. With `--repo` (repeatable) calls may only name those
-repositories, and with exactly one they may omit `repository`.
+In Claude Code:
 
-The store lives under `--data-dir`, else `$OXIDE_DATA_DIR`, else
-`$XDG_DATA_HOME/oxide/py` (`~/.local/share/oxide/py`). It is never captured, even
-when it sits inside the repository.
+```bash
+claude mcp add oxide -- oxide mcp --repo /path/to/repo
+```
+
+With `--repo` (repeatable), calls may only name those repositories, and with exactly one they may omit `repository`.
+
+The server keeps one handle per repository until it shuts down, and it keeps the index fresh itself. That handle owns the store, so `oxide index` on the same store fails with `ownership_conflict` while the server runs. Stop the server first. The read-only `outline`, `inspect` and `refs` commands still work.
+
+The store lives under `--data-dir`, else `$OXIDE_DATA_DIR`, else `$XDG_DATA_HOME/oxide/py` (`~/.local/share/oxide/py`). It is never captured, even when it sits inside the repository.
 
 ## Limits
 
-- One owner per store, across processes. A `Repository` is not thread-safe.
-- Indexing is a full rebuild per change, and capture holds the captured bytes in
-  memory (at most 1 GiB in scope, 1 MiB per file).
-- Verified on Linux x86_64, macOS 15+ (arm64) and Windows x86_64 by the
-  Platforms workflow. Windows needs the OpenSSL 3 DLLs and ASCII store paths; see
-  [docs/platforms.md](docs/platforms.md).
+- One owner per store across processes. A `Repository` serializes concurrent calls on the same handle.
+- Capture holds the captured bytes in memory, at most 1 GiB in scope and 1 MiB per file.
+- Each publication covers the whole snapshot. Unchanged files reuse their captured bytes and parse facts.
+- The Platforms workflow verifies Linux x86_64, macOS 15 or later (arm64) and Windows x86_64.
 
-[docs/public-api.md](docs/public-api.md) has the full list, with errors, bounds and
-recovery behavior.
+The [public API reference](https://github.com/Kiy-K/oxide/blob/main/docs/public-api.md) has the full list, with errors, bounds and recovery behavior.
 
-## Develop
+## Documentation and development
+
+- [Public API](https://github.com/Kiy-K/oxide/blob/main/docs/public-api.md), [platforms](https://github.com/Kiy-K/oxide/blob/main/docs/platforms.md) and the [security model](https://github.com/Kiy-K/oxide/blob/main/SECURITY_MODEL.md)
+- [Specification](https://github.com/Kiy-K/oxide/blob/main/docs/spec/SPEC.md) and [architecture decisions](https://github.com/Kiy-K/oxide/tree/main/docs/adr)
+- [Contributor workflow](https://github.com/Kiy-K/oxide/blob/main/docs/agents/workflow.md) and the [documentation index](https://github.com/Kiy-K/oxide/blob/main/docs/README.md)
+
+To work on OXIDE itself, use [mise](https://mise.jdx.dev) and uv:
 
 ```bash
+git clone https://github.com/Kiy-K/oxide && cd oxide
+mise run bootstrap        # uv sync --locked + `oxide prepare`
 mise run verify           # ruff, mypy --strict, pytest (CI runs exactly this)
 uv run python scripts/bench.py path/to/corpus   # latency and peak RSS, JSON report
 ```
 
-Architecture: [docs/spec/SPEC.md](docs/spec/SPEC.md), [docs/decisions.md](docs/decisions.md)
-and the decisions in [docs/adr/](docs/adr/), in particular
-[ADR-0011](docs/adr/0011-python-engine-vectorless.md) (Python engine, vectorless
-retrieval). Contributor workflow: [docs/agents/workflow.md](docs/agents/workflow.md).
-Documentation and historical evidence: [docs index](docs/README.md).
+Without mise, run `uv sync --locked` and then `uv run oxide prepare`. The v1 implementation is pinned at commit [`ac985b28`](https://github.com/Kiy-K/oxide/tree/ac985b28fcff7663aedadf2db5b40aa2dc325580), with its [README](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/README.md).
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/Kiy-K/oxide/blob/main/LICENSE)
