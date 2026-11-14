@@ -95,7 +95,7 @@ claude mcp add oxide -- oxide mcp --repo /path/to/repo
 
 With `--repo` (repeatable), calls may only name those repositories, and with exactly one they may omit `repository`.
 
-The server keeps one handle per repository until it shuts down, and it keeps the index fresh itself. That handle owns the store, so `oxide index` on the same store fails with `ownership_conflict` while the server runs. Stop the server first. The read-only `outline`, `inspect` and `refs` commands still work.
+The server keeps one handle per repository until it shuts down, and it keeps the index fresh itself. That handle owns the store, so while the server runs, `oxide index`, `search`, `context`, `impact` and `judge` on the same store fail with `ownership_conflict`. `oxide status`, `outline`, `inspect` and `refs` still work, and the last three read the server's latest snapshot. To run the other commands, stop the server first.
 
 The store lives under `--data-dir`, else `$OXIDE_DATA_DIR`, else `$XDG_DATA_HOME/oxide/py` (`~/.local/share/oxide/py`). It is never captured, even when it sits inside the repository.
 

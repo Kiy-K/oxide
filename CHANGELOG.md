@@ -9,7 +9,7 @@ Release candidate. Install it with the exact pin, `oxide-agent==0.2.0rc1`.
 ### Breaking changes and upgrade steps
 
 1. Rebuild every existing index. Stores written by 0.1.1 are not readable. Any command on one fails with `error[incompatible_index]` and exit code 2 (`built by store schema 'oxide-ladybug-py-v3'; re-index`). Run `oxide index path/to/repo` once per repository. The context payload format is now `oxide-payload-v4`, which merges whitespace-adjacent views into one item, so payload text differs from 0.1.1 even for the same query.
-2. The MCP server holds the store while it runs. It keeps one repository handle per repository until shutdown, so `oxide index` on the same store fails with `ownership_conflict`. Stop the server before you index. `oxide outline`, `oxide inspect` and `oxide refs` still read a running owner's snapshot. The server keeps the index fresh on its own (see item 4).
+2. The MCP server holds the store while it runs. It keeps one handle per repository until shutdown, so `oxide index`, `search`, `context`, `impact` and `judge` on the same store fail with `ownership_conflict` (0.1.1 let them run). Stop the server first. `oxide status`, `outline`, `inspect` and `refs` still work, and the last three read the running owner's snapshot. The server keeps the index fresh on its own (see item 4).
 3. A blank `query` is `invalid_argument` in `search` and `build_context` and over MCP, unless `paths`, `symbols`, `changed` or `selection` supplies a seed. MCP `context` text can now include `# hint` lines for hints that matched nothing.
 4. `open_repository` on an existing index now refreshes it and starts a background watcher, using the new dependency `watchfiles`. Filesystem events trigger updates, and `close()` stops and joins the watcher. `create=False` still never creates a store.
 5. `SearchResult` and `ContextBundle` have a new `blast` field. It has a default, but it sits before `versions` in `ContextBundle`, so code that builds these dataclasses positionally must adapt.
@@ -44,9 +44,10 @@ Release candidate. Install it with the exact pin, `oxide-agent==0.2.0rc1`.
 
 Linux x86_64, macOS 15 or later (arm64) and Windows x86_64 on CPython 3.12 to 3.14. Windows still needs the OpenSSL 3 x64 DLLs and ASCII store paths ([platforms](https://github.com/Kiy-K/oxide/blob/main/docs/platforms.md)).
 
-### Known issue
+### Known issues
 
-A long-lived `Repository` or MCP server accumulates read buffer pool use. If you see `resource_exhausted`, close and reopen the handle (restart the server).
+- A long-lived `Repository` or MCP server accumulates read buffer pool use. If you see `resource_exhausted`, close and reopen the handle (restart the server).
+- Pressing Ctrl-C in a terminal running `oxide mcp` prints a traceback on Python 3.13, and on Python 3.14 the first press is ignored and the second prints a traceback. Closing stdin or sending SIGTERM stops the server cleanly, which is what MCP clients do.
 
 ## 0.1.1
 
