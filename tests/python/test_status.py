@@ -11,7 +11,7 @@ import pytest
 from conftest import env
 
 import oxide
-from oxide.models import InvalidPath, NotIndexed
+from oxide.models import Coverage, InvalidPath, NotIndexed, SkipReason
 
 
 def run(data: Path, *args: str, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
@@ -432,9 +432,9 @@ def test_unindexed_json_verbose_is_identical(tmp_path: Path) -> None:
 def test_status_summary_goldens(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
-    files: tuple,
-    skipped: tuple,
-    collisions: tuple,
+    files: tuple[tuple[str, Coverage, tuple[str, ...]], ...],
+    skipped: tuple[tuple[str, SkipReason], ...],
+    collisions: tuple[tuple[str, ...], ...],
     lexical: str | None,
     warnings: str,
 ) -> None:
@@ -512,7 +512,7 @@ def test_verbose_status_combined_details(
 def test_status_terminal_matches_pipe(tmp_path: Path, fts: Path) -> None:
     import os
 
-    if os.name == "nt":
+    if sys.platform == "win32":
         pytest.skip("PTYs require POSIX")
     import errno
     import pty

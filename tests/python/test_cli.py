@@ -314,16 +314,16 @@ def test_search_truncation_and_context_degradations(
     class Repo:
         read_only = False
 
-        def __enter__(self):
+        def __enter__(self) -> Repo:
             return self
 
-        def __exit__(self, *_args):
+        def __exit__(self, *_args: object) -> None:
             pass
 
-        def search(self, *_args, **_kwargs):
+        def search(self, *_args: object, **_kwargs: object) -> SearchResult:
             return search
 
-        def build_context(self, *_args, **_kwargs):
+        def build_context(self, *_args: object, **_kwargs: object) -> ContextBundle:
             return context
 
     monkeypatch.setattr("oxide.cli.open_repository", lambda *_a, **_kw: Repo())
