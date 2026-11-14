@@ -18,7 +18,7 @@ import sys
 from importlib.metadata import PackageNotFoundError, version
 from typing import Any, NoReturn
 
-from oxide.api import open_repository, repository_status, setup
+from oxide.api import MAX_DEPTH, MAX_LIMIT, open_repository, repository_status, setup
 from oxide.cli_nav import inspect_text, outline_text, refs_text
 from oxide.install import CLIENTS, install
 from oxide.models import Impact, IndexReport, JudgeStatus, NotIndexed, OxideError, advice
@@ -37,7 +37,7 @@ def _plain(item: Any) -> Any:
     return item
 
 
-def _status(path: str, data_dir: str | None, as_json: bool) -> int:
+def _status(path: str, data_dir: str | None, as_json: bool, verbose: bool) -> int:
     try:
         result = repository_status(path, data_dir=data_dir)
     except NotIndexed as error:
@@ -59,29 +59,58 @@ def _status(path: str, data_dir: str | None, as_json: bool) -> int:
         print(json.dumps(output))
         return 0
     files = result.files
-    coverage = ", ".join(
-        f"{sum(f.coverage == state for f in files)} {state}"
+    counts = {
+        state: sum(f.coverage == state for f in files)
         for state in ("complete", "partial", "unsupported")
-    )
-    print(f"last published snapshot: {result.snapshot.snapshot_id}")
-    print(f"repository: {result.snapshot.repo_id}; derivation: {result.snapshot.derivation_id}")
+    }
+    coverage = ", ".join(f"{count} {state}" for state, count in counts.items())
+    print("Index: published")
+    print("Freshness: working tree not checked")
     print(
         f"{len(files)} files ({coverage}); {result.entities} entities; {result.relations} relations"
     )
-    for item in files:
-        if item.coverage != "complete" or item.diagnostics:
-            print(
-                f"{item.path}: {item.coverage}"
-                + (f"; {'; '.join(item.diagnostics)}" if item.diagnostics else "")
-            )
-    for skipped in result.skipped:
-        print(f"skipped {skipped.path}: {skipped.reason}; check the file and re-index")
-    for group in result.case_collisions:
-        print(f"case collision: {' = '.join(group)}; rename conflicting files and re-index")
+    print("To refresh, run oxide index with the same repository and data location.")
+    diagnostics = sum(f.coverage == "complete" and bool(f.diagnostics) for f in files)
+    warnings = []
+    if counts["partial"]:
+        warnings.append(f"Partial parses: {counts['partial']} files")
+    if counts["unsupported"]:
+        warnings.append(f"Unsupported: {counts['unsupported']} files (file-level only)")
+    if diagnostics:
+        warnings.append(f"Other files with diagnostics: {diagnostics}")
+    if result.skipped:
+        warnings.append(f"Skipped: {len(result.skipped)} files")
+    if result.case_collisions:
+        warnings.append(f"Case collisions: {len(result.case_collisions)} groups")
     if result.lexical_unavailable:
-        print(f"lexical unavailable: {result.lexical_unavailable}; resolve the error and re-index")
-    for action in actions:
-        print(action)
+        warnings.append(f"Lexical unavailable: {result.lexical_unavailable}")
+    if warnings:
+        print("Warnings:")
+        for warning in warnings:
+            print(f"  {warning}")
+        for action in actions:
+            print(f"  {action}")
+        if not verbose and (
+            counts["partial"]
+            or counts["unsupported"]
+            or diagnostics
+            or result.skipped
+            or result.case_collisions
+        ):
+            print("  Details: rerun this command with --verbose")
+    if verbose:
+        print(f"Snapshot: {result.snapshot.snapshot_id}")
+        print(f"Repository: {result.snapshot.repo_id}; derivation: {result.snapshot.derivation_id}")
+        for item in files:
+            if item.coverage != "complete" or item.diagnostics:
+                print(
+                    f"{item.path}: {item.coverage}"
+                    + (f"; {'; '.join(item.diagnostics)}" if item.diagnostics else "")
+                )
+        for skipped in result.skipped:
+            print(f"skipped {skipped.path}: {skipped.reason}")
+        for group in result.case_collisions:
+            print(f"case collision: {' = '.join(group)}")
     return 0
 
 
@@ -109,20 +138,29 @@ def _index_summary(report: IndexReport) -> str:
         lines.append(f"sources: {report.parsed} parsed, {report.reused} reused")
     if report.partial:
         lines.append(f"partial parses: {len(report.partial)} ({_paths(report.partial)})")
+        lines.append(
+            "hint: inspect parse diagnostics with oxide status --verbose for the same repository "
+            "and data location"
+        )
     if report.skipped:
         lines.append(
             f"skipped: {len(report.skipped)} "
             f"({_paths(tuple(f'{s.path} [{s.reason}]' for s in report.skipped))})"
+        )
+        lines.append(
+            "hint: review skipped files with oxide status --verbose for the same repository "
+            "and data location"
         )
     if report.unsupported:
         lines.append(f"unsupported (file-level only): {report.unsupported} files")
     if report.case_collisions:
         groups = tuple(" = ".join(group) for group in report.case_collisions)
         lines.append(f"case collisions: {_paths(groups)}")
+        lines.append("hint: rename conflicting files, then re-index")
     return "\n".join(lines)
 
 
-def _judge_summary(status: JudgeStatus, path: str) -> str:
+def _judge_summary(status: JudgeStatus) -> str:
     if status.enabled:
         state = "enabled: build_context sends this repository's source to it"
     elif status.authorized:
@@ -137,12 +175,13 @@ def _judge_summary(status: JudgeStatus, path: str) -> str:
             f"manifest: {status.manifest}",
             f"credential: {status.credential} {key}",
             f"sends: {status.discloses}",
-            f"enable: oxide judge {path} --enable; disable: oxide judge {path} --disable",
+            "To change: run oxide judge with the same repository and data location, "
+            "adding --enable or --disable",
         ]
     )
 
 
-def _impact_summary(impact: Impact) -> str:
+def _impact_summary(impact: Impact, depth: int, limit: int) -> str:
     stop = impact.stopped_by or "none"
     lines = [
         f"{impact.direction} of {impact.root.key}: {len(impact.hops)} reached; "
@@ -154,6 +193,21 @@ def _impact_summary(impact: Impact) -> str:
         proven = "-" if hop.proven_depth is None else str(hop.proven_depth)
         cyclic = "  (cyclic)" if hop.cyclic else ""
         lines.append(f"{hop.depth:>3} {proven:>3} {hop.entity.key}  via {hop.via}{cyclic}")
+    hints = {
+        "depth": (
+            f"hint: --depth is already at its maximum ({MAX_DEPTH})"
+            if depth == MAX_DEPTH
+            else "hint: consider raising --depth"
+        ),
+        "limit": (
+            f"hint: --limit is already at its maximum ({MAX_LIMIT})"
+            if limit == MAX_LIMIT
+            else "hint: consider raising --limit"
+        ),
+        "edges": "hint: traversal hit an internal edge bound",
+    }
+    if impact.stopped_by in hints:
+        lines.append(hints[impact.stopped_by])
     return "\n".join(lines)
 
 
@@ -164,7 +218,7 @@ _COMMAND_OPTIONS: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
     "install": (("--client",), ()),
     "mcp": (("--data-dir", "--host", "--port", "--repo"), ("--http",)),
     "index": (("--data-dir",), ("--json",)),
-    "status": (("--data-dir",), ("--json",)),
+    "status": (("--data-dir",), ("--json", "--verbose")),
     "judge": (("--data-dir",), ("--json", "--enable", "--disable")),
     "search": (("--data-dir", "--limit", "--file", "--symbol"), ("--json",)),
     "context": (("--data-dir", "--budget", "--file", "--symbol"), ("--json",)),
@@ -290,6 +344,7 @@ def main(argv: list[str] | None = None) -> int:
     status_parser.add_argument("path", nargs="?", default=".")
     status_parser.add_argument("--data-dir", help="data location (default: OXIDE_DATA_DIR or XDG)")
     status_parser.add_argument("--json", action="store_true", help="print the typed result as JSON")
+    status_parser.add_argument("-v", "--verbose", action="store_true", help="show file details")
     for name, text in (
         ("index", "capture and index a repository"),
         ("judge", "show, enable or disable the optional JEV judge (sends source)"),
@@ -361,7 +416,7 @@ def main(argv: list[str] | None = None) -> int:
             serve_mcp(args.repo, args.data_dir, args.http, args.host, args.port)
             return 0
         if args.command == "status":
-            return _status(args.path, args.data_dir, args.json)
+            return _status(args.path, args.data_dir, args.json, args.verbose)
         # Reads never leave an empty store behind.
         code = 0
         create = args.command == "index" or getattr(args, "enable", False)
@@ -382,7 +437,7 @@ def main(argv: list[str] | None = None) -> int:
             elif args.command == "judge":
                 enable = True if args.enable else False if args.disable else None
                 result = repo.judge(enable)
-                text = _judge_summary(result, args.path)
+                text = _judge_summary(result)
             elif args.command == "search":
                 result = repo.search(
                     args.query, limit=args.limit, paths=args.file, symbols=args.symbol
@@ -393,6 +448,13 @@ def main(argv: list[str] | None = None) -> int:
                 ]
                 hints = [f"hint: {h.kind} {h.hint}: {h.issue}" for h in result.hints]
                 status = f"lexical {result.lexical.state}: {result.lexical.detail}"
+                if result.lexical.truncated:
+                    if args.limit >= MAX_LIMIT:
+                        status += (
+                            "\nhint: lexical results truncated at maximum --limit; narrow the query"
+                        )
+                    else:
+                        status += "\nhint: lexical results truncated; consider raising --limit"
                 blast = [f"blast {root.line()}" for root in result.blast]
                 text = "\n".join([*lines, *hints, status, *blast])
             elif args.command == "outline":
@@ -410,7 +472,7 @@ def main(argv: list[str] | None = None) -> int:
                 result = repo.impact(
                     args.key, direction=args.direction, depth=args.depth, limit=args.limit
                 )
-                text = _impact_summary(result)
+                text = _impact_summary(result, args.depth, args.limit)
             else:
                 result = repo.build_context(
                     args.query, args.budget, paths=args.file, symbols=args.symbol
@@ -418,9 +480,13 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"{result.used}/{result.budget} {result.units}", file=sys.stderr)
                 if "judge" in result.versions:
                     print(f"judged by {result.versions['judge']}", file=sys.stderr)
+                warned: set[str] = set()
                 for line in result.degradations:
                     if line.startswith("judge "):
                         print(line, file=sys.stderr)
+                    elif not args.json and line not in warned:
+                        print(f"warning: {line}", file=sys.stderr)
+                        warned.add(line)
                 for issue in result.hints:
                     print(f"hint: {issue.kind} {issue.hint}: {issue.issue}", file=sys.stderr)
                 for root in result.blast:

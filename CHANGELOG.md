@@ -2,6 +2,16 @@
 
 Release notes for the `oxide-agent` package. The import package and the command are `oxide`.
 
+## Unreleased
+
+- `oxide status` summarizes the published index and unchecked worktree freshness; use
+  `--verbose` for file diagnostics, skips and collisions. JSON output is unchanged.
+- Index, search, context, impact, navigation and install text now give actionable hints
+  for degraded or truncated results. Status and index follow-up guidance calls out the
+  same repository and data location.
+- Recovery and judge guidance avoids unsafe shell commands; impact and navigation explain
+  their bounds without suggesting impossible or misleading retries.
+
 ## 0.2.0rc1 - 2026-11-14
 
 Release candidate. Install it with the exact pin, `oxide-agent==0.2.0rc1`.

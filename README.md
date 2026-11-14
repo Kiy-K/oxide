@@ -76,7 +76,7 @@ with oxide.open_repository("path/to/repo") as repo:   # owns the store until clo
     print(bundle.payload)                             # used <= budget
 ```
 
-`oxide status` shows the last published snapshot without touching the worktree. `oxide impact` lists what depends on an entity, and `search` and `context` results carry a short `blast` summary per entry point. `oxide outline`, `oxide inspect` and `oxide refs` read indexed facts, and they can read the snapshot of a process that is already running. While a handle is open, filesystem events keep its index fresh, so you rarely need to index again by hand.
+`oxide status` shows the last published snapshot without checking worktree freshness. Use `oxide status --verbose` for file diagnostics, skips and collision details. `oxide impact` lists what depends on an entity, and `search` and `context` results carry a short `blast` summary per entry point. `oxide outline`, `oxide inspect` and `oxide refs` read indexed facts, and they can read the snapshot of a process that is already running. While a handle is open, filesystem events keep its index fresh, so you rarely need to index again by hand.
 
 ## MCP server
 

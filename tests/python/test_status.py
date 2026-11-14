@@ -11,7 +11,7 @@ import pytest
 from conftest import env
 
 import oxide
-from oxide.models import InvalidPath, NotIndexed
+from oxide.models import Coverage, InvalidPath, NotIndexed, SkipReason
 
 
 def run(data: Path, *args: str, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
@@ -51,6 +51,9 @@ def test_published_status_does_not_reindex(tmp_path: Path, fts: Path) -> None:
         report = repo.index()
         (root / "new.py").write_text("x = 1\n", encoding="utf-8")
         generation = next(data.glob("repos/*/generations/*"))
+        store = generation.parent.parent
+        current = (store / "CURRENT").read_bytes()
+        names = sorted(p.name for p in generation.parent.iterdir())
         before = {
             p.relative_to(generation): p.read_bytes() for p in generation.rglob("*") if p.is_file()
         }
@@ -65,9 +68,16 @@ def test_published_status_does_not_reindex(tmp_path: Path, fts: Path) -> None:
         assert info["snapshot"]["snapshot_id"] == report.snapshot.snapshot_id
         assert info["status"] == "indexed" and info["actions"]
         text = run(data, str(root), "--data-dir", str(data))
-        assert text.returncode == 0 and "last published snapshot" in text.stdout
-        assert "broken.py" in text.stdout and "partial" in text.stdout
+        assert text.returncode == 0 and "Freshness: working tree not checked" in text.stdout
+        assert "broken.py" not in text.stdout and "Partial parses: 1 files" in text.stdout
         assert "Fix reported parse errors and re-index." in text.stdout
+        verbose = run(data, str(root), "--data-dir", str(data), "--verbose")
+        assert verbose.returncode == 0 and verbose.stderr == ""
+        assert "Freshness: working tree not checked" in verbose.stdout
+        assert "broken.py: partial" in verbose.stdout and "new.py" not in verbose.stdout
+        assert f"Snapshot: {report.snapshot.snapshot_id}" in verbose.stdout
+        assert (store / "CURRENT").read_bytes() == current
+        assert sorted(p.name for p in generation.parent.iterdir()) == names
         assert before == {
             p.relative_to(generation): p.read_bytes() for p in generation.rglob("*") if p.is_file()
         }
@@ -112,11 +122,11 @@ def test_status_problem_rendering_and_single_view(
     assert calls == ["view", "close"]
     assert result.skipped[0].path == "link.py" and result.case_collisions == (("A.py", "a.py"),)
     monkeypatch.setattr(cli, "repository_status", lambda *_a, **_kw: result)
-    assert cli._status(str(tmp_path), None, False) == 0
+    assert cli._status(str(tmp_path), None, False, False) == 0
     human = capsys.readouterr().out
-    assert "link.py" in human and "A.py" in human and "extension missing" in human
+    assert "link.py" not in human and "A.py" not in human and "extension missing" in human
     assert "re-index" in human
-    assert cli._status(str(tmp_path), None, True) == 0
+    assert cli._status(str(tmp_path), None, True, False) == 0
     document = json.loads(capsys.readouterr().out)
     assert len(document["actions"]) == 3
     assert document["skipped"][0]["reason"] == "symlink"
@@ -287,3 +297,262 @@ def test_changing_publication_stays_conflict(
     with pytest.raises(OwnershipConflict):
         oxide.repository_status(root, data_dir=data)
     assert not list(data.glob("repos/*/pins/*"))
+
+
+@pytest.mark.parametrize(
+    "flags",
+    [
+        ["--json"],
+        ["--json", "--verbose"],
+        ["--json", "-v"],
+        ["--ver", "--js"],
+    ],
+)
+@pytest.mark.parametrize("flags_first", [False, True])
+def test_status_flags_preserve_full_json(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    flags: list[str],
+    flags_first: bool,
+) -> None:
+    import oxide.cli as cli
+    from oxide.models import FileInfo, RepositoryStatus, Skip, Snapshot
+
+    result = RepositoryStatus(
+        Snapshot("repo", "snapshot", "derivation"),
+        (FileInfo("東京.py", "digest", 12, "python", "partial", ("syntax", "recovered")),),
+        3,
+        4,
+        (Skip("link.py", "symlink"),),
+        (("A.py", "a.py"),),
+        None,
+    )
+
+    def published(path: str, *, data_dir: str) -> RepositoryStatus:
+        assert path == str(tmp_path) and data_dir == str(tmp_path / "data")
+        return result
+
+    monkeypatch.setattr(cli, "repository_status", published)
+    options = [*flags, "--data", str(tmp_path / "data")]
+    args = [*options, str(tmp_path)] if flags_first else [str(tmp_path), *options]
+    assert cli.main(["status", *args]) == 0
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert json.loads(captured.out) == {
+        "status": "indexed",
+        "snapshot": {"repo_id": "repo", "snapshot_id": "snapshot", "derivation_id": "derivation"},
+        "files": [
+            {
+                "path": "東京.py",
+                "digest": "digest",
+                "size": 12,
+                "language": "python",
+                "coverage": "partial",
+                "diagnostics": ["syntax", "recovered"],
+            }
+        ],
+        "entities": 3,
+        "relations": 4,
+        "skipped": [{"path": "link.py", "reason": "symlink"}],
+        "case_collisions": [["A.py", "a.py"]],
+        "lexical_unavailable": None,
+        "actions": [
+            "Fix reported parse errors and re-index.",
+            "Check skipped files and re-index.",
+            "Rename conflicting files and re-index.",
+        ],
+    }
+
+
+def test_unindexed_json_verbose_is_identical(tmp_path: Path) -> None:
+    data = tmp_path / "data"
+    expected = {
+        "status": "unindexed",
+        "hint": (
+            "run oxide index for the same repository and data location first"
+            if sys.platform == "win32"
+            else f"run `oxide index {tmp_path}` first"
+        ),
+    }
+    for flags in (("--json",), ("--json", "--verbose")):
+        result = run(data, str(tmp_path), *flags)
+        assert result.returncode == 0 and result.stderr == ""
+        assert json.loads(result.stdout) == expected
+
+
+@pytest.mark.parametrize(
+    ("files", "skipped", "collisions", "lexical", "warnings"),
+    [
+        ((), (), (), None, ""),
+        ((("ok.py", "complete", ()),), (), (), None, ""),
+        (
+            (("東京.py", "partial", ("first", "second")), ("notes.txt", "unsupported", ())),
+            (),
+            (),
+            None,
+            "Warnings:\n  Partial parses: 1 files\n"
+            "  Unsupported: 1 files (file-level only)\n"
+            "  Fix reported parse errors and re-index.\n"
+            "  Details: rerun this command with --verbose\n",
+        ),
+        (
+            (("ok.py", "complete", ("notice",)),),
+            (),
+            (),
+            None,
+            "Warnings:\n  Other files with diagnostics: 1\n"
+            "  Details: rerun this command with --verbose\n",
+        ),
+        (
+            (),
+            (("link", "symlink"),),
+            (("A", "a"),),
+            "missing",
+            "Warnings:\n  Skipped: 1 files\n  Case collisions: 1 groups\n"
+            "  Lexical unavailable: missing\n  Check skipped files and re-index.\n"
+            "  Rename conflicting files and re-index.\n"
+            "  Resolve the lexical error, then re-index.\n"
+            "  Details: rerun this command with --verbose\n",
+        ),
+        (
+            (),
+            (),
+            (),
+            "missing",
+            "Warnings:\n  Lexical unavailable: missing\n"
+            "  Resolve the lexical error, then re-index.\n",
+        ),
+        (
+            (("notes.txt", "unsupported", ()),),
+            (),
+            (),
+            None,
+            "Warnings:\n  Unsupported: 1 files (file-level only)\n"
+            "  Details: rerun this command with --verbose\n",
+        ),
+    ],
+)
+def test_status_summary_goldens(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    files: tuple[tuple[str, Coverage, tuple[str, ...]], ...],
+    skipped: tuple[tuple[str, SkipReason], ...],
+    collisions: tuple[tuple[str, ...], ...],
+    lexical: str | None,
+    warnings: str,
+) -> None:
+    import oxide.cli as cli
+    from oxide.models import FileInfo, RepositoryStatus, Skip, Snapshot
+
+    items = tuple(
+        FileInfo(path, "d", 1, "python", coverage, diagnostics)
+        for path, coverage, diagnostics in files
+    )
+    result = RepositoryStatus(
+        Snapshot("repo", "snapshot", "derivation"),
+        items,
+        3,
+        4,
+        tuple(Skip(*skip) for skip in skipped),
+        collisions,
+        lexical,
+    )
+    monkeypatch.setattr(cli, "repository_status", lambda *_a, **_kw: result)
+    assert cli._status(".", None, False, False) == 0
+    captured = capsys.readouterr()
+    counts = [
+        sum(item.coverage == state for item in items)
+        for state in ("complete", "partial", "unsupported")
+    ]
+    assert captured.err == ""
+    assert captured.out == (
+        "Index: published\nFreshness: working tree not checked\n"
+        f"{len(items)} files ({counts[0]} complete, {counts[1]} partial, "
+        f"{counts[2]} unsupported); 3 entities; 4 relations\n"
+        "To refresh, run oxide index with the same repository and data location.\n" + warnings
+    )
+
+
+def test_verbose_status_combined_details(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    import oxide.cli as cli
+    from oxide.models import FileInfo, RepositoryStatus, Skip, Snapshot
+
+    result = RepositoryStatus(
+        Snapshot("repo", "snapshot", "derivation"),
+        (
+            FileInfo("a.py", "d", 1, "python", "complete", ("notice",)),
+            FileInfo("東京.py", "d", 1, "python", "partial", ("first", "second")),
+            FileInfo("z.txt", "d", 1, "text", "unsupported", ()),
+        ),
+        3,
+        4,
+        (Skip("link", "symlink"),),
+        (("A", "a"),),
+        "missing",
+    )
+    monkeypatch.setattr(cli, "repository_status", lambda *_a, **_kw: result)
+    assert cli._status(".", None, False, True) == 0
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert captured.out == (
+        "Index: published\nFreshness: working tree not checked\n"
+        "3 files (1 complete, 1 partial, 1 unsupported); 3 entities; 4 relations\n"
+        "To refresh, run oxide index with the same repository and data location.\n"
+        "Warnings:\n  Partial parses: 1 files\n  Unsupported: 1 files (file-level only)\n"
+        "  Other files with diagnostics: 1\n  Skipped: 1 files\n  Case collisions: 1 groups\n"
+        "  Lexical unavailable: missing\n  Fix reported parse errors and re-index.\n"
+        "  Check skipped files and re-index.\n  Rename conflicting files and re-index.\n"
+        "  Resolve the lexical error, then re-index.\n"
+        "Snapshot: snapshot\nRepository: repo; derivation: derivation\n"
+        "a.py: complete; notice\n東京.py: partial; first; second\nz.txt: unsupported\n"
+        "skipped link: symlink\n"
+        "case collision: A = a\n"
+    )
+
+
+def test_status_terminal_matches_pipe(tmp_path: Path, fts: Path) -> None:
+    import os
+
+    if sys.platform == "win32":
+        pytest.skip("PTYs require POSIX")
+    import errno
+    import pty
+
+    root, data = tmp_path / "repo", tmp_path / "data"
+    root.mkdir()
+    (root / "sample.py").write_text("def sample():\n    return 1\n")
+    with oxide.open_repository(root, data_dir=data) as repo:
+        repo.index()
+    piped = run(data, str(root), "--data-dir", str(data))
+    master, slave = pty.openpty()
+    try:
+        process = subprocess.Popen(
+            [sys.executable, "-m", "oxide", "status", str(root), "--data-dir", str(data)],
+            stdout=slave,
+            stderr=subprocess.PIPE,
+            env=env(data),
+        )
+        os.close(slave)
+        slave = -1
+        chunks = []
+        while True:
+            try:
+                chunk = os.read(master, 65536)
+            except OSError as error:
+                if error.errno == errno.EIO:
+                    break
+                raise
+            if not chunk:
+                break
+            chunks.append(chunk)
+        _, stderr = process.communicate()
+        assert process.returncode == piped.returncode == 0
+        assert stderr == b"" and piped.stderr == ""
+        assert b"".join(chunks).decode("utf-8").replace("\r\n", "\n") == piped.stdout
+    finally:
+        os.close(master)
+        if slave != -1:
+            os.close(slave)

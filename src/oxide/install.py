@@ -90,7 +90,10 @@ def _claude(command: list[str]) -> str:
     found = re.search(r"^\s*Scope: (.+)$", shown, re.MULTILINE)
     scope = found[1] if found else ""
     if scope and not scope.startswith("User"):
-        return f"{state} (this directory's {scope.split(' (')[0].lower()} entry overrides it)"
+        return (
+            f"{state} (this directory's {scope.split(' (')[0].lower()} entry overrides it; "
+            "inspect and update or remove the overriding entry)"
+        )
     return state
 
 

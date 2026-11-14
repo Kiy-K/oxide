@@ -38,11 +38,16 @@ def _candidates(items: tuple[Candidate, ...], truncated: bool) -> list[str]:
         f"  [{c.why}] {_head(c.declaration)}  {_where(c.declaration)}  {c.declaration.key}"
         for c in items
     ]
-    return [*out, "  … more matches than --limit"] if truncated else out
+    return [*out, "  … results may be incomplete"] if truncated else out
 
 
 def _unresolved(status: str, query: str, items: tuple[Candidate, ...], truncated: bool) -> str:
     if status == "not_found":
+        if truncated:
+            return (
+                "resolution truncated; if --limit is 0, increase it; "
+                "otherwise use an exact entity key"
+            )
         return f"no match for {query!r}; find names with `oxide search` or `oxide outline`"
     head = f"{query!r} is ambiguous; repeat with an entity key, path#Qualified.name or path:line"
     return "\n".join([head, *_candidates(items, truncated)])
