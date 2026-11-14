@@ -75,7 +75,7 @@ channel as empty.
 **Invariant:** if the lexical index or the pinned FTS extension is
 unavailable, the lexical channel reports `unavailable` with its reason;
 structural seeds and routing continue. The FTS extension is the only
-network access OXIDE makes, and only via `oxide prepare`; nothing downloads
+network access OXIDE makes, and only via `oxide setup`; nothing downloads
 it implicitly. It is sha256-checked on every use.
 
 **What constitutes a violation:** reporting an unavailable lexical channel as

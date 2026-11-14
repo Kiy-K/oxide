@@ -56,7 +56,7 @@ On Windows, ladybug cannot open a database or extension path with non-ASCII
 characters. On the hosted runner it failed with "Cannot open file ... Error 3" for a
 path containing `é` (Platforms run 39108643199). OXIDE checks this before creating
 anything: a non-ASCII store path is `invalid_path`, and a non-ASCII FTS extension
-path makes the lexical channel `unavailable` (and `oxide prepare` refuses it before
+path makes the lexical channel `unavailable` (and `oxide setup` refuses it before
 downloading). Each error names the variable to set. With a non-ASCII user name, set
 `OXIDE_DATA_DIR` and `OXIDE_FTS_EXTENSION` to an ASCII location. Repository paths and
 file names may be anything; the smoke run indexes a non-ASCII repository there.
@@ -91,7 +91,7 @@ together with a matching FTS build.
 
 ## FTS extension pins
 
-`oxide prepare` downloads the platform's build of the LadybugDB FTS extension 0.21.0
+`oxide setup` downloads the platform's build of the LadybugDB FTS extension 0.21.0
 from the OXIDE release `ladybug-fts-0.21.0`
 (`github.com/Kiy-K/oxide/releases/download/ladybug-fts-0.21.0/libfts-0.21.0-<platform>.lbug_extension`).
 It checks the download against the SHA-256 pinned in `oxide.storage.fts.FTS_BUILDS`, and the
@@ -99,7 +99,7 @@ engine checks it again before every load. The release holds LadybugDB's own buil
 unmodified, with LadybugDB's license and third-party notices
 ([fts-mirror/](fts-mirror/RELEASE.md)). The digests were taken
 on 2026-10-17 (file types: ELF x86-64, Mach-O x86_64, Mach-O arm64, PE32+ x86-64). On a
-platform without a pin, `fts_unavailable` names the platform, and `oxide prepare` fails
+platform without a pin, `fts_unavailable` names the platform, and `oxide setup` fails
 with the same message without touching the network. Search and context still run with
 the lexical channel `unavailable`. That is a supported degraded mode, not a failure.
 
@@ -119,7 +119,7 @@ instead of hiding behind a cache.
 ## What each platform job checks
 
 1. `uv sync --locked`: the locked native wheels install.
-2. `oxide prepare`: the platform's pinned FTS build downloads and verifies.
+2. `oxide setup`: the platform's pinned FTS build downloads and verifies.
    `smoke_dist.py --environment` records the platform, Python, package versions and
    FTS state (`environment.json` artifact).
 3. `mypy --strict`: type-checks the platform's own branches (`msvcrt` on Windows,

@@ -1,4 +1,4 @@
-LadybugDB FTS extension 0.21.0, mirrored unmodified for `oxide prepare`.
+LadybugDB FTS extension 0.21.0, mirrored unmodified for `oxide setup`.
 
 These are LadybugDB's own release builds, not OXIDE builds. Each
 `libfts-0.21.0-<platform>.lbug_extension` is byte-identical to
@@ -17,7 +17,7 @@ at [`bf74ab654a`](https://github.com/LadybugDB/extensions/tree/bf74ab654af6bd40a
 | `libfts-0.21.0-win_amd64.lbug_extension` | `7b6132ae6a554e3eeb3c4b0da7e2eb5c483b258b31e848a0e3d6000ac29885ee` | `lbug-extensions-win-x86_64`, `sha256:24f0a09ac6049b86fc0ace6f13ccc2a776d371b3d283d7dad40c2a9adf8fce95` |
 
 These SHA-256 values are the ones OXIDE has pinned in `oxide.storage.ladybug.FTS_BUILDS`
-since 2026-10-17. `oxide prepare` refuses any file that does not match, and the engine
+since 2026-10-17. `oxide setup` refuses any file that does not match, and the engine
 checks the file again before every load.
 
 **Why a mirror:** since 2026-10-20, `extension.ladybugdb.com/v0.21.0/` has served a build

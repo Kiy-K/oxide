@@ -18,8 +18,9 @@ import sys
 from importlib.metadata import PackageNotFoundError, version
 from typing import Any, NoReturn
 
-from oxide.api import open_repository, prepare, repository_status
+from oxide.api import open_repository, repository_status, setup
 from oxide.cli_nav import inspect_text, outline_text, refs_text
+from oxide.install import CLIENTS, install
 from oxide.models import Impact, IndexReport, JudgeStatus, NotIndexed, OxideError, advice
 
 
@@ -160,6 +161,7 @@ def _impact_summary(impact: Impact) -> str:
 # (argparse's default), so ``oxide impact … --di upstream`` must not collide with
 # judge's ``--disable``.
 _COMMAND_OPTIONS: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
+    "install": (("--client",), ()),
     "mcp": (("--data-dir", "--host", "--port", "--repo"), ("--http",)),
     "index": (("--data-dir",), ("--json",)),
     "status": (("--data-dir",), ("--json",)),
@@ -193,7 +195,7 @@ def _front_positionals(argv: list[str]) -> list[str]:
     Python 3.12 ``argparse`` rejects ``cmd PATH --data-dir D target``; 3.13 accepts it.
     Rewrite to ``cmd PATH target --data-dir D`` so both accept the same command lines.
     """
-    if len(argv) < 2 or argv[0] in ("prepare", "mcp") or argv[0].startswith("-"):
+    if len(argv) < 2 or argv[0] in ("setup", "mcp") or argv[0].startswith("-"):
         return argv
     cmd, leading, trailing, options = argv[0], [], [], []
     seen_option, i = False, 0
@@ -219,10 +221,11 @@ def _front_positionals(argv: list[str]) -> list[str]:
 
 _EPILOG = """\
 examples:
-  oxide index .                          index the repository in the current directory
+  oxide setup                            fetch the lexical search extension (once per machine)
+  oxide install                          register oxide mcp with your MCP clients (once)
+  oxide index                            index the repository in the current directory
   oxide search . "where are retries"     list entry points for a query
   oxide context . "fix retry bug"        build a bounded bundle of relevant source
-  oxide mcp --repo .                     serve the oxide_search tool to MCP clients
 
 `oxide <command> --help` lists a command's options. `--json` prints the typed result.
 Errors print `error[<code>]: <message>` to stderr and exit 2.
@@ -264,7 +267,17 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("-V", "--version", action="version", version=f"oxide {_version()}")
     commands = parser.add_subparsers(dest="command", metavar="command")
-    commands.add_parser("prepare", help="fetch and verify the pinned LadybugDB FTS extension")
+    commands.add_parser("setup", help="fetch and verify the pinned LadybugDB FTS extension")
+    install_parser = commands.add_parser(
+        "install", help="register oxide mcp with your MCP clients, user-wide"
+    )
+    install_parser.add_argument(
+        "--client",
+        action="append",
+        default=[],
+        choices=CLIENTS,
+        help="client to configure (repeatable; default: every client detected)",
+    )
     serve = commands.add_parser("mcp", help="serve the oxide_search tool over MCP")
     serve.add_argument(
         "--repo", action="append", default=[], help="serve only this repository (repeatable)"
@@ -336,9 +349,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.print_help()
         return 0
     try:
-        if args.command == "prepare":
-            print(prepare())
+        if args.command == "setup":
+            print(setup())
             return 0
+        if args.command == "install":
+            return install(args.client)
         if args.command == "mcp":
             # Imported here: the MCP stack is only loaded by the server.
             from oxide.mcp_server import serve as serve_mcp

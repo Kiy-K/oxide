@@ -11,7 +11,7 @@ uv = "0.12.22"
 description = "Install the locked environment, fetch the pinned FTS extension and the ContextBench corpora"
 run = [
   "uv sync --locked",
-  "uv run --locked oxide prepare",
+  "uv run --locked oxide setup",
   # Pinned commits for the context-quality gate (fixtures/eval/README.md); cached.
   "uv run --locked python tests/python/contextbench.py fetch",
 ]

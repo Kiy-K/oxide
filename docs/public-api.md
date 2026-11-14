@@ -25,8 +25,8 @@ The data location is `data_dir=`, else `$OXIDE_DATA_DIR`, else
 `$XDG_DATA_HOME/oxide/py` (or `~/.local/share/oxide/py`). It is never captured as
 source, even inside the repository: the data directory and its `repos/` are
 excluded by device and inode, so symlinked or differently spelled paths to it are
-excluded too. Lexical search needs the pinned FTS extension: run `oxide prepare`
-(or `oxide.api.prepare()`) once.
+excluded too. Lexical search needs the pinned FTS extension: run `oxide setup`
+(or `oxide.api.setup()`) once.
 
 `oxide.repository_status(path, data_dir=...)` returns a `RepositoryStatus` from one
 pinned published generation without capturing or indexing the worktree. It verifies retained
@@ -351,7 +351,7 @@ Damage is classified like this:
 
 ## CLI
 
-`oxide index|search|context|judge <path> [...] [--data-dir D] [--json]`, `oxide impact <path> <key> [--direction upstream|downstream] [--depth 0-8] [--limit 0-1000] [--data-dir D] [--json]` `oxide outline <path> [target]`, `oxide inspect <path> <symbol>`, `oxide refs <path> <symbol>` (each `[--limit N] [--data-dir D] [--json]`; they open with `shared=True`, so they read the running owner's latest snapshot and note that on stderr; exit 1 for `ambiguous`/`not_found`) and `oxide prepare`. `impact` lists what depends on an entity (callers, importers, tests; nearest first, each with its proven depth); `key` comes from `search` output. `judge` shows the optional judge's status, what it sends and how to
+`oxide index|search|context|judge <path> [...] [--data-dir D] [--json]`, `oxide impact <path> <key> [--direction upstream|downstream] [--depth 0-8] [--limit 0-1000] [--data-dir D] [--json]` `oxide outline <path> [target]`, `oxide inspect <path> <symbol>`, `oxide refs <path> <symbol>` (each `[--limit N] [--data-dir D] [--json]`; they open with `shared=True`, so they read the running owner's latest snapshot and note that on stderr; exit 1 for `ambiguous`/`not_found`), `oxide setup` and `oxide install` (see § MCP). `impact` lists what depends on an entity (callers, importers, tests; nearest first, each with its proven depth); `key` comes from `search` output. `judge` shows the optional judge's status, what it sends and how to
 disable it. `--enable` and `--disable` switch it (§ Optional judge). `index` prints its progress to stderr and a summary to stdout:
 counts, changes since the last index, source files parsed and reused (`sources:`), then any
 partial parses, skips, unsupported files and case collisions. `context` prints the
@@ -374,6 +374,8 @@ closest valid command.
 `oxide mcp [--repo PATH]... [--data-dir D] [--http [--host H] [--port P]]`
 (`src/oxide/mcp_server.py`, FastMCP 4.1) is another client of this API: it never
 parses, routes, selects or packs.
+
+`oxide install [--client claude|codex|cursor]...` writes one user-wide `oxide` entry per client (default: each client it detects). The entry runs `python -m oxide mcp` from the interpreter that ran the install. It writes only the entry named `oxide`, leaves other configuration alone, and can be rerun safely. It exits 1 when a client refuses the change or is missing.
 
 It serves one tool. `oxide_search`'s `mode` picks one API operation (table below):
 

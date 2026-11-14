@@ -1,7 +1,7 @@
 name: Platforms
 
 # Cross-platform verification of the Python engine (docs/platforms.md): on every
-# supported platform, the locked environment installs, `oxide prepare` fetches that
+# supported platform, the locked environment installs, `oxide setup` fetches that
 # platform's pinned FTS build, mypy and the test suite run from the checkout, and the
 # built wheel and sdist pass scripts/smoke_dist.py from a fresh environment.
 # ContextBench quality gates stay in ci.yml (Linux) and `mise run contextbench-ts`.
@@ -70,7 +70,7 @@ jobs:
       - name: Install the locked environment and the FTS extension
         run: |
           uv sync --locked
-          uv run --locked oxide prepare
+          uv run --locked oxide setup
           uv run --locked python scripts/smoke_dist.py --environment | tee environment.json
       # On PRs and main pushes ci.yml's Verify job runs Ruff, mypy and the suite on Linux
       # with .python-version, so linux-x86_64 only builds and smokes. Manual runs have no

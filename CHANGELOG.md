@@ -15,6 +15,7 @@ Release candidate. Install it with the exact pin, `oxide-agent==0.2.0rc1`.
 5. `SearchResult` and `ContextBundle` have a new `blast` field. It has a default, but it sits before `versions` in `ContextBundle`, so code that builds these dataclasses positionally must adapt.
 6. `OxideError` has a new code, `resource_exhausted`, for a full read buffer pool. The index is intact in that case. Code that matches on every `code` must handle it.
 7. macOS Intel is no longer supported. `cryptography>=50` applies on every platform, and `fastmcp` is pinned to 4.1.2.
+8. `oxide prepare` is renamed `oxide setup`, and `oxide.api.prepare()` is `oxide.api.setup()`. Update scripts that call the old name.
 
 ### Added
 
@@ -26,6 +27,7 @@ Release candidate. Install it with the exact pin, `oxide-agent==0.2.0rc1`.
 - A precomputed blast radius (`blast`) for each entry point in `search` and `context` results.
 - Automatic index freshness tracking while a handle is open.
 - A threat model in `SECURITY_MODEL.md`.
+- `oxide install`, which registers `oxide mcp` once per user with Claude Code, Codex and Cursor (`--client` picks one). It replaces the per-repository `claude mcp add ... --repo` setup.
 
 ### Changed
 
