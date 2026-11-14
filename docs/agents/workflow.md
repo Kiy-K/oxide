@@ -35,7 +35,7 @@ installs it). CI (`.github/workflows/ci.yml`) runs exactly `mise run verify`;
 Linux, Windows and both macOS architectures ([docs/platforms.md](../platforms.md)).
 
 ```bash
-mise run bootstrap     # uv sync --locked + `oxide prepare` (pinned FTS extension, sha256-checked)
+mise run bootstrap     # uv sync --locked + `oxide setup` (pinned FTS extension, sha256-checked)
                        #   + ContextBench corpora at pinned commits (git, cached)
 mise run verify        # everything, in order, stopping at the first failure:
 mise run lint          #   ruff check + ruff format --check
@@ -96,7 +96,7 @@ real data location changes, and every subprocess receives explicit private
 locations (`env()` and `python()` there; `env()` refuses any location outside
 the temporary root). Native probes that could crash, and crash injection, run
 only in such subprocesses. Lexical tests need the pinned FTS extension
-(`uv run oxide prepare`, once), and the context-quality gate the corpora
+(`uv run oxide setup`, once), and the context-quality gate the corpora
 (`uv run python tests/python/contextbench.py fetch`, once; both are in bootstrap).
 
 ## Commits
@@ -143,7 +143,7 @@ Do not apply v1 CLI, embedding or SQLite contracts to the Python engine.
 
 LadybugDB comes from its Python wheel (`ladybug==0.21.0`, matched to the FTS build; [docs/platforms.md](../platforms.md)), so there is no
 native build step. Full-text search is a separate native extension: `uv run
-oxide prepare` (part of `mise run bootstrap`) downloads this platform's pinned
+oxide setup` (part of `mise run bootstrap`) downloads this platform's pinned
 0.21.0 build ([docs/platforms.md](../platforms.md)) over HTTPS and checks its SHA-256 into
 `$XDG_CACHE_HOME/oxide/ladybug-extensions-0.21.0/` (override with
 `OXIDE_FTS_EXTENSION`). It is the only network access OXIDE makes. The

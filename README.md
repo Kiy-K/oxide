@@ -46,10 +46,10 @@ uv tool install 'oxide-agent[structural]==0.2.0rc1'
 Check the install with `oxide --version`, then fetch the lexical-search extension once:
 
 ```bash
-oxide prepare
+oxide setup
 ```
 
-`oxide prepare` is the only network access OXIDE makes. It downloads the pinned LadybugDB FTS extension for your platform and checks its SHA-256. Without it the lexical channel reports `unavailable`, and structural seeds and routing still work.
+`oxide setup` is the only network access OXIDE makes. It downloads the pinned LadybugDB FTS extension for your platform and checks its SHA-256. Without it the lexical channel reports `unavailable`, and structural seeds and routing still work.
 
 On Windows, LadybugDB also needs the OpenSSL 3 x64 DLLs in the system directory, and it opens only ASCII paths. With a non-ASCII user name, set `OXIDE_DATA_DIR` and `OXIDE_FTS_EXTENSION` ([details](https://github.com/Kiy-K/oxide/blob/main/docs/platforms.md)).
 
@@ -87,13 +87,16 @@ oxide mcp --repo path/to/repo                      # stdio, for a local agent
 oxide mcp --repo path/to/repo --http --port 8765   # stateless HTTP, loopback only
 ```
 
-In Claude Code:
+Register it once with your MCP clients:
 
 ```bash
-claude mcp add oxide -- oxide mcp --repo /path/to/repo
+oxide install                    # every MCP client it detects: Claude Code, Codex, Cursor
+oxide install --client codex     # or name one: claude, codex, cursor
 ```
 
-With `--repo` (repeatable), calls may only name those repositories, and with exactly one they may omit `repository`.
+`oxide install` writes one user-wide `oxide` entry per client. The entry runs the Python that installed OXIDE, so the server works from any directory, and each tool call names its repository. It writes only the entry named `oxide`. For Claude Code it also reports a local entry in the current directory that would override it. Restart the client afterwards.
+
+Run by hand, `--repo` (repeatable) limits calls to those repositories, and with exactly one they may omit `repository`.
 
 The server keeps one handle per repository until it shuts down, and it keeps the index fresh itself. That handle owns the store, so while the server runs, `oxide index`, `search`, `context`, `impact` and `judge` on the same store fail with `ownership_conflict`. `oxide status`, `outline`, `inspect` and `refs` still work, and the last three read the server's latest snapshot. To run the other commands, stop the server first. Ctrl-C and SIGTERM stop it: it prints `oxide: stopping`, releases the store and exits.
 
@@ -118,12 +121,12 @@ To work on OXIDE itself, use [mise](https://mise.jdx.dev) and uv:
 
 ```bash
 git clone https://github.com/Kiy-K/oxide && cd oxide
-mise run bootstrap        # uv sync --locked + `oxide prepare`
+mise run bootstrap        # uv sync --locked + `oxide setup`
 mise run verify           # ruff, mypy --strict, pytest (CI runs exactly this)
 uv run python scripts/bench.py path/to/corpus   # latency and peak RSS, JSON report
 ```
 
-Without mise, run `uv sync --locked` and then `uv run oxide prepare`. The v1 implementation is pinned at commit [`ac985b28`](https://github.com/Kiy-K/oxide/tree/ac985b28fcff7663aedadf2db5b40aa2dc325580), with its [README](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/README.md).
+Without mise, run `uv sync --locked` and then `uv run oxide setup`. The v1 implementation is pinned at commit [`ac985b28`](https://github.com/Kiy-K/oxide/tree/ac985b28fcff7663aedadf2db5b40aa2dc325580), with its [README](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/README.md).
 
 ## License
 

@@ -4,7 +4,7 @@ This model was built from the code at `main` (2605eea) and from the owner's answ
 
 ## System overview
 
-OXIDE is a local, single-user Python library, CLI, and MCP server. It captures a repository worktree, derives a typed graph of files, modules, symbols, and relations with tree-sitter parsers, persists it in an embedded LadybugDB store under the user's data dir, and answers queries with ranked locations or budgeted source bundles. These bundles are fed to AI coding agents. The query path is offline: no embeddings, no model, no network. Network access happens in exactly two places: `oxide prepare`, which downloads the pinned FTS native extension, and the optional JEV judge, which uploads source excerpts to TypeSafe.
+OXIDE is a local, single-user Python library, CLI, and MCP server. It captures a repository worktree, derives a typed graph of files, modules, symbols, and relations with tree-sitter parsers, persists it in an embedded LadybugDB store under the user's data dir, and answers queries with ranked locations or budgeted source bundles. These bundles are fed to AI coding agents. The query path is offline: no embeddings, no model, no network. Network access happens in exactly two places: `oxide setup`, which downloads the pinned FTS native extension, and the optional JEV judge, which uploads source excerpts to TypeSafe.
 
 ## Components
 

@@ -4,7 +4,7 @@
     python scripts/smoke_dist.py --environment   # this platform's record, as JSON
 
 Run with the interpreter of a fresh environment that has only the built artifact and
-its locked dependencies installed, after ``oxide prepare``. It drives the installed
+its locked dependencies installed, after ``oxide setup``. It drives the installed
 ``oxide`` console script in subprocesses against a copy of ``fixtures/py_repo`` and
 ``fixtures/ts_repo`` plus a non-ASCII, CRLF file, in a private data location whose
 path has spaces and non-ASCII characters:

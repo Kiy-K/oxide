@@ -74,9 +74,9 @@ def fts_unavailable(path: Path) -> str | None:
     try:
         data = path.read_bytes()
     except OSError:
-        return f"FTS extension missing at {path}; run `oxide prepare`"
+        return f"FTS extension missing at {path}; run `oxide setup`"
     if hashlib.sha256(data).hexdigest() != build[1]:
-        return f"FTS extension at {path} does not match its pinned digest; run `oxide prepare`"
+        return f"FTS extension at {path} does not match its pinned digest; run `oxide setup`"
     return None
 
 
