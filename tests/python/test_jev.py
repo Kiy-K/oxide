@@ -324,7 +324,8 @@ def test_the_cli_shows_what_is_sent_and_how_to_disable(
     assert main(["judge", str(repo_copy)]) == 0
     shown = capsys.readouterr().out
     assert "disabled: nothing is sent" in shown and jev.ENDPOINT in shown
-    assert f"oxide judge {repo_copy} --disable" in shown and "retention" in shown
+    assert "oxide judge with the same repository and data location" in shown
+    assert "--enable or --disable" in shown and "retention" in shown
     assert main(["judge", str(repo_copy), "--enable"]) == 0
     assert "enabled" in capsys.readouterr().out
     assert main(["context", str(repo_copy), QUERY]) == 0  # no key: falls back, says so

@@ -35,7 +35,8 @@ snapshot identity, file coverage and diagnostics, counts, skipped files, case
 collisions and lexical availability. It raises `NotIndexed` when no snapshot exists;
 other storage and path failures remain typed errors. The CLI `oxide status [PATH]`
 (default `.`; `--data-dir`, `--json`) displays this last published snapshot, not a
-freshness check; for an unindexed repository it displays an indexing instruction.
+freshness check; `--verbose` adds file diagnostics, skips and collision details.
+For an unindexed repository it displays an indexing instruction.
 Temporary reader pins (and Windows reader copies) are cleaned up on close.
 
 ## Operations

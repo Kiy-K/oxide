@@ -117,6 +117,25 @@ def test_claude_registers_user_scope_once(
 
 
 @posix_only
+def test_claude_shadowed_entry_suggests_action(
+    clients: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    script = clients / "bin" / "claude"
+    script.write_text(script.read_text().replace("Scope: User config", "Scope: Project config"))
+    assert main(["install", "--client", "claude"]) == 0
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert captured.out == (
+        "oxide: claude: added (this directory's project config entry overrides it; "
+        "inspect and update or remove the overriding entry)\n"
+        "oxide: restart the client to load the server\n"
+    )
+    servers = json.loads((clients / "claude-config" / ".claude.json").read_text())["mcpServers"]
+    assert servers["oxide"]["command"] == ENTRY["command"]
+    assert servers["oxide"]["args"] == ENTRY["args"]
+
+
+@posix_only
 def test_claude_replaces_stale_entry_and_keeps_other_settings(
     clients: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:

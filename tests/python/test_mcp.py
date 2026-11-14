@@ -319,7 +319,7 @@ async def test_stdio_corruption_fails_closed_and_releases_for_repair(
         damaged = await call(client, "oxide_search", mode="context", query="RetryPolicy")
         assert damaged.is_error and "error[store_corrupt]" in text(damaged)
         assert str(data) not in text(damaged)
-        assert "--data-dir <the server's data location>" in text(damaged)
+        assert "using the server's data location" in text(damaged)
         rebuilt = cli(data, "index", str(repo_copy))
         assert rebuilt.returncode == 0 and rebuilt.stdout.startswith("built:")
         again = await call(client, "oxide_search", mode="context", query="RetryPolicy", budget=300)

@@ -194,9 +194,20 @@ def test_advice_is_a_copy_pasteable_recovery_command() -> None:
     assert advice(error, "/tmp/my repo") == 'run `oxide index "/tmp/my repo"` first'
     assert advice(error, "/repo", "/data") == "run `oxide index /repo --data-dir /data` first"
     assert advice(error, "/repo", private_data_dir=True) == (
-        "run `oxide index /repo --data-dir <the server's data location>` first"
+        "run oxide index for the same repository using the server's data location first"
     )
     assert advice(InvalidArgument("bad"), "/repo") is None
+
+
+@pytest.mark.parametrize("path", ["/tmp/repo;echo_pwn", "/tmp/$HOME", '/tmp/a"b', "-repo"])
+def test_advice_does_not_emit_unsafe_shell_paths(path: str) -> None:
+    hint = advice(NotIndexed("missing"), path, "/tmp/data")
+    assert hint == "run oxide index for the same repository and data location first"
+
+
+def test_advice_does_not_emit_unsafe_data_location() -> None:
+    hint = advice(NotIndexed("missing"), "/tmp/repo", "/tmp/$(touch pwn)")
+    assert hint == "run oxide index for the same repository and data location first"
 
 
 def test_search_and_context_show_hint_issues(tmp_path: Path, fts: Path) -> None:
@@ -225,3 +236,108 @@ def test_search_and_context_print_the_blast_radius_of_their_entries(
     assert "blast symbol:oxidepy/retry.py#RetryPolicy: " in found.stdout, found.stdout
     context = oxide(data, "context", *target, "RetryPolicy", "--budget", "300")
     assert "blast symbol:oxidepy/retry.py#RetryPolicy: " in context.stderr, context.stderr
+
+
+def test_index_and_impact_actionable_hints() -> None:
+    from oxide.cli import _impact_summary, _index_summary
+    from oxide.models import Entity, Impact, IndexReport, Skip, Snapshot
+
+    snap = Snapshot("r", "s", "d")
+    report = IndexReport(
+        snap,
+        "unchanged",
+        1,
+        2,
+        3,
+        ("x.py",),
+        0,
+        (Skip("link", "symlink"),),
+        (("A", "a"),),
+        "ran",
+        0.0,
+    )
+    assert _index_summary(report) == (
+        "unchanged: 1 files, 2 entities, 3 relations in 0.00s; lexical ran\n"
+        "partial parses: 1 (x.py)\n"
+        "hint: inspect parse diagnostics with oxide status --verbose for the same repository "
+        "and data location\n"
+        "skipped: 1 (link [symlink])\n"
+        "hint: review skipped files with oxide status --verbose for the same repository "
+        "and data location\n"
+        "case collisions: A = a\nhint: rename conflicting files, then re-index"
+    )
+    root = Entity("symbol:x#f", "symbol", "function", "f", None, None, False)
+    for stop, hint in (
+        ("depth", "hint: consider raising --depth"),
+        ("limit", "hint: consider raising --limit"),
+        ("edges", "hint: traversal hit an internal edge bound"),
+        (None, ""),
+    ):
+        impact = Impact(snap, root, "upstream", (root.key,), (), 0, stop)
+        expected = (
+            f"upstream of {root.key}: 0 reached; stopped by {stop or 'none'}; "
+            "unresolved call sites 0"
+        )
+        assert _impact_summary(impact, 3, 200) == expected + (f"\n{hint}" if hint else "")
+    for stop, hint in (
+        ("depth", "hint: --depth is already at its maximum (8)"),
+        ("limit", "hint: --limit is already at its maximum (1000)"),
+    ):
+        impact = Impact(snap, root, "upstream", (root.key,), (), 0, stop)
+        assert _impact_summary(impact, 8, 1000).endswith(hint)
+
+
+def test_search_truncation_and_context_degradations(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    from dataclasses import replace
+
+    from oxide.models import ChannelStatus, ContextBundle, RouteSummary, SearchResult, Snapshot
+
+    snap = Snapshot("r", "s", "d")
+    channel = ChannelStatus("ran", "fts", 0, True)
+    search = SearchResult(snap, "q", (), channel, ())
+    context = ContextBundle(
+        snap,
+        "q",
+        100,
+        0,
+        "tokens",
+        (),
+        (),
+        channel,
+        (),
+        RouteSummary(False, 0, 0, 0, 0, None),
+        ("degraded", "judge fallback", "degraded"),
+    )
+
+    class Repo:
+        read_only = False
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            pass
+
+        def search(self, *_args, **_kwargs):
+            return search
+
+        def build_context(self, *_args, **_kwargs):
+            return context
+
+    monkeypatch.setattr("oxide.cli.open_repository", lambda *_a, **_kw: Repo())
+    assert main(["search", ".", "q"]) == 0
+    assert capsys.readouterr().out == (
+        "lexical ran: fts\nhint: lexical results truncated; consider raising --limit\n"
+    )
+    search = replace(search, lexical=replace(channel, truncated=False))
+    assert main(["search", ".", "q"]) == 0
+    assert capsys.readouterr().out == "lexical ran: fts\n"
+    assert main(["context", ".", "q"]) == 0
+    human = capsys.readouterr()
+    assert human.err == "0/100 tokens\nwarning: degraded\njudge fallback\n"
+    assert main(["context", ".", "q", "--json"]) == 0
+    machine = capsys.readouterr()
+    assert machine.err == "0/100 tokens\njudge fallback\n"
+    assert json.loads(machine.out)["degradations"] == ["degraded", "judge fallback", "degraded"]

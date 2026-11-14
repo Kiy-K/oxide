@@ -524,6 +524,56 @@ def test_cli_navigation_round_trip_beside_a_running_owner(
     assert owned.inspect("RetryPolicy").status == "resolved"
 
 
+@pytest.mark.parametrize("command", ["inspect", "refs"])
+def test_cli_truncated_resolution_is_not_reported_missing(
+    command: str, owned: oxide.Repository, repo_copy: Path, private_data: Path
+) -> None:
+    target = (str(repo_copy), "--data-dir", str(private_data))
+    truncated = oxide_cli(private_data, command, *target, "RetryPolicy", "--limit", "0")
+    assert truncated.returncode == 1
+    assert truncated.stdout == (
+        "resolution truncated; if --limit is 0, increase it; otherwise use an exact entity key\n"
+    )
+    missing = oxide_cli(private_data, command, *target, "nothing_here", "--limit", "0")
+    assert missing.returncode == 1
+    assert missing.stdout == (
+        "no match for 'nothing_here'; find names with `oxide search` or `oxide outline`\n"
+    )
+
+
+@pytest.mark.parametrize("command", ["inspect", "refs"])
+def test_internal_name_cap_suggests_exact_key(
+    command: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from oxide.cli_nav import inspect_text, refs_text
+
+    monkeypatch.setattr(lookup, "_NAMED", 2)
+    monkeypatch.setattr(lookup, "_NAMED_MAX", 2)
+    facts = _facts_with_many_runs(3)
+    result = getattr(lookup, command)(facts, "C.run", 20)
+    assert result.status == "not_found" and result.truncated
+    render = inspect_text if command == "inspect" else refs_text
+    assert render(result) == (
+        "resolution truncated; if --limit is 0, increase it; otherwise use an exact entity key"
+    )
+    assert getattr(lookup, command)(facts, "symbol:z_late.py#C.run", 20).status == "resolved"
+
+
+@pytest.mark.parametrize("command", ["inspect", "refs"])
+def test_ambiguous_internal_cap_does_not_blame_limit(
+    command: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from oxide.cli_nav import inspect_text, refs_text
+
+    monkeypatch.setattr(lookup, "_NAMED", 2)
+    monkeypatch.setattr(lookup, "_NAMED_MAX", 2)
+    result = getattr(lookup, command)(_facts_with_many_runs(3), "run", 20)
+    assert result.status == "ambiguous" and result.truncated
+    text = (inspect_text if command == "inspect" else refs_text)(result)
+    assert "results may be incomplete" in text
+    assert "more matches than --limit" not in text
+
+
 def test_cli_navigation_errors_are_typed(repo_copy: Path, private_data: Path) -> None:
     target = (str(repo_copy), "--data-dir", str(private_data))
     missing = oxide_cli(private_data, "inspect", *target, "x")

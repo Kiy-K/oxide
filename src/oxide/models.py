@@ -13,6 +13,7 @@ Domain order is the code point order of keys.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -405,10 +406,11 @@ ADVICE = {
 }
 
 
-def _arg(value: str) -> str:
-    """A command-line argument for a copy-paste: double quotes around paths with spaces, which
-    cmd, PowerShell and POSIX shells all accept."""
-    return f'"{value}"' if any(c in value for c in " \t") else value
+def _arg(value: str) -> str | None:
+    """Render only paths safe to copy into both POSIX and Windows shells."""
+    if not value or value.startswith("-") or not re.fullmatch(r"[\w ./:-]+", value):
+        return None
+    return f'"{value}"' if " " in value else value
 
 
 def advice(
@@ -418,14 +420,17 @@ def advice(
     *,
     private_data_dir: bool = False,
 ) -> str | None:
-    """The next command for an expected failure, copy-pasteable; None when there is none.
+    """Recovery guidance; omit shell commands when paths cannot be quoted portably.
     ``private_data_dir`` says a non-default data location is in use without naming it."""
     template = ADVICE.get(error.code)
     if template is None:
         return None
-    index = f"oxide index {_arg(repository)}"
-    if data_dir is not None:
-        index += f" --data-dir {_arg(data_dir)}"
-    elif private_data_dir:
-        index += " --data-dir <the server's data location>"
+    repo = _arg(repository)
+    data = _arg(data_dir) if data_dir is not None else None
+    if repo is None or (data_dir is not None and data is None) or private_data_dir:
+        location = "using the server's data location" if private_data_dir else "and data location"
+        return template.replace("`{index}`", f"oxide index for the same repository {location}")
+    index = f"oxide index {repo}"
+    if data is not None:
+        index += f" --data-dir {data}"
     return template.format(index=index)
