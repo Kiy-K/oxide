@@ -4,7 +4,7 @@
 
 - [SPEC](spec/SPEC.md): architecture authority; [decisions](decisions.md): standing architectural rules and research verdicts.
 - [ADRs](adr/): decisions and proposals; a Proposed ADR is not an accepted requirement.
-- [Public API](public-api.md), [parser limits and language support](parser-limits.md), [platforms](platforms.md).
+- [Public API](public-api.md), [parser limits and language support](parser-limits.md), [platforms](platforms.md), [changelog](../CHANGELOG.md).
 - [Development workflow](agents/workflow.md) and [review policy](review/README.md).
 
 ## Evidence
