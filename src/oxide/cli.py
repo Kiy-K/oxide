@@ -15,9 +15,9 @@ import json
 import sys
 from typing import Any
 
-from oxide.api import open_repository, prepare
+from oxide.api import open_repository, prepare, repository_status
 from oxide.cli_nav import inspect_text, outline_text, refs_text
-from oxide.models import Impact, IndexReport, JudgeStatus, OxideError, advice
+from oxide.models import Impact, IndexReport, JudgeStatus, NotIndexed, OxideError, advice
 
 
 def _plain(item: Any) -> Any:
@@ -31,6 +31,54 @@ def _plain(item: Any) -> Any:
     if isinstance(item, dict):
         return {k: _plain(v) for k, v in item.items()}
     return item
+
+
+def _status(path: str, data_dir: str | None, as_json: bool) -> int:
+    try:
+        result = repository_status(path, data_dir=data_dir)
+    except NotIndexed as error:
+        hint = advice(error, path, data_dir)
+        output: dict[str, Any] = {"status": "unindexed", "hint": hint}
+        print(json.dumps(output) if as_json else f"unindexed: {hint}")
+        return 0
+    actions = []
+    if any(file.coverage == "partial" for file in result.files):
+        actions.append("Fix reported parse errors and re-index.")
+    if result.skipped:
+        actions.append("Check skipped files and re-index.")
+    if result.case_collisions:
+        actions.append("Rename conflicting files and re-index.")
+    if result.lexical_unavailable:
+        actions.append("Resolve the lexical error, then re-index.")
+    output = {"status": "indexed", **_plain(result), "actions": actions}
+    if as_json:
+        print(json.dumps(output))
+        return 0
+    files = result.files
+    coverage = ", ".join(
+        f"{sum(f.coverage == state for f in files)} {state}"
+        for state in ("complete", "partial", "unsupported")
+    )
+    print(f"last published snapshot: {result.snapshot.snapshot_id}")
+    print(f"repository: {result.snapshot.repo_id}; derivation: {result.snapshot.derivation_id}")
+    print(
+        f"{len(files)} files ({coverage}); {result.entities} entities; {result.relations} relations"
+    )
+    for item in files:
+        if item.coverage != "complete" or item.diagnostics:
+            print(
+                f"{item.path}: {item.coverage}"
+                + (f"; {'; '.join(item.diagnostics)}" if item.diagnostics else "")
+            )
+    for skipped in result.skipped:
+        print(f"skipped {skipped.path}: {skipped.reason}; check the file and re-index")
+    for group in result.case_collisions:
+        print(f"case collision: {' = '.join(group)}; rename conflicting files and re-index")
+    if result.lexical_unavailable:
+        print(f"lexical unavailable: {result.lexical_unavailable}; resolve the error and re-index")
+    for action in actions:
+        print(action)
+    return 0
 
 
 def _paths(paths: tuple[str, ...], shown: int = 5) -> str:
@@ -111,6 +159,7 @@ def _impact_summary(impact: Impact) -> str:
 _COMMAND_OPTIONS: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
     "mcp": (("--data-dir", "--host", "--port", "--repo"), ("--http",)),
     "index": (("--data-dir",), ("--json",)),
+    "status": (("--data-dir",), ("--json",)),
     "judge": (("--data-dir",), ("--json", "--enable", "--disable")),
     "search": (("--data-dir", "--limit", "--file", "--symbol"), ("--json",)),
     "context": (("--data-dir", "--budget", "--file", "--symbol"), ("--json",)),
@@ -180,6 +229,10 @@ def main(argv: list[str] | None = None) -> int:
     serve.add_argument("--http", action="store_true", help="stateless Streamable HTTP, not stdio")
     serve.add_argument("--host", default="127.0.0.1", choices=("127.0.0.1", "localhost", "::1"))
     serve.add_argument("--port", type=int, default=8765)
+    status_parser = commands.add_parser("status", help="show the last published index status")
+    status_parser.add_argument("path", nargs="?", default=".")
+    status_parser.add_argument("--data-dir", help="data location (default: OXIDE_DATA_DIR or XDG)")
+    status_parser.add_argument("--json", action="store_true", help="print the typed result as JSON")
     for name, text in (
         ("index", "capture and index a repository"),
         ("judge", "show, enable or disable the optional JEV judge (sends source)"),
@@ -239,6 +292,8 @@ def main(argv: list[str] | None = None) -> int:
 
             serve_mcp(args.repo, args.data_dir, args.http, args.host, args.port)
             return 0
+        if args.command == "status":
+            return _status(args.path, args.data_dir, args.json)
         # Reads never leave an empty store behind.
         code = 0
         create = args.command == "index" or getattr(args, "enable", False)

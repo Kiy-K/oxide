@@ -23,6 +23,7 @@ from oxide.models import (
     InvalidArgument,
     NotIndexed,
     Relation,
+    ResourceExhausted,
     Snapshot,
     SourceRef,
     StoreCorrupt,
@@ -567,6 +568,6 @@ def test_windows_reader_cleans_a_failed_generation_copy(
         raise OSError("disk full")
 
     monkeypatch.setattr("oxide.storage.reader.shutil.copytree", boom)
-    with pytest.raises(OSError, match="disk full"):
+    with pytest.raises(ResourceExhausted, match="disk full"):
         Reader(repo_copy, private_data)
     assert list((store_dir(private_data) / "reader-views").iterdir()) == []

@@ -10,8 +10,7 @@
 
 Every result names the snapshot it was read from. A ``Repository`` owns its store
 exclusively (a second owner, in any process, gets ``OwnershipConflict``, unless it opens
-with ``shared=True`` and reads the owner's published generations). Calls are
-serialized with automatic local filesystem updates.
+with ``shared=True``). Calls are serialized with automatic local filesystem updates.
 """
 
 from __future__ import annotations
@@ -29,6 +28,7 @@ from oxide import _index, jev
 from oxide._args import count as _count
 from oxide._args import hints as _hints
 from oxide._args import texts as _texts
+from oxide._status import repository_status as repository_status
 from oxide.capture import CaptureCache
 from oxide.core import lookup, navigation, ordering, packing, retrieval, routing, structural
 from oxide.core.blast import BLAST_ROOTS
