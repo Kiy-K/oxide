@@ -64,6 +64,9 @@ oxide context path/to/repo "where are failed requests retried" --budget 1024 \
 
 Every command takes `--json` (the typed result) and `--data-dir`. `oxide index` with no path indexes the current directory. `context` prints the payload on stdout and `used/budget units` on stderr. Errors print `error[<code>]: <message>` and exit 2. `oxide` alone prints the command list with examples.
 
+Human-facing status, warnings, errors and hints use color on supported terminals. Set
+`NO_COLOR=1` to disable it; redirected output, JSON and source payloads remain plain text.
+
 The same operations are available from Python:
 
 ```python

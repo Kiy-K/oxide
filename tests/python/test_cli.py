@@ -53,6 +53,30 @@ def test_errors_exit_2_with_a_stable_code(tmp_path: Path) -> None:
     assert not data.exists()  # a read leaves no empty store behind
 
 
+def test_terminal_colors_respect_plain_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(sys.stdout, "isatty", lambda: True)
+    monkeypatch.setattr(sys.stderr, "isatty", lambda: True)
+    monkeypatch.delenv("NO_COLOR", raising=False)
+    monkeypatch.setenv("TERM", "xterm")
+    args = ["status", str(tmp_path), "--data-dir", str(tmp_path / "data")]
+    assert main(args) == 0
+    assert "\x1b[" in capsys.readouterr().out
+    assert main([*args, "--json"]) == 0
+    assert json.loads(capsys.readouterr().out)["status"] == "unindexed"
+    monkeypatch.setenv("NO_COLOR", "1")
+    assert main(args) == 0
+    assert "\x1b[" not in capsys.readouterr().out
+    monkeypatch.delenv("NO_COLOR")
+    monkeypatch.setenv("TERM", "dumb")
+    assert main(args) == 0
+    assert "\x1b[" not in capsys.readouterr().out
+    monkeypatch.setenv("TERM", "xterm")
+    assert main(["status", str(tmp_path / "missing")]) == 2
+    assert "\x1b[" in capsys.readouterr().err
+
+
 def test_version_is_the_installed_distribution_version(tmp_path: Path) -> None:
     for flag in ("--version", "-V"):
         result = oxide(tmp_path / "data", flag)
