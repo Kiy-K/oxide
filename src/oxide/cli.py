@@ -449,7 +449,12 @@ def main(argv: list[str] | None = None) -> int:
                 hints = [f"hint: {h.kind} {h.hint}: {h.issue}" for h in result.hints]
                 status = f"lexical {result.lexical.state}: {result.lexical.detail}"
                 if result.lexical.truncated:
-                    status += "\nhint: lexical results truncated; consider raising --limit"
+                    if args.limit >= MAX_LIMIT:
+                        status += (
+                            "\nhint: lexical results truncated at maximum --limit; narrow the query"
+                        )
+                    else:
+                        status += "\nhint: lexical results truncated; consider raising --limit"
                 blast = [f"blast {root.line()}" for root in result.blast]
                 text = "\n".join([*lines, *hints, status, *blast])
             elif args.command == "outline":

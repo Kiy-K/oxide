@@ -160,7 +160,12 @@ def test_impact_and_empty_query_failures_exit_2_with_advice(tmp_path: Path, fts:
     target = (str(FIXTURE), "--data-dir", str(data))
     unindexed = oxide(data, "search", *target, "x")
     assert unindexed.returncode == 2 and "error[not_indexed]" in unindexed.stderr
-    assert f"hint: run `oxide index {FIXTURE} --data-dir {data}` first" in unindexed.stderr
+    expected = (
+        "hint: run oxide index for the same repository and data location first"
+        if sys.platform == "win32"
+        else f"hint: run `oxide index {FIXTURE} --data-dir {data}` first"
+    )
+    assert expected in unindexed.stderr
     assert oxide(data, "index", *target).returncode == 0
     unknown = oxide(data, "impact", *target, "symbol:nope")
     assert unknown.returncode == 2 and "error[invalid_argument]" in unknown.stderr
@@ -330,6 +335,10 @@ def test_search_truncation_and_context_degradations(
     assert main(["search", ".", "q"]) == 0
     assert capsys.readouterr().out == (
         "lexical ran: fts\nhint: lexical results truncated; consider raising --limit\n"
+    )
+    assert main(["search", ".", "q", "--limit", "1000"]) == 0
+    assert capsys.readouterr().out == (
+        "lexical ran: fts\nhint: lexical results truncated at maximum --limit; narrow the query\n"
     )
     search = replace(search, lexical=replace(channel, truncated=False))
     assert main(["search", ".", "q"]) == 0

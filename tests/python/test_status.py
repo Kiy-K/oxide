@@ -369,7 +369,11 @@ def test_unindexed_json_verbose_is_identical(tmp_path: Path) -> None:
     data = tmp_path / "data"
     expected = {
         "status": "unindexed",
-        "hint": f"run `oxide index {tmp_path}` first",
+        "hint": (
+            "run oxide index for the same repository and data location first"
+            if sys.platform == "win32"
+            else f"run `oxide index {tmp_path}` first"
+        ),
     }
     for flags in (("--json",), ("--json", "--verbose")):
         result = run(data, str(tmp_path), *flags)
