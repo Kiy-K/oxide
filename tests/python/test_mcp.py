@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import http.server
 import json
+import os
+import signal
 import socket
 import subprocess
 import sys
@@ -79,13 +81,13 @@ async def test_one_tool_is_discoverable_with_bounded_schemas(indexed: Path) -> N
     tool = tools["oxide_search"]
     assert tool.annotations is not None and tool.annotations.read_only_hint
     assert tool.description and tool.output_schema
-    assert "query" not in tool.input_schema.get("required", [])
+    assert tool.input_schema["required"] == ["query"]
     schema = tool.input_schema["properties"]
     assert schema["mode"]["enum"] == ["search", "context"]
     assert schema["mode"]["default"] == "search"
     assert {o.get("maximum") for o in schema["limit"]["anyOf"]} >= {mcp_server.MAX_RESULTS}
     assert {o.get("maximum") for o in schema["budget"]["anyOf"]} >= {mcp_server.MAX_BUDGET}
-    assert schema["query"]["anyOf"][0]["maxLength"] == 2000
+    assert schema["query"]["maxLength"] == 2000
     assert schema["symbols"]["maxItems"] == 32
 
 
@@ -478,7 +480,6 @@ async def test_search_and_context_carry_the_blast_radius_of_their_entry_points(
 
 async def test_each_mode_accepts_only_its_own_arguments(indexed: Path) -> None:
     rejected: dict[str, dict[str, Any]] = {
-        "search without query": {"mode": "search"},
         "search with budget": {"query": "decode", "budget": 100},
         "context with limit": {"mode": "context", "query": "decode", "limit": 2},
     }
@@ -489,10 +490,15 @@ async def test_each_mode_accepts_only_its_own_arguments(indexed: Path) -> None:
         retired = await call(client, "oxide_search", mode="impact", query="decode")
     for name, result in results.items():
         assert result.is_error and "error[invalid_argument]" in text(result), name
-    assert "required for mode=search" in text(results["search without query"])
     assert "`budget` applies to mode=context only" in text(results["search with budget"])
     assert "applies to mode=search only" in text(results["context with limit"])
     assert retired.is_error  # impact is a Repository call now, not an MCP mode
+
+
+async def test_a_call_without_query_is_rejected_before_any_work(indexed: Path) -> None:
+    async with Client(server([str(indexed)])) as client:
+        missing = await call(client, "oxide_search", mode="context")
+    assert missing.is_error and "query" in text(missing)
 
 
 async def test_empty_query_needs_a_seed_and_hint_issues_are_reported(indexed: Path) -> None:
@@ -509,3 +515,91 @@ async def test_empty_query_needs_a_seed_and_hint_issues_are_reported(indexed: Pa
         f"# hint {h['kind']} {h['hint']}: {h['issue']}" for h in missing.structured_content["hints"]
     ]
     assert shown == expected == ["# hint symbol NoSuchThing: not_found"]
+
+
+def free_port() -> int:
+    with socket.socket() as probe:
+        probe.bind(("127.0.0.1", 0))
+        return int(probe.getsockname()[1])
+
+
+posix_only = pytest.mark.skipif(sys.platform == "win32", reason="POSIX signals")
+
+
+@posix_only
+@pytest.mark.parametrize("transport", ["stdio", "http"])
+@pytest.mark.parametrize("sig", [signal.SIGINT, signal.SIGTERM])
+def test_a_signal_stops_the_server_promptly_and_cleanly(
+    transport: str, sig: signal.Signals, repo_copy: Path, tmp_path: Path, fts: Path
+) -> None:
+    data = tmp_path / "data"
+    assert cli(data, "index", str(repo_copy)).returncode == 0
+    port = free_port()
+    extra = ["--http", "--port", str(port)] if transport == "http" else []
+    process = subprocess.Popen(
+        [sys.executable, *mcp_command(repo_copy, data, *extra)],
+        env=env(data),
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    assert process.stdin and process.stdout and process.stderr
+    try:
+        if transport == "stdio":  # a reply proves the server is serving, not still starting
+            hello = {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": "2025-06-18",
+                    "capabilities": {},
+                    "clientInfo": {"name": "raw", "version": "0"},
+                },
+            }
+            process.stdin.write(json.dumps(hello) + "\n")
+            process.stdin.flush()
+            assert json.loads(process.stdout.readline())["id"] == 1
+        else:
+            for _ in range(200):
+                try:
+                    socket.create_connection(("127.0.0.1", port), timeout=0.1).close()
+                    break
+                except OSError:
+                    assert process.poll() is None, "HTTP server exited during startup"
+                    time.sleep(0.05)
+        process.send_signal(sig)  # stdin stays open: only the signal can end the server
+        assert process.wait(timeout=15) == 128 + sig
+        stderr = process.stderr.read()
+    finally:
+        process.kill()
+    assert "Traceback" not in stderr and "oxide: stopping" in stderr
+    assert cli(data, "index", str(repo_copy)).returncode == 0  # the store was released
+
+
+@posix_only
+def test_a_terminal_launch_says_what_it_is_and_ctrl_c_stops_it(
+    repo_copy: Path, tmp_path: Path, fts: Path
+) -> None:
+    import pty
+
+    data = tmp_path / "data"
+    assert cli(data, "index", str(repo_copy)).returncode == 0
+    master, slave = pty.openpty()
+    process = subprocess.Popen(
+        [sys.executable, *mcp_command(repo_copy, data)],
+        env=env(data),
+        stdin=slave,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    os.close(slave)
+    assert process.stderr
+    try:
+        assert "MCP client" in process.stderr.readline()
+        process.send_signal(signal.SIGINT)
+        assert process.wait(timeout=15) == 128 + signal.SIGINT
+    finally:
+        process.kill()
+        os.close(master)
