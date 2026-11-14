@@ -13,15 +13,22 @@ import dataclasses
 import difflib
 import io
 import json
+import os
 import re
 import sys
 from importlib.metadata import PackageNotFoundError, version
-from typing import Any, NoReturn
+from typing import Any, NoReturn, TextIO
 
 from oxide.api import MAX_DEPTH, MAX_LIMIT, open_repository, repository_status, setup
 from oxide.cli_nav import inspect_text, outline_text, refs_text
 from oxide.install import CLIENTS, install
 from oxide.models import Impact, IndexReport, JudgeStatus, NotIndexed, OxideError, advice
+
+
+def _color(text: str, code: str, stream: TextIO) -> str:
+    if stream.isatty() and not os.environ.get("NO_COLOR") and os.environ.get("TERM") != "dumb":
+        return f"\x1b[{code}m{text}\x1b[0m"
+    return text
 
 
 def _plain(item: Any) -> Any:
@@ -43,7 +50,7 @@ def _status(path: str, data_dir: str | None, as_json: bool, verbose: bool) -> in
     except NotIndexed as error:
         hint = advice(error, path, data_dir)
         output: dict[str, Any] = {"status": "unindexed", "hint": hint}
-        print(json.dumps(output) if as_json else f"unindexed: {hint}")
+        print(json.dumps(output) if as_json else f"{_color('unindexed', '33', sys.stdout)}: {hint}")
         return 0
     actions = []
     if any(file.coverage == "partial" for file in result.files):
@@ -64,7 +71,7 @@ def _status(path: str, data_dir: str | None, as_json: bool, verbose: bool) -> in
         for state in ("complete", "partial", "unsupported")
     }
     coverage = ", ".join(f"{count} {state}" for state, count in counts.items())
-    print("Index: published")
+    print(f"Index: {_color('published', '32', sys.stdout)}")
     print("Freshness: working tree not checked")
     print(
         f"{len(files)} files ({coverage}); {result.entities} entities; {result.relations} relations"
@@ -85,9 +92,9 @@ def _status(path: str, data_dir: str | None, as_json: bool, verbose: bool) -> in
     if result.lexical_unavailable:
         warnings.append(f"Lexical unavailable: {result.lexical_unavailable}")
     if warnings:
-        print("Warnings:")
+        print(_color("Warnings:", "33", sys.stdout))
         for warning in warnings:
-            print(f"  {warning}")
+            print(f"  {_color(warning, '33', sys.stdout)}")
         for action in actions:
             print(f"  {action}")
         if not verbose and (
@@ -492,11 +499,19 @@ def main(argv: list[str] | None = None) -> int:
                 for root in result.blast:
                     print(f"blast {root.line()}", file=sys.stderr)
                 text = result.payload
+            if not args.json and args.command in ("index", "judge", "search", "impact"):
+                text = "\n".join(
+                    _color(line, "36", sys.stdout) if line.startswith("hint:") else line
+                    for line in text.split("\n")
+                )
             output = json.dumps(_plain(result), indent=2, ensure_ascii=False) if args.json else text
             print(output.rstrip("\n"))
             return code
     except OxideError as error:
-        print(f"error[{error.code}]: {error}", file=sys.stderr)
+        label = f"error[{error.code}]"
+        if not getattr(args, "json", False):
+            label = _color(label, "31", sys.stderr)
+        print(f"{label}: {error}", file=sys.stderr)
         repository = getattr(args, "path", None)
         data_dir = getattr(args, "data_dir", None)
         if repository is not None and (hint := advice(error, repository, data_dir)):
