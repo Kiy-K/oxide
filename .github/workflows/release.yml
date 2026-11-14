@@ -1,7 +1,7 @@
 name: Release
 
 # Publishes OXIDE to PyPI (project oxide-agent) when a version tag is pushed. The full
-# Platforms matrix runs first, Intel macOS included; the wheel and sdist it built and
+# Platforms matrix runs first (Linux, Windows, macOS arm64); the wheel and sdist it built and
 # smoke-tested on linux-x86_64 are the ones uploaded. Uploading uses PyPI trusted
 # publishing (OIDC): no API token exists anywhere. Setup: docs/agents/workflow.md#release.
 on:

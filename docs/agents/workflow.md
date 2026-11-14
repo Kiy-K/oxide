@@ -110,8 +110,8 @@ lowercase prefix plus an imperative summary: `fix:`, `feat:`, `refactor:`,
 
 OXIDE ships to PyPI as `oxide-agent` (PyPI's `oxide` is another project); the import
 package and the CLI are still `oxide`. Pushing a `v<version>` tag runs
-`.github/workflows/release.yml`. It runs the whole Platforms matrix, Intel macOS
-included, and then uploads the wheel and sdist that linux-x86_64 built and smoke-tested.
+`.github/workflows/release.yml`. It runs the whole Platforms matrix (Linux, Windows,
+macOS arm64) and then uploads the wheel and sdist that linux-x86_64 built and smoke-tested.
 The upload uses PyPI trusted publishing (OIDC), so no token is stored anywhere.
 
 One-time setup, before the first tag:
@@ -126,6 +126,9 @@ Each release: set `version` in `pyproject.toml`, run `uv lock`, `mise run verify
 `mise run pythons`, merge to `main`, then tag that commit `v<version>` and push the tag
 (only when the release is approved). The publish job fails unless the tag matches the
 built version.
+
+A pre-release tag such as `v0.2.0rc1` publishes the same way. Installs of it need the
+exact pin `oxide-agent==0.2.0rc1`.
 
 ## Historical reproduction
 
