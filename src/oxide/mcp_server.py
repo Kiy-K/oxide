@@ -282,8 +282,8 @@ def serve(repos: Sequence[str], data_dir: str | None, http: bool, host: str, por
         if sys.stdin.isatty():
             print(
                 "oxide: MCP server on stdio. An MCP client starts and talks to it; this "
-                "terminal only shows logs.\n"
-                "oxide: setup: https://github.com/Kiy-K/oxide#mcp-server . Press Ctrl-C to stop.",
+                "terminal only shows logs. Ctrl-C stops it.\n"
+                "oxide: setup: https://github.com/Kiy-K/oxide#mcp-server",
                 file=sys.stderr,
             )
         app.run(show_banner=False)
