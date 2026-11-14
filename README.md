@@ -43,7 +43,7 @@ Explicit structural search (`Repository.structural_search`) needs the optional `
 uv tool install 'oxide-agent[structural]==0.2.0rc1'
 ```
 
-Then fetch the lexical-search extension once:
+Check the install with `oxide --version`, then fetch the lexical-search extension once:
 
 ```bash
 oxide prepare
@@ -62,7 +62,7 @@ oxide context path/to/repo "where are failed requests retried" --budget 1024 \
     --symbol RetryPolicy --file src/http/client.py
 ```
 
-Every command takes `--json` (the typed result) and `--data-dir`. `context` prints the payload on stdout and `used/budget units` on stderr. Errors print `error[<code>]: <message>` and exit 2.
+Every command takes `--json` (the typed result) and `--data-dir`. `oxide index` with no path indexes the current directory. `context` prints the payload on stdout and `used/budget units` on stderr. Errors print `error[<code>]: <message>` and exit 2. `oxide` alone prints the command list with examples.
 
 The same operations are available from Python:
 
@@ -95,7 +95,7 @@ claude mcp add oxide -- oxide mcp --repo /path/to/repo
 
 With `--repo` (repeatable), calls may only name those repositories, and with exactly one they may omit `repository`.
 
-The server keeps one handle per repository until it shuts down, and it keeps the index fresh itself. That handle owns the store, so while the server runs, `oxide index`, `search`, `context`, `impact` and `judge` on the same store fail with `ownership_conflict`. `oxide status`, `outline`, `inspect` and `refs` still work, and the last three read the server's latest snapshot. To run the other commands, stop the server first.
+The server keeps one handle per repository until it shuts down, and it keeps the index fresh itself. That handle owns the store, so while the server runs, `oxide index`, `search`, `context`, `impact` and `judge` on the same store fail with `ownership_conflict`. `oxide status`, `outline`, `inspect` and `refs` still work, and the last three read the server's latest snapshot. To run the other commands, stop the server first. Ctrl-C and SIGTERM stop it: it prints `oxide: stopping`, releases the store and exits.
 
 The store lives under `--data-dir`, else `$OXIDE_DATA_DIR`, else `$XDG_DATA_HOME/oxide/py` (`~/.local/share/oxide/py`). It is never captured, even when it sits inside the repository.
 

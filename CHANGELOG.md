@@ -18,6 +18,7 @@ Release candidate. Install it with the exact pin, `oxide-agent==0.2.0rc1`.
 
 ### Added
 
+- `oxide --version`, a help screen with examples and links (printed by `oxide` with no command), and a "Did you mean" line for a mistyped command.
 - `oxide status` and `oxide.repository_status`, which return a `RepositoryStatus` for the last published snapshot without touching the worktree.
 - `oxide impact`, the command-line form of `Repository.impact`.
 - `oxide outline`, `oxide inspect` and `oxide refs`, with `Repository.outline`, `inspect` and `refs`.
@@ -30,6 +31,8 @@ Release candidate. Install it with the exact pin, `oxide-agent==0.2.0rc1`.
 
 - Indexing is faster. The lexical index is built in its own database and reused when its documents are unchanged. Graph rows are streamed to CSV. Reconciliation no longer rereads unchanged bytes. The Python resolver indexes scope declarations by name.
 - `search` is faster.
+- `oxide index` with no path indexes the current directory, like `oxide status`.
+- `query` is a required property of the `oxide_search` tool schema, so clients see it before the call. The tool description now says that only `search` mode returns locations without source, and that `error[not_indexed]` means the user has to run `oxide index`.
 - Package metadata now has classifiers and Changelog and Issues links.
 
 ### Fixed
@@ -39,15 +42,15 @@ Release candidate. Install it with the exact pin, `oxide-agent==0.2.0rc1`.
 - A failed background watcher restarts with backoff and resyncs after the gap.
 - On Windows, a file rewritten with its modification time restored is no longer served from the capture cache. The cache key now includes NTFS ChangeTime.
 - A hard-linked lexical index is no longer flushed again at seal.
+- `oxide mcp` stops on Ctrl-C (SIGINT) and SIGTERM. It prints `oxide: stopping`, closes its repositories and exits with 128 plus the signal number, without a traceback. On stdio a second signal exits at once. Started from a terminal, it now says that an MCP client is meant to launch it.
 
 ### Platforms and dependencies
 
-Linux x86_64, macOS 15 or later (arm64) and Windows x86_64 on CPython 3.12 to 3.14. Windows still needs the OpenSSL 3 x64 DLLs and ASCII store paths ([platforms](https://github.com/Kiy-K/oxide/blob/main/docs/platforms.md)).
+Linux x86_64, macOS 15 or later (arm64) and Windows x86_64 on CPython 3.12 to 3.14. Windows still needs the OpenSSL 3 x64 DLLs and ASCII store paths ([platforms](https://github.com/Kiy-K/oxide/blob/main/docs/platforms.md)). The development lockfile moves `dnspython` to 2.9.2 and `opentelemetry-api` to 1.45.2, two transitive dependencies of `fastmcp` with published security fixes. The wheel's own requirements are unchanged.
 
 ### Known issues
 
 - A long-lived `Repository` or MCP server accumulates read buffer pool use. If you see `resource_exhausted`, close and reopen the handle (restart the server).
-- Pressing Ctrl-C in a terminal running `oxide mcp` prints a traceback on Python 3.13, and on Python 3.14 the first press is ignored and the second prints a traceback. Closing stdin or sending SIGTERM stops the server cleanly, which is what MCP clients do.
 
 ## 0.1.1
 
