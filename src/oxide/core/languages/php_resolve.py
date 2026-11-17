@@ -64,16 +64,22 @@ class Resolver:
                 if (
                     use.owner is not None
                     and use.owner < len(keys)
-                    and use.kind
-                    in (
-                        "extends",
-                        "implements",
-                    )
+                    and use.kind in ("extends", "implements", "trait")
                 ):
                     self.base_names.setdefault(keys[use.owner], []).append(use.name)
             for item in parsed.imports:
                 alias = item.alias or item.path.rsplit("\\", 1)[-1]
                 self.aliases[path, item.ns.lower(), alias.lower()] = item.path
+        # A namespace can hold only imports and calls, or be named by an import prefix,
+        # yet still needs a module entity for its contains_logical edges (CAP-004).
+        for _path, _digest, parsed in sources:
+            self.namespaces.update(ns for _s, _e, ns in parsed.namespaces if ns)
+        for namespace in sorted(self.namespaces):
+            for _path, _digest, parsed in sources:
+                for item in parsed.imports:
+                    prefix = key_fqn(item.path)
+                    if namespace.startswith(prefix):
+                        self.namespaces.add(prefix)
 
     def _pick(self, qualified: str, kinds: frozenset[str]) -> tuple[str, ...]:
         return tuple(
@@ -82,10 +88,12 @@ class Resolver:
             )
         )
 
-    def _resolve(self, path: str, ns: str, name: str, kinds: frozenset[str]) -> Found:
+    def _resolve(
+        self, path: str, ns: str, name: str, kinds: frozenset[str], force_absolute: bool = False
+    ) -> Found:
         if not name:
             return (), "syntactic"
-        absolute = name.startswith("\\")
+        absolute = force_absolute or name.startswith("\\")
         plain = name.lstrip("\\")
         dotted = key_fqn(plain)
         folded = dotted.lower()
@@ -180,7 +188,7 @@ class Resolver:
                 )
 
         for item in parsed.imports:
-            found = self._resolve(path, item.ns, item.path, KINDS)
+            found = self._resolve(path, item.ns, item.path, KINDS, force_absolute=True)
             if not found[0]:
                 prefix = key_fqn(item.path)
                 module = (

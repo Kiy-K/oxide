@@ -17,7 +17,10 @@ _NS = re.compile(r"[\w.]*")
 
 def encode(parsed: Parsed) -> list[Any]:
     return [
-        [[d.kind, d.name, d.start, d.end, d.signature, d.ns, d.parent] for d in parsed.decls],
+        [
+            [d.kind, d.name, d.start, d.end, d.signature, d.ns, d.parent, d.ordinal]
+            for d in parsed.decls
+        ],
         [[i.kind, i.path, i.alias, i.ns, i.start, i.end] for i in parsed.imports],
         [[u.name, u.start, u.end, u.owner, u.kind] for u in parsed.bases],
         [[u.name, u.start, u.end, u.owner, u.kind] for u in parsed.refs],
@@ -67,6 +70,8 @@ def _sound(parsed: Parsed, size: int) -> bool:
             and type(d.ns) is str
             and _NS.fullmatch(d.ns) is not None
             and owner(d.parent, k)
+            and type(d.ordinal) is int
+            and 0 <= d.ordinal < 1_000_000
         ):
             return False
     for i in parsed.imports:

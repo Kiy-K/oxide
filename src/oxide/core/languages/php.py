@@ -17,7 +17,7 @@ from oxide.core.languages.php_syntax import field, ident, named, php_name, span,
 from oxide.core.languages.python import TOO_DEEP, syntax_diagnostics, too_deep
 
 VERSION = "oxide-php-v1"
-FACTS_VERSION = "oxide-php-facts-v1"
+FACTS_VERSION = "oxide-php-facts-v2"
 LANGUAGE = Language(tree_sitter_php.language_php())
 
 _KINDS = {
@@ -140,7 +140,12 @@ def _call(data: bytes, node: Node, owner: int | None) -> Call | None:
         return Call(name, s, e, owner, "function")
     if node.type == "scoped_call_expression":
         scope, member = field(node, "scope"), field(node, "name")
-        if member is None or member.type != "name" or scope is None:
+        if (
+            member is None
+            or member.type != "name"
+            or scope is None
+            or scope.type not in ("name", "qualified_name", "relative_name", "relative_scope")
+        ):
             return None
         prefix = php_name(data, scope)
         if not prefix:
@@ -172,6 +177,7 @@ def parse(data: bytes) -> Parsed | str:
     namespaces = _namespaces(data, captures.get("ns", []))
     decls: list[Decl] = []
     spans: list[tuple[int, int, int]] = []
+    ordinals: dict[tuple[str, int | None], int] = {}
 
     def owner(at: int) -> int | None:
         for start, end, k in reversed(spans):
@@ -181,6 +187,9 @@ def parse(data: bytes) -> Parsed | str:
 
     def declare(kind: str, node: Node, name: str) -> None:
         parent = owner(node.start_byte)
+        ident_key = (name, parent)
+        ordinal = ordinals.get(ident_key, 0)
+        ordinals[ident_key] = ordinal + 1
         decls.append(
             Decl(
                 kind,
@@ -189,6 +198,7 @@ def parse(data: bytes) -> Parsed | str:
                 _signature(data, node),
                 _ns_at(namespaces, node.start_byte),
                 parent,
+                ordinal,
             )
         )
         spans.append((node.start_byte, node.end_byte, len(decls) - 1))

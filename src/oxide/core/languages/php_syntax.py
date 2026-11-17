@@ -41,13 +41,3 @@ def php_name(data: bytes, node: Node | None) -> str:
     if node.type in ("name", "variable_name"):
         return ident(data, node)
     return "".join(text(data, node).split())
-
-
-def namespace(data: bytes, node: Node) -> str:
-    """The dot-joined namespace of the nearest enclosing ``namespace_definition``."""
-    current: Node | None = node.parent
-    while current is not None:
-        if current.type == "namespace_definition":
-            return php_name(data, field(current, "name")).replace("\\", ".")
-        current = current.parent
-    return ""

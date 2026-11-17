@@ -62,11 +62,19 @@ def load(manifests: Mapping[str, bytes]) -> Composer:
                     if not isinstance(prefix, str):
                         continue
                     for root in _paths(roots):
+                        if root.startswith("/"):
+                            continue
                         joined = _norm(base, root, directory=True)
                         if not joined.startswith(".."):
                             rules.append((style, prefix, joined))
-            classmap.extend(_norm(base, p, directory=True) for p in _paths(block.get("classmap")))
-            files.extend(_norm(base, p) for p in _paths(block.get("files")))
+            classmap.extend(
+                _norm(base, p, directory=True)
+                for p in _paths(block.get("classmap"))
+                if not p.startswith("/")
+            )
+            files.extend(
+                _norm(base, p) for p in _paths(block.get("files")) if not p.startswith("/")
+            )
     return Composer(
         tuple(sorted(set(rules), key=lambda r: (-len(r[1]), r[1], r[2]))),
         tuple(sorted(set(classmap))),

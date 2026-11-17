@@ -29,6 +29,7 @@ class Decl:
     signature: str
     ns: str  # dot-joined namespace, "" for the global one
     parent: int | None  # index into Parsed.decls; None at top level
+    ordinal: int  # source-order index among same-scope declarations of the same name
 
 
 @dataclass(frozen=True, slots=True)
@@ -85,6 +86,8 @@ def fqn(decl: Decl, decls: list[Decl]) -> str:
         parent = decls[parent].parent
         seen += 1
     parts.reverse()
+    if decl.ordinal:
+        parts[-1] = f"{parts[-1]}~{decl.ordinal}"
     return ".".join([*([decl.ns] if decl.ns else []), *parts])
 
 

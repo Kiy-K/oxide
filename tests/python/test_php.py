@@ -278,6 +278,54 @@ def test_class_names_do_not_fall_back_to_global(tmp_path: Path) -> None:
     assert not resolved(found, "calls", "symbol:a.php#App.Store.f")
 
 
+def test_namespace_only_file_keeps_a_valid_module(tmp_path: Path) -> None:
+    _write(tmp_path, "src/Logger.php", "<?php namespace App\\Support; class Logger {}")
+    _write(tmp_path, "app.php", "<?php namespace App; use App\\Support\\Logger; Logger::write();")
+    found = derived(tmp_path)  # validate() runs here
+    assert "module:php:App" in {e.key for e in found.entities}
+
+
+def test_same_name_different_kinds_get_distinct_keys(tmp_path: Path) -> None:
+    _write(tmp_path, "a.php", "<?php namespace App; class Same {} function Same() {}")
+    found = derived(tmp_path)  # validate() runs here
+    keys = [e.key for e in found.entities if e.category == "symbol"]
+    assert len(keys) == len(set(keys)) == 2
+
+
+def test_dynamic_scoped_call_emits_no_edge(tmp_path: Path) -> None:
+    source = "<?php class C { function f() { $cls::m(); $obj::$method(); } }"
+    _write(tmp_path, "d.php", source)
+    parsed = php.parse(source.encode())
+    assert not isinstance(parsed, str)
+    assert parsed.calls == []
+    found = derived(tmp_path)
+    assert not [e for e in found.edges if e.kind == "calls"]
+
+
+def test_trait_methods_resolve_from_this(tmp_path: Path) -> None:
+    _write(
+        tmp_path,
+        "a.php",
+        "<?php namespace App; trait T { public function cached() {} } "
+        "class C { use T; function run() { $this->cached(); } }",
+    )
+    found = derived(tmp_path)
+    assert resolved(found, "calls", "symbol:a.php#App.C.run") == {"symbol:a.php#App.T.cached"}
+
+
+def test_import_paths_are_absolute_and_proven() -> None:
+    found = derived(FIXTURE)
+    imports = [e for e in found.edges if e.kind == "imports" and e.source == "file:src/Store.php"]
+    assert imports and all(e.resolution == "resolved" and e.basis == "resolved" for e in imports)
+
+
+def test_absolute_autoload_roots_are_rejected() -> None:
+    composer = php_composer.load(
+        {"composer.json": json.dumps({"autoload": {"psr-4": {"App\\": "/abs/src"}}}).encode()}
+    )
+    assert composer.rules == ()
+
+
 def test_aliases_and_current_namespace_do_not_collapse(tmp_path: Path) -> None:
     _write(tmp_path, "a.php", "<?php namespace A; class X {}")
     _write(tmp_path, "b.php", "<?php namespace B; class X {}")
