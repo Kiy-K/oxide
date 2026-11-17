@@ -33,8 +33,10 @@ from oxide.core.languages import (
     java_facts,
     java_resolve,
     php,
+    php_composer,
     php_facts,
     php_model,
+    php_resolve,
     python,
     python_resolve,
     rust,
@@ -291,6 +293,8 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     rust_resolve.Resolver(rs_sources, manifests).derive(entities, edges)
     java_resolve.Resolver(java_sources).derive(entities, edges)
     csharp_resolve.Resolver(cs_sources).derive(entities, edges)
+    manifests = {p: d for p, d in others.items() if p.rpartition("/")[2] == "composer.json"}
+    php_resolve.Resolver(php_sources, php_composer.load(manifests)).derive(entities, edges)
     paths = {f.path for f in capture.files}
     c_resolve.Resolver(c_sources, paths).derive(entities, edges)
     cpp_resolve.Resolver(cpp_sources, c_sources, paths).derive(entities, edges)

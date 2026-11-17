@@ -138,3 +138,81 @@ def test_longest_psr4_prefix_wins_and_trailing_slash_is_significant() -> None:
 
 def test_malformed_composer_is_ignored() -> None:
     assert php_composer.load({"composer.json": b"{not json"}) == php_composer.Composer((), (), ())
+
+
+def _write(root: Path, name: str, source: str) -> None:
+    path = root / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(source)
+
+
+def test_entities_bases_calls_and_four_evidence_labels(tmp_path: Path) -> None:
+    _write(
+        tmp_path,
+        "composer.json",
+        json.dumps({"autoload": {"psr-4": {"App\\": "src/"}, "classmap": ["lib/"]}}),
+    )
+    _write(
+        tmp_path,
+        "src/Logger.php",
+        "<?php namespace App\\Support; class Logger { public static function write($x) {} }",
+    )
+    _write(
+        tmp_path,
+        "src/Dup.php",
+        "<?php namespace App; class Dup {}",
+    )
+    _write(
+        tmp_path,
+        "src/Other.php",
+        "<?php namespace Other; class Dup {}",
+    )
+    _write(tmp_path, "src/Dup2.php", "<?php namespace App; class Dup {}")
+    _write(
+        tmp_path,
+        "lib/global_helper.php",
+        "<?php function helper() {}",
+    )
+    _write(
+        tmp_path,
+        "src/Store.php",
+        "<?php namespace App; use App\\Support\\Logger as Log; "
+        "class Store extends Base { public Dup $other; public function find() { "
+        "Log::write(1); new Missing(); $this->find(); Dup::go(); helper(); } }",
+    )
+    found = derived(tmp_path)
+    entities = {e.key: e for e in found.entities}
+    assert entities["symbol:src/Store.php#App.Store"].kind == "class"
+    assert entities["symbol:src/Store.php#App.Store.find"].kind == "method"
+    assert entities["symbol:src/Logger.php#App.Support.Logger"].kind == "class"
+    assert resolved(found, "calls", "symbol:src/Store.php#App.Store.find") == {
+        "symbol:src/Logger.php#App.Support.Logger.write",
+        "symbol:src/Store.php#App.Store.find",
+        "symbol:lib/global_helper.php#helper",  # heuristic: PHP's global-function fallback
+    }
+    assert {
+        (e.resolution, e.basis)
+        for e in found.edges
+        if e.kind in ("references", "calls", "imports")
+    } >= {
+        ("resolved", "resolved"),
+        ("resolved", "heuristic"),
+        ("ambiguous", "syntactic"),
+        ("unresolved", "syntactic"),
+    }
+
+
+def test_aliases_and_current_namespace_do_not_collapse(tmp_path: Path) -> None:
+    _write(tmp_path, "a.php", "<?php namespace A; class X {}")
+    _write(tmp_path, "b.php", "<?php namespace B; class X {}")
+    _write(
+        tmp_path,
+        "c.php",
+        "<?php namespace C; use A\\X as Y; use B\\X; "
+        "class Z { function f() { new Y(); new X(); } }",
+    )
+    found = derived(tmp_path)
+    assert resolved(found, "calls", "symbol:c.php#C.Z.f") == {
+        "symbol:a.php#A.X",
+        "symbol:b.php#B.X",
+    }
