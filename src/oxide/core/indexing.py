@@ -25,6 +25,7 @@ from oxide.core.languages import (
     cpp_resolve,
     csharp,
     csharp_facts,
+    csharp_model,
     csharp_resolve,
     go,
     go_resolve,
@@ -190,7 +191,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     go_sources: list[tuple[str, str, go.Parsed]] = []
     rs_sources: list[tuple[str, str, rust.Parsed]] = []
     java_sources: list[tuple[str, str, java.Parsed]] = []
-    cs_sources: list[tuple[str, str, csharp.Parsed]] = []
+    cs_sources: list[tuple[str, str, csharp_model.Parsed]] = []
     c_sources: list[tuple[str, str, c.Parsed]] = []
     cpp_sources: list[tuple[str, str, cpp.Parsed]] = []
     for f in capture.files:

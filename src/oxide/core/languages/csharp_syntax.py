@@ -26,7 +26,7 @@ def named(node: Node | None) -> list[Node]:
 
 
 def dotted(data: bytes, node: Node | None) -> str | None:
-    """The dotted name of a name node, without type arguments and ``global::``."""
+    """The dotted name of a name node, without type arguments; ``global::N`` keeps its marker."""
     if node is None:
         return None
     if node.type == "identifier":
@@ -34,7 +34,9 @@ def dotted(data: bytes, node: Node | None) -> str | None:
     if node.type == "generic_name":
         return dotted(data, node.children[0])
     if node.type == "alias_qualified_name":
-        return dotted(data, node.child_by_field_name("name"))
+        alias = node.child_by_field_name("alias")  # ``A::N`` needs an extern alias: unknown
+        name = dotted(data, node.child_by_field_name("name"))
+        return f"global::{name}" if name and text(data, alias) == "global" else None
     if node.type == "qualified_name":
         left = dotted(data, node.child_by_field_name("qualifier"))
         right = dotted(data, node.child_by_field_name("name"))
@@ -104,6 +106,13 @@ def expression(data: bytes, node: Node | None) -> str | None:
         else:
             head = expression(data, inner)
         tail = dotted(data, member)
+        return None if head is None or tail is None else f"{head}.{tail}"
+    if node.type == "conditional_access_expression":
+        head = expression(data, node.child_by_field_name("condition"))
+        binding = next(
+            (c for c in node.named_children if c.type == "member_binding_expression"), None
+        )
+        tail = dotted(data, binding.child_by_field_name("name")) if binding else None
         return None if head is None or tail is None else f"{head}.{tail}"
     return dotted(data, node) if node.type in NAMES else None
 

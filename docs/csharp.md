@@ -19,8 +19,9 @@ symbols, nested as written:
 | property, indexer (named `this`), event, field, enum member | `property`, `indexer`, `event`, `field`, `enum_member` |
 
 Keys are `symbol:<path>#Outer.Inner.member`; equal segments (overloads, operators) take
-`~n` in source order. Operators are named as the runtime does (`op_Addition`,
-`op_Implicit`). A multi-declarator field is one symbol per variable. Local functions,
+`~n` in source order. Operators are named as the runtime does (binary `+` is
+`op_Addition`, unary `+` is `op_UnaryPlus`; conversions are `op_Implicit`/`op_Explicit`).
+A multi-declarator field is one symbol per variable. Local functions,
 lambdas and anonymous types are not symbols; their code stays in the enclosing symbol.
 A declaration's range is its tree-sitter node (attributes included, comments excluded);
 its signature is the header without attributes or body, whitespace collapsed.
@@ -28,8 +29,11 @@ its signature is the header without attributes or body, whitespace collapsed.
 Namespaces are not symbols. A namespace is every type declared in it, wherever the
 file: `module:csharp:<namespace>`, which `contain_logical`s those files and `define`s
 their top-level types. Block and file-scoped (`namespace A;`) forms, nesting and
-`global::` are understood; the global namespace has no module. Partial types across
-files merge into one hierarchy for resolution.
+`global::` is resolved from the global namespace, not the enclosing one; the global
+namespace has no module. Partial types across files merge into one hierarchy for
+resolution, except `file`-local types, which stay in their own file. Usings, aliases and
+`using static` apply only within their lexical namespace block: reopening a namespace
+starts a new scope.
 
 Test methods carry an xUnit, NUnit or MSTest attribute (`Fact`, `Theory`, `Test`,
 `TestCase`, `TestMethod`, `DataTestMethod`, …) by simple name, with or without the
@@ -50,7 +54,9 @@ a type checker or reaches outside the capture is left unresolved, not guessed.
   (base class, interfaces, partial parts); `this.m`, `base.m`, `new T(...)` (resolves
   to `T`), qualified `A.B.m`, and locals/fields/properties with a declared type and
   `var`-free typed locals. Calls are filtered by arity, honouring optional parameters
-  and `params`. Overloads are not told apart by argument type: when
+  and `params` together. An `override` suppresses only the inherited method with the
+  same parameter types, not same-arity overloads. Overloads are not told apart by
+  argument type: when
   the declaring type and its captured bases both have fitting methods, all of them are
   candidates and the call is ambiguous rather than resolved.
 - **Unresolved by design:** calls on `var`, expression results, tuples, extension

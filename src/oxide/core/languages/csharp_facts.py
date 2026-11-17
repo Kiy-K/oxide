@@ -5,15 +5,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from oxide.core.languages.csharp import (
-    KINDS,
-    TYPE_KINDS,
-    Call,
-    Decl,
-    Import,
-    Parsed,
-    Scope,
-)
+from oxide.core.languages.csharp import KINDS, TYPE_KINDS
+from oxide.core.languages.csharp_model import Call, Decl, Import, Parsed, Scope
 from oxide.core.languages.python import Use, as_list
 
 
@@ -32,7 +25,7 @@ def encode(parsed: Parsed) -> list[Any]:
         for s in parsed.scopes
     ]
     imports = [[getattr(i, f) for f in Import.__slots__] for i in parsed.imports]
-    return [imports, scopes, parsed.diagnostics]
+    return [imports, scopes, parsed.diagnostics, [list(b) for b in parsed.blocks]]
 
 
 def decode(value: Any, size: int) -> Parsed:
@@ -40,7 +33,7 @@ def decode(value: Any, size: int) -> Parsed:
     disk: anything ``parse`` could not have produced raises ValueError, and the caller
     parses instead."""
     try:
-        imports, scopes, diagnostics = as_list(value)
+        imports, scopes, diagnostics, blocks = as_list(value)
         parsed = Parsed(
             [Import(*as_list(i)) for i in as_list(imports)],
             [
@@ -59,6 +52,7 @@ def decode(value: Any, size: int) -> Parsed:
                 )
             ],
             as_list(diagnostics),
+            [(a, b, n) for a, b, n in map(as_list, as_list(blocks))],
         )
     except (TypeError, ValueError) as error:
         raise ValueError(f"malformed parse facts: {error}") from None
@@ -68,7 +62,7 @@ def decode(value: Any, size: int) -> Parsed:
 
 
 _NAME = r"(?!\d)\w+"
-_DOTTED = re.compile(rf"{_NAME}(?:\.{_NAME})*")
+_DOTTED = re.compile(rf"(?:global::)?{_NAME}(?:\.{_NAME})*")
 _NAMESPACE = re.compile(rf"(?:{_NAME}(?:\.{_NAME})*)?")
 
 
@@ -108,6 +102,7 @@ def _sound(parsed: Parsed, size: int) -> bool:
             and (owner.kind in TYPE_KINDS if owner else s.parent == 0 and d.kind in TYPE_KINDS)
             and dotted(d.name)
             and "." not in d.name
+            and ":" not in d.name
             and span(d.start, d.end)
             and texts(d.signature)
             and namespace(d.ns)
@@ -115,7 +110,8 @@ def _sound(parsed: Parsed, size: int) -> bool:
             and count(d.arity)
             and count(d.optional)
             and d.optional <= d.arity
-            and {type(d.varargs), type(d.test)} == {bool}
+            and texts(d.ptypes)
+            and {type(d.varargs), type(d.test), type(d.local)} == {bool}
         ):
             return False
         calls = all(
@@ -128,13 +124,18 @@ def _sound(parsed: Parsed, size: int) -> bool:
             and texts(*s.types)
         ):
             return False
-    return texts(*parsed.diagnostics) and all(
-        i.kind in ("using", "static", "alias")
-        and dotted(i.path)
-        and type(i.alias) is str
-        and (i.alias == "") == (i.kind != "alias")
-        and namespace(i.ns)
-        and type(i.is_global) is bool
-        and span(i.start, i.end)
-        for i in parsed.imports
+    blocks = all(span(a, b) and namespace(n) for a, b, n in parsed.blocks)
+    return (
+        blocks
+        and texts(*parsed.diagnostics)
+        and all(
+            i.kind in ("using", "static", "alias")
+            and dotted(i.path)
+            and type(i.alias) is str
+            and (i.alias == "") == (i.kind != "alias")
+            and namespace(i.ns)
+            and type(i.is_global) is bool
+            and span(i.start, i.end)
+            for i in parsed.imports
+        )
     )

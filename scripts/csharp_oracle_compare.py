@@ -21,6 +21,16 @@ from oxide.capture import capture
 from oxide.core.indexing import derive
 
 
+def utf16_column(text: str, col: int) -> int:
+    """Python string index for Roslyn's UTF-16 code-unit column (astral chars count 2)."""
+    units = 0
+    for index, char in enumerate(text):
+        if units >= col:
+            return index
+        units += 2 if ord(char) > 0xFFFF else 1
+    return len(text)
+
+
 def main(root: Path, edges: Path) -> None:
     cap = capture(root)
     texts = {f.path: f.data for f in cap.files if f.path.endswith(".cs")}
@@ -34,7 +44,7 @@ def main(root: Path, edges: Path) -> None:
                 at += len(piece)
             offsets[path] = starts
         text = texts[path][offsets[path][line] :].decode("utf-8", "replace")
-        return offsets[path][line] + len(text[:col].encode("utf-8"))
+        return offsets[path][line] + len(text[: utf16_column(text, col)].encode("utf-8"))
 
     oracle: dict[tuple[str, str, int], list[tuple[str, int]]] = {}
     for raw in edges.read_text().splitlines():

@@ -13,11 +13,10 @@ innermost scope.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-
 import tree_sitter_c_sharp
 from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
+from oxide.core.languages.csharp_model import Call, Decl, Import, Parsed, Scope
 from oxide.core.languages.csharp_syntax import (
     NAMES,
     attributes,
@@ -38,7 +37,7 @@ from oxide.core.languages.python import TOO_DEEP, Use, syntax_diagnostics, too_d
 
 VERSION = "oxide-csharp-v1"
 # The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.
-FACTS_VERSION = "oxide-csharp-facts-v1"
+FACTS_VERSION = "oxide-csharp-facts-v2"
 _TYPE_KINDS = {
     "class_declaration": "class",
     "struct_declaration": "struct",
@@ -68,12 +67,14 @@ _OPERATORS = {
     "~": "op_OnesComplement", "++": "op_Increment", "--": "op_Decrement",
     "true": "op_True", "false": "op_False",
 }  # fmt: skip
+_UNARY_OPERATORS = {"+": "op_UnaryPlus", "-": "op_UnaryNegation"}
 
 LANGUAGE = Language(tree_sitter_c_sharp.language())
 _QUERY = Query(
     LANGUAGE,
     f"""
     (file_scoped_namespace_declaration) @fsns
+    (namespace_declaration) @nsblock
     (using_directive) @using
     [{" ".join(f"({t})" for t in _TYPE_KINDS)}] @type
     [(method_declaration) (constructor_declaration) (destructor_declaration)
@@ -104,67 +105,6 @@ _QUERY = Query(
 _BROKEN = Query(LANGUAGE, "(ERROR) @error (MISSING) @missing")
 
 
-@dataclass(slots=True)
-class Decl:
-    kind: str
-    name: str
-    start: int
-    end: int
-    signature: str
-    ns: str  # the namespace the declaration is in, "" for the global one
-    tparams: int  # declared type parameters
-    arity: int  # declared parameters of a method, constructor or delegate; 0 otherwise
-    optional: int  # of those, parameters with a default value
-    varargs: bool  # a trailing ``params`` parameter
-    test: bool  # a method with a test attribute
-
-
-@dataclass(frozen=True, slots=True)
-class Import:
-    """``using N;`` (``kind`` "using"), ``using static T;`` ("static") or ``using A = X;``
-    ("alias", named ``alias``); ``ns`` is the namespace block it stands in."""
-
-    kind: str
-    path: str  # dotted, without type arguments
-    alias: str
-    ns: str
-    is_global: bool
-    start: int
-    end: int
-
-
-@dataclass(frozen=True, slots=True)
-class Call:
-    """``m``, ``this.m``, ``base.m``, ``x.m``, ``this.x.m`` or ``A.B.m``; ``new T`` for an
-    object creation (a space never occurs in a C# name)."""
-
-    name: str
-    start: int
-    end: int
-    arity: int
-
-
-@dataclass(slots=True)
-class Scope:
-    """A declared type or member; scope 0 is the file (``decl`` None)."""
-
-    parent: int | None  # None for scope 0, the file
-    decl: Decl | None
-    supers: list[Use] = field(default_factory=list)  # named base types of a type scope
-    bound: dict[str, str | None] = field(default_factory=dict)  # variable -> declared type
-    types: set[str] = field(default_factory=set)  # type parameters and local functions
-    calls: list[Call] = field(default_factory=list)
-    refs: list[Use] = field(default_factory=list)
-    attrs: list[Use] = field(default_factory=list)  # attribute names: ``N`` or ``NAttribute``
-
-
-@dataclass(slots=True)
-class Parsed:
-    imports: list[Import]
-    scopes: list[Scope]
-    diagnostics: list[str]
-
-
 class _Facts:
     def __init__(self, data: bytes, file_scoped: tuple[str, int] | None) -> None:
         self.data = data
@@ -189,10 +129,13 @@ class _Facts:
         decl = self.scopes[k].decl
         return decl is not None and decl.kind in TYPE_KINDS
 
-    def _decl(self, kind: str, name: str, node: Node, end: int, **more: int | bool) -> Decl:
+    def _decl(self, kind: str, name: str, node: Node, end: int, **more: int | bool | str) -> Decl:
         ns = namespace(self.data, node, self.file_scoped)
         sig = signature(self.data, node, end)
-        d = {"tparams": 0, "arity": 0, "optional": 0, "varargs": False, "test": False} | more
+        d = {
+            "tparams": 0, "arity": 0, "optional": 0, "varargs": False, "test": False,
+            "ptypes": "", "local": False,
+        } | more  # fmt: skip
         return Decl(kind, name, *span(node), sig, ns, **d)  # type: ignore[arg-type]
 
     def type(self, node: Node) -> None:
@@ -230,6 +173,7 @@ class _Facts:
             end,
             tparams=tparams,
             arity=len(params) if kind == "delegate" else 0,
+            local=any(c.type == "modifier" and text(data, c) == "file" for c in node.children),
         )
         self._open(parent, Scope(parent, decl, supers), node)
 
@@ -272,6 +216,14 @@ class _Facts:
         if kind == "operator":
             kids = [c.type for c in node.children]
             token = kids[kids.index("operator") + 1] if "operator" in kids else ""
+            if token in _UNARY_OPERATORS:
+                params = [
+                    p
+                    for p in named(node.child_by_field_name("parameters"))
+                    if p.type == "parameter"
+                ]
+                if len(params) == 1:
+                    return _UNARY_OPERATORS[token]
             return _OPERATORS.get(token, "op_Unknown")
         if kind == "destructor":
             return id(self.data, node.child_by_field_name("name"))
@@ -324,6 +276,7 @@ class _Facts:
                 arity=len(params),
                 optional=optional,
                 varargs=varargs,
+                ptypes=",".join(_ptype(data, p) for p in params),
                 test=kind == "method" and bool(attrs & TEST_ATTRIBUTES),
             )
         self._open(parent, Scope(parent, decl), node, where)
@@ -479,7 +432,25 @@ def parse(data: bytes) -> Parsed | str:
         scope.calls.sort(key=lambda u: (u.start, u.end))
         scope.refs.sort(key=lambda u: (u.start, u.end))
         scope.attrs.sort(key=lambda u: (u.start, u.end))
-    return Parsed(imports, scopes, syntax_diagnostics(root, _BROKEN))
+    blocks = [
+        (n.start_byte, n.end_byte, _full_namespace(data, n, file_scoped))
+        for n in captures.get("nsblock", [])
+    ]
+    if scoped is not None and file_scoped is not None:
+        blocks.append((scoped.start_byte, len(data), file_scoped[0]))
+    return Parsed(imports, scopes, syntax_diagnostics(root, _BROKEN), sorted(blocks))
+
+
+def _full_namespace(data: bytes, node: Node, file_scoped: tuple[str, int] | None) -> str:
+    own = dotted(data, node.child_by_field_name("name")) or ""
+    return ".".join(p for p in (namespace(data, node, file_scoped), own) if p)
+
+
+def _ptype(data: bytes, parameter: Node) -> str:
+    """A parameter's type as written, with its ``ref``/``out``/``in`` mode."""
+    modes = [text(data, c) for c in parameter.children if c.type == "modifier"]
+    mode = "".join(m for m in modes if m in ("ref", "out", "in"))
+    return mode + "".join(text(data, parameter.child_by_field_name("type")).split())
 
 
 def _import(data: bytes, node: Node, file_scoped: tuple[str, int] | None) -> Import | None:

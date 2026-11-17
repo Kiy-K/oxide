@@ -12,12 +12,27 @@ unknown and stays unresolved rather than guessed.
 from __future__ import annotations
 
 import bisect
-from dataclasses import dataclass, field
 
-from oxide.core.languages.csharp import TYPE_KINDS, Call, Import, Parsed, Scope
+from oxide.core.languages import csharp_emit
+from oxide.core.languages.csharp import TYPE_KINDS
+from oxide.core.languages.csharp_model import Call, Import, Parsed, Scope
+from oxide.core.languages.csharp_scope import (
+    NO_BLOCK,
+    File,
+    Found,
+    Site,
+    Variable,
+    alias_at,
+    block_at,
+    levels,
+    module_key,
+    scopes_at,
+    symbol_keys,
+    visible_blocks,
+)
 from oxide.core.languages.python import Use
-from oxide.core.languages.python_resolve import Edge, Res, edge_target, structural
-from oxide.models import Entity, RelationKind, SourceRef
+from oxide.core.languages.python_resolve import Edge
+from oxide.models import Entity
 
 # Methods a type has without declaring them, by kind.
 _OBJECT = frozenset(
@@ -31,57 +46,6 @@ _IMPLICIT = {
 }
 _METHOD = frozenset({"method"})
 
-type Site = tuple[int, int]  # (file, scope)
-type Found = list[Site] | None  # None: unknown, so unresolved; []: certainly none
-type Variable = tuple[Site, str | None]  # the declaring scope and the declared type
-type Alias = list[Site] | str  # a type ([] when not captured) or a namespace
-type Using = str | Site  # a namespace, or a statically imported type
-
-
-def module_key(namespace: str) -> str:
-    return f"module:csharp:{namespace}"
-
-
-def symbol_keys(path: str, parsed: Parsed) -> list[str | None]:
-    """Per scope, ``symbol:<path>#Outer.Inner.m``: the file key for scope 0. Equal
-    segments (overloads, constructors' names aside) take ``~n`` in source order, and
-    members nest under their owner's segment, ordinal included."""
-    keys: list[str | None] = [f"file:{path}"]
-    segments = [""]
-    seen: dict[str, int] = {}
-    for s in parsed.scopes[1:]:
-        if s.decl is None or s.parent is None:
-            keys.append(None)
-            segments.append("")
-            continue
-        owner = segments[s.parent]
-        segment = f"{owner}.{s.decl.name}" if owner else s.decl.name
-        n = seen.get(segment, 0)
-        seen[segment] = n + 1
-        segment += f"~{n}" if n else ""
-        segments.append(segment)
-        keys.append(f"symbol:{path}#{segment}")
-    return keys
-
-
-def _levels(namespace: str) -> list[str]:
-    """``A.B`` -> ``A.B``, ``A``, the global namespace."""
-    parts = namespace.split(".") if namespace else []
-    return [".".join(parts[:n]) for n in range(len(parts), -1, -1)]
-
-
-@dataclass(slots=True)
-class _File:
-    path: str
-    digest: str
-    parsed: Parsed
-    keys: list[str | None]
-    owners: list[str]  # per scope, the key of the nearest declared scope (or the file)
-    spans: list[tuple[int, int, str]]  # top-level declarations: (start, end, namespace)
-    aliases: dict[tuple[str, str], Alias] = field(default_factory=dict)  # (level, alias)
-    usings: dict[str, list[Using]] = field(default_factory=dict)  # level -> imported
-    static_demand: list[Site] = field(default_factory=list)
-
 
 def _is_type(scope: Scope) -> bool:
     return scope.parent is not None and scope.decl is not None and scope.decl.kind in TYPE_KINDS
@@ -91,12 +55,14 @@ def _fits(method: Scope, arity: int) -> bool:
     d = method.decl
     if d is None:
         return False
-    return d.arity - d.optional <= arity <= d.arity or (d.varargs and arity >= d.arity - 1)
+    # A trailing ``params`` and every preceding optional parameter can all be omitted.
+    minimum = d.arity - d.optional - (1 if d.varargs else 0)
+    return arity >= minimum if d.varargs else minimum <= arity <= d.arity
 
 
 class Resolver:
     def __init__(self, files: list[tuple[str, str, Parsed]]) -> None:
-        self.files: list[_File] = []
+        self.files: list[File] = []
         self.tops: dict[str, dict[str, list[Site]]] = {}  # namespace -> type name -> types
         self.children: dict[Site, dict[str, list[int]]] = {}  # declared members by name
         self.primary: dict[Site, Site] = {}  # a part of a partial type -> its first part
@@ -117,7 +83,14 @@ class Resolver:
                     self.tests.add(owners[k])
                 if d.kind in TYPE_KINDS:
                     parent = self.primary.get((i, s.parent), (i, s.parent))
-                    ident = (None if s.parent == 0 else parent, d.ns, d.name, d.tparams)
+                    # A file-local type is never a part of another file's same-named type.
+                    ident = (
+                        None if s.parent == 0 else parent,
+                        d.ns,
+                        d.name,
+                        d.tparams,
+                        i if d.local else None,
+                    )
                     first = identity.setdefault(ident, (i, k))
                     self.primary[i, k] = first
                     self.parts.setdefault(first, []).append((i, k))
@@ -125,7 +98,7 @@ class Resolver:
                         self.tops.setdefault(d.ns, {}).setdefault(d.name, []).append(first)
                 if s.parent == 0:
                     spans.append((d.start, d.end, d.ns))
-            self.files.append(_File(path, digest, parsed, keys, owners, sorted(spans)))
+            self.files.append(File(path, digest, parsed, keys, owners, sorted(spans)))
         self.globals = [
             (i, m) for i, f in enumerate(self.files) for m in f.parsed.imports if m.is_global
         ]
@@ -139,6 +112,10 @@ class Resolver:
 
     def _parts(self, site: Site) -> list[Site]:
         return self.parts.get(self.primary.get(site, site), [site])
+
+    def _visible(self, i: int, sites: list[Site]) -> list[Site]:
+        """Captured types visible from file ``i``: another file's file-local type is not."""
+        return [s for s in sites if (d := self._scope(s).decl) is None or not d.local or s[0] == i]
 
     def _declared(self, site: Site, name: str, kinds: frozenset[str]) -> list[Site]:
         found: set[Site] = set()
@@ -159,11 +136,13 @@ class Resolver:
         row = bisect.bisect_right(file.spans, (at if at is not None else -1, "\U0010ffff", "")) - 1
         return file.spans[row][2] if at is not None and row >= 0 and at < file.spans[row][1] else ""
 
-    def _canonical(self, dotted: str) -> list[Site]:
+    def _canonical(self, dotted: str, i: int | None = None) -> list[Site]:
         """A fully qualified type: the longest captured namespace prefix, then members."""
         parts = dotted.split(".")
         for cut in range(len(parts) - 1, -1, -1):
             found = self.tops.get(".".join(parts[:cut]), {}).get(parts[cut], [])
+            if i is not None:
+                found = self._visible(i, found)
             if found:
                 return self._nested(found, parts[cut + 1 :])
         return []
@@ -209,23 +188,27 @@ class Resolver:
         """The types a (possibly qualified) type name denotes in scope ``k`` of file ``i``;
         ``at`` locates a use at file scope."""
         ns = self._ns(i, k, at)
+        file = self.files[i]
+        if dotted.startswith("global::"):
+            # Absolute qualification starts at the global namespace, not lexical scope.
+            return self._canonical(dotted[len("global::") :], i) or None
         first, *rest = dotted.split(".")
-        found = self._simple(i, k, first, ns)
+        found = self._simple(i, k, first, ns, at)
         if found:
             return self._nested(found, rest) or None
         if not rest:
-            return found
-        file, tail = self.files[i], ".".join(rest)
-        levels = _levels(ns)
-        for level in levels:
-            if isinstance(alias := file.aliases.get((level, first)), str):
-                return self._canonical(f"{alias}.{tail}") or None
-        for level in levels:
-            if level and (found := self._canonical(f"{level}.{dotted}")):
+            return None
+        tail = ".".join(rest)
+        if (alias := alias_at(file.aliases, file.parsed.blocks, first, ns, at)) is not None:
+            if isinstance(alias, str):
+                return self._canonical(f"{alias}.{tail}", i) or None
+            return None  # an alias to an external namespace or an uncaptured type
+        for level, _block in scopes_at(file.parsed.blocks, ns, at):
+            if level and (found := self._canonical(f"{level}.{dotted}", i)):
                 return found
-        return self._canonical(dotted) or None
+        return self._canonical(dotted, i) or None
 
-    def _simple(self, i: int, k: int, name: str, ns: str) -> Found:
+    def _simple(self, i: int, k: int, name: str, ns: str, at: int | None) -> Found:
         file = self.files[i]
         scopes = file.parsed.scopes
         while k:
@@ -235,22 +218,24 @@ class Resolver:
             if _is_type(scope) and (found := self._member_types((i, k), name, set())):
                 return found
             k = scope.parent or 0
-        for level in _levels(ns):
-            if top := self.tops.get(level, {}).get(name):
+        for level, block in scopes_at(file.parsed.blocks, ns, at):
+            if top := self._visible(i, self.tops.get(level, {}).get(name, [])):
                 return top
-            if (alias := file.aliases.get((level, name))) is not None:
+            if block == NO_BLOCK:
+                continue  # an enclosing namespace level without its own usings
+            if (alias := file.aliases.get((block, name))) is not None:
                 return (alias or None) if isinstance(alias, list) else None
             imported = {
                 site
-                for target in file.usings.get(level, [])
+                for target in file.usings.get(block, [])
                 for site in (
                     self.tops.get(target, {}).get(name, [])
                     if isinstance(target, str)
                     else self._member_types(target, name, set())
                 )
             }
-            if imported:
-                return sorted(imported)
+            if visible := self._visible(i, sorted(imported)):
+                return visible
         return None
 
     # --- members ---
@@ -286,11 +271,13 @@ class Resolver:
         return [] if complete and not own and name not in implicit else None
 
     def _overridden(self, inherited: Site, own: list[Site]) -> bool:
-        """An ``override`` of the same parameter count replaces the inherited method."""
+        """An ``override`` of the same parameter types replaces the inherited method;
+        a same-arity overload with different types stays a candidate."""
         d = self._scope(inherited).decl
         return d is not None and any(
             (o := self._scope(s).decl) is not None
-            and (o.arity, o.optional, o.varargs) == (d.arity, d.optional, d.varargs)
+            and o.arity == d.arity
+            and o.ptypes == d.ptypes
             and " override " in f" {o.signature} "
             for s in own
         )
@@ -312,7 +299,7 @@ class Resolver:
                 return found
         return [] if complete else None
 
-    def _variable(self, i: int, k: int, name: str) -> Variable | Found:
+    def _variable(self, i: int, k: int, name: str, at: int) -> Variable | Found:
         """The variable ``name`` denotes in scope ``k``; [] when it is no variable."""
         scopes = self.files[i].parsed.scopes
         while k:
@@ -324,7 +311,12 @@ class Resolver:
             elif name in scope.bound:
                 return (i, k), scope.bound[name]
             k = scope.parent or 0
-        if any(self._field(s, name, set()) not in ([], None) for s in self.files[i].static_demand):
+        demand = [
+            s
+            for block in visible_blocks(self.files[i].parsed.blocks, at)
+            for s in self.files[i].static_demand.get(block, [])
+        ]
+        if any(self._field(s, name, set()) not in ([], None) for s in demand):
             return None  # a statically imported field
         return []
 
@@ -337,6 +329,20 @@ class Resolver:
                 return None
             found.extend(methods)
         return sorted(set(found)) or None
+
+    def _static(self, i: int, at: int, name: str, arity: int) -> Found:
+        """Unqualified calls from ``using static``: only imports visible at ``at`` count."""
+        file = self.files[i]
+        for block in visible_blocks(file.parsed.blocks, at):
+            targets = file.static_demand.get(block, [])
+            if not targets:
+                continue
+            found = self._on(targets, name, arity)
+            if found:
+                return found
+            if found is None:  # a base outside the capture could declare it
+                return None
+        return []
 
     def _call(self, i: int, k: int, call: Call) -> Found:
         if call.name.startswith("new "):
@@ -354,7 +360,7 @@ class Resolver:
                     if found is None or found:
                         return found
                 at = scopes[at].parent or 0
-            return self._on(file.static_demand, name, call.arity)
+            return self._static(i, call.start, name, call.arity)
         inner = k
         while inner and not _is_type(scopes[inner]):
             inner = scopes[inner].parent or 0
@@ -369,7 +375,7 @@ class Resolver:
             variable = self._field((i, inner), qualifier[5:], set())
         else:
             first, dot, _ = qualifier.partition(".")
-            variable = self._variable(i, k, first)
+            variable = self._variable(i, k, first, call.start)
             if variable == []:  # a type (a static method), or a type's static field
                 types = self._type(i, k, qualifier, call.start)
                 owner, _, member = qualifier.rpartition(".")
@@ -386,33 +392,37 @@ class Resolver:
 
     # --- imports and edges ---
 
-    def _relative(self, level: str, dotted: str) -> tuple[str | None, list[Site]]:
-        """What a using path names from namespace block ``level``: its namespace and the
+    def _relative(self, i: int, level: str, dotted: str) -> tuple[str | None, list[Site]]:
+        """What a using path names from namespace ``level``: its namespace and the
         types, resolved outward through the enclosing namespaces."""
-        for outer in _levels(level):
+        absolute = dotted.startswith("global::")
+        if absolute:
+            dotted = dotted[len("global::") :]
+        for outer in [""] if absolute else levels(level):
             path = f"{outer}.{dotted}" if outer else dotted
-            sites = self._canonical(path)
+            sites = self._canonical(path, i)
             if path in self.tops or sites:
                 return (path if path in self.tops else None), sites
         return None, []
 
-    def _bind_imports(self, i: int, file: _File) -> None:
+    def _bind_imports(self, i: int, file: File) -> None:
         for owner, item in [*((i, m) for m in file.parsed.imports), *self.globals]:
             if owner != i and not item.is_global:
                 continue
             level = "" if item.is_global else item.ns
-            namespace, sites = self._relative(level, item.path)
+            block = None if item.is_global else block_at(file.parsed.blocks, item.start)
+            namespace, sites = self._relative(i, level, item.path)
             if item.kind == "alias":
-                file.aliases[level, item.alias] = namespace if namespace is not None else sites
+                file.aliases[block, item.alias] = namespace if namespace is not None else sites
             elif item.kind == "static":
-                file.static_demand.extend(sites)
-                file.usings.setdefault(level, []).extend(sites)
+                file.static_demand.setdefault(block, []).extend(sites)
+                file.usings.setdefault(block, []).extend(sites)
             elif namespace is not None:
-                file.usings.setdefault(level, []).append(namespace)
+                file.usings.setdefault(block, []).append(namespace)
 
-    def _import_targets(self, item: Import) -> list[str]:
+    def _import_targets(self, i: int, item: Import) -> list[str]:
         """What a using names: a namespace's module or a type."""
-        namespace, sites = self._relative("" if item.is_global else item.ns, item.path)
+        namespace, sites = self._relative(i, "" if item.is_global else item.ns, item.path)
         if namespace is not None and item.kind != "static":
             return [module_key(namespace)]
         return self._keys(sites)
@@ -421,77 +431,7 @@ class Resolver:
         return sorted({str(self.files[i].keys[k]) for i, k in sites})
 
     def derive(self, entities: list[Entity], edges: list[Edge]) -> None:
-        for namespace in sorted(n for n in self.tops if n):
-            key = module_key(namespace)
-            entities.append(Entity(key, "module", "module", namespace, None, None, False))
-            edges.append(structural("contains", "repo", key, None))
-        for i, file in enumerate(self.files):
-            for ns in sorted({n for _, _, n in file.spans if n}):
-                edges.append(
-                    structural("contains_logical", module_key(ns), f"file:{file.path}", None)
-                )
-            self._emit(i, entities, edges)
-
-    def _emit(self, i: int, entities: list[Entity], edges: list[Edge]) -> None:
-        file = self.files[i]
-
-        def evidence(start: int, end: int) -> SourceRef:
-            return SourceRef(file.path, start, end, file.digest)
-
-        def edge(kind: RelationKind, source: str, res: Res, use: Use | Call) -> Edge:
-            targets, resolution, basis = edge_target(res, kind == "calls")
-            shown = None if resolution == "resolved" else use.name
-            at = evidence(use.start, use.end)
-            return Edge(kind, source, targets, resolution, basis, shown, at)
-
-        for item in file.parsed.imports:
-            res = self._import_targets(item) or None
-            edges.append(edge("imports", file.owners[0], res, Use(item.path, item.start, item.end)))
-
-        # A declaration's modifiers lie in its parent scope (csharp._Facts._open) yet are its own.
-        heads: dict[int, list[tuple[int, int, int]]] = {}
-        for k, scope in enumerate(file.parsed.scopes):
-            if k and scope.decl is not None and scope.parent is not None:
-                heads.setdefault(scope.parent, []).append((scope.decl.start, scope.decl.end, k))
-
-        def owner(k: int, at: int) -> str:
-            row = heads.get(k, [])
-            j = bisect.bisect_right(row, (at + 1,)) - 1
-            return file.owners[row[j][2] if j >= 0 and at < row[j][1] else k]
-
-        for k, scope in enumerate(file.parsed.scopes):
-            key = file.keys[k]
-            if k and key is not None and scope.decl is not None:
-                d = scope.decl
-                at = evidence(d.start, d.end)
-                entities.append(Entity(key, "symbol", d.kind, d.name, d.signature, at, d.test))
-                edges.append(structural("contains", file.owners[scope.parent or 0], key, None))
-                if scope.parent == 0 and d.ns:
-                    edges.append(structural("defines", module_key(d.ns), key, at))
-            for ref in scope.refs:
-                found = self._type(i, k, ref.name, ref.start)
-                edges.append(
-                    edge("references", owner(k, ref.start), self._keys(found or []) or None, ref)
-                )
-            for attr in scope.attrs:
-                found = self._attribute(i, k, attr)
-                edges.append(
-                    edge("references", owner(k, attr.start), self._keys(found or []) or None, attr)
-                )
-            for call in scope.calls:
-                found = self._call(i, k, call)
-                source = owner(k, call.start)
-                relation = edge("calls", source, self._keys(found or []) or None, call)
-                callee = relation.targets[0] if relation.resolution == "resolved" else None
-                if source in self.tests and callee and callee not in self.tests:
-                    at = evidence(call.start, call.end)
-                    edges.append(
-                        Edge("tested_by", callee, (source,), "resolved", "heuristic", None, at)
-                    )
-                edges.append(relation)
+        csharp_emit.derive(self, entities, edges)
 
     def _attribute(self, i: int, k: int, use: Use) -> Found:
-        """``[N]`` names type ``N`` or ``NAttribute``; both existing is ambiguous."""
-        plain = self._type(i, k, use.name, use.start) or []
-        suffixed = self._type(i, k, use.name + "Attribute", use.start) or []
-        return sorted({*plain, *suffixed}) or None
+        return csharp_emit.attribute(self, i, k, use)
