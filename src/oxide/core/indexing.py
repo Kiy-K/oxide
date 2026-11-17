@@ -32,6 +32,7 @@ from oxide.core.languages import (
     java,
     java_facts,
     java_resolve,
+    php,
     python,
     python_resolve,
     rust,
@@ -52,11 +53,12 @@ FACTS_FORMAT = (
     f"oxide-facts-v2 {python.FACTS_VERSION} {typescript.FACTS_VERSION} "
     f"{typescript.JAVASCRIPT_FACTS_VERSION} {go.FACTS_VERSION} {rust.FACTS_VERSION} "
     f"{java.FACTS_VERSION} {c.FACTS_VERSION} {cpp.FACTS_VERSION} "
-    f"{csharp.FACTS_VERSION}"
+    f"{csharp.FACTS_VERSION} {php.FACTS_VERSION}"
 )
 
 Dialect = Literal[
-    "python", "typescript", "tsx", "javascript", "go", "rust", "java", "c", "cpp", "csharp"
+    "python", "typescript", "tsx", "javascript", "go", "rust", "java", "c", "cpp", "csharp",
+    "php",
 ]
 CPP_SUFFIXES = (
     ".cc",
@@ -83,6 +85,8 @@ def dialect(path: str) -> Dialect | None:
         return "java"
     if path.endswith(".cs"):
         return "csharp"
+    if path.endswith((".php", ".phtml")):
+        return "php"
     if path.endswith((".c", ".h")):
         return "c"
     if path.endswith(CPP_SUFFIXES):
@@ -132,6 +136,8 @@ def components(storage: dict[str, str]) -> dict[str, str]:
         "c-parser": f"{parser} tree-sitter-c={version('tree-sitter-c')}",
         "cpp": cpp.VERSION,
         "cpp-parser": f"{parser} tree-sitter-cpp={version('tree-sitter-cpp')}",
+        "php": php.VERSION,
+        "php-parser": f"{parser} tree-sitter-php={version('tree-sitter-php')}",
         "terms": TERMS_VERSION,
         "tree-projection": TREE_PROJECTION,
         **storage,
@@ -233,6 +239,8 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
                 java_sources.append((f.path, f.digest, jp))
                 encoded = raw if hit else java_facts.encode(jp)
             diagnostics = jp if isinstance(jp, str) else jp.diagnostics
+        elif lang == "php":
+            diagnostics = php.parse(f.data)  # stub: PHP is unsupported until the facts land
         elif lang == "csharp":
             sp, hit = _reuse(raw, f.data, csharp_facts.decode, csharp.parse)
             if not isinstance(sp, str):
