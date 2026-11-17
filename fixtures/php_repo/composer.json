@@ -1,0 +1,9 @@
+{
+  "name": "acme/php-fixture",
+  "autoload": {
+    "psr-4": { "App\\": "src/" },
+    "psr-0": { "Legacy\\": "legacy/" },
+    "classmap": ["lib/"],
+    "files": ["src/Support/helpers.php"]
+  }
+}

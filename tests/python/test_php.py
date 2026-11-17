@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -200,6 +202,52 @@ def test_entities_bases_calls_and_four_evidence_labels(tmp_path: Path) -> None:
         ("ambiguous", "syntactic"),
         ("unresolved", "syntactic"),
     }
+
+
+def test_fixture_structure() -> None:
+    found = derived(FIXTURE)
+    validate(found)
+    assert len(found.entities) > 20
+    assert any(f.path.endswith(".phtml") for f in found.files)
+    assert {f.coverage for f in found.files if f.language == "php"} == {"complete"}
+
+
+def test_php_l_oracle_acceptance() -> None:
+    if shutil.which("php") is None:
+        pytest.skip("php CLI not installed")
+    for f in capture(FIXTURE).files:
+        if not f.path.endswith(".php"):
+            continue
+        ok = subprocess.run(
+            ["php", "-l", str(FIXTURE / f.path)], capture_output=True
+        ).returncode == 0
+        parsed = php.parse(f.data)
+        assert ok == (not isinstance(parsed, str) and not parsed.diagnostics)
+
+
+def test_dynamic_calls_emit_no_edges(tmp_path: Path) -> None:
+    source = (
+        "<?php class C { function run() { "
+        "$fn = 'x'; $fn(); $o->$m(); call_user_func('x'); "
+        "call_user_func_array('x', []); ${'dyn'}(); "
+        "$this->find(); self::go(); } }"
+    )
+    _write(tmp_path, "d.php", source)
+    parsed = php.parse(source.encode())
+    assert not isinstance(parsed, str)
+    assert {(c.name, c.kind) for c in parsed.calls} == {
+        ("$this->find", "method"),
+        ("self::go", "static"),
+    }
+    found = derived(tmp_path)
+    assert resolved(found, "calls", "symbol:d.php#C.run") == set()
+
+
+def test_unsupported_construct_does_not_invent_edges(tmp_path: Path) -> None:
+    _write(tmp_path, "u.php", "<?php $x = SomeFactory::make()->run();")
+    found = derived(tmp_path)
+    calls = [e for e in found.edges if e.kind == "calls"]
+    assert calls and all(e.resolution == "unresolved" for e in calls)
 
 
 def test_aliases_and_current_namespace_do_not_collapse(tmp_path: Path) -> None:
