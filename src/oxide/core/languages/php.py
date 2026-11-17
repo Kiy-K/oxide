@@ -85,8 +85,11 @@ def _ns_at(regions: list[tuple[int, int, str]], at: int) -> str:
 def _signature(data: bytes, node: Node) -> str:
     head = text(data, node)
     body = next(
-        (c for c in node.children if c.type in ("compound_statement", "declaration_list",
-                                                "enum_declaration_list")),
+        (
+            c
+            for c in node.children
+            if c.type in ("compound_statement", "declaration_list", "enum_declaration_list")
+        ),
         None,
     )
     if body is not None:
@@ -96,13 +99,19 @@ def _signature(data: bytes, node: Node) -> str:
 
 def _import(data: bytes, node: Node, ns: str) -> list[Import]:
     raw = text(data, node)
-    kind = "function" if raw.startswith("use function") else "const" if raw.startswith(
-        "use const"
-    ) else "class"
+    kind = (
+        "function"
+        if raw.startswith("use function")
+        else "const"
+        if raw.startswith("use const")
+        else "class"
+    )
     group = next((c for c in node.children if c.type == "namespace_use_group"), None)
     prefix = ""
     for c in node.named_children:
-        if c.type == "namespace_name" and c.start_byte < (group.start_byte if group else node.end_byte):
+        if c.type == "namespace_name" and c.start_byte < (
+            group.start_byte if group else node.end_byte
+        ):
             prefix = php_name(data, c)
     clauses = [c for c in node.named_children if c.type == "namespace_use_clause"]
     if group is not None:
@@ -173,7 +182,14 @@ def parse(data: bytes) -> Parsed | str:
     def declare(kind: str, node: Node, name: str) -> None:
         parent = owner(node.start_byte)
         decls.append(
-            Decl(kind, name, *span(node), _signature(data, node), _ns_at(namespaces, node.start_byte), parent)
+            Decl(
+                kind,
+                name,
+                *span(node),
+                _signature(data, node),
+                _ns_at(namespaces, node.start_byte),
+                parent,
+            )
         )
         spans.append((node.start_byte, node.end_byte, len(decls) - 1))
 
@@ -198,14 +214,22 @@ def parse(data: bytes) -> Parsed | str:
             )
 
     imports = sorted(
-        (item for n in captures.get("import", []) for item in _import(data, n, _ns_at(namespaces, n.start_byte))),
+        (
+            item
+            for n in captures.get("import", [])
+            for item in _import(data, n, _ns_at(namespaces, n.start_byte))
+        ),
         key=lambda i: (i.start, i.end),
     )
     bases: list[Use] = []
     for n in captures.get("base", []):
         bases.append(
-            Use(php_name(data, n), *span(n), owner(n.start_byte),
-                "extends" if n.parent and n.parent.type == "base_clause" else "implements")
+            Use(
+                php_name(data, n),
+                *span(n),
+                owner(n.start_byte),
+                "extends" if n.parent and n.parent.type == "base_clause" else "implements",
+            )
         )
     for n in captures.get("trait", []):
         name = next(iter(named(n)), None)

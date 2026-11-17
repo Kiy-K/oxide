@@ -10,10 +10,9 @@ with their source span instead of being dropped.
 from __future__ import annotations
 
 import bisect
-from collections.abc import Mapping
 from typing import Literal
 
-from oxide.core.languages import php_composer, php_model
+from oxide.core.languages import php_composer
 from oxide.core.languages.php_model import KINDS, TYPE_KINDS, Call, Parsed, fqn, key_fqn, symbol_key
 from oxide.core.languages.python_resolve import Edge, edge_target, structural
 from oxide.models import Entity, RelationKind, SourceRef
@@ -44,7 +43,7 @@ class Resolver:
         self.parent_of: dict[str, str] = {}  # declaration key -> enclosing declaration key
         self.aliases: dict[tuple[str, str, str], str] = {}
         self.namespaces: set[str] = set()
-        for path, digest, parsed in sources:
+        for path, _digest, parsed in sources:
             keys: list[str] = []
             for decl in parsed.decls:
                 qualified = fqn(decl, parsed.decls)
@@ -59,9 +58,14 @@ class Resolver:
                         holder = keys[decl.parent]
                         self.methods.setdefault(holder, {}).setdefault(decl.name, []).append(key)
             for use in parsed.bases:
-                if use.owner is not None and use.owner < len(keys) and use.kind in (
-                    "extends",
-                    "implements",
+                if (
+                    use.owner is not None
+                    and use.owner < len(keys)
+                    and use.kind
+                    in (
+                        "extends",
+                        "implements",
+                    )
                 ):
                     self.base_names.setdefault(keys[use.owner], []).append(use.name)
             for item in parsed.imports:
@@ -95,7 +99,9 @@ class Resolver:
             return (f"file:{mapped[1]}",), "resolved"
         return (), "syntactic"
 
-    def _methods(self, classes: tuple[str, ...], name: str, seen: frozenset[str] = frozenset()) -> tuple[str, ...]:
+    def _methods(
+        self, classes: tuple[str, ...], name: str, seen: frozenset[str] = frozenset()
+    ) -> tuple[str, ...]:
         found: set[str] = set()
         for key in classes:
             if key in seen:
@@ -123,7 +129,9 @@ class Resolver:
     def derive(self, entities: list[Entity], edges: list[Edge]) -> None:
         for namespace in sorted(n for n in self.namespaces if n):
             key = f"module:php:{namespace}"
-            entities.append(Entity(key, "module", "module", namespace.rsplit(".", 1)[-1], None, None, False))
+            entities.append(
+                Entity(key, "module", "module", namespace.rsplit(".", 1)[-1], None, None, False)
+            )
             edges.append(structural("contains", "repo", key, None))
         for path, digest, parsed in self.sources:
             self._emit(path, digest, parsed, entities, edges)
@@ -145,15 +153,21 @@ class Resolver:
             shown = None if resolution == "resolved" else name
             return Edge(kind, source, targets, resolution, final, shown, evidence(start, end))
 
-        for start, end, ns in parsed.namespaces:
+        for _start, _end, ns in parsed.namespaces:
             if ns:
-                edges.append(structural("contains_logical", f"module:php:{ns}", f"file:{path}", None))
+                edges.append(
+                    structural("contains_logical", f"module:php:{ns}", f"file:{path}", None)
+                )
 
         for item in parsed.imports:
             found = self._resolve(path, item.ns, item.path, KINDS)
             if not found[0]:
                 prefix = key_fqn(item.path)
-                module = f"module:php:{prefix}" if any(n.startswith(prefix) for n in self.namespaces) else None
+                module = (
+                    f"module:php:{prefix}"
+                    if any(n.startswith(prefix) for n in self.namespaces)
+                    else None
+                )
                 found = ((module,), "resolved") if module else found
             edges.append(edge("imports", f"file:{path}", found, item.path, item.start, item.end))
 
@@ -175,8 +189,19 @@ class Resolver:
             edges.append(edge("references", source, found, use.name, use.start, use.end))
 
         for call in parsed.calls:
-            ns = parsed.decls[call.owner].ns if call.owner is not None else _ns_at(parsed, call.start)
+            ns = (
+                parsed.decls[call.owner].ns
+                if call.owner is not None
+                else _ns_at(parsed, call.start)
+            )
             source = keys[call.owner] if call.owner is not None else f"file:{path}"
             edges.append(
-                edge("calls", source, self._call(path, ns, keys, call), call.name, call.start, call.end)
+                edge(
+                    "calls",
+                    source,
+                    self._call(path, ns, keys, call),
+                    call.name,
+                    call.start,
+                    call.end,
+                )
             )

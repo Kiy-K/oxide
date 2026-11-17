@@ -61,7 +61,16 @@ FACTS_FORMAT = (
 )
 
 Dialect = Literal[
-    "python", "typescript", "tsx", "javascript", "go", "rust", "java", "c", "cpp", "csharp",
+    "python",
+    "typescript",
+    "tsx",
+    "javascript",
+    "go",
+    "rust",
+    "java",
+    "c",
+    "cpp",
+    "csharp",
     "php",
 ]
 CPP_SUFFIXES = (

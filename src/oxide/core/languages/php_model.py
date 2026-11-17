@@ -85,7 +85,7 @@ def fqn(decl: Decl, decls: list[Decl]) -> str:
         parent = decls[parent].parent
         seen += 1
     parts.reverse()
-    return ".".join([*( [decl.ns] if decl.ns else []), *parts])
+    return ".".join([*([decl.ns] if decl.ns else []), *parts])
 
 
 def symbol_key(path: str, name: str) -> str:

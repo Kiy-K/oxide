@@ -78,10 +78,20 @@ def _sound(parsed: Parsed, size: int) -> bool:
         ):
             return False
     for u in (*parsed.bases, *parsed.refs):
-        if not (type(u.name) is str and span(u.start, u.end) and u.kind in _USE_KINDS and owner(u.owner, count)):
+        if not (
+            type(u.name) is str
+            and span(u.start, u.end)
+            and u.kind in _USE_KINDS
+            and owner(u.owner, count)
+        ):
             return False
     for c in parsed.calls:
-        if not (type(c.name) is str and span(c.start, c.end) and c.kind in _CALL_KINDS and owner(c.owner, count)):
+        if not (
+            type(c.name) is str
+            and span(c.start, c.end)
+            and c.kind in _CALL_KINDS
+            and owner(c.owner, count)
+        ):
             return False
     return all(
         span(a, b) and type(n) is str and _NS.fullmatch(n) is not None

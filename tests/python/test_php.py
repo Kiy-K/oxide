@@ -88,7 +88,7 @@ def test_mixed_php_html_spans_are_inside_php_tags() -> None:
 
 
 _SOURCES = (
-    b'<?php namespace A; use B\\C as D; class X extends Y implements I { use T; '
+    b"<?php namespace A; use B\\C as D; class X extends Y implements I { use T; "
     b"const K = 1; public function f() { helper(); $this->g(); new Y(); } }",
     b"<h1>title</h1><?php function f() {} ?><p>tail</p>",
 )
@@ -193,9 +193,7 @@ def test_entities_bases_calls_and_four_evidence_labels(tmp_path: Path) -> None:
         "symbol:lib/global_helper.php#helper",  # heuristic: PHP's global-function fallback
     }
     assert {
-        (e.resolution, e.basis)
-        for e in found.edges
-        if e.kind in ("references", "calls", "imports")
+        (e.resolution, e.basis) for e in found.edges if e.kind in ("references", "calls", "imports")
     } >= {
         ("resolved", "resolved"),
         ("resolved", "heuristic"),
@@ -218,9 +216,10 @@ def test_php_l_oracle_acceptance() -> None:
     for f in capture(FIXTURE).files:
         if not f.path.endswith(".php"):
             continue
-        ok = subprocess.run(
-            ["php", "-l", str(FIXTURE / f.path)], capture_output=True
-        ).returncode == 0
+        ok = (
+            subprocess.run(["php", "-l", str(FIXTURE / f.path)], capture_output=True).returncode
+            == 0
+        )
         parsed = php.parse(f.data)
         assert ok == (not isinstance(parsed, str) and not parsed.diagnostics)
 
