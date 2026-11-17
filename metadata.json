@@ -1,0 +1,63 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M7MJD7C47EDA51CM2180W5HQ",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "README.md",
+    "docs/csharp.md",
+    "docs/public-api.md",
+    "fixtures/csharp_repo/Shop.sln",
+    "fixtures/csharp_repo/src/Shop/Cart/Cart.cs",
+    "fixtures/csharp_repo/src/Shop/Storage/AbstractStore.cs",
+    "fixtures/csharp_repo/src/Shop/Storage/IBackend.cs",
+    "fixtures/csharp_repo/src/Shop/Storage/Key.cs",
+    "fixtures/csharp_repo/src/Shop/Storage/Mode.cs",
+    "fixtures/csharp_repo/src/Shop/Storage/Store.cs",
+    "fixtures/csharp_repo/src/Shop/Util/Strings.cs",
+    "fixtures/csharp_repo/tests/Shop.Tests/StoreTests.cs",
+    "fixtures/eval/contextbench-py/baseline-v21/README.md",
+    "fixtures/eval/contextbench-py/baseline-v21/manifest.json",
+    "pyproject.toml",
+    "scripts/smoke_dist.py",
+    "src/oxide/core/indexing.py",
+    "src/oxide/core/languages/csharp.py",
+    "src/oxide/core/languages/csharp_facts.py",
+    "src/oxide/core/languages/csharp_resolve.py",
+    "src/oxide/core/languages/csharp_syntax.py",
+    "tests/python/test_csharp.py",
+    "tests/python/test_navigation.py",
+    "uv.lock"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 7559,
+    "cache_creation_tokens": 513884,
+    "cache_read_tokens": 10633806,
+    "output_tokens": 93149,
+    "api_call_count": 106
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}

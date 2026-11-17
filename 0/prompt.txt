@@ -1,0 +1,5 @@
+Add robust C# support to OXIDE using the existing language architecture. Cover declarations, namespaces, imports, inheritance, references, and conservative cross-file resolution, with working CLI navigation and context retrieval. Research the grammar and C# semantics first, validate against real .NET repositories and compiler-backed oracles where practical, preserve existing language behavior, and benchmark indexing and retrieval before acceptance.
+
+---
+
+Commit, so Validate it on real .NET repos and install .NET SDK in this project only
