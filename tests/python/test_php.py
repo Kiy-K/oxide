@@ -11,7 +11,7 @@ from test_typescript import derived, resolved
 
 from oxide.capture import capture
 from oxide.core.indexing import derive, dialect, validate
-from oxide.core.languages import php, php_facts
+from oxide.core.languages import php, php_composer, php_facts
 
 FIXTURE = REPO / "fixtures/php_repo"
 
@@ -107,3 +107,34 @@ def test_partial_parse_reports_diagnostics_not_empty_success(tmp_path: Path) -> 
     validate(found)
     info = next(f for f in found.files if f.path.endswith("Broken.php"))
     assert info.coverage == "partial" and info.diagnostics
+
+
+def test_longest_psr4_prefix_wins_and_trailing_slash_is_significant() -> None:
+    c = php_composer.load(
+        {
+            "composer.json": json.dumps(
+                {
+                    "autoload": {
+                        "psr-4": {
+                            "App\\": "src/",
+                            "App\\Deep\\": "deep/",
+                            "Bare": "bare/",
+                        },
+                        "psr-0": {"Legacy\\": "legacy/"},
+                        "classmap": ["lib/"],
+                        "files": ["src/Support/helpers.php"],
+                    }
+                }
+            ).encode()
+        }
+    )
+    assert php_composer.fqn_at(c, "deep/Thing.php") == ("psr4", "App\\Deep\\Thing")
+    assert php_composer.fqn_at(c, "src/Thing.php") == ("psr4", "App\\Thing")
+    assert php_composer.fqn_at(c, "legacy/Legacy/Thing.php") == ("psr0", "Legacy\\Thing")
+    assert php_composer.path_for(c, "App\\Deep\\Thing") == ("psr4", "deep/Thing.php")
+    assert php_composer.classmap_roots(c) == ("lib/",)
+    assert c.files == ("src/Support/helpers.php",)
+
+
+def test_malformed_composer_is_ignored() -> None:
+    assert php_composer.load({"composer.json": b"{not json"}) == php_composer.Composer((), (), ())
