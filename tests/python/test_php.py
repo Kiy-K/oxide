@@ -10,8 +10,8 @@ from conftest import REPO
 from test_typescript import derived, resolved
 
 from oxide.capture import capture
-from oxide.core.indexing import dialect
-from oxide.core.languages import php
+from oxide.core.indexing import derive, dialect, validate
+from oxide.core.languages import php, php_facts
 
 FIXTURE = REPO / "fixtures/php_repo"
 
@@ -83,3 +83,27 @@ def test_mixed_php_html_spans_are_inside_php_tags() -> None:
     assert not isinstance(p, str)
     assert [d.name for d in p.decls] == ["f"]
     assert b"function f" in data[p.decls[0].start : p.decls[0].end]
+
+
+_SOURCES = (
+    b'<?php namespace A; use B\\C as D; class X extends Y implements I { use T; '
+    b"const K = 1; public function f() { helper(); $this->g(); new Y(); } }",
+    b"<h1>title</h1><?php function f() {} ?><p>tail</p>",
+)
+
+
+def test_facts_codec_roundtrip() -> None:
+    for src in _SOURCES:
+        parsed = php.parse(src)
+        assert not isinstance(parsed, str)
+        assert php_facts.decode(php_facts.encode(parsed), len(src)) == parsed
+        with pytest.raises(ValueError):
+            php_facts.decode(["garbage"], len(src))
+
+
+def test_partial_parse_reports_diagnostics_not_empty_success(tmp_path: Path) -> None:
+    (tmp_path / "Broken.php").write_bytes(b"<?php class Broken { public function oops( }")
+    found = derive(capture(tmp_path), "test-repo")
+    validate(found)
+    info = next(f for f in found.files if f.path.endswith("Broken.php"))
+    assert info.coverage == "partial" and info.diagnostics

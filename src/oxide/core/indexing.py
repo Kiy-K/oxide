@@ -33,6 +33,8 @@ from oxide.core.languages import (
     java_facts,
     java_resolve,
     php,
+    php_facts,
+    php_model,
     python,
     python_resolve,
     rust,
@@ -198,6 +200,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     rs_sources: list[tuple[str, str, rust.Parsed]] = []
     java_sources: list[tuple[str, str, java.Parsed]] = []
     cs_sources: list[tuple[str, str, csharp_model.Parsed]] = []
+    php_sources: list[tuple[str, str, php_model.Parsed]] = []
     c_sources: list[tuple[str, str, c.Parsed]] = []
     cpp_sources: list[tuple[str, str, cpp.Parsed]] = []
     for f in capture.files:
@@ -240,7 +243,10 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
                 encoded = raw if hit else java_facts.encode(jp)
             diagnostics = jp if isinstance(jp, str) else jp.diagnostics
         elif lang == "php":
-            pp = php.parse(f.data)
+            pp, hit = _reuse(raw, f.data, php_facts.decode, php.parse)
+            if not isinstance(pp, str):
+                php_sources.append((f.path, f.digest, pp))
+                encoded = raw if hit else php_facts.encode(pp)
             diagnostics = pp if isinstance(pp, str) else pp.diagnostics
         elif lang == "csharp":
             sp, hit = _reuse(raw, f.data, csharp_facts.decode, csharp.parse)
