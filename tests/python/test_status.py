@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -551,7 +552,9 @@ def test_status_terminal_matches_pipe(tmp_path: Path, fts: Path) -> None:
         _, stderr = process.communicate()
         assert process.returncode == piped.returncode == 0
         assert stderr == b"" and piped.stderr == ""
-        assert b"".join(chunks).decode("utf-8").replace("\r\n", "\n") == piped.stdout
+        tty = b"".join(chunks).decode("utf-8").replace("\r\n", "\n")
+        # The terminal adds colour only; stripping it must give the piped text.
+        assert re.sub(r"\x1b\[[0-9;]*m", "", tty) == piped.stdout
     finally:
         os.close(master)
         if slave != -1:
