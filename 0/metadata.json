@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M7MK1YR4RQZZ0CR7ZQM3KKGF",
+  "session_id": "01a1e8ed-6fad-7485-8a09-c4d24df6bda4",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-17T11:07:44.218074088Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 2,
+  "files_touched": [
+    ".gitignore"
+  ],
+  "agent": "Pi",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "b9c276893d9a",
+  "checkpoint_transcript_start": 21,
+  "transcript_lines_at_start": 21,
+  "compact_transcript_start": 8,
+  "token_usage": {
+    "input_tokens": 8,
+    "cache_creation_tokens": 688,
+    "cache_read_tokens": 231575,
+    "output_tokens": 401,
+    "api_call_count": 3
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 2
+  }
+}
