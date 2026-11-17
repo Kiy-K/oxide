@@ -273,7 +273,7 @@ def main(fixtures: Path) -> None:
 
 
 def environment() -> dict[str, Any]:
-    from oxide.storage.ladybug import fts_location, fts_unavailable
+    from oxide.storage.fts import fts_location, fts_unavailable
 
     return {
         "platform": f"{sys.platform}-{platform.machine()}",

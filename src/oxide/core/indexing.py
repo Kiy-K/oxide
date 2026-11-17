@@ -207,6 +207,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
         raw = section.get(f.digest) if isinstance(section, dict) else None
         language = lang if lang not in ("typescript", "tsx") else "typescript"
         diagnostics: list[str] | str
+        encoded: Any = None  # set with the sources; read only when diagnostics is a list
         if lang == "python":
             py, hit = _reuse(raw, f.data, python.decode, python.parse)
             if not isinstance(py, str):
