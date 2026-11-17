@@ -86,7 +86,7 @@ def child(corpus: str, data: str, queries: list[str], warm: int, budget: int) ->
 
 
 def environment(repo: Path) -> dict[str, Any]:
-    from oxide.storage.ladybug import fts_location, fts_unavailable
+    from oxide.storage.fts import fts_location, fts_unavailable
 
     def git(*args: str) -> str:
         run = subprocess.run(["git", "-C", str(repo), *args], capture_output=True, text=True)
@@ -118,7 +118,7 @@ def corpus_identity(corpus: Path) -> dict[str, Any]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
     parser.add_argument("corpus", type=Path)
     parser.add_argument("--iterations", type=int, default=5)
     parser.add_argument("--warm", type=int, default=20)

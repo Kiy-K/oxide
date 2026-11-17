@@ -18,3 +18,5 @@ HEAD: the only changed derivation components are `storage-schema` (`oxide-ladybu
 `v5`) and the new `blast` component. `results.json` keeps the id each task was produced with,
 and its compatibility fields are unchanged (`test_output_is_compatible` passes), so
 `results.json` and `metrics.json` were not regenerated.
+
+Pin relabel (2026-11-17, C# slice): `manifest.json` `derivation` changed from `sha256:daa271b3…` to `sha256:78500a2e…` (new `csharp`/`csharp-parser` components and facts version). Verified: a fresh run of the harness gives `metrics.json` identical to this baseline; `results.json` keeps the id each task was produced with.

@@ -485,7 +485,9 @@ def test_navigation_reads_the_snapshot_not_the_worktree(
     )
 
 
-@pytest.mark.parametrize("repo", ["js_repo", "go_repo", "rust_repo", "java_repo", "c_repo"])
+@pytest.mark.parametrize(
+    "repo", ["js_repo", "go_repo", "rust_repo", "java_repo", "c_repo", "csharp_repo"]
+)
 def test_navigation_works_in_every_language(repo: str, tmp_path: Path) -> None:
     copy = tmp_path / repo
     shutil.copytree(FIXTURE.parent / repo, copy)

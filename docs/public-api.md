@@ -76,16 +76,19 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
   `module:javascript:src/a.js` ([docs/javascript.md](javascript.md)),
   `module:go:src/store/store` ([docs/go.md](go.md)),
   `module:rust:crates/a/src/lib.rs::store` ([docs/rust.md](rust.md)),
-  `module:java:com.example.store` ([docs/java.md](java.md)), `file:<path>` (C and C++
+  `module:java:com.example.store` ([docs/java.md](java.md)),
+  `module:csharp:Shop.Storage` ([docs/csharp.md](csharp.md)), `file:<path>` (C and C++
   have no modules: [docs/c.md](c.md), [docs/cpp.md](cpp.md)),
   `symbol:<path>#Outer.inner~1`. Symbol kinds are the slice's: Python `class`,
   `function`, `method`; TypeScript also `interface`, `type`, `enum`, `namespace`,
   `variable`; Rust also `struct`, `enum`, `union`, `trait`, `impl` (named
   `<impl Trait for Type>`, holding its methods), `constant`, `variable`, `macro`; Java
-  `class`, `interface`, `enum`, `record`, `annotation`, `method`, `constructor`; C
+  `class`, `interface`, `enum`, `record`, `annotation`, `method`, `constructor`; C#
+  `class`, `struct`, `interface`, `enum`, `record`, `delegate`, `method`, `constructor`,
+  `destructor`, `operator`, `property`, `indexer`, `event`, `field`, `enum_member`; C
   `function` (definitions and prototypes), `struct`, `union`, `enum`, `type`, `variable`,
   `macro`; C++ also `namespace`, `class`, `method`. `FileInfo.language` is `python`,
-  `typescript`, `javascript`, `go`, `rust`, `java`, `c`, `cpp` or `unknown`.
+  `typescript`, `javascript`, `go`, `rust`, `java`, `csharp`, `c`, `cpp` or `unknown`.
 - `SourceRef`: `path`, half-open byte `start`/`end`, file `digest`
   (`sha256:` of the captured bytes).
 - `Relation`: `kind` (`contains`, `contains_logical`, `defines`, `references`,

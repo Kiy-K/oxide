@@ -99,6 +99,7 @@ def main(fixtures: Path) -> None:
         shutil.copytree(fixtures / "go_repo", root / "golang")
         shutil.copytree(fixtures / "rust_repo", root / "rustlang")
         shutil.copytree(fixtures / "java_repo", root / "javalang")
+        shutil.copytree(fixtures / "csharp_repo", root / "cslang")
         shutil.copytree(fixtures / "c_repo", root / "clang")
         shutil.copytree(fixtures / "cpp_repo", root / "cpplang")
         (root / "naïve_ünicode.py").write_bytes(b"def caf\xc3\xa9_total():\r\n    return 1\r\n")
@@ -184,6 +185,12 @@ def main(fixtures: Path) -> None:
             "static Store open(Mode mode)" in java_context["payload"],
             "installed Java context unavailable",
         )
+        cs = result("search", str(root), "touch", "--symbol", "Touch")
+        check(
+            cs["entries"][0]["entity"]["key"]
+            == "symbol:cslang/src/Shop/Storage/Store.cs#Store.Touch",
+            "installed C# extraction unavailable",
+        )
         c = result("search", str(root), "must get", "--symbol", "store_must_get")
         check(
             c["entries"][0]["entity"]["key"].startswith("symbol:clang/")
@@ -266,7 +273,7 @@ def main(fixtures: Path) -> None:
 
 
 def environment() -> dict[str, Any]:
-    from oxide.storage.ladybug import fts_location, fts_unavailable
+    from oxide.storage.fts import fts_location, fts_unavailable
 
     return {
         "platform": f"{sys.platform}-{platform.machine()}",
@@ -282,6 +289,7 @@ def environment() -> dict[str, Any]:
                 "tree-sitter-go",
                 "tree-sitter-rust",
                 "tree-sitter-java",
+                "tree-sitter-c-sharp",
                 "tree-sitter-c",
                 "tree-sitter-cpp",
                 "fastmcp",

@@ -23,6 +23,10 @@ from oxide.core.languages import (
     cpp_facts,
     cpp_macros,
     cpp_resolve,
+    csharp,
+    csharp_facts,
+    csharp_model,
+    csharp_resolve,
     go,
     go_resolve,
     java,
@@ -47,10 +51,13 @@ TREE_PROJECTION = "1"
 FACTS_FORMAT = (
     f"oxide-facts-v2 {python.FACTS_VERSION} {typescript.FACTS_VERSION} "
     f"{typescript.JAVASCRIPT_FACTS_VERSION} {go.FACTS_VERSION} {rust.FACTS_VERSION} "
-    f"{java.FACTS_VERSION} {c.FACTS_VERSION} {cpp.FACTS_VERSION}"
+    f"{java.FACTS_VERSION} {c.FACTS_VERSION} {cpp.FACTS_VERSION} "
+    f"{csharp.FACTS_VERSION}"
 )
 
-Dialect = Literal["python", "typescript", "tsx", "javascript", "go", "rust", "java", "c", "cpp"]
+Dialect = Literal[
+    "python", "typescript", "tsx", "javascript", "go", "rust", "java", "c", "cpp", "csharp"
+]
 CPP_SUFFIXES = (
     ".cc",
     ".cpp",
@@ -74,6 +81,8 @@ def dialect(path: str) -> Dialect | None:
         return "rust"
     if path.endswith(".java"):
         return "java"
+    if path.endswith(".cs"):
+        return "csharp"
     if path.endswith((".c", ".h")):
         return "c"
     if path.endswith(CPP_SUFFIXES):
@@ -117,6 +126,8 @@ def components(storage: dict[str, str]) -> dict[str, str]:
         "rust-parser": f"{parser} tree-sitter-rust={version('tree-sitter-rust')}",
         "java": java.VERSION,
         "java-parser": f"{parser} tree-sitter-java={version('tree-sitter-java')}",
+        "csharp": csharp.VERSION,
+        "csharp-parser": f"{parser} tree-sitter-c-sharp={version('tree-sitter-c-sharp')}",
         "c": c.VERSION,
         "c-parser": f"{parser} tree-sitter-c={version('tree-sitter-c')}",
         "cpp": cpp.VERSION,
@@ -180,6 +191,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     go_sources: list[tuple[str, str, go.Parsed]] = []
     rs_sources: list[tuple[str, str, rust.Parsed]] = []
     java_sources: list[tuple[str, str, java.Parsed]] = []
+    cs_sources: list[tuple[str, str, csharp_model.Parsed]] = []
     c_sources: list[tuple[str, str, c.Parsed]] = []
     cpp_sources: list[tuple[str, str, cpp.Parsed]] = []
     for f in capture.files:
@@ -196,6 +208,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
         raw = section.get(f.digest) if isinstance(section, dict) else None
         language = lang if lang not in ("typescript", "tsx") else "typescript"
         diagnostics: list[str] | str
+        encoded: Any = None  # set with the sources; read only when diagnostics is a list
         if lang == "python":
             py, hit = _reuse(raw, f.data, python.decode, python.parse)
             if not isinstance(py, str):
@@ -220,6 +233,12 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
                 java_sources.append((f.path, f.digest, jp))
                 encoded = raw if hit else java_facts.encode(jp)
             diagnostics = jp if isinstance(jp, str) else jp.diagnostics
+        elif lang == "csharp":
+            sp, hit = _reuse(raw, f.data, csharp_facts.decode, csharp.parse)
+            if not isinstance(sp, str):
+                cs_sources.append((f.path, f.digest, sp))
+                encoded = raw if hit else csharp_facts.encode(sp)
+            diagnostics = sp if isinstance(sp, str) else sp.diagnostics
         elif lang == "c":
             cp, hit = _reuse(raw, f.data, c.decode, c.parse)
             if not isinstance(cp, str):
@@ -256,6 +275,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     manifests = {p: d for p, d in others.items() if p.rpartition("/")[2] == "Cargo.toml"}
     rust_resolve.Resolver(rs_sources, manifests).derive(entities, edges)
     java_resolve.Resolver(java_sources).derive(entities, edges)
+    csharp_resolve.Resolver(cs_sources).derive(entities, edges)
     paths = {f.path for f in capture.files}
     c_resolve.Resolver(c_sources, paths).derive(entities, edges)
     cpp_resolve.Resolver(cpp_sources, c_sources, paths).derive(entities, edges)

@@ -5,6 +5,12 @@ __pycache__
 CLAUDE.local.md
 .worktrees/
 .env
+/.tools/
+#Pi's cache
+.pi/delegate/*
+.pi/tasks/*
 # Anchored: only the repository root's node_modules.
 /node_modules/
 .amp/portals/*
+scripts/csharp_oracle/bin/
+scripts/csharp_oracle/obj/
