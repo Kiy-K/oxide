@@ -51,10 +51,26 @@ facts, and never invents edges for dynamic calls or constructs it cannot parse.
 - **Historical golden:** `fixtures/conformance/php.golden.json` is frozen v1
   output (module entities, `content_hash`) from `25e51b6`/`32ff85e`. No current
   test reads it. Use it as a construct checklist only; do not regenerate it.
-- **CAP-003:** language support must extend the declarative extraction path;
-  any procedural walker needs a stated gap analysis. Follow the C# slice:
-  a query-driven syntax/facts module, a model, a resolver, and a thin parse
-  entry point, integrated in `core/indexing.py`.
+- **CAP-003 / CORE-001:** language support must extend the declarative extraction
+  path; any procedural walker needs a stated gap analysis. Queries collect every
+  fact, but only a resolver can follow namespace aliases, `use` bindings and
+  Composer prefix mappings across files — a tree-sitter query has no cross-file
+  scope, so that is the concrete gap. Composer evidence reaches core as **captured
+  bytes**: `derive` selects captured `composer.json` files from its read view and
+  passes them to `php_composer`, which parses JSON in memory. Core never opens a
+  file. Follow the C# slice: a query-driven syntax/facts module, a model, a
+  resolver, and a thin parse entry point, integrated in `core/indexing.py`.
+  Source files stay at or below 500 LOC.
+- **PHP-specific semantics:** names (classes, functions, namespaces, methods) are
+  case-insensitive; resolution folds case while entity keys keep source spelling.
+  Unqualified class names resolve in the current namespace but do **not** fall back
+  to global; functions and constants do (heuristically). `.inc` is not indexed in
+  v1 — it is not reliably PHP in a mixed repository and would violate CAP-001's
+  explicit-scope rule.
+- **Derivation identity:** adding PHP to `FACTS_FORMAT` and `components()` changes
+  the derivation id. Per `fixtures/eval/README.md` and the C# precedent, relabel
+  the frozen ContextBench manifest in place with a README note after confirming a
+  fresh run yields byte-identical metrics; do not regenerate results or metrics.
 
 ## Approaches
 
@@ -113,11 +129,14 @@ facts, and never invents edges for dynamic calls or constructs it cannot parse.
   `mise run verify`, `mise run tier`, and an independent zero-context review;
   commit; report measured findings and limitations before acceptance.
 
-## What is left to the implementer
+## Decisions settled during implementation
 
-- Exact query node names and fact dataclass fields (to be confirmed against
-  the installed grammar's `node-types.json` during implementation).
-- Whether `.inc` is indexed as PHP (decide from capture evidence; keep it out
-  if it causes spurious files in non-PHP repos).
-- Concrete thresholds for the benchmark-style measurements; record them as
-  observed numbers, not gates, unless a SPEC gate applies to the change.
+- Grammar node names were confirmed against the installed 0.25.1 wheel; the
+  binding entry point is `language_php()` (full grammar), not `language()`.
+- `.inc` is not indexed in v1 (see constraints).
+- Adding PHP is not a quality/performance claim, so no ContextBench quality gate
+  applies; measurements are observed numbers, not gates. The derivation id is
+  relabelled, with byte-identical metrics, per the documented pin-relabel process.
+- The validation corpus is one deterministic ~11-file fixture shaped with PSR-4,
+  PSR-0/classmap and global-function conventions; no live upstream clone is
+  committed. `php -l` is used only as a syntax-acceptance oracle when available.

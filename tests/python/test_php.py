@@ -249,6 +249,35 @@ def test_unsupported_construct_does_not_invent_edges(tmp_path: Path) -> None:
     assert calls and all(e.resolution == "unresolved" for e in calls)
 
 
+def test_classmap_evidence_is_heuristic(tmp_path: Path) -> None:
+    _write(tmp_path, "composer.json", json.dumps({"autoload": {"classmap": ["lib/"]}}))
+    _write(tmp_path, "lib/Vendor/Missing.php", "<?php class Different {}")
+    _write(tmp_path, "app.php", "<?php new \\Vendor\\Missing();")
+    found = derived(tmp_path)
+    edges = [e for e in found.edges if e.kind == "calls" and e.source == "file:app.php"]
+    assert {e.basis for e in edges} == {"heuristic"}
+    assert edges[0].targets == ("file:lib/Vendor/Missing.php",)
+
+
+def test_names_are_case_insensitive_but_keys_keep_source_case(tmp_path: Path) -> None:
+    _write(
+        tmp_path,
+        "a.php",
+        "<?php namespace App; class Logger { public static function write() {} } "
+        "class Store { function f() { LOGGER::WRITE(1); } }",
+    )
+    found = derived(tmp_path)
+    assert "symbol:a.php#App.Logger.write" in {e.key for e in found.entities}
+    assert resolved(found, "calls", "symbol:a.php#App.Store.f") == {"symbol:a.php#App.Logger.write"}
+
+
+def test_class_names_do_not_fall_back_to_global(tmp_path: Path) -> None:
+    _write(tmp_path, "g.php", "<?php class Helper {}")
+    _write(tmp_path, "a.php", "<?php namespace App; class Store { function f() { new Helper(); } }")
+    found = derived(tmp_path)
+    assert not resolved(found, "calls", "symbol:a.php#App.Store.f")
+
+
 def test_aliases_and_current_namespace_do_not_collapse(tmp_path: Path) -> None:
     _write(tmp_path, "a.php", "<?php namespace A; class X {}")
     _write(tmp_path, "b.php", "<?php namespace B; class X {}")

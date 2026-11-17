@@ -49,14 +49,17 @@ class Resolver:
                 qualified = fqn(decl, parsed.decls)
                 key = symbol_key(path, qualified)
                 keys.append(key)
-                self.by_fqn.setdefault(qualified, []).append((key, path, decl.kind))
+                # PHP names are case-insensitive; entity keys keep the source spelling.
+                self.by_fqn.setdefault(qualified.lower(), []).append((key, path, decl.kind))
                 self.owner[key] = (path, decl.ns)
                 self.namespaces.add(decl.ns)
                 if decl.parent is not None and decl.parent < len(keys):
                     self.parent_of[key] = keys[decl.parent]
                     if decl.kind == "method":
                         holder = keys[decl.parent]
-                        self.methods.setdefault(holder, {}).setdefault(decl.name, []).append(key)
+                        self.methods.setdefault(holder, {}).setdefault(
+                            decl.name.lower(), []
+                        ).append(key)
             for use in parsed.bases:
                 if (
                     use.owner is not None
@@ -70,11 +73,13 @@ class Resolver:
                     self.base_names.setdefault(keys[use.owner], []).append(use.name)
             for item in parsed.imports:
                 alias = item.alias or item.path.rsplit("\\", 1)[-1]
-                self.aliases[path, item.ns, alias] = item.path
+                self.aliases[path, item.ns.lower(), alias.lower()] = item.path
 
     def _pick(self, qualified: str, kinds: frozenset[str]) -> tuple[str, ...]:
         return tuple(
-            sorted({key for key, _, kind in self.by_fqn.get(qualified, []) if kind in kinds})
+            sorted(
+                {key for key, _, kind in self.by_fqn.get(qualified.lower(), []) if kind in kinds}
+            )
         )
 
     def _resolve(self, path: str, ns: str, name: str, kinds: frozenset[str]) -> Found:
@@ -83,20 +88,32 @@ class Resolver:
         absolute = name.startswith("\\")
         plain = name.lstrip("\\")
         dotted = key_fqn(plain)
+        folded = dotted.lower()
+        level = ns.lower()
         if absolute:
-            return self._pick(dotted, kinds), "resolved"
-        first, sep, rest = plain.partition("\\")
-        alias = self.aliases.get((path, ns, first))
-        if alias is not None:
-            target = key_fqn(alias + ("\\" + rest if sep else ""))
-            return self._pick(target, kinds), "resolved"
-        if ns and (found := self._pick(f"{ns}.{dotted}", kinds)):
-            return found, "resolved"
-        if found := self._pick(dotted, kinds):
-            return found, "resolved" if not ns else "heuristic"
+            if found := self._pick(folded, kinds):
+                return found, "resolved"
+        else:
+            first, sep, rest = plain.partition("\\")
+            alias = self.aliases.get((path, level, first.lower()))
+            if alias is not None:
+                target = key_fqn(alias + ("\\" + rest if sep else ""))
+                return self._pick(target, kinds), "resolved"
+            if level and (found := self._pick(f"{level}.{folded}", kinds)):
+                return found, "resolved"
+            if found := self._pick(folded, kinds):
+                # PHP functions and constants fall back to the global namespace;
+                # class-like names do not, so a same-named global class is not evidence.
+                if level and kinds <= TYPE_KINDS:
+                    return (), "syntactic"
+                return found, "resolved" if not level else "heuristic"
         mapped = php_composer.path_for(self.composer, plain)
         if mapped is not None and mapped[1] in self.paths:
             return (f"file:{mapped[1]}",), "resolved"
+        for root in php_composer.classmap_roots(self.composer):
+            candidate = f"{root}{plain.replace(chr(92), '/')}.php"
+            if candidate in self.paths:
+                return (f"file:{candidate}",), "heuristic"
         return (), "syntactic"
 
     def _methods(
@@ -106,7 +123,7 @@ class Resolver:
         for key in classes:
             if key in seen:
                 continue
-            found.update(self.methods.get(key, {}).get(name, ()))
+            found.update(self.methods.get(key, {}).get(name.lower(), ()))
             path, ns = self.owner.get(key, ("", ""))
             for base in self.base_names.get(key, ()):
                 supers, _ = self._resolve(path, ns, base, TYPE_KINDS)
@@ -148,7 +165,10 @@ class Resolver:
             kind: RelationKind, source: str, found: Found, name: str, start: int, end: int
         ) -> Edge:
             res, basis = found
-            targets, resolution, default = edge_target(list(res) if res else None, kind == "calls")
+            # Composer evidence can name a captured file rather than a symbol; that is
+            # still real evidence, so do not discard it with the calls-only symbol filter.
+            symbols_only = kind == "calls" and all(t.startswith("symbol:") for t in res)
+            targets, resolution, default = edge_target(list(res) if res else None, symbols_only)
             final = "heuristic" if resolution == "resolved" and basis == "heuristic" else default
             shown = None if resolution == "resolved" else name
             return Edge(kind, source, targets, resolution, final, shown, evidence(start, end))
