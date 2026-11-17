@@ -240,7 +240,8 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
                 encoded = raw if hit else java_facts.encode(jp)
             diagnostics = jp if isinstance(jp, str) else jp.diagnostics
         elif lang == "php":
-            diagnostics = php.parse(f.data)  # stub: PHP is unsupported until the facts land
+            pp = php.parse(f.data)
+            diagnostics = pp if isinstance(pp, str) else pp.diagnostics
         elif lang == "csharp":
             sp, hit = _reuse(raw, f.data, csharp_facts.decode, csharp.parse)
             if not isinstance(sp, str):
