@@ -1,0 +1,47 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M7MQ993KXCSM0PTJDVZX5TS9",
+  "session_id": "01a1e8fd-c2f6-77b2-934b-cae9d5ea2abb",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-17T12:21:38.421696044Z",
+  "branch": "feat/csharp",
+  "checkpoints_count": 3,
+  "save_step_count": 3,
+  "files_touched": [
+    "src/oxide/core/indexing.py",
+    "src/oxide/core/languages/csharp.py",
+    "src/oxide/core/languages/csharp_facts.py",
+    "src/oxide/core/languages/csharp_model.py",
+    "src/oxide/core/languages/csharp_resolve.py",
+    "src/oxide/core/languages/csharp_syntax.py",
+    "tests/python/test_csharp.py"
+  ],
+  "agent": "Pi",
+  "model": "hy4-flash-free",
+  "turn_id": "e796fabc9b6a",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 150270,
+    "cache_creation_tokens": 1007692,
+    "cache_read_tokens": 8558361,
+    "output_tokens": 41358,
+    "api_call_count": 82
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 4
+  }
+}
