@@ -50,17 +50,34 @@ a type checker or reaches outside the capture is left unresolved, not guessed.
   (base class, interfaces, partial parts); `this.m`, `base.m`, `new T(...)` (resolves
   to `T`), qualified `A.B.m`, and locals/fields/properties with a declared type and
   `var`-free typed locals. Calls are filtered by arity, honouring optional parameters
-  and `params`. Overloads of equal arity are not told apart by argument type: the
-  declaring type's own fitting methods win, several fitting ones stay as a set only
-  if they resolve to one method.
+  and `params`. Overloads are not told apart by argument type: when
+  the declaring type and its captured bases both have fitting methods, all of them are
+  candidates and the call is ambiguous rather than resolved.
 - **Unresolved by design:** calls on `var`, expression results, tuples, extension
   methods, external types (BCL, NuGet), `dynamic`, and names an unknown base type
   could declare.
 
 ## Limits and evidence
 
-No oracle against the Roslyn compiler was run: no .NET SDK was available in the
-development environment, so resolution is validated by the fixture tests
-(`tests/python/test_csharp.py`, `fixtures/csharp_repo`) rather than a compiler. Ranking,
+Roslyn oracle (`scripts/csharp_oracle`, Microsoft.CodeAnalysis.CSharp 5.12 on the .NET 8
+SDK; `scripts/csharp_oracle_compare.py` scores a resolved `calls`/`references` edge at
+its source site against the oracle's binding, with the project's `DefineConstants`).
+Measured 2026-11-17, edges OXIDE resolved vs. oracle bindings inside the tree:
+
+| Repo (commit HEAD at clone) | calls agree / disagree | refs agree / disagree |
+| --- | --- | --- |
+| `fixtures/csharp_repo` | 11 / 0 | 7 / 0 |
+| jbogard/MediatR `src` | 112 / 0 | 143 / 0 |
+| JamesNK/Newtonsoft.Json `Src/Newtonsoft.Json` | 3,739 / 4 | 3,130 / 0 |
+
+The 4 disagreements are overloads picked by argument type (e.g. `DeserializeObject` with
+`params`, a call inside an overload reaching a sibling overload): OXIDE's arity filter
+keeps a superset, the oracle picks one. Recall (oracle edges OXIDE also resolved) is
+about 55% of calls and 44% of references on Newtonsoft.Json, deliberately: extension
+methods, `var`, expression results and external types stay unresolved. Without the
+project's `DefineConstants` the oracle compiles a different tree (`#if` excluded code):
+OXIDE indexes every file's tokens regardless, so compare with the defines set.
+
+Ranking,
 routing and packing are untouched: the ContextBench py gate's `metrics.json` is
 byte-identical to `baseline-v21` after the change (only the derivation id differs).

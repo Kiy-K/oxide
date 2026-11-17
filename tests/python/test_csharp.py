@@ -58,16 +58,15 @@ def test_relations() -> None:
         f"{S}/Key.cs#Key",  # new Key
         f"{STORE}.Touch",
     }
-    # Resolution is by name and arity, not argument types, and a declaring type's own
-    # fitting overload wins as C# prefers it: Put(string, int) picks itself here.
-    assert resolved(found, "calls", f"{STORE}.Put") == {f"{STORE}.Put"}
+    # Resolution is by name and arity, not argument types: Put(string, int) and the
+    # inherited Put(string, string) both fit, so the call is ambiguous, not resolved.
+    assert resolved(found, "calls", f"{STORE}.Put") == set()
     assert resolved(found, "calls", f"{CART}.Add") == {
         f"{S}/IBackend.cs#IBackend.Put",  # a field's declared type
         f"{util}.Trim",
         STORE,
-        f"{STORE}.Put",
     }
-    assert resolved(found, "calls", TEST) == {STORE, f"{STORE}.Put", f"{STORE}.Get"}
+    assert resolved(found, "calls", TEST) == {STORE, f"{STORE}.Get"}
     assert resolved(found, "references", f"{STORE}.Get") == {f"{S}/Mode.cs#CachedAttribute"}
 
 

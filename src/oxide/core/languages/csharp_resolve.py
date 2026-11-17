@@ -271,19 +271,29 @@ class Resolver:
             return None
         own = self._declared(site, name, _METHOD)
         fits = [s for s in own if _fits(self._scope(s), arity)]
-        if fits:
-            return fits
         supers, complete = self._supertypes(site)
-        found: list[Site] = []
+        found: list[Site] = list(fits)
         for s in supers:
             inherited = self._methods(s, name, arity, done)
             if inherited is None:
-                return None
-            found.extend(inherited)
+                return None if not fits else sorted(set(found))
+            found.extend(i for i in inherited if not self._overridden(i, fits))
+        # Without argument types an inherited overload may be the better match (an
+        # argument cast to ``object``), so own and inherited candidates stay together.
         if found:
             return sorted(set(found))
         implicit = _IMPLICIT.get(scope.decl.kind, _OBJECT)
         return [] if complete and not own and name not in implicit else None
+
+    def _overridden(self, inherited: Site, own: list[Site]) -> bool:
+        """An ``override`` of the same parameter count replaces the inherited method."""
+        d = self._scope(inherited).decl
+        return d is not None and any(
+            (o := self._scope(s).decl) is not None
+            and (o.arity, o.optional, o.varargs) == (d.arity, d.optional, d.varargs)
+            and " override " in f" {o.signature} "
+            for s in own
+        )
 
     def _field(self, site: Site, name: str, seen: set[Site]) -> Variable | Found:
         """Field, property or constant ``name`` of a type, declared or inherited; []
