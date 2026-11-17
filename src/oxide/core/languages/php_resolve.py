@@ -118,9 +118,9 @@ class Resolver:
         mapped = php_composer.path_for(self.composer, plain)
         if mapped is not None and mapped[1] in self.paths:
             return (f"file:{mapped[1]}",), "resolved"
-        for root in php_composer.classmap_roots(self.composer):
-            candidate = f"{root}{plain.replace(chr(92), '/')}.php"
-            if candidate in self.paths:
+        for candidate in sorted(self.paths):
+            inferred = php_composer.fqn_at(self.composer, candidate)
+            if inferred and inferred[0] == "classmap" and inferred[1].lower() == plain.lower():
                 return (f"file:{candidate}",), "heuristic"
         return (), "syntactic"
 

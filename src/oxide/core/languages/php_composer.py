@@ -84,6 +84,11 @@ def load(manifests: Mapping[str, bytes]) -> Composer:
 
 def fqn_at(composer: Composer, path: str) -> tuple[str, str] | None:
     """The FQN a captured PHP file is expected to declare, by its path."""
+    for root in classmap_roots(composer):
+        if path.startswith(root):
+            rest = path[len(root) :].removesuffix(".php")
+            if rest and not any(not part or part.startswith(".") for part in rest.split("/")):
+                return "classmap", rest.replace("/", "\\")
     for style, prefix, root in composer.rules:
         if root and not path.startswith(root):
             continue
