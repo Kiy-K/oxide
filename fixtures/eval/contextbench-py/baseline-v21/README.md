@@ -20,3 +20,5 @@ and its compatibility fields are unchanged (`test_output_is_compatible` passes),
 `results.json` and `metrics.json` were not regenerated.
 
 Pin relabel (2026-11-17, C# slice): `manifest.json` `derivation` changed from `sha256:daa271b3…` to `sha256:78500a2e…` (new `csharp`/`csharp-parser` components and facts version). Verified: a fresh run of the harness gives `metrics.json` identical to this baseline; `results.json` keeps the id each task was produced with.
+
+Pin relabel (2026-11-17, PHP slice): `manifest.json` `derivation` changed from `sha256:78500a2e…` to `sha256:b8258d49…` (new `php`/`php-parser` components and PHP facts version). Verified with a fresh `contextbench.py run`: `metrics.json` byte-identical to this baseline, only the `derivation` version differs, and all 38 corpus labels relabelled. `results.json` and `metrics.json` were not regenerated.

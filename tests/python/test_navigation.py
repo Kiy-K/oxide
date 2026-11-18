@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import pytest
-from conftest import FIXTURE, env, write
+from conftest import FIXTURE, REPO, env, write
 
 import oxide
 from oxide.cli import _front_positionals
@@ -486,7 +486,7 @@ def test_navigation_reads_the_snapshot_not_the_worktree(
 
 
 @pytest.mark.parametrize(
-    "repo", ["js_repo", "go_repo", "rust_repo", "java_repo", "c_repo", "csharp_repo"]
+    "repo", ["js_repo", "go_repo", "rust_repo", "java_repo", "c_repo", "csharp_repo", "php_repo"]
 )
 def test_navigation_works_in_every_language(repo: str, tmp_path: Path) -> None:
     copy = tmp_path / repo
@@ -500,6 +500,22 @@ def test_navigation_works_in_every_language(repo: str, tmp_path: Path) -> None:
         assert found.status == "resolved" and found.candidates[0].declaration == first
         assert handle.refs(first.key).status == "resolved"
         assert handle.outline() == handle.outline()
+
+
+def test_php_navigation_surfaces_all_six_views(tmp_path: Path) -> None:
+    copy = tmp_path / "php_repo"
+    shutil.copytree(REPO / "fixtures/php_repo", copy)
+    with oxide.open_repository(copy) as handle:
+        handle.index()
+        assert any(f.path.endswith(".php") for f in handle.outline().files)
+        found = handle.inspect("App.Store")
+        assert found.status == "resolved"
+        assert found.candidates[0].declaration.kind == "class"
+        assert handle.refs("App.Store").status == "resolved"
+        assert handle.search("Store", limit=5).entries
+        assert handle.build_context("Store", 512).items
+        impact = handle.impact("symbol:src/Store.php#App.Store")
+        assert impact.root.key == "symbol:src/Store.php#App.Store"
 
 
 # --- command line -----------------------------------------------------------------
