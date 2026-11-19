@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -222,10 +223,18 @@ def test_fixture_structure() -> None:
 
 
 def test_bash_n_oracle_acceptance() -> None:
+    bash = shutil.which("bash")
+    if bash is None:
+        pytest.skip("bash not installed")
+    if sys.platform == "win32" and Path(bash).parent.name.lower() == "system32":
+        # Windows ships ``bash.exe`` as a WSL launcher: it exits 1 with no stderr
+        # when no distribution is installed, which is not a syntax verdict.
+        pytest.skip("Windows bash.exe is the WSL launcher, not a shell")
     for file in capture(FIXTURE).files:
         if not file.path.endswith(".sh"):
             continue  # .bats uses @test syntax that bash -n does not accept
-        check = subprocess.run(["bash", "-n", str(FIXTURE / file.path)], capture_output=True)
+        # A relative POSIX path: Git-bash mangles ``D:\...`` and absolute paths.
+        check = subprocess.run([bash, "-n", file.path], cwd=FIXTURE, capture_output=True)
         assert check.returncode == 0, check.stderr.decode()
         parsed = shell.parse(file.data, "bash")  # bash -n accepts the Bash superset
         assert not isinstance(parsed, str) and not parsed.diagnostics
@@ -254,3 +263,44 @@ def test_shellcheck_source_reference() -> None:
     )
     codes = {c["code"] for c in json.loads(report.stdout or b"{}").get("comments", [])}
     assert {1090, 1091} & codes  # the two source paths are runtime-dependent
+
+
+def test_dotted_function_names_do_not_collide_with_nested_locals(tmp_path: Path) -> None:
+    """``foo.bar`` and a ``local bar`` inside ``foo`` are different symbols."""
+    _write(tmp_path, "a.sh", "#!/usr/bin/env bash\nfoo.bar() { :; }\nfoo() { local bar=1; }\n")
+    found = derived(tmp_path)  # validate() rejects the duplicate key
+    assert {e.key for e in found.entities if e.category == "symbol"} == {
+        "symbol:a.sh#foo%2Ebar",  # the literal function name
+        "symbol:a.sh#foo",
+        "symbol:a.sh#foo.bar",  # bar local to foo
+    }
+
+
+def test_facts_accept_any_shell_token_name() -> None:
+    """A function name is a word token, so it may hold a hyphen; a quoted source
+    path may hold a space. Neither may be dropped by the cache codec."""
+    for source in (b"do-thing() { :; }\n", b'source "./my lib/util.sh"\n'):
+        parsed = shell.parse(source, "bash")
+        assert not isinstance(parsed, str)
+        assert shell_facts.decode(shell_facts.encode(parsed), len(source), "bash") == parsed
+    parsed = shell.parse(b"do-thing() { :; }\n", "bash")
+    assert not isinstance(parsed, str)
+    assert [d.name for d in parsed.decls if d.kind == "function"] == ["do-thing"]
+    parsed = shell.parse(b'source "./my lib/util.sh"\n', "bash")
+    assert not isinstance(parsed, str)
+    assert [(u.kind, u.path) for u in parsed.uses] == [("source", "./my lib/util.sh")]
+
+
+def test_prefix_assignment_before_source_keeps_the_import(tmp_path: Path) -> None:
+    _write(tmp_path, "lib.sh", "#!/usr/bin/env bash\nhelper() { :; }\n")
+    _write(tmp_path, "main.sh", "#!/usr/bin/env bash\nX=1 source ./lib.sh\nhelper\n")
+    found = derived(tmp_path)
+    assert resolved(found, "imports", "file:main.sh") == {"file:lib.sh"}
+    assert resolved(found, "calls", "file:main.sh") == {"symbol:lib.sh#helper"}
+
+
+def test_interpreter_option_operand_is_not_the_script(tmp_path: Path) -> None:
+    _write(tmp_path, "run.sh", "#!/usr/bin/env bash\n")
+    _write(tmp_path, "main.sh", "#!/usr/bin/env bash\nbash -o pipefail ./run.sh\n")
+    found = derived(tmp_path)
+    assert resolved(found, "calls", "file:main.sh") == {"file:run.sh"}

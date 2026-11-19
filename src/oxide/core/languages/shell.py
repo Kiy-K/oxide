@@ -7,6 +7,8 @@ a diagnostic. Resolution lives in ``shell_resolve``; the codec in ``shell_facts`
 
 from __future__ import annotations
 
+import re
+
 import tree_sitter_bash
 from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
@@ -35,9 +37,13 @@ from oxide.core.languages.shell_syntax import (
 __all__ = ["BASH_FACTS_VERSION", "SH_FACTS_VERSION", "VERSION", "Parsed", "detect", "parse"]
 
 VERSION = "oxide-shell-v1"
-BASH_FACTS_VERSION = "oxide-shell-facts-v1"
-SH_FACTS_VERSION = "oxide-shell-facts-v1-sh"
+BASH_FACTS_VERSION = "oxide-shell-facts-v2"
+SH_FACTS_VERSION = "oxide-shell-facts-v2-sh"
 LANGUAGE = Language(tree_sitter_bash.language())
+
+# ``bash -o pipefail run.sh`` / ``--rcfile config.sh run.sh``: these options consume
+# the next argument, which is a flag name or a config file, not the script to run.
+_OPERAND = re.compile(r"[-+][A-Za-z]*[oO]|--(?:rcfile|init-file)")
 
 _QUERY = Query(
     LANGUAGE,
@@ -80,11 +86,22 @@ def _command(data: bytes, node: Node, owner: int | None) -> list[Use]:
     if command and (command.startswith("@") or command == "}"):
         return []  # Bats ``@test`` and a closing ``}`` are syntax, not commands
     # ``Node`` wrappers are recreated on each access, so compare byte ranges.
+    # ``X=1 source ./lib.sh`` keeps the assignment inside the command node, and a
+    # ``<<<`` redirect is a child of it: neither is an argument of the command.
     args = [
         c
         for c in named(node)
-        if name_node is None
-        or (c.start_byte, c.end_byte) != (name_node.start_byte, name_node.end_byte)
+        if c.type
+        not in (
+            "variable_assignment",
+            "file_redirect",
+            "heredoc_redirect",
+            "herestring_redirect",
+        )
+        and (
+            name_node is None
+            or (c.start_byte, c.end_byte) != (name_node.start_byte, name_node.end_byte)
+        )
     ]
     start, end = span(node)
     if command in ("source", "."):
@@ -95,7 +112,13 @@ def _command(data: bytes, node: Node, owner: int | None) -> list[Use]:
         kind = "source" if path else "dynamic_source"
         return [Use(written, start, end, owner, kind, path or "")]
     if command in INTERPRETERS:
+        operand = False
         for arg in args:
+            # An option's operand is skipped even when dynamic: ``bash --rcfile
+            # "$CFG" run.sh`` still runs ``run.sh``, not the config file.
+            if operand:
+                operand = False
+                continue
             value = literal(data, arg)
             if value is None:
                 if is_dynamic(arg) or has_expansion(arg):
@@ -103,6 +126,9 @@ def _command(data: bytes, node: Node, owner: int | None) -> list[Use]:
                 continue
             if value in ("-c", "-s"):  # inline command string, not a script path
                 return []
+            if _OPERAND.fullmatch(value):
+                operand = True
+                continue
             if value.startswith("-"):
                 continue
             path = static_path(data, arg)

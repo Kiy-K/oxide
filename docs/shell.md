@@ -5,6 +5,17 @@ grammars. Bash is a superset of POSIX sh, so one grammar and one facts codec
 serve two `FileInfo.language` values: `bash` and `sh`. **No indexed script is ever
 executed** — `bash -n` and ShellCheck are developer/CI references only.
 
+## Gap analysis (CAP-003)
+
+One query collects declarations, assignments, commands and expansions; Python only
+assigns each captured node to its innermost function and normalizes a word to a
+literal or a dynamic name. Bash-feature detection (`shell_syntax.bash_features`)
+walks the tree in Python rather than in the query because no single query can say
+"any anonymous token of these types or any named node of these types, anywhere":
+the same construct appears as a token (`[[`), a node type (`array`) or both. It is
+a bounded pure diagnostic pass that emits no entities and no edges, so its cost is
+independent of what the resolution pass can see.
+
 ## Detection
 
 A shebang wins over the filename; the filename decides when there is no shebang.
@@ -39,6 +50,9 @@ POSIX conformance. `.` is accepted in both dialects.
 
 All facts keep half-open byte spans. Same-scope duplicate declarations get an
 internal source-order `~n` ordinal so `symbol:<path>#<name>` keys stay unique.
+`symbol` keys join enclosing names with `.`, so `%` becomes `%25` and `.` becomes
+`%2E` inside each segment: a top-level `foo.bar` and a local `bar` in `foo` get
+distinct keys, and neither invents a `foo` ancestor.
 
 ## Resolution ladder
 

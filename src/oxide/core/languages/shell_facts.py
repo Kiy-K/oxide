@@ -9,8 +9,10 @@ from oxide.core.languages.python import as_list
 from oxide.core.languages.shell_model import DECL_KINDS, USE_KINDS, Decl, Parsed, ShellDialect, Use
 
 _DIALECTS = frozenset({"bash", "sh"})
-_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_~.]*")
-_PATH = re.compile(r"[\w./+@~-]*")
+# A function name is any non-blank token (``do-thing``), a path may be quoted with
+# spaces; both come from the file, so the codec only rejects control bytes.
+_NAME = re.compile(r"[^\x00-\x20\x7f]+")
+_PATH = re.compile(r"[^\x00-\x1f\x7f]*")
 
 
 def encode(parsed: Parsed) -> list[Any]:
