@@ -7,17 +7,15 @@ the cache codec in ``php_facts``.
 
 from __future__ import annotations
 
-import bisect
-
 import tree_sitter_php
 from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
-from oxide.core.languages.php_model import Call, Decl, Import, Parsed, Use
+from oxide.core.languages.php_model import Call, Decl, Import, Parsed, Use, ns_at
 from oxide.core.languages.php_syntax import field, ident, named, php_name, span, text
 from oxide.core.languages.python import TOO_DEEP, syntax_diagnostics, too_deep
 
 VERSION = "oxide-php-v1"
-FACTS_VERSION = "oxide-php-facts-v2"
+FACTS_VERSION = "oxide-php-facts-v3"
 LANGUAGE = Language(tree_sitter_php.language_php())
 
 _KINDS = {
@@ -56,7 +54,7 @@ _QUERY = Query(
     (member_call_expression) @call
     (nullsafe_member_call_expression) @call
     (object_creation_expression) @call
-    (named_type (name) @ref)
+    (named_type [(name) (qualified_name)] @ref)
     """,
 )
 _BROKEN = Query(LANGUAGE, "(ERROR) @error (MISSING) @missing")
@@ -75,11 +73,6 @@ def _namespaces(data: bytes, nodes: list[Node]) -> list[tuple[int, int, str]]:
             end = ordered[i + 1].start_byte if i + 1 < len(ordered) else len(data)
             regions.append((node.end_byte, end, name))
     return sorted(regions)
-
-
-def _ns_at(regions: list[tuple[int, int, str]], at: int) -> str:
-    i = bisect.bisect_right(regions, (at,)) - 1
-    return regions[i][2] if i >= 0 and at < regions[i][1] else ""
 
 
 def _signature(data: bytes, node: Node) -> str:
@@ -132,11 +125,11 @@ def _call(data: bytes, node: Node, owner: int | None) -> Call | None:
     s, e = span(node)
     if node.type == "function_call_expression":
         fun = field(node, "function")
-        if fun is None or fun.type not in ("name", "relative_name"):
+        if fun is None or fun.type not in ("name", "relative_name", "qualified_name"):
             return None
         name = php_name(data, fun)
-        if name in _DYNAMIC_FUNCTIONS:
-            return None
+        if name.lstrip("\\").lower() in _DYNAMIC_FUNCTIONS:
+            return None  # dynamic dispatch, even written ``\call_user_func``
         return Call(name, s, e, owner, "function")
     if node.type == "scoped_call_expression":
         scope, member = field(node, "scope"), field(node, "name")
@@ -196,7 +189,7 @@ def parse(data: bytes) -> Parsed | str:
                 name,
                 *span(node),
                 _signature(data, node),
-                _ns_at(namespaces, node.start_byte),
+                ns_at(namespaces, node.start_byte),
                 parent,
                 ordinal,
             )
@@ -222,12 +215,11 @@ def parse(data: bytes) -> Parsed | str:
                 node,
                 ident(data, field(node, "name") or next(iter(named(node)), None)).removeprefix("$"),
             )
-
     imports = sorted(
         (
             item
             for n in captures.get("import", [])
-            for item in _import(data, n, _ns_at(namespaces, n.start_byte))
+            for item in _import(data, n, ns_at(namespaces, n.start_byte))
         ),
         key=lambda i: (i.start, i.end),
     )
@@ -242,9 +234,10 @@ def parse(data: bytes) -> Parsed | str:
             )
         )
     for n in captures.get("trait", []):
-        name = next(iter(named(n)), None)
-        if name is not None:
-            bases.append(Use(php_name(data, name), *span(name), owner(n.start_byte), "trait"))
+        # ``use T1, T2;`` and ``use A\{T1, T2};`` list several names in one statement.
+        for name in named(n):
+            if name.type in ("name", "qualified_name"):
+                bases.append(Use(php_name(data, name), *span(name), owner(n.start_byte), "trait"))
     calls = sorted(
         (
             c

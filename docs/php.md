@@ -31,8 +31,10 @@ A name is resolved against captured source only, in this order:
 2. a `use` alias (explicit, or the trailing segment of an unaliased import) →
    its target → **proven**;
 3. the current namespace + name, unique → **proven**, several → **ambiguous**;
-4. the global name, unique → **heuristic** (PHP falls back to global functions
-   and classes; this is a guess, not evidence);
+4. the global name, unique → **heuristic** — but only for unqualified function and
+   constant names: PHP falls back to globals for those, never for class-like names,
+   and a qualified name (`App\helper`) is read relative to the current namespace
+   (`App\App\helper` inside `namespace App`), never as a global;
 5. Composer PSR-4/PSR-0 mapping to a captured file → **proven** file-level edge;
 6. nothing found → **unresolved**, retaining the written name and byte span.
 

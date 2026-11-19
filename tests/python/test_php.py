@@ -228,7 +228,7 @@ def test_dynamic_calls_emit_no_edges(tmp_path: Path) -> None:
     source = (
         "<?php class C { function run() { "
         "$fn = 'x'; $fn(); $o->$m(); call_user_func('x'); "
-        "call_user_func_array('x', []); ${'dyn'}(); "
+        "\\call_user_func_array('x', []); ${'dyn'}(); "
         "$this->find(); self::go(); } }"
     )
     _write(tmp_path, "d.php", source)
@@ -340,3 +340,123 @@ def test_aliases_and_current_namespace_do_not_collapse(tmp_path: Path) -> None:
         "symbol:a.php#A.X",
         "symbol:b.php#B.X",
     }
+
+
+def test_compact_namespace_governs_the_rest_of_the_file() -> None:
+    """``namespace App;`` without braces is a region, not a one-statement scope."""
+    parsed = php.parse(b"<?php namespace App;class Foo {}")
+    assert not isinstance(parsed, str)
+    assert parsed.decls[0].ns == "App"
+    assert not parsed.diagnostics
+
+
+def test_same_class_in_both_branches_gets_distinct_keys(tmp_path: Path) -> None:
+    _write(
+        tmp_path,
+        "c.php",
+        "<?php if ($x) { class C { function f() {} } } else { class C { function f() {} } }",
+    )
+    found = derived(tmp_path)  # validate() rejects a duplicate key
+    assert {e.key for e in found.entities if e.category == "symbol"} == {
+        "symbol:c.php#C",
+        "symbol:c.php#C.f",
+        "symbol:c.php#C~1",
+        "symbol:c.php#C~1.f",
+    }
+    # The written name still resolves by name, so an ordinal never hides a call
+    # site: both definitions answer to ``C::f``, and the result is ambiguous.
+    _write(tmp_path, "u.php", "<?php C::f();")
+    found = derived(tmp_path)
+    calls = [e for e in found.edges if e.kind == "calls" and e.source == "file:u.php"]
+    assert [(e.resolution, e.targets) for e in calls] == [
+        ("ambiguous", ("symbol:c.php#C.f", "symbol:c.php#C~1.f"))
+    ]
+
+
+def test_qualified_function_calls_resolve(tmp_path: Path) -> None:
+    _write(tmp_path, "h.php", "<?php namespace App; function helper() {}")
+    _write(
+        tmp_path,
+        "u.php",
+        "<?php namespace App; \\App\\helper(); App\\helper(); helper();",
+    )
+    found = derived(tmp_path)
+    assert resolved(found, "calls", "file:u.php") == {"symbol:h.php#App.helper"}
+    # Inside ``namespace App`` PHP reads ``App\helper()`` as ``App\App\helper()``,
+    # never as the imported global; only unqualified names see the current namespace.
+    assert {e.name for e in found.edges if e.kind == "calls" and not e.targets} == {"App\\helper"}
+
+
+def test_grouped_trait_use_expands_every_trait(tmp_path: Path) -> None:
+    parsed = php.parse(b"<?php class C { use T1, T2; }")
+    assert not isinstance(parsed, str)
+    assert [(b.name, b.kind) for b in parsed.bases] == [("T1", "trait"), ("T2", "trait")]
+    _write(
+        tmp_path,
+        "t.php",
+        "<?php trait T1 { function m1() {} } trait T2 { function m2() {} } "
+        "class C { use T1, T2; function run() { $this->m2(); } }",
+    )
+    found = derived(tmp_path)
+    assert resolved(found, "calls", "symbol:t.php#C.run") == {"symbol:t.php#T2.m2"}
+
+
+def test_a_local_override_hides_the_inherited_method(tmp_path: Path) -> None:
+    _write(
+        tmp_path,
+        "b.php",
+        "<?php class B { function f() {} } "
+        "class C extends B { function f() {} function run() { $this->f(); } }",
+    )
+    found = derived(tmp_path)
+    assert resolved(found, "calls", "symbol:b.php#C.run") == {"symbol:b.php#C.f"}
+
+
+def test_relative_scopes_resolve_to_holder_and_base(tmp_path: Path) -> None:
+    _write(
+        tmp_path,
+        "s.php",
+        "<?php class P { function go() {} } "
+        "class C extends P { function run() { "
+        "self::go(); static::go(); parent::go(); new self(); } }",
+    )
+    found = derived(tmp_path)
+    assert resolved(found, "calls", "symbol:s.php#C.run") == {
+        "symbol:s.php#P.go",  # parent::go and the inherited self/static::go
+        "symbol:s.php#C",  # new self()
+    }
+
+
+def test_class_and_function_aliases_do_not_shadow_each_other(tmp_path: Path) -> None:
+    _write(tmp_path, "g.php", "<?php namespace A; class C {}")
+    _write(tmp_path, "f.php", "<?php namespace B; function f() {}")
+    _write(tmp_path, "u.php", "<?php use A\\C as X; use function B\\f as X; new X(); X();")
+    found = derived(tmp_path)
+    calls = [e for e in found.edges if e.kind == "calls" and e.source == "file:u.php"]
+    # Both spell ``X``, but the class alias takes ``new X()`` and the function alias
+    # takes ``X()``; a resolved edge drops the written name, so compare targets.
+    assert {e.targets for e in calls} == {("symbol:g.php#A.C",), ("symbol:f.php#B.f",)}
+    assert all(e.resolution == "resolved" for e in calls)
+
+
+def test_a_type_hint_does_not_reference_a_same_named_function(tmp_path: Path) -> None:
+    _write(tmp_path, "h.php", "<?php function Helper() {} function f(Helper $x) {}")
+    found = derived(tmp_path)
+    assert resolved(found, "references", "symbol:h.php#f") == set()
+
+
+def test_an_import_prefix_does_not_invent_a_module(tmp_path: Path) -> None:
+    _write(tmp_path, "i.php", "<?php namespace Application; use App;")
+    found = derived(tmp_path)
+    assert {e.key for e in found.entities if e.category == "module"} == {"module:php:Application"}
+
+
+def test_psr4_maps_a_class_to_its_file_when_the_symbol_is_absent(tmp_path: Path) -> None:
+    _write(tmp_path, "composer.json", json.dumps({"autoload": {"psr-4": {"App\\": "src/"}}}))
+    _write(tmp_path, "src/Missing.php", "<?php namespace App; class NotIt {}")
+    _write(tmp_path, "u.php", "<?php namespace App; new Missing();")
+    found = derived(tmp_path)
+    edges = [e for e in found.edges if e.kind == "calls" and e.source == "file:u.php"]
+    assert [(e.targets, e.resolution, e.basis) for e in edges] == [
+        (("file:src/Missing.php",), "resolved", "resolved")
+    ]

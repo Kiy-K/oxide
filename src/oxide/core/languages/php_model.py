@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import bisect
 from dataclasses import dataclass
 
 KINDS = frozenset(
@@ -76,8 +77,45 @@ def key_fqn(fqn: str) -> str:
     return fqn.replace("\\", ".")
 
 
+def ns_at(regions: list[tuple[int, int, str]], at: int) -> str:
+    """The namespace governing offset ``at``, or "" for the global one."""
+    i = region_at(regions, at)
+    return regions[i][2] if i >= 0 else ""
+
+
+def region_at(regions: list[tuple[int, int, str]], at: int) -> int:
+    """The index of the namespace region holding ``at``, or -1 outside every region.
+
+    Alias scope is per region, so the index rather than the name is what two statements
+    in different bracketed namespaces must not collide on.
+    """
+    i = bisect.bisect_right(regions, at, key=lambda r: r[0]) - 1
+    return i if i >= 0 and at < regions[i][1] else -1
+
+
 def fqn(decl: Decl, decls: list[Decl]) -> str:
-    """Fully qualified name in dot form, including the enclosing declarations."""
+    """Fully qualified name in dot form, including the enclosing declarations.
+
+    Every segment carries its own ordinal: two same-named classes in disjoint branches
+    would otherwise give their members the same key.
+    """
+    parts = [_named(decl)]
+    parent = decl.parent
+    seen = 0
+    while parent is not None and 0 <= parent < len(decls) and seen < 512:
+        parts.append(_named(decls[parent]))
+        parent = decls[parent].parent
+        seen += 1
+    parts.reverse()
+    return ".".join([*([decl.ns] if decl.ns else []), *parts])
+
+
+def lookup_name(decl: Decl, decls: list[Decl]) -> str:
+    """The name this declaration is written as, ordinals left out.
+
+    A `~n` ordinal is a key-uniquefier, not part of the language: resolving by ``fqn``
+    would make an ordinal-bearing declaration unreachable by the name it is used with.
+    """
     parts = [decl.name]
     parent = decl.parent
     seen = 0
@@ -86,9 +124,11 @@ def fqn(decl: Decl, decls: list[Decl]) -> str:
         parent = decls[parent].parent
         seen += 1
     parts.reverse()
-    if decl.ordinal:
-        parts[-1] = f"{parts[-1]}~{decl.ordinal}"
     return ".".join([*([decl.ns] if decl.ns else []), *parts])
+
+
+def _named(decl: Decl) -> str:
+    return decl.name + (f"~{decl.ordinal}" if decl.ordinal else "")
 
 
 def symbol_key(path: str, name: str) -> str:
