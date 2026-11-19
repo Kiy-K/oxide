@@ -87,8 +87,9 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
   `class`, `struct`, `interface`, `enum`, `record`, `delegate`, `method`, `constructor`,
   `destructor`, `operator`, `property`, `indexer`, `event`, `field`, `enum_member`; C
   `function` (definitions and prototypes), `struct`, `union`, `enum`, `type`, `variable`,
-  `macro`; C++ also `namespace`, `class`, `method`. `FileInfo.language` is `python`,
-  `typescript`, `javascript`, `go`, `rust`, `java`, `csharp`, `c`, `cpp` or `unknown`.
+  `macro`; C++ also `namespace`, `class`, `method`; Bash/POSIX sh `function`, `variable`
+  ([docs/shell.md](shell.md)). `FileInfo.language` is `python`, `typescript`,
+  `javascript`, `go`, `rust`, `java`, `csharp`, `c`, `cpp`, `bash`, `sh` or `unknown`.
 - `SourceRef`: `path`, half-open byte `start`/`end`, file `digest`
   (`sha256:` of the captured bytes).
 - `Relation`: `kind` (`contains`, `contains_logical`, `defines`, `references`,

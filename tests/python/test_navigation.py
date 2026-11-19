@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import pytest
-from conftest import FIXTURE, env, write
+from conftest import FIXTURE, REPO, env, write
 
 import oxide
 from oxide.cli import _front_positionals
@@ -486,7 +486,17 @@ def test_navigation_reads_the_snapshot_not_the_worktree(
 
 
 @pytest.mark.parametrize(
-    "repo", ["js_repo", "go_repo", "rust_repo", "java_repo", "c_repo", "csharp_repo"]
+    "repo",
+    [
+        "js_repo",
+        "go_repo",
+        "rust_repo",
+        "java_repo",
+        "c_repo",
+        "csharp_repo",
+        "php_repo",
+        "shell_repo",
+    ],
 )
 def test_navigation_works_in_every_language(repo: str, tmp_path: Path) -> None:
     copy = tmp_path / repo
@@ -500,6 +510,51 @@ def test_navigation_works_in_every_language(repo: str, tmp_path: Path) -> None:
         assert found.status == "resolved" and found.candidates[0].declaration == first
         assert handle.refs(first.key).status == "resolved"
         assert handle.outline() == handle.outline()
+
+
+def test_php_navigation_surfaces_all_six_views(tmp_path: Path) -> None:
+    copy = tmp_path / "php_repo"
+    shutil.copytree(REPO / "fixtures/php_repo", copy)
+    with oxide.open_repository(copy) as handle:
+        handle.index()
+        assert any(f.path.endswith(".php") for f in handle.outline().files)
+        found = handle.inspect("App.Store")
+        assert found.status == "resolved"
+        assert found.candidates[0].declaration.kind == "class"
+        assert handle.refs("App.Store").status == "resolved"
+        assert handle.search("Store", limit=5).entries
+        assert handle.build_context("Store", 512).items
+        impact = handle.impact("symbol:src/Store.php#App.Store")
+        assert impact.root.key == "symbol:src/Store.php#App.Store"
+
+
+def test_shell_navigation_surfaces_all_six_views(tmp_path: Path) -> None:
+    copy = tmp_path / "shell_repo"
+    shutil.copytree(REPO / "fixtures/shell_repo", copy)
+    with oxide.open_repository(copy) as handle:
+        handle.index()
+        assert any(f.path.endswith(".sh") for f in handle.outline().files)
+        found = handle.inspect("main")
+        assert found.status == "resolved"
+        assert found.candidates[0].declaration.kind == "function"
+        assert handle.refs("main").status == "resolved"
+        assert handle.search("log", limit=5).entries
+        assert handle.build_context("log", 512).items
+        impact = handle.impact("symbol:entrypoint.sh#main")
+        assert impact is not None and impact.root.key == "symbol:entrypoint.sh#main"
+
+
+def test_cli_navigation_works_for_shell(tmp_path: Path, private_data: Path) -> None:
+    copy = tmp_path / "shell_repo"
+    shutil.copytree(REPO / "fixtures/shell_repo", copy)
+    target = (str(copy), "--data-dir", str(private_data))
+    assert oxide_cli(private_data, "index", *target).returncode == 0
+    listed = oxide_cli(private_data, "outline", *target, "entrypoint.sh")
+    assert listed.returncode == 0 and "main" in listed.stdout
+    found = oxide_cli(private_data, "inspect", *target, "main", "--json")
+    assert found.returncode == 0 and json.loads(found.stdout)["status"] == "resolved"
+    refs = oxide_cli(private_data, "refs", *target, "main", "--json")
+    assert refs.returncode == 0 and json.loads(refs.stdout)["status"] == "resolved"
 
 
 # --- command line -----------------------------------------------------------------

@@ -32,10 +32,18 @@ from oxide.core.languages import (
     java,
     java_facts,
     java_resolve,
+    php,
+    php_composer,
+    php_facts,
+    php_model,
+    php_resolve,
     python,
     python_resolve,
     rust,
     rust_resolve,
+    shell,
+    shell_facts,
+    shell_resolve,
     typescript,
     typescript_resolve,
     typescript_syntax,
@@ -52,11 +60,24 @@ FACTS_FORMAT = (
     f"oxide-facts-v2 {python.FACTS_VERSION} {typescript.FACTS_VERSION} "
     f"{typescript.JAVASCRIPT_FACTS_VERSION} {go.FACTS_VERSION} {rust.FACTS_VERSION} "
     f"{java.FACTS_VERSION} {c.FACTS_VERSION} {cpp.FACTS_VERSION} "
-    f"{csharp.FACTS_VERSION}"
+    f"{csharp.FACTS_VERSION} {php.FACTS_VERSION} "
+    f"{shell.BASH_FACTS_VERSION} {shell.SH_FACTS_VERSION}"
 )
 
 Dialect = Literal[
-    "python", "typescript", "tsx", "javascript", "go", "rust", "java", "c", "cpp", "csharp"
+    "python",
+    "typescript",
+    "tsx",
+    "javascript",
+    "go",
+    "rust",
+    "java",
+    "c",
+    "cpp",
+    "csharp",
+    "php",
+    "bash",
+    "sh",
 ]
 CPP_SUFFIXES = (
     ".cc",
@@ -83,6 +104,12 @@ def dialect(path: str) -> Dialect | None:
         return "java"
     if path.endswith(".cs"):
         return "csharp"
+    if path.endswith((".php", ".phtml")):
+        return "php"
+    if path.endswith((".bash", ".bashrc", ".bash_profile", ".bash_login", ".bash_logout", ".bats")):
+        return "bash"
+    if path.endswith(".sh"):
+        return "sh"
     if path.endswith((".c", ".h")):
         return "c"
     if path.endswith(CPP_SUFFIXES):
@@ -93,9 +120,11 @@ def dialect(path: str) -> Dialect | None:
 def source_dialect(path: str, data: bytes) -> Dialect | None:
     """``dialect``, except that a ``.h`` file with C++ syntax is C++ (docs/cpp.md)."""
     found = dialect(path)
-    return (
-        "cpp" if found == "c" and path.endswith(".h") and cpp_macros.is_cplusplus(data) else found
-    )
+    if found == "c" and path.endswith(".h") and cpp_macros.is_cplusplus(data):
+        return "cpp"
+    if found in (None, "bash", "sh") and (shell_dialect := shell.detect(path, data)) is not None:
+        return shell_dialect
+    return found
 
 
 @dataclass(frozen=True, slots=True)
@@ -132,6 +161,11 @@ def components(storage: dict[str, str]) -> dict[str, str]:
         "c-parser": f"{parser} tree-sitter-c={version('tree-sitter-c')}",
         "cpp": cpp.VERSION,
         "cpp-parser": f"{parser} tree-sitter-cpp={version('tree-sitter-cpp')}",
+        "php": php.VERSION,
+        "php-parser": f"{parser} tree-sitter-php={version('tree-sitter-php')}",
+        "bash": shell.VERSION,
+        "sh": shell.VERSION,
+        "shell-parser": f"{parser} tree-sitter-bash={version('tree-sitter-bash')}",
         "terms": TERMS_VERSION,
         "tree-projection": TREE_PROJECTION,
         **storage,
@@ -192,6 +226,8 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     rs_sources: list[tuple[str, str, rust.Parsed]] = []
     java_sources: list[tuple[str, str, java.Parsed]] = []
     cs_sources: list[tuple[str, str, csharp_model.Parsed]] = []
+    php_sources: list[tuple[str, str, php_model.Parsed]] = []
+    sh_sources: list[tuple[str, str, shell.Parsed]] = []
     c_sources: list[tuple[str, str, c.Parsed]] = []
     cpp_sources: list[tuple[str, str, cpp.Parsed]] = []
     for f in capture.files:
@@ -233,6 +269,20 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
                 java_sources.append((f.path, f.digest, jp))
                 encoded = raw if hit else java_facts.encode(jp)
             diagnostics = jp if isinstance(jp, str) else jp.diagnostics
+        elif lang == "php":
+            pp, hit = _reuse(raw, f.data, php_facts.decode, php.parse)
+            if not isinstance(pp, str):
+                php_sources.append((f.path, f.digest, pp))
+                encoded = raw if hit else php_facts.encode(pp)
+            diagnostics = pp if isinstance(pp, str) else pp.diagnostics
+        elif lang in ("bash", "sh"):
+            sh_parse = partial(shell.parse, dialect=lang)
+            sh_decode = partial(shell_facts.decode, dialect=lang)
+            shp, hit = _reuse(raw, f.data, sh_decode, sh_parse)
+            if not isinstance(shp, str):
+                sh_sources.append((f.path, f.digest, shp))
+                encoded = raw if hit else shell_facts.encode(shp)
+            diagnostics = shp if isinstance(shp, str) else shp.diagnostics
         elif lang == "csharp":
             sp, hit = _reuse(raw, f.data, csharp_facts.decode, csharp.parse)
             if not isinstance(sp, str):
@@ -252,6 +302,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
                 encoded = raw if hit else cpp_facts.encode(xp)
             diagnostics = xp if isinstance(xp, str) else xp.diagnostics
         else:
+            assert lang in ("typescript", "tsx", "javascript")
             parse = partial(typescript.parse, language=lang)
             ts, hit = _reuse(raw, f.data, typescript.decode, parse)
             if not isinstance(ts, str):
@@ -276,7 +327,10 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     rust_resolve.Resolver(rs_sources, manifests).derive(entities, edges)
     java_resolve.Resolver(java_sources).derive(entities, edges)
     csharp_resolve.Resolver(cs_sources).derive(entities, edges)
+    manifests = {p: d for p, d in others.items() if p.rpartition("/")[2] == "composer.json"}
+    php_resolve.Resolver(php_sources, php_composer.load(manifests)).derive(entities, edges)
     paths = {f.path for f in capture.files}
+    shell_resolve.Resolver(sh_sources, paths).derive(entities, edges)
     c_resolve.Resolver(c_sources, paths).derive(entities, edges)
     cpp_resolve.Resolver(cpp_sources, c_sources, paths).derive(entities, edges)
     return Derived(tuple(files), tuple(entities), tuple(edges), facts, reused)
