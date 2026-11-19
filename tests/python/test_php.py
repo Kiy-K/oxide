@@ -460,3 +460,26 @@ def test_psr4_maps_a_class_to_its_file_when_the_symbol_is_absent(tmp_path: Path)
     assert [(e.targets, e.resolution, e.basis) for e in edges] == [
         (("file:src/Missing.php",), "resolved", "resolved")
     ]
+
+
+def test_a_qualified_class_name_still_reaches_composer(tmp_path: Path) -> None:
+    _write(
+        tmp_path,
+        "composer.json",
+        json.dumps({"autoload": {"psr-4": {"App\\": "src/", "Vendor\\Pkg\\": "packages/"}}}),
+    )
+    _write(tmp_path, "src/Sub/Missing.php", "<?php namespace App\\Sub; class NotIt {}")
+    _write(tmp_path, "packages/Thing.php", "<?php class Thing {}")
+    _write(tmp_path, "u.php", "<?php namespace App; new Sub\\Missing();")
+    _write(tmp_path, "v.php", "<?php new Vendor\\Pkg\\Thing();")
+    found = derived(tmp_path)
+    # PHP reads ``Sub\Missing`` inside ``namespace App`` as ``App\Sub\Missing``, and a
+    # global file reads ``Vendor\Pkg\Thing`` literally; both are PSR-4 mapped.
+    for source, target in (
+        ("file:u.php", "file:src/Sub/Missing.php"),
+        ("file:v.php", "file:packages/Thing.php"),
+    ):
+        edges = [e for e in found.edges if e.kind == "calls" and e.source == source]
+        assert [(e.targets, e.resolution, e.basis) for e in edges] == [
+            ((target,), "resolved", "resolved")
+        ]

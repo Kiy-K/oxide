@@ -138,10 +138,10 @@ class Resolver:
             elif sep:
                 # A qualified name is relative to the current namespace with no
                 # global fallback: PHP reads ``namespace App; App\helper()`` as
-                # ``App\App\helper()``, never as the imported ``App\helper()``.
+                # ``App\App\helper()``, never as the imported ``App\helper()``. The
+                # Composer step below maps the same qualified name to a file.
                 if found := self._pick(f"{level}.{folded}" if level else folded, kinds):
                     return found, "resolved"
-                return (), "syntactic"
             elif level and (found := self._pick(f"{level}.{folded}", kinds)):
                 return found, "resolved"
             elif found := self._pick(folded, kinds):
