@@ -11,6 +11,20 @@ Release notes for the `oxide-agent` package. The import package and the command 
   same repository and data location.
 - Recovery and judge guidance avoids unsafe shell commands; impact and navigation explain
   their bounds without suggesting impossible or misleading retries.
+- `oxide install` launches the MCP server with `python -P -m oxide mcp`, so a working
+  directory containing `mcp/`, `starlette/` or same-named packages can no longer shadow
+  the server's dependencies at import.
+- `oxide setup` confirms whether the FTS extension was fetched or cached after its
+  SHA-256 check; `oxide.api.setup()` now returns `(path, fetched)`.
+- Every text-rendered `symbol … not_found` hint notes that some aliases are not indexed
+  declarations (e.g. `X: TypeAlias = ...`) and points at `search`; budget-limited bundles
+  report omitted regions; `lexical ran` no longer prints the engine's scorer detail
+  (`--json` keeps the typed result either way).
+- The ownership-conflict hint names a running `oxide mcp` server as the likely holder;
+  README and public API docs describe lazy handle ownership, exit-1 navigation results,
+  payload-line vs span-byte units, and the full path list behind `--json`.
+- MCP tool output schemas describe result fields, including UTF-8 byte offsets on
+  source spans.
 
 ## 0.2.0rc1 - 2026-11-14
 

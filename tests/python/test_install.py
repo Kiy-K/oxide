@@ -65,7 +65,7 @@ else:
 json.dump(servers, open(path, "w"))
 """
 
-ENTRY = {"command": sys.executable, "args": ["-m", "oxide", "mcp"]}
+ENTRY = {"command": sys.executable, "args": ["-P", "-m", "oxide", "mcp"]}
 
 
 @pytest.fixture
@@ -99,7 +99,7 @@ def clients(tmp_path: Path, home: Path, monkeypatch: pytest.MonkeyPatch) -> Path
 
 
 def test_server_command_runs_the_installing_interpreter() -> None:
-    assert server_command() == [sys.executable, "-m", "oxide", "mcp"]
+    assert server_command() == [sys.executable, "-P", "-m", "oxide", "mcp"]
 
 
 @posix_only
@@ -214,9 +214,47 @@ def test_no_client_found_is_an_error(
     assert "no MCP client found" in capsys.readouterr().err
 
 
-def test_setup_fetches_the_pinned_extension(
+def test_setup_reports_whether_it_fetched(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setattr("oxide.cli.setup", lambda: tmp_path / "fts.lbug_extension")
+    extension = tmp_path / "fts.lbug_extension"
+    monkeypatch.setattr("oxide.cli.setup", lambda: (extension, True))
     assert main(["setup"]) == 0
-    assert str(tmp_path / "fts.lbug_extension") in capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert f"fetched, SHA-256 verified: {extension}" in out
+    monkeypatch.setattr("oxide.cli.setup", lambda: (extension, False))
+    assert main(["setup"]) == 0
+    out = capsys.readouterr().out
+    assert f"cached, SHA-256 verified: {extension}" in out
+
+
+def test_api_setup_reports_a_fetch_of_a_missing_extension(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import hashlib
+    import urllib.request
+
+    from oxide import api
+    from oxide.storage import fts
+
+    extension = tmp_path / "fts.lbug_extension"
+    payload = b"fts"
+    pinned = hashlib.sha256(payload).hexdigest()
+    monkeypatch.setattr(fts, "fts_location", lambda: extension)
+    monkeypatch.setattr(
+        fts, "_fts_build", lambda: ("https://example.invalid/libfts.lbug_extension", pinned)
+    )
+
+    class Response:
+        def __enter__(self) -> Response:
+            return self
+
+        def __exit__(self, *exc: object) -> None:
+            return None
+
+        def read(self) -> bytes:
+            return payload
+
+    monkeypatch.setattr(urllib.request, "urlopen", lambda _request, timeout=0: Response())
+    assert api.setup() == (extension, True)  # missing before the call: fetched
+    assert api.setup() == (extension, False)  # now in place, digest-matched: cached

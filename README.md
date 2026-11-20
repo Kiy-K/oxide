@@ -62,7 +62,7 @@ oxide context path/to/repo "where are failed requests retried" --budget 1024 \
     --symbol RetryPolicy --file src/http/client.py
 ```
 
-Every command takes `--json` (the typed result) and `--data-dir`. `oxide index` with no path indexes the current directory. `context` prints the payload on stdout and `used/budget units` on stderr. Errors print `error[<code>]: <message>` and exit 2. `oxide` alone prints the command list with examples.
+Every command takes `--json` (the typed result) and `--data-dir`. `oxide index` with no path indexes the current directory. `context` prints the payload on stdout and `used/budget units` on stderr. Errors print `error[<code>]: <message>` and exit 2; `oxide inspect` and `oxide refs` also exit 1 when the name is ambiguous or unresolved. `oxide` alone prints the command list with examples.
 
 Human-facing status, warnings, errors and hints use color on supported terminals. Set
 `NO_COLOR=1` to disable it; redirected output, JSON and source payloads remain plain text.
@@ -79,7 +79,7 @@ with oxide.open_repository("path/to/repo") as repo:   # owns the store until clo
     print(bundle.payload)                             # used <= budget
 ```
 
-`oxide status` shows the last published snapshot without checking worktree freshness. Use `oxide status --verbose` for file diagnostics, skips and collision details. `oxide impact` lists what depends on an entity, and `search` and `context` results carry a short `blast` summary per entry point. `oxide outline`, `oxide inspect` and `oxide refs` read indexed facts, and they can read the snapshot of a process that is already running. While a handle is open, filesystem events keep its index fresh, so you rarely need to index again by hand.
+`oxide status` shows the last published snapshot without checking worktree freshness. Use `oxide status --verbose` for file diagnostics, skips and collision details (`case collisions: none` when the snapshot is clean). `oxide impact` lists what depends on an entity, and `search` and `context` results carry a short `blast` summary per entry point. `oxide outline`, `oxide inspect` and `oxide refs` read indexed facts, and they can read the snapshot of a process that is already running. While a handle is open, filesystem events keep its index fresh, so you rarely need to re-index.
 
 ## MCP server
 
@@ -101,7 +101,7 @@ oxide install --client codex     # or name one: claude, codex, cursor
 
 Run by hand, `--repo` (repeatable) limits calls to those repositories, and with exactly one they may omit `repository`.
 
-The server keeps one handle per repository until it shuts down, and it keeps the index fresh itself. That handle owns the store, so while the server runs, `oxide index`, `search`, `context`, `impact` and `judge` on the same store fail with `ownership_conflict`. `oxide status`, `outline`, `inspect` and `refs` still work, and the last three read the server's latest snapshot. To run the other commands, stop the server first. Ctrl-C and SIGTERM stop it: it prints `oxide: stopping`, releases the store and exits.
+The server keeps one handle per repository until it shuts down, and it keeps the index fresh itself. Handles open lazily, at the first tool call for a repository: an idle server blocks nothing. Once a handle is open, that handle owns the store, so `oxide index`, `search`, `context`, `impact` and `judge` on the same store fail with `ownership_conflict` while the server is serving that repository. `oxide status`, `outline`, `inspect` and `refs` still work, and the last three read the server's latest snapshot. To run the other commands, stop the server first. Ctrl-C and SIGTERM stop it: it prints `oxide: stopping`, releases the store and exits.
 
 The store lives under `--data-dir`, else `$OXIDE_DATA_DIR`, else `$XDG_DATA_HOME/oxide/py` (`~/.local/share/oxide/py`). It is never captured, even when it sits inside the repository.
 

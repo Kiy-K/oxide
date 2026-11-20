@@ -28,7 +28,9 @@ class InstallError(Exception):
 
 
 def server_command() -> list[str]:
-    return [sys.executable, "-m", "oxide", "mcp"]
+    # `-P` keeps the cwd out of sys.path: a project checkout under the client's
+    # working directory must not shadow OXIDE's own imports (docs/public-api.md).
+    return [sys.executable, "-P", "-m", "oxide", "mcp"]
 
 
 def _run(argv: list[str]) -> subprocess.CompletedProcess[str]:

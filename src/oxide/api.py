@@ -494,7 +494,7 @@ def index_repository(
         return repo.index()
 
 
-def setup() -> Path:
-    """Fetches and verifies the pinned FTS extension (``oxide setup``); returns its
-    path. The only network access OXIDE makes, and only when called."""
+def setup() -> tuple[Path, bool]:
+    """Fetches and verifies the pinned FTS extension (``oxide setup``); returns its path and
+    whether it was fetched now. The only network access OXIDE makes, and only when called."""
     return prepare_fts()

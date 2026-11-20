@@ -395,7 +395,8 @@ ADVICE = {
     "invalid_path": "the repository path does not exist or is not a directory",
     "not_indexed": "run `{index}` first",
     "ownership_conflict": (
-        "another OXIDE process (e.g. `oxide index`) holds the repository; retry shortly"
+        "another OXIDE process (e.g. a running `oxide mcp` server) holds the repository; "
+        "if none is running, retry shortly"
     ),
     "incompatible_index": "the index was built by another OXIDE version; run `{index}`",
     "store_corrupt": "the index is damaged; rebuild it with `{index}`",
@@ -411,6 +412,18 @@ def _arg(value: str) -> str | None:
     if not value or value.startswith("-") or not re.fullmatch(r"[\w ./:-]+", value):
         return None
     return f'"{value}"' if " " in value else value
+
+
+SYMBOL_MISS_NOTE = (
+    " (some aliases aren't symbols — e.g. `X: TypeAlias = ...` annotations and aliases"
+    " of unindexed files; try search)"
+)
+
+
+def hint_tail(issue: HintIssue) -> str:
+    """The symbol-indexing boundary note, added to symbol misses by the text renderings
+    (CLI search/context, MCP context); structured results keep the raw hint fields."""
+    return SYMBOL_MISS_NOTE if issue.kind == "symbol" and issue.issue == "not_found" else ""
 
 
 def advice(

@@ -22,7 +22,15 @@ from typing import Any, NoReturn, TextIO
 from oxide.api import MAX_DEPTH, MAX_LIMIT, open_repository, repository_status, setup
 from oxide.cli_nav import inspect_text, outline_text, refs_text
 from oxide.install import CLIENTS, install
-from oxide.models import Impact, IndexReport, JudgeStatus, NotIndexed, OxideError, advice
+from oxide.models import (
+    Impact,
+    IndexReport,
+    JudgeStatus,
+    NotIndexed,
+    OxideError,
+    advice,
+    hint_tail,
+)
 
 
 def _color(text: str, code: str, stream: TextIO) -> str:
@@ -118,11 +126,15 @@ def _status(path: str, data_dir: str | None, as_json: bool, verbose: bool) -> in
             print(f"skipped {skipped.path}: {skipped.reason}")
         for group in result.case_collisions:
             print(f"case collision: {' = '.join(group)}")
+        if not result.case_collisions:
+            print("case collisions: none")
     return 0
 
 
-def _paths(paths: tuple[str, ...], shown: int = 5) -> str:
-    more = f", +{len(paths) - shown} more" if len(paths) > shown else ""
+def _paths(paths: tuple[str, ...], shown: int = 5, *, json_hint: bool = True) -> str:
+    # json_hint=False: re-running the same command with --json would not re-show these
+    tail = " (full list: --json)" if json_hint else ""
+    more = f", +{len(paths) - shown} more{tail}" if len(paths) > shown else ""
     return ", ".join(paths[:shown]) + more
 
 
@@ -134,7 +146,7 @@ def _index_summary(report: IndexReport) -> str:
     if report.status == "built":
         since = "since the last index" if report.previous else "(no readable previous index)"
         changes = [
-            f"{len(paths)} {name}" + (f" ({_paths(paths)})" if paths else "")
+            f"{len(paths)} {name}" + (f" ({_paths(paths, json_hint=False)})" if paths else "")
             for name, paths in (
                 ("added", report.added),
                 ("modified", report.modified),
@@ -354,7 +366,7 @@ def main(argv: list[str] | None = None) -> int:
     status_parser.add_argument("-v", "--verbose", action="store_true", help="show file details")
     for name, text in (
         ("index", "capture and index a repository"),
-        ("judge", "show, enable or disable the optional JEV judge (sends source)"),
+        ("judge", "show, enable or disable the optional JEV judge (sends source to TypeSafe)"),
         ("search", "show entry-point candidates for a query"),
         ("context", "build a bounded context bundle for a query"),
         ("impact", "what depends on an entity (callers, importers, tests) or what it depends on"),
@@ -384,7 +396,14 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument("--json", action="store_true", help="print the typed result as JSON")
         if name not in ("index", "judge", "impact", "outline", "inspect", "refs"):
             command.add_argument("--symbol", action="append", default=[], help="symbol hint")
-            command.add_argument("--file", action="append", default=[], help="path hint")
+            command.add_argument(
+                "--file",
+                action="append",
+                default=[],
+                help="seed from this file; its "
+                + ("entries rank" if name == "search" else "candidates pack")
+                + " first",
+            )
         if name == "search":
             command.add_argument("--limit", type=int, default=20)
         if name == "context":
@@ -412,7 +431,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     try:
         if args.command == "setup":
-            print(setup())
+            path, fetched = setup()
+            state = "fetched" if fetched else "cached"
+            print(f"{state}, SHA-256 verified: {path}")
             return 0
         if args.command == "install":
             return install(args.client)
@@ -453,8 +474,11 @@ def main(argv: list[str] | None = None) -> int:
                     f"{e.lexical_rank or '-':>3} {e.lexical_score or 0:8.3f} {e.entity.key}"
                     for e in result.entries
                 ]
-                hints = [f"hint: {h.kind} {h.hint}: {h.issue}" for h in result.hints]
-                status = f"lexical {result.lexical.state}: {result.lexical.detail}"
+                hints = [f"hint: {h.kind} {h.hint}: {h.issue}" + hint_tail(h) for h in result.hints]
+                # ran: detail is engine-internal scorer noise; --json keeps the full typed result.
+                status = f"lexical {result.lexical.state}"
+                if result.lexical.state != "ran":
+                    status += f": {result.lexical.detail}"
                 if result.lexical.truncated:
                     if args.limit >= MAX_LIMIT:
                         status += (
@@ -485,6 +509,12 @@ def main(argv: list[str] | None = None) -> int:
                     args.query, args.budget, paths=args.file, symbols=args.symbol
                 )
                 print(f"{result.used}/{result.budget} {result.units}", file=sys.stderr)
+                omitted = sum(1 for o in result.omissions if o.stage == "packing")
+                if omitted:
+                    print(
+                        f"hint: {omitted} regions omitted for budget; raise --budget",
+                        file=sys.stderr,
+                    )
                 if "judge" in result.versions:
                     print(f"judged by {result.versions['judge']}", file=sys.stderr)
                 warned: set[str] = set()
@@ -495,7 +525,10 @@ def main(argv: list[str] | None = None) -> int:
                         print(f"warning: {line}", file=sys.stderr)
                         warned.add(line)
                 for issue in result.hints:
-                    print(f"hint: {issue.kind} {issue.hint}: {issue.issue}", file=sys.stderr)
+                    print(
+                        f"hint: {issue.kind} {issue.hint}: {issue.issue}{hint_tail(issue)}",
+                        file=sys.stderr,
+                    )
                 for root in result.blast:
                     print(f"blast {root.line()}", file=sys.stderr)
                 text = result.payload
