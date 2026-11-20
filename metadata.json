@@ -5,14 +5,6 @@
   "branch": "main",
   "checkpoints_count": 1,
   "files_touched": [
-    "lat.md/.cache/lat_init.json",
-    "lat.md/.cache/parsed/ar/524cbc339ba5dec721d2c3f525af2be3c1e69e1a_lat_md_architecture_md",
-    "lat.md/.cache/parsed/de/6366942d36eeec696ce40b3fa824103fbb97b5f7_lat_md_decisions_md",
-    "lat.md/.cache/parsed/do/00d3828312fb632ed6134d918bded96439eed344_lat_md_domain_md",
-    "lat.md/.cache/parsed/la/64041424dd7eab4c9e2a4d14e63d448d6193567a_lat_md_lat_md",
-    "lat.md/.cache/parsed/la/c69f6f5c878d780e3111866a7d83702cfe897494_lat_md_languages_md",
-    "lat.md/.cache/parsed/st/8e5071b7f5ec80a6526a9b97b0741c6ded0a5286_lat_md_storage_md",
-    "lat.md/.cache/parsed/te/e66b39749c00c150f6df83321de1262bfe74c764_lat_md_tests_md",
     "lat.md/.gitignore",
     "lat.md/architecture.md",
     "lat.md/decisions.md",
@@ -28,15 +20,15 @@
       "transcript": "/0/full.jsonl",
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
-      "prompt": "/0/prompt.txt"
+      "prompt": ""
     }
   ],
   "token_usage": {
-    "input_tokens": 4169,
-    "cache_creation_tokens": 247922,
-    "cache_read_tokens": 635578,
-    "output_tokens": 6338,
-    "api_call_count": 9
+    "input_tokens": 2,
+    "cache_creation_tokens": 663,
+    "cache_read_tokens": 94253,
+    "output_tokens": 165,
+    "api_call_count": 1
   },
   "redaction": {
     "replacements": 0,
