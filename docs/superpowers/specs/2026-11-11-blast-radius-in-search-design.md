@@ -1,9 +1,9 @@
 # Blast radius in search and context results (design, 2026-11-11)
 
 Status: predeclared before measurement. The gate below was fixed before any candidate
-number existed. Results go to `docs/decisions.md`; the gate is not edited afterwards.
+number existed. Results go to `lat.md/decisions.md`; the gate is not edited afterwards.
 
-Verdict: REJECT (2026-11-11). G3 latency failed, so the code is reverted to HEAD. Numbers and cause: `docs/decisions.md`.
+Verdict: REJECT (2026-11-11). G3 latency failed, so the code is reverted to HEAD. Numbers and cause: `lat.md/decisions.md`.
 
 ## Problem
 
@@ -63,5 +63,5 @@ is installed.
 ## Verdict rule
 
 PROMOTE only if G1 through G4 all pass. Any failure: REJECT, revert the code, record the
-numbers and the failing gate in `docs/decisions.md`. Held-out results are not part of
+numbers and the failing gate in `lat.md/decisions.md`. Held-out results are not part of
 the decision and are not produced for it.

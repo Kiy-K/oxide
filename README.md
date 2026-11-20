@@ -8,7 +8,7 @@ Retrieval needs no embeddings, no model calls and no network. It combines BM25 o
 
 ## Status
 
-0.2.0rc1 is a release candidate. Python, TypeScript/TSX, JavaScript/JSX, Go, Rust, Java, C#, C and C++ have parser slices ([TypeScript](https://github.com/Kiy-K/oxide/blob/main/docs/typescript.md), [JavaScript](https://github.com/Kiy-K/oxide/blob/main/docs/javascript.md), [Go](https://github.com/Kiy-K/oxide/blob/main/docs/go.md), [Rust](https://github.com/Kiy-K/oxide/blob/main/docs/rust.md), [Java](https://github.com/Kiy-K/oxide/blob/main/docs/java.md), [C#](https://github.com/Kiy-K/oxide/blob/main/docs/csharp.md), [C](https://github.com/Kiy-K/oxide/blob/main/docs/c.md), [C++](https://github.com/Kiy-K/oxide/blob/main/docs/cpp.md)). Other files are kept as unsupported file evidence.
+0.2.0 is the current stable release. Python, TypeScript/TSX, JavaScript/JSX, Go, Rust, Java, C#, C and C++ have parser slices ([TypeScript](https://github.com/Kiy-K/oxide/blob/main/docs/typescript.md), [JavaScript](https://github.com/Kiy-K/oxide/blob/main/docs/javascript.md), [Go](https://github.com/Kiy-K/oxide/blob/main/docs/go.md), [Rust](https://github.com/Kiy-K/oxide/blob/main/docs/rust.md), [Java](https://github.com/Kiy-K/oxide/blob/main/docs/java.md), [C#](https://github.com/Kiy-K/oxide/blob/main/docs/csharp.md), [C](https://github.com/Kiy-K/oxide/blob/main/docs/c.md), [C++](https://github.com/Kiy-K/oxide/blob/main/docs/cpp.md)). Other files are kept as unsupported file evidence.
 
 Upgrading from 0.1.1? Read the [changelog](https://github.com/Kiy-K/oxide/blob/main/CHANGELOG.md) first. It lists the breaking changes and what to do about each.
 
@@ -16,31 +16,31 @@ Upgrading from 0.1.1? Read the [changelog](https://github.com/Kiy-K/oxide/blob/m
 
 OXIDE needs CPython 3.12 to 3.14 on Linux x86_64, macOS 15 or later (arm64) or Windows x86_64 ([platform details](https://github.com/Kiy-K/oxide/blob/main/docs/platforms.md)). It needs no Rust, Node.js or compiler.
 
-The PyPI project is `oxide-agent`; the import package and the command are `oxide`. This is a pre-release, so the commands pin the exact version.
+The PyPI project is `oxide-agent`; the import package and the command are `oxide`. The stable release needs no exact-version pin.
 
 With [uv](https://docs.astral.sh/uv/):
 
 ```bash
-uv tool install oxide-agent==0.2.0rc1
+uv tool install oxide-agent
 ```
 
 With pipx or pip:
 
 ```bash
-pipx install oxide-agent==0.2.0rc1
-pip install oxide-agent==0.2.0rc1
+pipx install oxide-agent
+pip install oxide-agent
 ```
 
 To try it once without installing, name the command separately because it differs from the distribution:
 
 ```bash
-uvx --from oxide-agent==0.2.0rc1 oxide --help
+uvx --from oxide-agent oxide --help
 ```
 
 Explicit structural search (`Repository.structural_search`) needs the optional `structural` extra, which adds ast-grep (about 46 MB):
 
 ```bash
-uv tool install 'oxide-agent[structural]==0.2.0rc1'
+uv tool install 'oxide-agent[structural]'
 ```
 
 Check the install with `oxide --version`, then fetch the lexical-search extension once:
@@ -117,7 +117,7 @@ The [public API reference](https://github.com/Kiy-K/oxide/blob/main/docs/public-
 ## Documentation and development
 
 - [Public API](https://github.com/Kiy-K/oxide/blob/main/docs/public-api.md), [platforms](https://github.com/Kiy-K/oxide/blob/main/docs/platforms.md) and the [security model](https://github.com/Kiy-K/oxide/blob/main/SECURITY_MODEL.md)
-- [Specification](https://github.com/Kiy-K/oxide/blob/main/docs/spec/SPEC.md) and [architecture decisions](https://github.com/Kiy-K/oxide/tree/main/docs/adr)
+- [Specification](https://github.com/Kiy-K/oxide/blob/main/docs/spec/SPEC.md) and [architecture decisions](https://github.com/Kiy-K/oxide/tree/main/lat.md/adr)
 - [Contributor workflow](https://github.com/Kiy-K/oxide/blob/main/docs/agents/workflow.md) and the [documentation index](https://github.com/Kiy-K/oxide/blob/main/docs/README.md)
 
 To work on OXIDE itself, use [mise](https://mise.jdx.dev) and uv:

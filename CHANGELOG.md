@@ -2,7 +2,7 @@
 
 Release notes for the `oxide-agent` package. The import package and the command are `oxide`.
 
-## Unreleased
+## 0.2.0 - 2026-11-20
 
 - `oxide status` summarizes the published index and unchecked worktree freshness; use
   `--verbose` for file diagnostics, skips and collisions. JSON output is unchanged.

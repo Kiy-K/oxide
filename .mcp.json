@@ -8,6 +8,12 @@
         "--mcp"
       ],
       "alwaysLoad": true
+    },
+    "lat": {
+      "command": "lat",
+      "args": [
+        "mcp"
+      ]
     }
   }
 }

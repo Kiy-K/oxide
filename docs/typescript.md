@@ -1,6 +1,6 @@
 # TypeScript language slice (`oxide-typescript-v3`)
 
-The second language slice (Phase 6 language work, [decisions](decisions.md)), in `src/oxide/core/languages/typescript.py`.
+The second language slice (Phase 6 language work, [decisions](../lat.md/decisions.md)), in `src/oxide/core/languages/typescript.py`.
 It has the same shape as the Python slice: one compiled tree-sitter query per dialect
 collects every fact in C; Python only assigns captured nodes to their innermost declaration
 scope (a bisect over body ranges) and resolves names conservatively. It produces the same

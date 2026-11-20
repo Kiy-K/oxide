@@ -81,7 +81,7 @@ Raw attempts: `~/.cache/oxide/agent-eval/results/run3-reauth-20261106.jsonl`. Th
 isolated OpenCode configuration, task worktrees and connected MCP servers, but did not
 OS-sandbox agent processes; agents could access the host filesystem. Results apply only to
 this model, these public Python tasks and this tool surface. Command and aggregate verdict:
-[`docs/decisions.md`](../../../docs/decisions.md).
+[`lat.md/decisions.md`](../../../lat.md/decisions.md).
 
 ## Protocol v2 (amendment)
 
@@ -214,4 +214,4 @@ Before a held-out run, generate and verify its local task set with
 GitHub CLI access and builds candidate repositories; its selection rule is in `heldout.py`.
 
 See the docstring of `scripts/agent_eval/__main__.py`. Verdicts are one row in
-[`docs/decisions.md`](../../../docs/decisions.md).
+[`lat.md/decisions.md`](../../../lat.md/decisions.md).

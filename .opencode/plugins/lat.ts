@@ -1,0 +1,202 @@
+import { type Plugin, tool } from "@opencode-ai/plugin"
+import { execSync, execFile, execFileSync } from "child_process"
+
+/** Executable and prefix arguments, injected by `lat init`. */
+const LAT = {"command":"lat","args":[]}
+
+function run(args: string[]): string {
+  return execFileSync(LAT.command, [...LAT.args, ...args], {
+    cwd: process.cwd(),
+    encoding: "utf-8",
+    timeout: 30_000,
+  })
+}
+
+/** A first search may build the whole index, so it gets longer than other tools. */
+const SEARCH_TIMEOUT_MS = 120_000
+
+/**
+ * Run a lat query without blocking the agent. Failures reject with the CLI's
+ * own message, so a timeout or a rejected key is never reported as "no results".
+ */
+function query(
+  args: string[],
+  signal?: AbortSignal,
+  timeout = 30_000,
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    execFile(
+      LAT.command,
+      [...LAT.args, ...args],
+      { cwd: process.cwd(), encoding: "utf-8", timeout, signal },
+      (error, stdout, stderr) => {
+        if (!error) return resolve(stdout)
+        const detail = (stderr || stdout || "").trim()
+        if (signal?.aborted) return reject(new Error(`lat ${args[0]} was cancelled.`))
+        if (!error.killed) return reject(new Error(detail || error.message))
+        const hint =
+          args[0] === "search"
+            ? " The search index may still be building, which restarts on every attempt. Run `lat search` in a shell to finish building it, then retry."
+            : ""
+        reject(
+          new Error(
+            `lat ${args[0]} timed out after ${timeout / 1000}s.${hint}` +
+              (detail ? `\n${detail}` : ""),
+          ),
+        )
+      },
+    )
+  })
+}
+
+export const LatPlugin: Plugin = async (ctx) => {
+  return {
+    tool: {
+      lat_search: tool({
+        description:
+          "Semantic search across lat.md sections using embeddings. Use before starting any task to find relevant design context.",
+        args: {
+          query: tool.schema.string("Search query in natural language"),
+          limit: tool.schema.optional(
+            tool.schema.number("Max results (default 5)"),
+          ),
+        },
+        async execute(args, context) {
+          const cliArgs = ["search", args.query]
+          if (args.limit) cliArgs.push("--limit", String(args.limit))
+          const output = await query(cliArgs, context?.abort, SEARCH_TIMEOUT_MS)
+          return output || "No results found."
+        },
+      }),
+
+      lat_section: tool({
+        description:
+          "Show full content of a lat.md section with outgoing/incoming refs",
+        args: {
+          query: tool.schema.string(
+            'Section ID or name (e.g. "cli#init", "Tests#User login")',
+          ),
+        },
+        async execute(args, context) {
+          const output = await query(["section", args.query], context?.abort)
+          return output || "Section not found."
+        },
+      }),
+
+      lat_locate: tool({
+        description:
+          "Find a section by name (exact, subsection tail, or fuzzy match)",
+        args: {
+          query: tool.schema.string("Section name to locate"),
+        },
+        async execute(args, context) {
+          const output = await query(["locate", args.query], context?.abort)
+          return output || "No sections matching query."
+        },
+      }),
+
+      lat_check: tool({
+        description:
+          "Run full lat.md validation. Returns errors or 'All checks passed'",
+        args: {},
+        async execute() {
+          try {
+            return run(["check"])
+          } catch (err: unknown) {
+            const e = err as { stdout?: string; stderr?: string }
+            return e.stdout || e.stderr || "Check failed"
+          }
+        },
+      }),
+
+      lat_expand: tool({
+        description:
+          "Expand [[refs]] in text to resolved file locations and context",
+        args: {
+          text: tool.schema.string("Text containing [[refs]] to expand"),
+        },
+        async execute(args, context) {
+          const output = await query(["expand", args.text], context?.abort)
+          return output || args.text
+        },
+      }),
+
+      lat_refs: tool({
+        description:
+          "Find what references a given section via wiki links or @lat code comments",
+        args: {
+          query: tool.schema.string(
+            'Section ID (e.g. "cli#init", "file#Section")',
+          ),
+        },
+        async execute(args, context) {
+          const output = await query(["refs", args.query], context?.abort)
+          return output || "No references found."
+        },
+      }),
+    },
+
+    hooks: {
+      "session.idle": async () => {
+        let checkFailed = false
+        let checkOutput = ""
+        try {
+          checkOutput = run(["check"])
+        } catch (err: unknown) {
+          checkFailed = true
+          checkOutput = (err as { stdout?: string }).stdout || ""
+        }
+
+        // Check git diff for lat.md/ sync status
+        let needsSync = false
+        let codeLines = 0
+        try {
+          const numstat = execSync("git diff HEAD --numstat", {
+            encoding: "utf-8",
+            cwd: process.cwd(),
+          })
+
+          let latMdLines = 0
+          for (const line of numstat.split("\n")) {
+            const parts = line.split("\t")
+            if (parts.length < 3) continue
+            const added = parseInt(parts[0], 10) || 0
+            const removed = parseInt(parts[1], 10) || 0
+            const file = parts[2]
+            const changed = added + removed
+            if (file.startsWith("lat.md/")) {
+              latMdLines += changed
+            } else if (/\.(ts|tsx|js|jsx|py|rs|go|c|h)$/.test(file)) {
+              codeLines += changed
+            }
+          }
+
+          if (codeLines >= 5) {
+            const effectiveLatMd =
+              latMdLines === 0 ? 0 : Math.max(latMdLines, 1)
+            needsSync = effectiveLatMd < codeLines * 0.05
+          }
+        } catch {
+          // git not available or no HEAD — skip diff check
+        }
+
+        if (!checkFailed && !needsSync) return
+
+        const message =
+          checkFailed && needsSync
+            ? `lat check failed and lat.md/ may be out of sync (${codeLines} code lines changed). Run lat_check, fix errors, and update only relevant current-state lat.md/ sections. Do not add journal/changelog notes.`
+            : checkFailed
+              ? `lat check failed. Run lat_check and fix the errors.`
+              : `lat.md/ may be out of sync — ${codeLines} code lines changed but lat.md/ was not updated. Review whether current-state lat.md/ sections need updates; do not add journal/changelog notes. Run lat_check.`
+
+        await ctx.client.app.log({
+          body: {
+            service: "lat.md",
+            level: "warn",
+            message,
+          },
+        })
+      },
+    },
+  }
+}

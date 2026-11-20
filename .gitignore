@@ -14,3 +14,4 @@ CLAUDE.local.md
 .amp/portals/*
 scripts/csharp_oracle/bin/
 scripts/csharp_oracle/obj/
+.lat-build
