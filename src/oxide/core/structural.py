@@ -2,7 +2,7 @@
 
 Read-only and explicitly invoked; never part of retrieval, routing or packing.
 Callers and implementors are precomputed relations, not searches (docs/precomputed-
-relations-migration/); this answers shape queries those can't (docs/decisions.md,
+relations-migration/); this answers shape queries those can't (lat.md/decisions.md,
 Structure). ``ast-grep-py`` is the optional ``structural`` extra and parses
 with its own bundled grammars (the same versions OXIDE pins, measured for 0.51.0).
 It has no timeout and holds the GIL, so the bounds are the file scope and ``limit``.

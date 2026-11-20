@@ -43,8 +43,8 @@ TIER2 = (
     "docs/superpowers/specs/",
     "docs/review/",
     "docs/spec/",
-    "docs/decisions.md",
-    "docs/adr/",
+    "lat.md/decisions.md",
+    "lat.md/adr/",
 )
 
 # Language extractors are routine tier-1 work despite living under core/.

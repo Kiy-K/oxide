@@ -117,7 +117,7 @@ The [public API reference](https://github.com/Kiy-K/oxide/blob/main/docs/public-
 ## Documentation and development
 
 - [Public API](https://github.com/Kiy-K/oxide/blob/main/docs/public-api.md), [platforms](https://github.com/Kiy-K/oxide/blob/main/docs/platforms.md) and the [security model](https://github.com/Kiy-K/oxide/blob/main/SECURITY_MODEL.md)
-- [Specification](https://github.com/Kiy-K/oxide/blob/main/docs/spec/SPEC.md) and [architecture decisions](https://github.com/Kiy-K/oxide/tree/main/docs/adr)
+- [Specification](https://github.com/Kiy-K/oxide/blob/main/docs/spec/SPEC.md) and [architecture decisions](https://github.com/Kiy-K/oxide/tree/main/lat.md/adr)
 - [Contributor workflow](https://github.com/Kiy-K/oxide/blob/main/docs/agents/workflow.md) and the [documentation index](https://github.com/Kiy-K/oxide/blob/main/docs/README.md)
 
 To work on OXIDE itself, use [mise](https://mise.jdx.dev) and uv:

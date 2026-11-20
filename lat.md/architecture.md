@@ -4,7 +4,7 @@ OXIDE v2 is a modular monolith: one Python package, `oxide`, that turns reposito
 
 ## Layers
 
-Dependencies point downward only: integrations, public API, engine, core policy, storage, LadybugDB.
+Dependencies point downward: integrations, public API, engine, core policy, storage, LadybugDB. The one upward coupling: publishing reads derivation facts and formats from `oxide.core.indexing` and capture types.
 
 - **Integrations**: [[src/oxide/cli.py]] and [[src/oxide/mcp_server.py]] are thin clients of the public API. They never parse source, route, select or pack.
 - **Public API**: [[src/oxide/api.py]] (`Repository`, `open_repository`) and [[src/oxide/models.py]] (frozen typed results and errors) are the stable product boundary; see [[docs/public-api.md]].

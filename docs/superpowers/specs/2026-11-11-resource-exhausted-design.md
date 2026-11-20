@@ -4,7 +4,7 @@ Status: written after the implementation to meet the tier-2 rule in
 `docs/agents/workflow.md` (which asks for it before implementing). It records the intent
 and the behavior the code and tests must keep, and was reviewed by a zero-context agent
 after it was drafted. Measurements are in
-`docs/decisions.md` (row `resource-exhausted`).
+`lat.md/decisions.md` (row `resource-exhausted`).
 
 ## Problem
 
@@ -23,7 +23,7 @@ cannot help, and nothing told a caller that the index was intact (issue #55 hit 
 2. Everything else stays as it was: any other native failure is `StoreCorrupt` and reads
    fail closed. A damaged store is not expected to match the discriminator, which is a
    message substring, so this is evidence, not a guarantee: about 240 corruption trials
-   (pages overwritten or truncated) never produced `resource_exhausted` (`docs/decisions.md`,
+   (pages overwritten or truncated) never produced `resource_exhausted` (`lat.md/decisions.md`,
    throwaway scripts).
 3. `resource_exhausted` is not damage. The generation stays current and nothing is
    rebuilt. `index()` raises it before it publishes, from `Store.is_current` (unchanged

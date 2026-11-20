@@ -5,9 +5,9 @@
 - Status: **Draft architectural source of truth for the proposed rewrite**.
 - Architectural generation: **OXIDE v2**. This is not a SemVer release designation and implies no dependency on reaching v0.2.
 - Date: 2026-10-07.
-- Top-level decision: [ADR-0001](../adr/0001-oxide-v2-rewrite.md), **Proposed**.
-- Implementation decision: [ADR-0011](../adr/0011-python-engine-vectorless.md), **Accepted** 2026-10-15: one Python process, LadybugDB through its Python wheel, vectorless retrieval. It supersedes ADR-0003 and the Rust/TypeScript and vector/embedding parts of ADR-0001.
-- Standing rules and research verdicts: [decisions.md](../decisions.md); frozen evaluation inputs and protocol: [`fixtures/eval/`](../../fixtures/eval/README.md).
+- Top-level decision: [ADR-0001](../../lat.md/adr/0001.md), **Proposed**.
+- Implementation decision: [ADR-0011](../../lat.md/adr/0011.md), **Accepted** 2026-10-15: one Python process, LadybugDB through its Python wheel, vectorless retrieval. It supersedes ADR-0003 and the Rust/TypeScript and vector/embedding parts of ADR-0001.
+- Standing rules and research verdicts: [decisions.md](../../lat.md/decisions.md); frozen evaluation inputs and protocol: [`fixtures/eval/`](../../fixtures/eval/README.md).
 
 **Amended 2026-10-15 (ADR-0011).** OXIDE v2 is implemented in Python. Read "core" (the `oxide.core` modules: pure repository-intelligence policy) where older text said Rust kernel, "engine" (the `oxide` package: API, capture, storage) where it said Rust runtime, and "integrations" (Python clients of the public API: the CLI, the `oxide mcp` server, future editor adapters) where it said TypeScript control plane. Vector and embedding retrieval is removed from the architecture, not deferred. Sections below were edited accordingly; where historical Rust phases are cited, they are evidence, recoverable at commit `f79808a`.
 
@@ -164,7 +164,7 @@ Integrations (the `oxide` CLI and the `oxide mcp` server today; editor adapters 
 | `Query` / `QueryContext` | Task text and explicit path/symbol/change hints; validated domain inputs independent of an integration's objects |
 | `ContextBudget` | Nonnegative payload-token allowance plus the declared counting contract; separate from retrieval/traversal resource limits |
 
-IDs MUST be deterministic for the same identity inputs and namespace version, collision-safe, and unrelated to database allocation order. They MUST NOT be LadybugDB `InternalID`, table offsets, SQLite row IDs, or legacy FNV IDs by default. File/symbol IDs are always interpreted with repository and snapshot scope. Cross-snapshot rename/move continuity is not guaranteed; the identity algorithm and snapshot-identity inputs are proposed in [ADR-0010](../adr/0010-domain-identity-and-source-capture.md) (Proposed). Any future continuity is a separate derived key, never entity identity.
+IDs MUST be deterministic for the same identity inputs and namespace version, collision-safe, and unrelated to database allocation order. They MUST NOT be LadybugDB `InternalID`, table offsets, SQLite row IDs, or legacy FNV IDs by default. File/symbol IDs are always interpreted with repository and snapshot scope. Cross-snapshot rename/move continuity is not guaranteed; the identity algorithm and snapshot-identity inputs are proposed in [ADR-0010](../../lat.md/adr/0010.md) (Proposed). Any future continuity is a separate derived key, never entity identity.
 
 Logical source-state identity is distinct from derivation identity. The same source snapshot may be re-derived with a different parser/model/schema. A manifest records both, and caches and publication keys include the derivation version. The adapter MUST reject ambiguous lookups of multiple derivations.
 
@@ -566,7 +566,7 @@ These uncertainties require a written resolution; downstream agents must not sil
 - **ADR-0008:** Model runner / embedding provider boundary — obsolete under ADR-0011 (vectorless).
 - **ADR-0009:** DecisionProvider and optional JEV integration — provider/subject capabilities, JEV mappings, version/response validation, repeatability, privacy and operational gates; complements policy/calibration in ADR-0005.
 
-[ADR-0002](../adr/0002-ladybugdb-knowledge-store.md) and [ADR-0010](../adr/0010-domain-identity-and-source-capture.md) are Accepted; [ADR-0011](../adr/0011-python-engine-vectorless.md) (Accepted) moved the implementation to Python and removed vectors. Additional ADRs for transport, inclusion algorithm, or token accounting may be warranted once concrete alternatives are evaluated. The eight entries above are candidates, not existing Accepted ADRs; ADR-0001 only establishes the top-level rewrite and product direction.
+[ADR-0002](../../lat.md/adr/0002.md) and [ADR-0010](../../lat.md/adr/0010.md) are Accepted; [ADR-0011](../../lat.md/adr/0011.md) (Accepted) moved the implementation to Python and removed vectors. Additional ADRs for transport, inclusion algorithm, or token accounting may be warranted once concrete alternatives are evaluated. The eight entries above are candidates, not existing Accepted ADRs; ADR-0001 only establishes the top-level rewrite and product direction.
 
 ## Milestones
 

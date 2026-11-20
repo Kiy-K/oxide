@@ -6,3 +6,4 @@ This directory defines the high-level concepts, business logic, and architecture
 - [[decisions]] — standing design rules and measured verdicts
 - [[languages]] — per-language derivation slices
 - [[tests]] — verification, isolation, baselines, fixtures
+- [[adr]] — ADR-0001..0014: the rewrite, storage, identities, language/runtime choices, blast radius

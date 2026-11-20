@@ -4,15 +4,15 @@ The vocabulary of OXIDE's repository knowledge model and its context results.
 
 ## Entities and relations
 
-Repository knowledge is a graph of five entity kinds joined by seven typed relations.
+Repository knowledge is a graph of four entity kinds joined by seven typed relations.
 
-Entities: Repository, Module, File, Symbol, Test. Relations: `contains`, `defines`, `references`, `calls`, `imports`, `implements`, `tested_by`. Every file is evidence with explicit coverage whether or not a language slice understands it ([[src/oxide/core/indexing.py]]).
+Entities: Repository, Module, File, Symbol ([[src/oxide/models.py]] `Category`); tests are a facet of symbols, not a kind. Relations: `contains`, `contains_logical`, `defines`, `references`, `calls`, `imports`, `tested_by` (`RelationKind`). Every file is evidence with explicit coverage whether or not a language slice understands it ([[src/oxide/core/indexing.py]]).
 
 ## Identity and source references
 
 Entity keys are deterministic and snapshot-local, never database row ids (ADR-0010).
 
-A source reference is repo-relative path, byte range, content digest and snapshot. Hydration verifies the digest, so stale text is never served as current. Line numbers derive from captured bytes, not the live worktree ([[src/oxide/models_nav.py]]).
+A source reference ([[src/oxide/models.py]] `SourceRef`) is repo-relative path, half-open byte range and content digest. Hydration verifies the digest, so stale text is never served as current. Line numbers derive from captured bytes, not the live worktree ([[src/oxide/models_nav.py]]).
 
 ## Snapshot and generation
 

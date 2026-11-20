@@ -3,7 +3,7 @@
 OXIDE v2 (on `main`): a structural context engine for agents. One Python package, `oxide`, in `src/oxide/` (ADR-0011); the Rust/Bun implementation it replaced is recoverable at `f79808a`.
 `CLAUDE.md` is a symlink to this file, so Claude and Codex share one root policy.
 
-The architecture authority is `docs/spec/SPEC.md`, with standing rules and research verdicts in `docs/decisions.md`, the evaluation protocol in `fixtures/eval/README.md` and decisions in `docs/adr/` (Proposed ADRs are proposals, not Accepted decisions; never change an ADR's status unasked). When they disagree with anything else in the repo, they win.
+The architecture authority is `docs/spec/SPEC.md`, with standing rules and research verdicts in `lat.md/decisions.md`, the evaluation protocol in `fixtures/eval/README.md` and decisions in `lat.md/adr/` (Proposed ADRs are proposals, not Accepted decisions; never change an ADR's status unasked). When they disagree with anything else in the repo, they win.
 
 This file is always loaded; keep it short. New commands go in `docs/agents/workflow.md`; the public API is documented in `docs/public-api.md`.
 
@@ -25,13 +25,13 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 - No speculative abstractions, flags, options or features: build only what the current phase needs. Don't duplicate logic or policy, but don't add an abstraction just to remove a few repeated lines.
 - Minimal documentation: update only the doc that owns a changed fact (SPEC, `docs/public-api.md`, `docs/agents/workflow.md`). No new design notes, plans or reports unless asked or a gate cites them. Comments say why, never what.
 - Graph selection is algorithm-driven: a named, standard graph algorithm (NetworkX or a LadybugDB query) over stored relations with a stated objective, not hand-tuned weights or ad-hoc traversal.
-- Benchmark-backed decisions: a quality or performance claim needs before/after numbers (ContextBench gates per `docs/agents/workflow.md` for retrieval/routing/packing/selection, `scripts/bench.py` for speed). Fix the pass/fail rule before reading held-out results; record the verdict as one row in `docs/decisions.md` § Research verdicts. No numbers, no claim, no merge.
+- Benchmark-backed decisions: a quality or performance claim needs before/after numbers (ContextBench gates per `docs/agents/workflow.md` for retrieval/routing/packing/selection, `scripts/bench.py` for speed). Fix the pass/fail rule before reading held-out results; record the verdict as one row in `lat.md/decisions.md` § Research verdicts. No numbers, no claim, no merge.
 - Keep changes small and cohesive. Don't clean up unrelated code during a focused task.
 - Keep the public API and versioned formats (derivation components, store schema, payload/units versions) compatible unless the task says to change them; bump the version when you do. Legacy v1 compatibility (SQLite indexes, symbol ids, CLI/MCP/JSON surface) and the retired Rust/TS protocol are not requirements (SPEC § Compatibility policy).
 - Fix root causes. Don't weaken tests, regenerate goldens or re-baseline just to make a failure go away.
 - Experiments are only for claims a test can't settle: the quality and performance claims above, or promoting an optional judge.
 - Read the code, tests and docs before stating how something works. Label each claim as measured or inferred.
-- If missing or ambiguous information could change the implementation, check the repo first. If that doesn't settle it, ask one focused question instead of guessing. Don't invent permanent ID/schema/transport/model policy to unblock scaffolding (`docs/decisions.md` rule 4).
+- If missing or ambiguous information could change the implementation, check the repo first. If that doesn't settle it, ask one focused question instead of guessing. Don't invent permanent ID/schema/transport/model policy to unblock scaffolding (`lat.md/decisions.md` rule 4).
 - Before finishing, read the full diff for accidental changes in scope, public API surface (`oxide/__init__.py`), dependencies (`pyproject.toml`, `uv.lock`) or generated files.
 - Tests never touch real user data: every test and subprocess gets a private data location (`tests/python/conftest.py`).
 - When an implementation is done and `mise run verify` passes, commit it on the current worktree branch without asking. Don't push, tag, release, edit GitHub issues or roadmaps, or start the next phase unless asked.
@@ -42,16 +42,16 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 
 | Area | Read first |
 |---|---|
-| Anything architectural | `docs/spec/SPEC.md`, `docs/decisions.md`, `docs/adr/` |
-| Python engine, storage, removed/retained features | `docs/adr/0011-python-engine-vectorless.md`, `docs/public-api.md` |
+| Anything architectural | `docs/spec/SPEC.md`, `lat.md/decisions.md`, `lat.md/adr/` |
+| Python engine, storage, removed/retained features | `lat.md/adr/0011.md`, `docs/public-api.md` |
 | Build, test, lint, commit format | `docs/agents/workflow.md` |
 | Issues, triage labels, domain docs | `docs/agents/` (`issue-tracker.md`, `triage-labels.md`, `domain.md`) |
-| Historical evidence and legacy reproduction | `docs/decisions.md` (verdicts; reports and the migration audit are pinned at `013e791`). Port semantic lessons only where current SPEC requires them; legacy layout and APIs are not v2 instructions. |
-| v2 review policy | `docs/review/` — reviewer-facing invariants for the Python engine (public API, storage/generations, core/retrieval, capture/language, evidence/benchmarks). Architecture authority remains `docs/spec/SPEC.md` and `docs/decisions.md`. |
+| Historical evidence and legacy reproduction | `lat.md/decisions.md` (verdicts; reports and the migration audit are pinned at `013e791`). Port semantic lessons only where current SPEC requires them; legacy layout and APIs are not v2 instructions. |
+| v2 review policy | `docs/review/` — reviewer-facing invariants for the Python engine (public API, storage/generations, core/retrieval, capture/language, evidence/benchmarks). Architecture authority remains `docs/spec/SPEC.md` and `lat.md/decisions.md`. |
 
 ## Always-on rules
 
-- Legacy code and docs are historical evidence, not a template (SPEC, `docs/decisions.md` rule 2). The old implementation is recoverable at `ac985b28`; don't port it into `src/oxide/` without a stated SPEC requirement.
+- Legacy code and docs are historical evidence, not a template (SPEC, `lat.md/decisions.md` rule 2). The old implementation is recoverable at `ac985b28`; don't port it into `src/oxide/` without a stated SPEC requirement.
 - Retrieval, routing and packing changes are evaluated per SPEC § Evaluation against the frozen baselines (`tests/python/test_baseline.py` checks Phase 3 exactly); never regenerate a frozen artifact to make a failure pass. Legacy numbers in pinned historical reports are historical comparators, not v2 gates.
 - Models judge; deterministic code decides. Keep JEV and learned judges optional; there are no embeddings. The deterministic offline path needs no model or network (only `oxide setup` fetches the pinned FTS extension, explicitly).
 - A restriction is a conclusion you earn from a real failure, not a field you read. Never report an operation as blocked, unavailable, or not-permitted based on a metadata flag, a config field, or a docs claim. Attempt it and quote the actual error. If you genuinely cannot attempt it, say "not attempted", never "we can't".

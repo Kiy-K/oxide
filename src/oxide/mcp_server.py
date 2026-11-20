@@ -316,7 +316,7 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
     One tool, ``oxide_search``, whose ``mode`` picks one API operation: ``search``
     (``Repository.search``) or ``context`` (``build_context``). Both carry the blast radius
     of the first entry points. Structural search stays a Python API: an agent trial found no
-    benefit over grep (docs/decisions.md, structural-mcp-trial).
+    benefit over grep (lat.md/decisions.md, structural-mcp-trial).
     """
     return _build(repos, data_dir)[0]
 

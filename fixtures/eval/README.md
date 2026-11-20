@@ -38,7 +38,7 @@ kept byte-for-byte; the files themselves are history at `013e791`.
   `uv run --locked python tests/python/contextbench.py run --out fixtures/eval/contextbench-py/baseline-vN`
   under the resource limits, switch `BASELINE`, and remove the superseded directory in the
   same change (git history keeps it).
-- **Recording.** A verdict is one row in [`docs/decisions.md`](../../docs/decisions.md),
+- **Recording.** A verdict is one row in [`lat.md/decisions.md`](../../lat.md/decisions.md),
   plus a short report only if a gate, test or comment will cite it.
 
 Commands, corpora and resource limits are in [workflow](../../docs/agents/workflow.md).
