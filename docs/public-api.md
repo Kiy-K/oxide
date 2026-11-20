@@ -60,8 +60,9 @@ Hints are typed query context: `paths` and `changed` resolve exactly, then by a
 unique case-folded match; `symbols` are names or dotted suffixes
 (`AuthService.refresh_token`); `selection` is `(path, start_byte, end_byte)` and
 seeds the innermost declaration. A symbol name must be a declaration OXIDE indexes:
-a `TypeAlias` assignment or an alias of a symbol in an unindexed (external) file is
-not an entity and comes back `not_found`. Unmatched hints come back as `HintIssue`s.
+an old-style `X: TypeAlias = ...` assignment or an alias of a symbol in an unindexed
+(external) file is not an entity and comes back `not_found` (PEP 695 `type X = ...`,
+Go and C/C++ aliases are). Unmatched hints come back as `HintIssue`s.
 In `build_context`, candidates in a file resolved from `paths` are packed before all
 others, by the usual value and floor, and that file contributes only its header
 view (its first module-level run). A path hint is a priority, not a guarantee: its
@@ -370,9 +371,9 @@ for budget; raise --budget` counting only omissions the budget caused. OXIDE err
 and malformed command lines print argparse usage and also exit 2. Any exit 1
 with a traceback is a bug. `search`, `context` and `impact` open with `create=False`, so
 they never leave an empty store behind. Hint issues print as `hint: <kind> <hint>: <issue>`
-(`search` to stdout, `context` to stderr); every `symbol … not_found` hint carries a note
-that type aliases and aliases of unindexed files are not indexed declarations, because the
-lookup cannot tell a missed alias from a typo. An error with a
+(`search` to stdout, `context` to stderr); every text-rendered `symbol … not_found` hint
+carries a note that some aliases are not indexed declarations — a `X: TypeAlias = ...`
+annotation, for example — because the lookup cannot tell a missed alias from a typo. An error with a
 known fix adds a `hint:` line to stderr. `lexical ran` prints without the engine's
 scorer detail; other lexical states name their reason (`--json` always keeps both).
 Blast lines print as `blast <key>: <dependents> dependents …` for the first three entries, after

@@ -60,8 +60,9 @@ Paths = Annotated[
 Symbols = Annotated[
     tuple[Hint, ...],
     Field(
-        description="Symbol names or dotted suffixes (`Class.method`). Type aliases and "
-        "aliases of external symbols are not indexed; use query words instead.",
+        description="Symbol names or dotted suffixes (`Class.method`). Some aliases "
+        "(`X: TypeAlias = ...`, aliases of external symbols) are not indexed; use query "
+        "words instead.",
         max_length=32,
     ),
 ]
@@ -80,7 +81,7 @@ FIELD_DOCS = {
     "SearchResult": {
         "query": "The query text this result answers.",
         "entries": "Entry points: seeds first, then lexical rank; each names its entity "
-        "and source span.",
+        "and, when it has one, its source span.",
         "hints": "Unresolved `paths`/`symbols` hints with the reason "
         "(not_found, ambiguous, truncated).",
         "lexical": "Lexical channel status: ran, disabled or unavailable, with why.",

@@ -231,18 +231,30 @@ def test_setup_reports_whether_it_fetched(
 def test_api_setup_reports_a_fetch_of_a_missing_extension(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    import hashlib
+    import urllib.request
+
     from oxide import api
+    from oxide.storage import fts
 
     extension = tmp_path / "fts.lbug_extension"
-    state = {"available": False}  # flips when the fake prepare_fts "downloads" it
+    payload = b"fts"
+    pinned = hashlib.sha256(payload).hexdigest()
+    monkeypatch.setattr(fts, "fts_location", lambda: extension)
     monkeypatch.setattr(
-        api, "fts_unavailable", lambda _path: None if state["available"] else "missing"
+        fts, "_fts_build", lambda: ("https://example.invalid/libfts.lbug_extension", pinned)
     )
 
-    def fetch(_path: Path | None = None) -> Path:
-        state["available"] = True
-        return extension
+    class Response:
+        def __enter__(self) -> Response:
+            return self
 
-    monkeypatch.setattr(api, "prepare_fts", fetch)
+        def __exit__(self, *exc: object) -> None:
+            return None
+
+        def read(self) -> bytes:
+            return payload
+
+    monkeypatch.setattr(urllib.request, "urlopen", lambda _request, timeout=0: Response())
     assert api.setup() == (extension, True)  # missing before the call: fetched
-    assert api.setup() == (extension, False)  # now in place: cached
+    assert api.setup() == (extension, False)  # now in place, digest-matched: cached

@@ -28,6 +28,7 @@ import oxide
 from oxide import jev, mcp_server
 from oxide.install import server_command
 from oxide.mcp_server import server
+from oxide.models import SYMBOL_MISS_NOTE
 
 pytestmark = pytest.mark.anyio
 RETRY = "symbol:oxidepy/retry.py#RetryPolicy"
@@ -555,7 +556,7 @@ async def test_empty_query_needs_a_seed_and_hint_issues_are_reported(indexed: Pa
     assert empty.is_error and "query is empty" in text(empty)
     assert not seeded.is_error and seeded.structured_content["entries"]
     shown = [line for line in text(missing).splitlines() if line.startswith("# hint ")]
-    tail = " (type aliases and aliases of unindexed files aren't symbols; try search)"
+    tail = SYMBOL_MISS_NOTE
     expected = [
         f"# hint {h['kind']} {h['hint']}: {h['issue']}" + tail
         for h in missing.structured_content["hints"]

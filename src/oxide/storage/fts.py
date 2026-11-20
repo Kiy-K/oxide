@@ -80,12 +80,13 @@ def fts_unavailable(path: Path) -> str | None:
     return None
 
 
-def prepare_fts(path: Path | None = None) -> Path:
-    """Explicitly fetches the pinned FTS extension and verifies its digest. The only
-    network access OXIDE makes; nothing calls it implicitly."""
+def prepare_fts(path: Path | None = None) -> tuple[Path, bool]:
+    """Explicitly fetches the pinned FTS extension and verifies its digest; returns
+    its path and whether it was fetched now (False: already in place, digest-verified).
+    The only network access OXIDE makes; nothing calls it implicitly."""
     path = path or fts_location()
     if fts_unavailable(path) is None:
-        return path
+        return path, False
     if (build := _fts_build()) is None:
         raise OxideError(f"no pinned FTS extension for {sys.platform}/{platform.machine()}")
     if issue := _native_path_issue(str(path), "OXIDE_FTS_EXTENSION"):
@@ -104,4 +105,4 @@ def prepare_fts(path: Path | None = None) -> Path:
     partial = path.with_suffix(".partial")
     partial.write_bytes(data)
     os.replace(partial, path)
-    return path
+    return path, True

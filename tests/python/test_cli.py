@@ -26,7 +26,10 @@ from oxide.models import (
     advice,
 )
 
-TAIL = " (type aliases and aliases of unindexed files aren't symbols; try search)"
+TAIL = (
+    " (some aliases aren't symbols — e.g. `X: TypeAlias = ...` annotations and aliases"
+    " of unindexed files; try search)"
+)
 
 
 def oxide(

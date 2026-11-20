@@ -414,11 +414,15 @@ def _arg(value: str) -> str | None:
     return f'"{value}"' if " " in value else value
 
 
-SYMBOL_MISS_NOTE = " (type aliases and aliases of unindexed files aren't symbols; try search)"
+SYMBOL_MISS_NOTE = (
+    " (some aliases aren't symbols — e.g. `X: TypeAlias = ...` annotations and aliases"
+    " of unindexed files; try search)"
+)
 
 
 def hint_tail(issue: HintIssue) -> str:
-    """The symbol-indexing boundary, appended to every symbol miss by both clients."""
+    """The symbol-indexing boundary note, added to symbol misses by the text renderings
+    (CLI search/context, MCP context); structured results keep the raw hint fields."""
     return SYMBOL_MISS_NOTE if issue.kind == "symbol" and issue.issue == "not_found" else ""
 
 

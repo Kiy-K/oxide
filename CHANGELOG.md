@@ -16,9 +16,9 @@ Release notes for the `oxide-agent` package. The import package and the command 
   the server's dependencies at import.
 - `oxide setup` confirms whether the FTS extension was fetched or cached after its
   SHA-256 check; `oxide.api.setup()` now returns `(path, fetched)`.
-- Every symbol hint that comes back `not_found` notes that type aliases and aliases of
-  unindexed files are not indexed, and points at `search`; budget-limited bundles report
-  omitted regions; `lexical ran` no longer prints the engine's scorer detail
+- Every text-rendered `symbol … not_found` hint notes that some aliases are not indexed
+  declarations (e.g. `X: TypeAlias = ...`) and points at `search`; budget-limited bundles
+  report omitted regions; `lexical ran` no longer prints the engine's scorer detail
   (`--json` keeps the typed result either way).
 - The ownership-conflict hint names a running `oxide mcp` server as the likely holder;
   README and public API docs describe lazy handle ownership, exit-1 navigation results,

@@ -54,7 +54,7 @@ from oxide.models import (
 )
 from oxide.models_nav import Inspection, Outline, References
 from oxide.storage import nav
-from oxide.storage.fts import fts_location, fts_unavailable, prepare_fts
+from oxide.storage.fts import prepare_fts
 from oxide.storage.ladybug import View, default_data_dir
 from oxide.storage.reader import Reader
 from oxide.storage.store import Store
@@ -495,9 +495,6 @@ def index_repository(
 
 
 def setup() -> tuple[Path, bool]:
-    """Fetches and verifies the pinned FTS extension (``oxide setup``); returns its
-    path and whether it was fetched now (False: already in place, digest-verified).
-    The only network access OXIDE makes, and only when called."""
-    location = fts_location()
-    fetched = fts_unavailable(location) is not None  # before the fetch, or always False
-    return prepare_fts(location), fetched
+    """Fetches and verifies the pinned FTS extension (``oxide setup``); returns its path and
+    whether it was fetched now. The only network access OXIDE makes, and only when called."""
+    return prepare_fts()

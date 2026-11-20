@@ -131,8 +131,10 @@ def _status(path: str, data_dir: str | None, as_json: bool, verbose: bool) -> in
     return 0
 
 
-def _paths(paths: tuple[str, ...], shown: int = 5) -> str:
-    more = f", +{len(paths) - shown} more (full list: --json)" if len(paths) > shown else ""
+def _paths(paths: tuple[str, ...], shown: int = 5, *, json_hint: bool = True) -> str:
+    # json_hint=False: re-running the same command with --json would not re-show these
+    tail = " (full list: --json)" if json_hint else ""
+    more = f", +{len(paths) - shown} more{tail}" if len(paths) > shown else ""
     return ", ".join(paths[:shown]) + more
 
 
@@ -144,7 +146,7 @@ def _index_summary(report: IndexReport) -> str:
     if report.status == "built":
         since = "since the last index" if report.previous else "(no readable previous index)"
         changes = [
-            f"{len(paths)} {name}" + (f" ({_paths(paths)})" if paths else "")
+            f"{len(paths)} {name}" + (f" ({_paths(paths, json_hint=False)})" if paths else "")
             for name, paths in (
                 ("added", report.added),
                 ("modified", report.modified),
