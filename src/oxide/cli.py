@@ -400,7 +400,9 @@ def main(argv: list[str] | None = None) -> int:
                 "--file",
                 action="append",
                 default=[],
-                help="seed from this file; context packs its candidates first",
+                help="seed from this file; its "
+                + ("entries rank" if name == "search" else "candidates pack")
+                + " first",
             )
         if name == "search":
             command.add_argument("--limit", type=int, default=20)
