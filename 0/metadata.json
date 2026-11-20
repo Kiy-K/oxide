@@ -1,0 +1,52 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M7VPHDZH1SP3MJ065J9CC1ZS",
+  "session_id": "cef42c82-485c-490b-878d-5f9a976eca3b",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-20T05:23:21.031570548Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "lat.md/.cache/lat_init.json",
+    "lat.md/.cache/parsed/ar/524cbc339ba5dec721d2c3f525af2be3c1e69e1a_lat_md_architecture_md",
+    "lat.md/.cache/parsed/de/6366942d36eeec696ce40b3fa824103fbb97b5f7_lat_md_decisions_md",
+    "lat.md/.cache/parsed/do/00d3828312fb632ed6134d918bded96439eed344_lat_md_domain_md",
+    "lat.md/.cache/parsed/la/64041424dd7eab4c9e2a4d14e63d448d6193567a_lat_md_lat_md",
+    "lat.md/.cache/parsed/la/c69f6f5c878d780e3111866a7d83702cfe897494_lat_md_languages_md",
+    "lat.md/.cache/parsed/st/8e5071b7f5ec80a6526a9b97b0741c6ded0a5286_lat_md_storage_md",
+    "lat.md/.cache/parsed/te/e66b39749c00c150f6df83321de1262bfe74c764_lat_md_tests_md",
+    "lat.md/.gitignore",
+    "lat.md/architecture.md",
+    "lat.md/decisions.md",
+    "lat.md/domain.md",
+    "lat.md/languages.md",
+    "lat.md/lat.md",
+    "lat.md/storage.md",
+    "lat.md/tests.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "882c58b9971d",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 4169,
+    "cache_creation_tokens": 247922,
+    "cache_read_tokens": 635578,
+    "output_tokens": 6338,
+    "api_call_count": 9
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}

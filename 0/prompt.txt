@@ -1,0 +1,1 @@
+Read through this codebase and set up lat.md/ to document its architecture, key design decisions, and domain concepts. Run `lat check` when done. After done, commit directly to main
