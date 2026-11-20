@@ -26,7 +26,8 @@ The data location is `data_dir=`, else `$OXIDE_DATA_DIR`, else
 source, even inside the repository: the data directory and its `repos/` are
 excluded by device and inode, so symlinked or differently spelled paths to it are
 excluded too. Lexical search needs the pinned FTS extension: run `oxide setup`
-(or `oxide.api.setup()`) once.
+(or `oxide.api.setup()`, which returns the extension path and whether it fetched)
+once. Every run re-verifies the cached file's SHA-256.
 
 `oxide.repository_status(path, data_dir=...)` returns a `RepositoryStatus` from one
 pinned published generation without capturing or indexing the worktree. It verifies retained
@@ -58,7 +59,9 @@ Temporary reader pins (and Windows reader copies) are cleaned up on close.
 Hints are typed query context: `paths` and `changed` resolve exactly, then by a
 unique case-folded match; `symbols` are names or dotted suffixes
 (`AuthService.refresh_token`); `selection` is `(path, start_byte, end_byte)` and
-seeds the innermost declaration. Unmatched hints come back as `HintIssue`s.
+seeds the innermost declaration. A symbol name must be a declaration OXIDE indexes:
+a `TypeAlias` assignment or an alias of a symbol in an unindexed (external) file is
+not an entity and comes back `not_found`. Unmatched hints come back as `HintIssue`s.
 In `build_context`, candidates in a file resolved from `paths` are packed before all
 others, by the usual value and floor, and that file contributes only its header
 view (its first module-level run). A path hint is a priority, not a guarantee: its
@@ -360,12 +363,18 @@ Damage is classified like this:
 disable it. `--enable` and `--disable` switch it (§ Optional judge). `index` prints its progress to stderr and a summary to stdout:
 counts, changes since the last index, source files parsed and reused (`sources:`), then any
 partial parses, skips, unsupported files and case collisions. `context` prints the
-payload to stdout and `used/budget units` to stderr, plus `judged by …` or the
-judge's fallback line when a judge is enabled. OXIDE errors print `error[<code>]: <message>` to stderr and exit 2,
+payload to stdout and `used/budget units` to stderr (`units` is the oxide-units-v1
+estimate: words, symbols and newlines of the payload — not lines), plus `judged by …`
+or the judge's fallback line when a judge is enabled, and `hint: <n> regions omitted
+for budget; raise --budget` counting only omissions the budget caused. OXIDE errors print `error[<code>]: <message>` to stderr and exit 2,
 and malformed command lines print argparse usage and also exit 2. Any exit 1
 with a traceback is a bug. `search`, `context` and `impact` open with `create=False`, so
 they never leave an empty store behind. Hint issues print as `hint: <kind> <hint>: <issue>`
-(`search` to stdout, `context` to stderr); an error with a known fix adds a `hint:` line to stderr.
+(`search` to stdout, `context` to stderr); every `symbol … not_found` hint carries a note
+that type aliases and aliases of unindexed files are not indexed declarations, because the
+lookup cannot tell a missed alias from a typo. An error with a
+known fix adds a `hint:` line to stderr. `lexical ran` prints without the engine's
+scorer detail; other lexical states name their reason (`--json` always keeps both).
 Blast lines print as `blast <key>: <dependents> dependents …` for the first three entries, after
 the hints (`search` to stdout, `context` to stderr).
 
@@ -380,7 +389,7 @@ closest valid command.
 (`src/oxide/mcp_server.py`, FastMCP 4.1) is another client of this API: it never
 parses, routes, selects or packs.
 
-`oxide install [--client claude|codex|cursor]...` writes one user-wide `oxide` entry per client (default: each client it detects). The entry runs `python -m oxide mcp` from the interpreter that ran the install. It writes only the entry named `oxide`, leaves other configuration alone, and can be rerun safely. It exits 1 when a client refuses the change or is missing.
+`oxide install [--client claude|codex|cursor]...` writes one user-wide `oxide` entry per client (default: each client it detects). The entry runs `python -P -m oxide mcp` from the interpreter that ran the install. It writes only the entry named `oxide`, leaves other configuration alone, and can be rerun safely. It exits 1 when a client refuses the change or is missing.
 
 It serves one tool. `oxide_search`'s `mode` picks one API operation (table below):
 
@@ -437,6 +446,7 @@ preregistered agent trial, agents given it matched what they already found with 
   leaves nothing under the data location. Existing indexes can be refreshed by
   the engine; repository files are never changed.
 - **Launch it with the `oxide` command.** `python -m oxide` puts the working
-  directory first on `sys.path`. Started inside a Python checkout, that checkout's
-  top-level packages can shadow OXIDE's dependencies: FastMCP imports `requests`, and
-  inside a checkout of requests it loaded that checkout's package (measured).
+  directory first on `sys.path`, where a `mcp/`, `starlette/` or same-named package
+  can shadow OXIDE's dependencies and break the server at import. The entry
+  `oxide install` writes runs `python -P -m oxide mcp`, which keeps the working
+  directory off `sys.path`; the interpreter is still the one that installed OXIDE.

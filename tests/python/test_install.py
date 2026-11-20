@@ -65,7 +65,7 @@ else:
 json.dump(servers, open(path, "w"))
 """
 
-ENTRY = {"command": sys.executable, "args": ["-m", "oxide", "mcp"]}
+ENTRY = {"command": sys.executable, "args": ["-P", "-m", "oxide", "mcp"]}
 
 
 @pytest.fixture
@@ -99,7 +99,7 @@ def clients(tmp_path: Path, home: Path, monkeypatch: pytest.MonkeyPatch) -> Path
 
 
 def test_server_command_runs_the_installing_interpreter() -> None:
-    assert server_command() == [sys.executable, "-m", "oxide", "mcp"]
+    assert server_command() == [sys.executable, "-P", "-m", "oxide", "mcp"]
 
 
 @posix_only
@@ -214,9 +214,35 @@ def test_no_client_found_is_an_error(
     assert "no MCP client found" in capsys.readouterr().err
 
 
-def test_setup_fetches_the_pinned_extension(
+def test_setup_reports_whether_it_fetched(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setattr("oxide.cli.setup", lambda: tmp_path / "fts.lbug_extension")
+    extension = tmp_path / "fts.lbug_extension"
+    monkeypatch.setattr("oxide.cli.setup", lambda: (extension, True))
     assert main(["setup"]) == 0
-    assert str(tmp_path / "fts.lbug_extension") in capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert f"fetched, SHA-256 verified: {extension}" in out
+    monkeypatch.setattr("oxide.cli.setup", lambda: (extension, False))
+    assert main(["setup"]) == 0
+    out = capsys.readouterr().out
+    assert f"cached, SHA-256 verified: {extension}" in out
+
+
+def test_api_setup_reports_a_fetch_of_a_missing_extension(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from oxide import api
+
+    extension = tmp_path / "fts.lbug_extension"
+    state = {"available": False}  # flips when the fake prepare_fts "downloads" it
+    monkeypatch.setattr(
+        api, "fts_unavailable", lambda _path: None if state["available"] else "missing"
+    )
+
+    def fetch(_path: Path | None = None) -> Path:
+        state["available"] = True
+        return extension
+
+    monkeypatch.setattr(api, "prepare_fts", fetch)
+    assert api.setup() == (extension, True)  # missing before the call: fetched
+    assert api.setup() == (extension, False)  # now in place: cached

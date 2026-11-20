@@ -15,7 +15,18 @@ from conftest import FIXTURE, env
 
 import oxide.storage.ladybug as storage
 from oxide.cli import main
-from oxide.models import InvalidArgument, NotIndexed, advice
+from oxide.models import (
+    IncompatibleIndex,
+    InvalidArgument,
+    InvalidPath,
+    NotIndexed,
+    OwnershipConflict,
+    ResourceExhausted,
+    StoreCorrupt,
+    advice,
+)
+
+TAIL = " (type aliases and aliases of unindexed files aren't symbols; try search)"
 
 
 def oxide(
@@ -226,6 +237,18 @@ def test_advice_is_a_copy_pasteable_recovery_command() -> None:
         "run oxide index for the same repository using the server's data location first"
     )
     assert advice(InvalidArgument("bad"), "/repo") is None
+    holder = advice(OwnershipConflict("held"), "/repo")
+    assert holder is not None
+    assert "running `oxide mcp` server" in holder and "retry shortly" in holder
+    for advice_error in (
+        InvalidPath("gone"),
+        NotIndexed("missing"),
+        OwnershipConflict("held"),
+        IncompatibleIndex("version"),
+        StoreCorrupt("damaged"),
+        ResourceExhausted("full"),
+    ):
+        assert advice(advice_error, "/repo"), advice_error.code  # every entry formats
 
 
 @pytest.mark.parametrize("path", ["/tmp/repo;echo_pwn", "/tmp/$HOME", '/tmp/a"b', "-repo"])
@@ -249,8 +272,8 @@ def test_search_and_context_show_hint_issues(tmp_path: Path, fts: Path) -> None:
     issues = json.loads(oxide(data, "search", *target, *hinted, "--json").stdout)["hints"]
     assert found.returncode == 0 and context.returncode == 0
     shown = [line for line in found.stdout.splitlines() if line.startswith("hint: ")]
-    assert shown == [f"hint: {i['kind']} {i['hint']}: {i['issue']}" for i in issues]
-    assert shown == ["hint: symbol NoSuchThing: not_found"]
+    assert shown == [f"hint: {i['kind']} {i['hint']}: {i['issue']}" + TAIL for i in issues]
+    assert shown == ["hint: symbol NoSuchThing: not_found" + TAIL]
     notes = [line for line in context.stderr.splitlines() if line.startswith("hint: ")]
     assert notes == shown
 
@@ -358,15 +381,15 @@ def test_search_truncation_and_context_degradations(
     monkeypatch.setattr("oxide.cli.open_repository", lambda *_a, **_kw: Repo())
     assert main(["search", ".", "q"]) == 0
     assert capsys.readouterr().out == (
-        "lexical ran: fts\nhint: lexical results truncated; consider raising --limit\n"
+        "lexical ran\nhint: lexical results truncated; consider raising --limit\n"
     )
     assert main(["search", ".", "q", "--limit", "1000"]) == 0
     assert capsys.readouterr().out == (
-        "lexical ran: fts\nhint: lexical results truncated at maximum --limit; narrow the query\n"
+        "lexical ran\nhint: lexical results truncated at maximum --limit; narrow the query\n"
     )
     search = replace(search, lexical=replace(channel, truncated=False))
     assert main(["search", ".", "q"]) == 0
-    assert capsys.readouterr().out == "lexical ran: fts\n"
+    assert capsys.readouterr().out == "lexical ran\n"
     assert main(["context", ".", "q"]) == 0
     human = capsys.readouterr()
     assert human.err == "0/100 tokens\nwarning: degraded\njudge fallback\n"
@@ -374,3 +397,16 @@ def test_search_truncation_and_context_degradations(
     machine = capsys.readouterr()
     assert machine.err == "0/100 tokens\njudge fallback\n"
     assert json.loads(machine.out)["degradations"] == ["degraded", "judge fallback", "degraded"]
+
+    from oxide.models import Omission
+
+    context = replace(
+        context,
+        omissions=(
+            Omission("symbol:a", "packing", "budget"),
+            Omission("symbol:b", "packing", "too large"),
+            Omission("symbol:c", "selection", "container"),
+        ),
+    )
+    assert main(["context", ".", "q"]) == 0
+    assert "hint: 2 regions omitted for budget; raise --budget\n" in capsys.readouterr().err

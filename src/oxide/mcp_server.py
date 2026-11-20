@@ -26,7 +26,7 @@ from mcp.types import ToolAnnotations
 from pydantic import Field, TypeAdapter
 
 from oxide.api import Repository, open_repository
-from oxide.models import ContextBundle, OxideError, SearchResult, advice
+from oxide.models import ContextBundle, OxideError, SearchResult, advice, hint_tail
 
 log = logging.getLogger(__name__)
 
@@ -59,7 +59,11 @@ Paths = Annotated[
 ]
 Symbols = Annotated[
     tuple[Hint, ...],
-    Field(description="Symbol names or dotted suffixes (`Class.method`).", max_length=32),
+    Field(
+        description="Symbol names or dotted suffixes (`Class.method`). Type aliases and "
+        "aliases of external symbols are not indexed; use query words instead.",
+        max_length=32,
+    ),
 ]
 Mode = Annotated[
     Literal["search", "context"],
@@ -69,6 +73,73 @@ Mode = Annotated[
     ),
 ]
 READ_ONLY = ToolAnnotations(read_only_hint=True, open_world_hint=False)
+
+# Field descriptions for the output schema: oxide.models stays dependency-free,
+# only this presentation layer annotates it for agents.
+FIELD_DOCS = {
+    "SearchResult": {
+        "query": "The query text this result answers.",
+        "entries": "Entry points: seeds first, then lexical rank; each names its entity "
+        "and source span.",
+        "hints": "Unresolved `paths`/`symbols` hints with the reason "
+        "(not_found, ambiguous, truncated).",
+        "lexical": "Lexical channel status: ran, disabled or unavailable, with why.",
+        "blast": "What depends on the first entry points (callers, importers, tests) "
+        "within two hops.",
+    },
+    "ContextBundle": {
+        "query": "The query text this bundle answers.",
+        "budget": "Units requested; `used` <= `budget`.",
+        "used": "oxide-units-v1 units actually spent on the payload.",
+        "units": "Unit scheme name (oxide-units-v1).",
+        "items": "Packed source: each under a `### path:first-last` heading (1-based lines).",
+        "omissions": "Candidates left out, with stage and reason; only `packing` "
+        "omissions shrink when the budget is raised.",
+        "hints": "Unresolved `paths`/`symbols` hints with the reason "
+        "(not_found, ambiguous, truncated).",
+        "lexical": "Lexical channel status: ran, disabled or unavailable, with why.",
+        "degradations": "Why the bundle is weaker than asked (routing bounds, judge "
+        "fallback, incomplete parses).",
+        "blast": "What depends on the first entry points (callers, importers, tests) "
+        "within two hops.",
+    },
+    "SourceRef": {
+        "start": "Half-open byte range start in UTF-8 bytes (payload headings use 1-based lines).",
+        "end": "Half-open byte range end in UTF-8 bytes.",
+    },
+}
+
+
+def _describe(schema: object) -> None:
+    """Annotate every model's properties in a pydantic schema, matched by title.
+
+    Raises when a FIELD_DOCS entry matches nothing: a renamed field must fail here,
+    not silently ship an undescribed schema.
+    """
+    seen: set[str] = set()
+
+    def walk(node: object) -> None:
+        if isinstance(node, dict):
+            fields = FIELD_DOCS.get(str(node.get("title", "")))
+            properties = node.get("properties")
+            if fields and isinstance(properties, dict):
+                for name, text in fields.items():
+                    target = properties.get(name)
+                    if isinstance(target, dict):
+                        target["description"] = text
+                        seen.add(f"{node['title']}.{name}")
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+
+    walk(schema)
+    missing = [
+        f"{m}.{n}" for m, fields in FIELD_DOCS.items() for n in fields if f"{m}.{n}" not in seen
+    ]
+    if missing:
+        raise ValueError(f"FIELD_DOCS names absent from the output schema: {missing}")
 
 
 def _resolver(repos: Sequence[str]) -> Callable[[str | None], str]:
@@ -150,6 +221,7 @@ def _build(repos: Sequence[str], data_dir: str | None) -> tuple[FastMCP, Callabl
         lifespan=lifespan,
     )
     results = TypeAdapter(SearchResult | ContextBundle).json_schema()
+    _describe(results)
     output = {"type": "object", **results}
 
     @app.tool(annotations=READ_ONLY, output_schema=output)
@@ -225,7 +297,9 @@ def _build(repos: Sequence[str], data_dir: str | None) -> tuple[FastMCP, Callabl
         if "judge" in bundle.versions:  # this repository's source went to the judge
             head += f"# judged by {bundle.versions['judge']}\n"
         head += "".join(f"# degraded: {d}\n" for d in bundle.degradations)
-        head += "".join(f"# hint {h.kind} {h.hint}: {h.issue}\n" for h in bundle.hints)
+        head += "".join(
+            f"# hint {h.kind} {h.hint}: {h.issue}{hint_tail(h)}\n" for h in bundle.hints
+        )
         head += "".join(f"# blast {b.line()}\n" for b in bundle.blast)
         # The model reads the payload as text; applications get the whole bundle.
         return ToolResult(

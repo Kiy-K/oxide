@@ -26,6 +26,7 @@ from fastmcp.client.transports import StdioTransport
 
 import oxide
 from oxide import jev, mcp_server
+from oxide.install import server_command
 from oxide.mcp_server import server
 
 pytestmark = pytest.mark.anyio
@@ -89,6 +90,27 @@ async def test_one_tool_is_discoverable_with_bounded_schemas(indexed: Path) -> N
     assert {o.get("maximum") for o in schema["budget"]["anyOf"]} >= {mcp_server.MAX_BUDGET}
     assert schema["query"]["maxLength"] == 2000
     assert schema["symbols"]["maxItems"] == 32
+    assert "not indexed" in schema["symbols"]["description"]
+    # _describe() raises if any FIELD_DOCS name misses, so construction is the check;
+    # additionally confirm one landed for each model.
+    described: set[str] = set()
+
+    def walk(node: object) -> None:
+        if isinstance(node, dict):
+            title = node.get("title")
+            for name, sub in (node.get("properties") or {}).items():
+                if isinstance(sub, dict) and "description" in sub and isinstance(title, str):
+                    described.add(f"{title}.{name}")
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+
+    walk(tool.output_schema)
+    for model, fields in mcp_server.FIELD_DOCS.items():
+        for name in fields:
+            assert f"{model}.{name}" in described, f"{model}.{name}"
 
 
 async def test_search_and_context_return_structured_evidence(indexed: Path) -> None:
@@ -305,6 +327,28 @@ async def test_stdio_server_tracks_until_shutdown(
     assert cli(data, "index", str(repo_copy)).returncode == 0
 
 
+async def test_the_installed_command_boots_beside_a_shadowing_package(
+    repo_copy: Path, tmp_path: Path, fts: Path
+) -> None:
+    """Regression (M2): a cwd with an `mcp/` package must not break the installed entry."""
+    data = tmp_path / "shadow-data"
+    assert cli(data, "index", str(repo_copy)).returncode == 0
+    shadow = tmp_path / "shadow-cwd"
+    write(shadow, {"mcp/__init__.py": 'raise ImportError("shadowed")\n'})
+    entry = server_command()
+    transport = StdioTransport(
+        entry[0],
+        [*entry[1:], "--repo", str(repo_copy), "--data-dir", str(data)],
+        env=env(data),
+        cwd=str(shadow),
+        keep_alive=False,
+    )
+    async with Client(transport) as client:
+        assert {t.name for t in await client.list_tools()} == {"oxide_search"}
+        found = await call(client, "oxide_search", query="RetryPolicy")
+    assert found.structured_content["entries"][0]["entity"]["key"] == RETRY
+
+
 async def test_stdio_corruption_fails_closed_and_releases_for_repair(
     repo_copy: Path, tmp_path: Path, fts: Path
 ) -> None:
@@ -511,10 +555,12 @@ async def test_empty_query_needs_a_seed_and_hint_issues_are_reported(indexed: Pa
     assert empty.is_error and "query is empty" in text(empty)
     assert not seeded.is_error and seeded.structured_content["entries"]
     shown = [line for line in text(missing).splitlines() if line.startswith("# hint ")]
+    tail = " (type aliases and aliases of unindexed files aren't symbols; try search)"
     expected = [
-        f"# hint {h['kind']} {h['hint']}: {h['issue']}" for h in missing.structured_content["hints"]
+        f"# hint {h['kind']} {h['hint']}: {h['issue']}" + tail
+        for h in missing.structured_content["hints"]
     ]
-    assert shown == expected == ["# hint symbol NoSuchThing: not_found"]
+    assert shown == expected == ["# hint symbol NoSuchThing: not_found" + tail]
 
 
 def free_port() -> int:
