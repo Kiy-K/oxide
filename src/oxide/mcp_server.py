@@ -100,7 +100,7 @@ FIELD_DOCS = {
         "(not_found, ambiguous, truncated).",
         "lexical": "Lexical channel status: ran, disabled or unavailable, with why.",
         "degradations": "Why the bundle is weaker than asked (routing bounds, judge "
-        "fallback, incomplete parses).",
+        "fallback, incomplete parses, a named symbol packed without its body).",
         "blast": "What depends on the first entry points (callers, importers, tests) "
         "within two hops.",
     },
@@ -109,6 +109,35 @@ FIELD_DOCS = {
         "end": "Half-open byte range end in UTF-8 bytes.",
     },
 }
+
+
+def _search_summary(found: SearchResult, more: bool) -> dict[str, object]:
+    """The compact JSON text: what a client needs to pick an entry point. Keys and
+    scores only, locations never bodies; the full result is the structured content."""
+    entries = []
+    for e in found.entries:
+        entry: dict[str, object] = {
+            "key": e.entity.key,
+            "rank": e.lexical_rank,
+            "score": round(e.lexical_score, 4) if e.lexical_score is not None else None,
+            "test": e.entity.test,
+        }
+        if e.seeds:
+            entry["seeds"] = [f"{s.kind}:{s.hint}" for s in e.seeds]
+        entries.append(entry)
+    return {
+        "entries_returned": len(entries),
+        "more_available": more,
+        "entries": entries,
+        "lexical": {
+            "state": found.lexical.state,
+            "detail": found.lexical.detail,
+            "returned": found.lexical.returned,
+            "truncated": found.lexical.truncated,
+        },
+        "hints": [f"{h.kind} {h.hint}: {h.issue}" for h in found.hints],
+        "blast": [b.line() for b in found.blast],
+    }
 
 
 def _describe(schema: object) -> None:
@@ -279,7 +308,9 @@ def _build(repos: Sequence[str], data_dir: str | None) -> tuple[FastMCP, Callabl
             more = found.lexical.truncated or any(h.issue == "truncated" for h in found.hints)
             value = {"entries_returned": len(found.entries), "more_available": more}
             value |= dataclasses.asdict(found)
-            text = json.dumps(value, separators=(",", ":"), ensure_ascii=False)
+            text = json.dumps(
+                _search_summary(found, more), separators=(",", ":"), ensure_ascii=False
+            )
             return ToolResult(content=text, structured_content=value)
         if limit is not None:
             raise _invalid("`limit` applies to mode=search only")

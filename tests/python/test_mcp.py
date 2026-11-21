@@ -124,15 +124,24 @@ async def test_search_and_context_return_structured_evidence(indexed: Path) -> N
     assert entry["entity"]["source"]["path"] == "oxidepy/retry.py"
     assert found.structured_content["lexical"]["state"] == "ran"
     assert "self.max_attempts = max_attempts" not in text(found)  # locations, not bodies
-    # The status leads the text and the structured content, and the text is that JSON.
+    # The status leads both: the text is a compact projection (keys, scores, test
+    # flags, hint lines, blast lines -- never digests or full entities), the
+    # structured content stays the full result.
     assert list(found.structured_content)[:2] == ["entries_returned", "more_available"]
     assert found.structured_content["entries_returned"] == len(found.structured_content["entries"])
     assert (
         found.structured_content["more_available"]
         == found.structured_content["lexical"]["truncated"]
     )  # no hints here, so only the lexical limit counts
-    assert json.loads(text(found)) == found.structured_content
-    assert text(found).startswith('{"entries_returned":')
+    summary = json.loads(text(found))
+    assert list(summary)[:2] == ["entries_returned", "more_available"]
+    assert summary["entries_returned"] == found.structured_content["entries_returned"]
+    assert summary["more_available"] == found.structured_content["more_available"]
+    assert [e["key"] for e in summary["entries"]] == [
+        e["entity"]["key"] for e in found.structured_content["entries"]
+    ]
+    assert "digest" not in text(found)  # the projection drops storage identities
+    assert len(text(found)) < len(json.dumps(found.structured_content))
     assert not bundle.is_error
     data = bundle.structured_content
     assert data["used"] <= data["budget"] == 300 and data["items"]
@@ -140,6 +149,22 @@ async def test_search_and_context_return_structured_evidence(indexed: Path) -> N
     payload = "".join(item["text"] for item in data["items"])
     assert text(bundle).startswith("# oxide context: ") and text(bundle).endswith(payload)
     assert "### oxidepy/retry.py:" in payload
+
+
+async def test_search_summary_keeps_the_lexical_unavailable_reason(
+    indexed: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # CORE-005: an unavailable lexical channel must carry its reason (run `oxide
+    # setup`), not just the state -- text-only MCP clients read the compact summary.
+    monkeypatch.setenv("OXIDE_FTS_EXTENSION", str(tmp_path / "absent.lbug_extension"))
+    async with Client(server([str(indexed)])) as client:
+        found = await call(client, "oxide_search", query="RetryPolicy", symbols=["RetryPolicy"])
+    assert not found.is_error
+    assert found.structured_content["lexical"]["state"] == "unavailable"
+    summary = json.loads(text(found))
+    assert summary["lexical"]["state"] == "unavailable"
+    assert summary["lexical"]["detail"] == found.structured_content["lexical"]["detail"]
+    assert summary["lexical"]["detail"]  # the reason survives the projection
 
 
 async def test_a_full_read_pool_is_a_retryable_tool_error_not_damage(

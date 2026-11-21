@@ -32,6 +32,7 @@ from oxide._status import repository_status as repository_status
 from oxide.capture import CaptureCache
 from oxide.core import lookup, navigation, ordering, packing, retrieval, routing, structural
 from oxide.core.blast import BLAST_ROOTS
+from oxide.core.notices import unpacked_bodies
 from oxide.models import (
     BlastRoot,
     Closed,
@@ -230,11 +231,8 @@ class Repository:
         depth = _count("depth", depth, MAX_DEPTH)
         limit = _count("limit", limit, MAX_LIMIT)
         view = self._view()
-        root = view.entities([key]).get(key)
-        if root is None:
-            raise InvalidArgument(
-                f"no entity {key!r} in this snapshot; find keys with oxide search"
-            )
+        key = lookup.resolve_root(view, key)
+        root = view.entities([key])[key]
         found = navigation.walk(view, key, direction, depth, limit)
         known = view.entities(h.key for h in found.hops)
         names = [e.name for e in view.entities(found.roots).values() if e.category == "symbol"]
@@ -435,6 +433,7 @@ class Repository:
         incomplete = {f.path for f in view.files.values() if f.coverage != "complete"}
         used_paths = {c.entity.source.path for c in pool if c.entity.source is not None}
         degradations += [f"incomplete parse: {path}" for path in sorted(used_paths & incomplete)]
+        degradations += unpacked_bodies(pool, items, omissions)
         if judge is not None and judge.outcome not in (None, "judged"):
             degradations.append(f"judge {judge.identity} fell back: {judge.outcome}")
         summary = RouteSummary(

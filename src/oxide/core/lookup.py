@@ -278,6 +278,33 @@ def _status(ranked: list[tuple[str, Entity]], truncated: bool) -> Status:
     return "resolved" if len(ranked) == 1 and not truncated else "ambiguous"
 
 
+def resolve_key(view: Facts, query: str) -> tuple[Status, str | None]:
+    """(status, key) for the entity ``query`` names under inspect/refs semantics:
+    ``resolved`` with the one key, else ``not_found``/``ambiguous`` with None. The
+    bound is fixed: two ranked hits are enough to call a name ambiguous, and a
+    ``limit=0`` walk request must not widen it."""
+    ranked, truncated, _ = _resolve(view, query, 20)
+    status = _status(ranked, truncated)
+    return status, ranked[0][1].key if status == "resolved" else None
+
+
+def resolve_root(view: Facts, key: str) -> str:
+    """The key ``impact`` should walk: ``key`` when it is exact, else the entity the
+    name resolves to under inspect/refs semantics. A miss or a tie is an argument
+    error naming the tool that lists candidates (issue #77: a short name was a dead
+    end while inspect resolved it fine)."""
+    if key in view.entities([key]):
+        return key
+    status, named = resolve_key(view, key)
+    if named is None:
+        raise InvalidArgument(
+            f"no entity {key!r} in this snapshot; find keys with oxide search"
+            if status == "not_found"
+            else f"{key!r} names several entities; give the full key from oxide inspect"
+        )
+    return named
+
+
 def _candidates(ranked: list[tuple[str, Entity]], lines: _Lines) -> tuple[Candidate, ...]:
     return tuple(
         Candidate(_declaration(e, lines), why)  # type: ignore[arg-type]

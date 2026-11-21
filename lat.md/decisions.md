@@ -305,3 +305,53 @@ Latent: its only caller passes the constant `NAMED_LIMIT`. The lexical query was
 These are ad hoc measurements from throwaway scripts; the tests are committed.
 
 Not done: a full pool in `publish` still escapes `index()` as a raw `RuntimeError`; damaged pages can still raise `UnicodeDecodeError` or abort natively (found by the same fuzz, pre-existing).
+
+### Packing (`test-crowding`, 2026-11-20)
+
+PROMOTE `oxide-select-greedy-v6` (issue #77): test-role evidence loses value only when it crowds production evidence out of the budget, and a seeded symbol packs ahead of a hinted file outline of equal value.
+
+The `TEST_WEIGHT = 0.5` applies to lexical and routed candidate values only when the first packed
+bundle leaves a production symbol without its own body (reduced on its turn or omitted for budget;
+file outlines and prerequisite headers do not count) while test evidence occupies more budget units
+than production, counted per item by complete entities so a method beside its class header still
+counts. Mixed items (test + production complete entities) split their units by per-role
+covered-source union so test bytes are not hidden. The retry is kept only if it strictly
+increases production body units — the union of complete symbol source ranges (including a
+class recovered whole by its merged methods), never `file:` module-level runs, incomplete
+headers, or rendering overhead — so glue merged beside an already-complete function never
+displaces a test.
+Down-weighting can never push a candidate below the admit floor, so
+test-only queries keep their test evidence.
+
+vs `greedy-v4` (baseline-v21→v23, verified splits): dev entry metrics identical
+(entry_recall@5 0.608, @20 0.701, mrr 0.584, routed_coverage 0.950; span@{1024,4096}
+0.508/0.623, line@{1024,4096} 0.548/0.659 unchanged), dev span@256 0.080→0.147,
+line@256 0.193→0.251, file@1024 0.711→0.778; heldout span@1024 0.109→0.118,
+span@4096 0.169→0.240, line@4096 0.233→0.297, file@256 0.270→0.322, file@1024 0.529→0.632.
+A flat existence gate (weight whenever both roles are admitted) REJECTED: dev span@1024
+0.508→0.441, demoting test gold out of `py-related-test-gives-up`.
+On requests, `log every redirect hop…` at 1024: the original repro packed ~600 units of test
+bodies with `resolve_redirects` absent. Under v6 the exact command below packs 10 items using
+1011/1024 units with **0 test items**; `resolve_redirects` is present as a header and its body is
+reported, not silent: `symbol:src/requests/sessions.py#SessionRedirectMixin.resolve_redirects
+packed without its body; raise the budget`.
+
+Reproduce (requests @ `611c6162cbc4ac2020a2f91c7cfa4f3abf9bbb60`; index first, then context with a
+private data dir):
+
+```sh
+oxide index <requests-root> --data-dir <private-data-dir>
+oxide context <requests-root> \
+  "log every redirect hop and where each one goes" \
+  --symbol resolve_redirects --file src/requests/sessions.py \
+  --budget 1024 --data-dir <private-data-dir> --json
+```
+
+Unverified splits (not gated) fall at 4096 where the kept retry spreads budget over more
+items: heldout unverified line@4096 0.284→0.259, file@4096 0.734→0.672; all unverified
+line@4096 0.292→0.270, file@4096 0.776→0.724. The only test-path gold lost is
+`pydata__xarray-6599` (`xarray/tests/test_computation.py`, unverified): partial→missed @1024,
+complete→missed @4096 — the retry admits production bodies ahead of an unverified test span.
+`pytest-dev__pytest-10051` gains a verified span (logging.py \[345,350] missed→partial @1024);
+`pytest-dev__pytest-7571` gains four complete spans @4096 (three verified; two from missed, two from partial).
+23 tasks changed, 0 verified production regressions.

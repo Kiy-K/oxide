@@ -389,9 +389,7 @@ def main(argv: list[str] | None = None) -> int:
         if name in ("inspect", "refs"):
             command.add_argument("symbol", help="name, Outer.inner, path:line or entity key")
         if name == "impact":
-            command.add_argument(
-                "key", help="entity key from oxide_search, e.g. symbol:pkg/core.py#low"
-            )
+            command.add_argument("key", help="entity key or a name inspect resolves, e.g. low")
         command.add_argument("--data-dir", help="data location (default: OXIDE_DATA_DIR or XDG)")
         command.add_argument("--json", action="store_true", help="print the typed result as JSON")
         if name not in ("index", "judge", "impact", "outline", "inspect", "refs"):

@@ -145,6 +145,21 @@ def test_invalid_arguments(repo: oxide.Repository) -> None:
         repo.impact("symbol:pkg/core.py#low", depth=9)
 
 
+def test_a_short_name_impacts_like_its_full_key(repo: oxide.Repository) -> None:
+    # Issue #77: impact refused names that inspect and refs resolve fine.
+    assert repo.impact("low") == repo.impact("symbol:pkg/core.py#low")
+    assert repo.impact("mid").root.key == "symbol:pkg/mid.py#mid"
+
+
+def test_ambiguous_and_unknown_short_names_say_how_to_proceed(
+    repo: oxide.Repository,
+) -> None:
+    with pytest.raises(InvalidArgument, match="several entities"):
+        repo.impact("twice")  # two definitions in pkg/dup.py
+    with pytest.raises(InvalidArgument, match="find keys with oxide search"):
+        repo.impact("nowhere")
+
+
 @pytest.mark.parametrize(
     ("name", "sites"),
     [

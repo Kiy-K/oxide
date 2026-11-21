@@ -4,14 +4,22 @@ from __future__ import annotations
 
 import hashlib
 import itertools
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping, Sequence
 from pathlib import Path
 
 import pytest
 from conftest import FIXTURE, write
 
 import oxide
-from oxide.core.packing import Candidate, header_end, module_regions, pack, units
+from oxide.core.notices import unpacked_bodies
+from oxide.core.packing import (
+    Candidate,
+    header_end,
+    module_regions,
+    pack,
+    units,
+    value,
+)
 from oxide.models import ContextItem, Entity, Omission, SourceRef
 
 QUERY = "where failed HTTP requests are retried"
@@ -202,3 +210,551 @@ def test_views_separated_only_by_whitespace_share_one_item() -> None:
     items, _ = pack([symbol("f"), symbol("g"), symbol("h")], {}, 4096, lambda ref: data, {})
     assert [i.lines for i in items] == [(1, 6), (8, 9)]  # ``X = 1`` keeps h apart
     assert items[0].text.startswith("### m.py:1-6 f, g\n")
+
+
+# --- issue #77: query-sensitive test down-weighting and hint priority ---
+
+
+def _pooled(path: str, name: str, body: str, rank: int | None = None) -> tuple[Candidate, bytes]:
+    data = body.encode()
+    entity = Entity(
+        f"symbol:{path}#{name}",
+        "symbol",
+        "function",
+        name,
+        None,
+        SourceRef(path, 0, len(data), "x"),
+        path.startswith("tests/"),
+    )
+    return Candidate(entity, 0, rank, False), data
+
+
+def test_tests_yield_when_they_crowd_production_out_of_the_budget() -> None:
+    big = "def t():\n" + "    x = 1\n" * 90
+    small = "def p():\n" + "    y = 2\n" * 55
+    t, td = _pooled("tests/test_p.py", "t", big, rank=1)
+    p1, d1 = _pooled("pkg/a.py", "p1", small, rank=2)
+    p2, d2 = _pooled("pkg/b.py", "p2", small, rank=3)
+    data = {"tests/test_p.py": td, "pkg/a.py": d1, "pkg/b.py": d2}
+    probe, _ = pack([p1, p2], {}, 1 << 20, lambda ref: data[ref.path], {})
+    budget = sum(i.units for i in probe)  # exactly two production bodies
+    items, omitted = pack([t, p1, p2], {}, budget, lambda ref: data[ref.path], {})
+    # The test body (rank 1) claims the budget and both production candidates lose
+    # room: the symptom. The retry that gives both production bodies wins.
+    assert {i.source.path for i in items} == {"pkg/a.py", "pkg/b.py"}
+    assert omitted == [Omission(t.entity.key, "packing", "budget")]
+
+
+def test_a_failing_judge_packs_exactly_the_default_when_the_retry_fires() -> None:
+    big = "def t():\n" + "    x = 1\n" * 90
+    small = "def p():\n" + "    y = 2\n" * 55
+    t, td = _pooled("tests/test_p.py", "t", big, rank=1)
+    p1, d1 = _pooled("pkg/a.py", "p1", small, rank=2)
+    p2, d2 = _pooled("pkg/b.py", "p2", small, rank=3)
+    data = {"tests/test_p.py": td, "pkg/a.py": d1, "pkg/b.py": d2}
+    probe, _ = pack([p1, p2], {}, 1 << 20, lambda ref: data[ref.path], {})
+    budget = sum(i.units for i in probe)  # the crowding symptom, as above
+
+    class Boom:
+        identity = "boom"
+
+        calls = 0
+
+        def judge(self, candidates: Sequence[Candidate]) -> Mapping[str, float]:
+            type(self).calls += 1
+            raise RuntimeError("http 529")
+
+    plain_items, plain_omissions = pack([t, p1, p2], {}, budget, lambda ref: data[ref.path], {})
+    judge = Boom()
+    items, omissions = pack([t, p1, p2], {}, budget, lambda ref: data[ref.path], {}, judge)
+    assert judge.calls == 1  # ADR-0009: asked once even when the retry runs
+    assert [(i.source, i.units) for i in items] == [(i.source, i.units) for i in plain_items]
+    assert omissions == plain_omissions
+
+
+def test_real_judgments_survive_the_crowding_retry(monkeypatch: pytest.MonkeyPatch) -> None:
+    big = "def t():\n" + "    x = 1\n" * 90
+    small = "def p():\n" + "    y = 2\n" * 55
+    t, td = _pooled("tests/test_p.py", "t", big, rank=1)
+    p1, d1 = _pooled("pkg/a.py", "p1", small, rank=2)
+    p2, d2 = _pooled("pkg/b.py", "p2", small, rank=3)
+    data = {"tests/test_p.py": td, "pkg/a.py": d1, "pkg/b.py": d2}
+    probe, _ = pack([p1, p2], {}, 1 << 20, lambda ref: data[ref.path], {})
+    budget = sum(i.units for i in probe)  # the crowding symptom, as above
+
+    class Ranked:
+        identity = "ranked"
+
+        calls = 0
+
+        def judge(self, candidates: Sequence[Candidate]) -> Mapping[str, float | None]:
+            type(self).calls += 1
+            return {c.entity.key: 0.85 for c in candidates}
+
+    judge = Ranked()
+    weights: list[float] = []
+    real_value = value
+
+    def spy(c: Candidate, *, test_weight: float = 1.0) -> tuple[float, str]:
+        weights.append(test_weight)
+        return real_value(c, test_weight=test_weight)
+
+    monkeypatch.setattr("oxide.core.packing.value", spy)
+    items, omitted = pack([t, p1, p2], {}, budget, lambda ref: data[ref.path], {}, judge)
+    # The gate fires on this bundle (both productions are header-only), but a
+    # judgment is a request: equal judged values pack equal bundles, the retry
+    # gains nothing, and the test body keeps the budget it was judged onto.
+    assert judge.calls == 1
+    assert 0.5 in weights  # the retry ran with the demotion weight
+    packed = {e.key: e.complete for i in items for e in i.entities}
+    assert packed[t.entity.key]  # an unjudged retry would have demoted this
+    assert not packed[p1.entity.key] and not packed[p2.entity.key]  # presence only
+    assert omitted == []
+
+
+def test_a_query_about_tests_keeps_its_test_evidence_with_ample_budget() -> None:
+    t, td = _pooled("tests/test_p.py", "t", "def t():\n" + "    x = 1\n" * 90, rank=1)
+    p, pd = _pooled("pkg/a.py", "p", "def p():\n" + "    y = 2\n" * 55, rank=2)
+    data = {"tests/test_p.py": td, "pkg/a.py": pd}
+    items, omitted = pack([t, p], {}, 1 << 20, lambda ref: data[ref.path], {})
+    # Ample budget: nothing lost room, so the gate never fires and the test body
+    # is shown complete even though production evidence exists.
+    assert not omitted
+    shown = {e.key: e.complete for i in items for e in i.entities}
+    assert shown[t.entity.key] and shown[p.entity.key]
+
+
+def test_a_class_method_rescued_from_a_test_keeps_its_body() -> None:
+    # Issue #77 in production shape: most code lives in methods, and a method
+    # packs beside its class header, so the item as a whole is never "complete".
+    prod = (
+        "class C:\n    def m(self):\n"
+        + "".join("        x = 1\n" for _ in range(40))
+        + "\n    def n(self):\n"
+        + "".join("        z = 1\n" for _ in range(30))
+        + "\n"
+    ).encode()
+    test = ("def t():\n" + "    y = 1\n" * 70).encode()
+    data = {"pkg/a.py": prod, "tests/test_a.py": test}
+
+    def source(ref: SourceRef) -> bytes:
+        return data[ref.path]
+
+    class_c = Entity(
+        "symbol:pkg/a.py#C",
+        "symbol",
+        "class",
+        "C",
+        None,
+        SourceRef("pkg/a.py", 0, len(prod), "x"),
+        False,
+    )
+    method = Entity(
+        "symbol:pkg/a.py#C.m",
+        "symbol",
+        "method",
+        "C.m",
+        None,
+        SourceRef("pkg/a.py", prod.index(b"    def m"), prod.index(b"\n    def n"), "x"),
+        False,
+    )
+    crowd = Entity(
+        "symbol:tests/test_a.py#t",
+        "symbol",
+        "function",
+        "t",
+        None,
+        SourceRef("tests/test_a.py", 0, len(test), "x"),
+        True,
+    )
+    pool = [Candidate(crowd, 0, 1, False), Candidate(method, 0, 2, False)]
+    scopes = {class_c.key: class_c}
+    probe_t, _ = pack([pool[0]], scopes, 1 << 20, source, {})
+    probe_m, _ = pack([pool[1]], scopes, 1 << 20, source, {})
+    units_t = sum(i.units for i in probe_t)
+    units_m = sum(i.units for i in probe_m)
+    # One body fits, the other only its header: the crowding symptom.
+    items, omitted = pack(pool, scopes, units_t + units_m - 1, source, {})
+    packed = {e.key: e.complete for i in items for e in i.entities}
+    assert packed[method.key]  # the method body came back, not just its header
+    assert not omitted
+
+
+def test_a_retry_that_gains_nothing_is_thrown_away(monkeypatch: pytest.MonkeyPatch) -> None:
+    # The gate fires (a production body lost room to a test body), but the
+    # down-weighted pass cannot add production units: the production body is
+    # too large for the budget either way. The first-pass bundle must survive.
+    t, td = _pooled("tests/test_p.py", "t", "def t():\n" + "    x = 1\n" * 90, rank=1)
+    p, pd = _pooled("pkg/a.py", "p", "def p():\n" + "    y = 2\n" * 180, rank=2)
+    data = {"tests/test_p.py": td, "pkg/a.py": pd}
+    probe_t, _ = pack([t], {}, 1 << 20, lambda ref: data[ref.path], {})
+    budget = sum(i.units for i in probe_t) + 250  # test body fits; production body never does
+    weights: list[float] = []
+    real_value = value
+
+    def spy(candidate: Candidate, *, test_weight: float = 1.0) -> tuple[float, str]:
+        weights.append(test_weight)
+        return real_value(candidate, test_weight=test_weight)
+
+    monkeypatch.setattr("oxide.core.packing.value", spy)
+    items, omitted = pack([t, p], {}, budget, lambda ref: data[ref.path], {})
+    assert 0.5 in weights  # the retry ran
+    assert items[0].source.path == "tests/test_p.py"  # an adopted retry would lead with production
+    packed = {e.key: e.complete for i in items for e in i.entities}
+    assert packed[t.entity.key] and not packed[p.entity.key]
+    assert omitted == []
+
+
+def test_a_lost_file_outline_does_not_trigger_the_retry(monkeypatch: pytest.MonkeyPatch) -> None:
+    # A hinted file whose outline cannot fit is not a production symbol losing
+    # its body: the gate must stay off even though test bodies hold the budget.
+    # Two module-level runs: the outline is the first run, too large for 150.
+    data = ("X = 1\n" * 200 + "\ndef s():\n" + "    x = 1\n" * 10).encode()
+    file_ = Candidate(_file("pkg/a.py", data), 0, None, True, hinted=True)
+    t, td = _pooled("tests/test_p.py", "t", "def t():\n" + "    y = 1\n" * 40, rank=2)
+    sources = {"pkg/a.py": data, "tests/test_p.py": td}
+    declarations = {file_.entity.key: [(data.index(b"def"), len(data))]}
+    weights: list[float] = []
+    real_value = value
+
+    def spy(candidate: Candidate, *, test_weight: float = 1.0) -> tuple[float, str]:
+        weights.append(test_weight)
+        return real_value(candidate, test_weight=test_weight)
+
+    monkeypatch.setattr("oxide.core.packing.value", spy)
+    items, omitted = pack([file_, t], {}, 150, lambda ref: sources[ref.path], declarations)
+    assert 0.5 not in weights  # no retry: only a file outline was lost
+    assert [i.source.path for i in items] == ["tests/test_p.py"]
+    assert Omission(file_.entity.key, "packing", "too large") in omitted
+
+
+def test_downweighting_admits_but_never_suppresses_a_test() -> None:
+    candidate, _ = _pooled("tests/test_p.py", "t", "def t(): pass\n", rank=20)
+    score, basis = value(candidate, test_weight=0.5)
+    assert (score, basis) == (0.4, "lexical rank 20, test weight 0.5")  # stays at the floor
+    seed = Candidate(candidate.entity, 0, None, True, seeds=("symbol:t",))
+    assert value(seed, test_weight=0.5) == (0.9, "structural seed")  # a request, not a guess
+
+
+def test_symbol_seeds_pack_before_a_hinted_file_of_equal_value() -> None:
+    data = ("X = 1\n" + "def s():\n" + "    x = 1\n" * 40).encode()
+    symbol_data = data[data.index(b"def") :]
+    ref = SourceRef("pkg/a.py", data.index(b"def"), len(data), "x")
+    entity = Entity("symbol:pkg/a.py#s", "symbol", "function", "s", None, ref, False)
+    seeded_symbol = Candidate(entity, 0, None, True, hinted=True, seeds=("symbol:s",))
+    file_ = Candidate(_file("pkg/a.py", data), 0, None, True, hinted=True)
+    declarations = {file_.entity.key: [(ref.start, ref.end)]}
+    budget = units(f"### pkg/a.py:2-42 s\n{symbol_data.decode()}")
+    items, omitted = pack([file_, seeded_symbol], {}, budget, lambda ref_: data, declarations)
+    # A named symbol is the requested source: it claims the budget before the
+    # hinted file's outline does (the outline would otherwise eat the bundle).
+    assert [i.source.path for i in items] == ["pkg/a.py"]
+    assert all(e.key == entity.key and e.complete for i in items for e in i.entities)
+    assert omitted == [Omission(file_.entity.key, "packing", "budget")]
+
+
+def test_a_symbol_seed_that_lost_its_body_is_reported(repo: oxide.Repository) -> None:
+    named = repo.build_context(QUERY, 512, symbols=["RetryPolicy"])
+    assert not [d for d in named.degradations if "body" in d]  # it fits: no notice
+    small = repo.build_context(QUERY, 256, symbols=["RetryPolicy"])
+    assert [d for d in small.degradations if "body" in d] == [
+        "symbol:oxidepy/retry.py#RetryPolicy packed without its body; raise the budget"
+    ]
+    body = "def crowd():\n" + "    x = 1\n" * 60
+    crowd, cd = _pooled("pkg/a.py", "crowd", body, rank=1)
+    asked = Candidate(crowd.entity, 0, None, True, seeds=("path:pkg/a.py",))
+    shown, _ = pack([asked], {}, 128, lambda ref: cd, {})
+    assert not all(e.complete for item in shown for e in item.entities)  # header only
+    assert unpacked_bodies([asked], shown, ()) == []  # a path seed stays silent
+
+
+def test_module_code_beside_a_complete_function_is_not_a_production_body() -> None:
+    # Devin (PR #78): the retry merged module-level glue beside an already-complete
+    # function and counted the whole merged item as production, so it demoted a
+    # complete test without recovering any production body. Bodies are the union of
+    # complete symbol source ranges, never file: module runs or rendering overhead.
+    prod = (
+        "def f():\n    return 1\n" + "GLUE = 2\n" * 30 + "def g():\n" + "    x = 1\n" * 70
+    ).encode()
+    test = ("def t():\n" + "    z = 1\n" * 60).encode()
+    data = {"pkg/f.py": prod, "tests/test_f.py": test}
+
+    def src(ref: SourceRef) -> bytes:
+        return data[ref.path]
+
+    f_end = prod.index(b"GLUE")
+    g_start = prod.index(b"def g")
+    f = Entity(
+        "symbol:pkg/f.py#f",
+        "symbol",
+        "function",
+        "f",
+        None,
+        SourceRef("pkg/f.py", 0, f_end, "x"),
+        False,
+    )
+    g = Entity(
+        "symbol:pkg/f.py#g",
+        "symbol",
+        "function",
+        "g",
+        None,
+        SourceRef("pkg/f.py", g_start, len(prod), "x"),
+        False,
+    )
+    t = Entity(
+        "symbol:tests/test_f.py#t",
+        "symbol",
+        "function",
+        "t",
+        None,
+        SourceRef("tests/test_f.py", 0, len(test), "x"),
+        True,
+    )
+    file_ = Entity(
+        "file:pkg/f.py",
+        "file",
+        "file",
+        "f.py",
+        None,
+        SourceRef("pkg/f.py", 0, len(prod), "x"),
+        False,
+    )
+    pool = [
+        Candidate(t, 0, 1, False),
+        Candidate(f, 0, 2, False),
+        Candidate(g, 0, 3, False),
+        Candidate(file_, 0, 4, False),
+    ]
+    decls = {"file:pkg/f.py": [(0, f_end), (g_start, len(prod))]}
+    items, omitted = pack(pool, {}, 300, src, decls)
+    # The test body stays complete: the only production gain would be glue, not a body.
+    shown = {e.key: e.complete for i in items for e in i.entities}
+    assert shown[t.key] and shown[f.key] and not shown.get(g.key, False)
+    assert {o.key for o in omitted} == {g.key, file_.key}
+
+
+def test_a_method_inside_a_complete_class_is_not_reported_missing() -> None:
+    # Devin (PR #78): seeding both a class and its method, the class item already
+    # contains the method's full source; the method's separate selection failing for
+    # budget must not tell the caller to raise it -- the bytes are already there.
+    prod = (
+        "class C:\n    def m(self):\n"
+        + "        x = 1\n" * 20
+        + "\n    def n(self):\n"
+        + "        y = 1\n" * 20
+        + "\n"
+    ).encode()
+    data = {"pkg/c.py": prod}
+
+    def src(ref: SourceRef) -> bytes:
+        return data[ref.path]
+
+    c = Entity(
+        "symbol:pkg/c.py#C",
+        "symbol",
+        "class",
+        "C",
+        None,
+        SourceRef("pkg/c.py", 0, len(prod), "x"),
+        False,
+    )
+    m_start = prod.index(b"    def m")
+    m_end = prod.index(b"\n    def n")
+    m = Entity(
+        "symbol:pkg/c.py#C.m",
+        "symbol",
+        "method",
+        "C.m",
+        None,
+        SourceRef("pkg/c.py", m_start, m_end, "x"),
+        False,
+    )
+    cc = Candidate(c, 0, None, True, seeds=("symbol:pkg/c.py#C",))
+    cm = Candidate(m, 0, None, True, seeds=("symbol:pkg/c.py#C.m",))
+    scopes = {"symbol:pkg/c.py#C": c}
+    decls = {"file:pkg/c.py": [(0, len(prod))]}
+    solo, _ = pack([cc], scopes, 1 << 20, src, decls)
+    budget = sum(i.units for i in solo)  # exactly the complete class item
+    items, omitted = pack([cc, cm], scopes, budget, src, decls)
+    assert any(e.key == c.key and e.complete for i in items for e in i.entities)
+    assert any(i.source.start <= m_start and m_end <= i.source.end for i in items)
+    assert unpacked_bodies([cc, cm], items, omitted) == []  # covered: no false notice
+    # A genuinely missing body is still reported when no item covers it.
+    tight, tight_om = pack([cc, cm], scopes, 40, src, decls)
+    assert unpacked_bodies([cc, cm], tight, tight_om) == [
+        "symbol:pkg/c.py#C packed without its body; raise the budget",
+        "symbol:pkg/c.py#C.m packed without its body; raise the budget",
+    ]
+
+
+def test_a_test_query_under_budget_pressure_keeps_its_test_body() -> None:
+    # Devin (PR #78): the ample-budget test never exercised the gate. Here the caller
+    # names a test symbol (a query about tests) and the budget fits only its body;
+    # production loses room, but the symptom is test bodies crowding production --
+    # not a requested test -- so the seed is never down-weighted and keeps its body.
+    t, td = _pooled("tests/test_p.py", "t", "def t():\n" + "    x = 1\n" * 90, rank=1)
+    t = Candidate(t.entity, 0, 1, True, seeds=("symbol:tests/test_p.py#t",))
+    p, pd = _pooled("pkg/a.py", "p", "def p():\n" + "    y = 2\n" * 90, rank=2)
+    data = {"tests/test_p.py": td, "pkg/a.py": pd}
+
+    def src(ref: SourceRef) -> bytes:
+        return data[ref.path]
+
+    probe, _ = pack([t], {}, 1 << 20, src, {})
+    budget = sum(i.units for i in probe)  # one test body, no room for production
+    items, omitted = pack([t, p], {}, budget, src, {})
+    shown = {e.key: e.complete for i in items for e in i.entities}
+    assert shown[t.entity.key]  # the query's test evidence survives the pressure
+    assert omitted == [Omission(p.entity.key, "packing", "budget")]
+
+
+def test_a_class_recovered_by_its_methods_counts_as_production_body(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Devin (PR #78): when merged methods span a whole class, its ItemEntity is
+    # complete even though only header pieces were packed. This covers the
+    # class-span accounting path: the retry ran (value spy) and the test entity
+    # is present incomplete, not omitted.
+    prod = (
+        "class C:\n    def m(self):\n"
+        + "        x = 1\n" * 40
+        + "\n    def n(self):\n"
+        + "        y = 2\n" * 30
+    ).encode()  # no trailing newline: methods span the class exactly
+    test = ("def t():\n" + "    z = 3\n" * 70).encode()
+    data = {"pkg/a.py": prod, "tests/test_a.py": test}
+
+    def src(ref: SourceRef) -> bytes:
+        return data[ref.path]
+
+    c = Entity(
+        "symbol:pkg/a.py#C",
+        "symbol",
+        "class",
+        "C",
+        None,
+        SourceRef("pkg/a.py", 0, len(prod), "x"),
+        False,
+    )
+    m_start = prod.index(b"    def m")
+    m_end = prod.index(b"\n    def n")
+    n_start = prod.index(b"    def n")
+    m = Entity(
+        "symbol:pkg/a.py#C.m",
+        "symbol",
+        "method",
+        "m",
+        None,
+        SourceRef("pkg/a.py", m_start, m_end, "x"),
+        False,
+    )
+    n = Entity(
+        "symbol:pkg/a.py#C.n",
+        "symbol",
+        "method",
+        "n",
+        None,
+        SourceRef("pkg/a.py", n_start, len(prod), "x"),
+        False,
+    )
+    t = Entity(
+        "symbol:tests/test_a.py#t",
+        "symbol",
+        "function",
+        "t",
+        None,
+        SourceRef("tests/test_a.py", 0, len(test), "x"),
+        True,
+    )
+    tc = Candidate(t, 0, 1, False)
+    mc = Candidate(m, 0, 2, False)
+    nc = Candidate(n, 0, 3, False)
+    scopes = {"symbol:pkg/a.py#C": c}
+    probe, _ = pack([tc], {}, 1 << 20, src, {})
+    budget = sum(i.units for i in probe) + 60  # slack for the test header after demotion
+    weights: list[float] = []
+    real_value = value
+
+    def spy(candidate: Candidate, *, test_weight: float = 1.0) -> tuple[float, str]:
+        weights.append(test_weight)
+        return real_value(candidate, test_weight=test_weight)
+
+    monkeypatch.setattr("oxide.core.packing.value", spy)
+    items, _omitted = pack([tc, mc, nc], scopes, budget, src, {})
+    assert 0.5 in weights  # the retry ran
+    # The retry recovers both methods; their merged span covers C exactly, so C is
+    # complete. The test entity is present as a header (incomplete), not omitted.
+    complete = {e.key for i in items for e in i.entities if e.complete}
+    present = {e.key for i in items for e in i.entities}
+    assert "symbol:pkg/a.py#C" in complete
+    assert "symbol:pkg/a.py#C.m" in complete and "symbol:pkg/a.py#C.n" in complete
+    assert "symbol:tests/test_a.py#t" in present and "symbol:tests/test_a.py#t" not in complete
+
+
+def test_a_mixed_item_splits_test_and_production_units() -> None:
+    # greptile/cubic (PR #78): a test function and a production function in the same
+    # file merge into one item. The symptom tally must split its units by role so
+    # test bytes are not hidden as production; the gate fires and the retry demotes
+    # the test, recovering the production body.
+    data = {
+        "pkg/mixed.py": (
+            "def test_helper():\n" + "    x = 1\n" * 60 + "\n\ndef prod():\n" + "    y = 2\n" * 20
+        ).encode()
+    }
+
+    def src(ref: SourceRef) -> bytes:
+        return data[ref.path]
+
+    t = Entity(
+        "symbol:pkg/mixed.py#test_helper",
+        "symbol",
+        "function",
+        "test_helper",
+        None,
+        SourceRef("pkg/mixed.py", 0, data["pkg/mixed.py"].index(b"\n\ndef prod"), "x"),
+        True,
+    )
+    p_start = data["pkg/mixed.py"].index(b"def prod")
+    p = Entity(
+        "symbol:pkg/mixed.py#prod",
+        "symbol",
+        "function",
+        "prod",
+        None,
+        SourceRef("pkg/mixed.py", p_start, len(data["pkg/mixed.py"]), "x"),
+        False,
+    )
+    tc = Candidate(t, 0, 1, False)
+    pc = Candidate(p, 0, 2, False)
+    # Budget fits the test body but not both: production is crowded out.
+    probe, _ = pack([tc], {}, 1 << 20, src, {})
+    budget = sum(i.units for i in probe) + 10
+    items, _omitted = pack([tc, pc], {}, budget, src, {})
+    # The retry demotes the test and recovers the production body.
+    complete = {e.key for i in items for e in i.entities if e.complete}
+    assert "symbol:pkg/mixed.py#prod" in complete
+    assert "symbol:pkg/mixed.py#test_helper" not in complete
+
+
+def test_unpacked_bodies_ignores_file_category_seeds() -> None:
+    # cubic (PR #78): a one-part symbol hint can resolve to a file key; the notice
+    # must not report a file candidate as a missing symbol body.
+    data = {"pkg/a.py": b"X = 1\n" * 50}
+
+    def src(ref: SourceRef) -> bytes:
+        return data[ref.path]
+
+    f = Entity(
+        "file:pkg/a.py",
+        "file",
+        "file",
+        "a.py",
+        None,
+        SourceRef("pkg/a.py", 0, len(data["pkg/a.py"]), "x"),
+        False,
+    )
+    fc = Candidate(f, 0, None, True, seeds=("symbol:pkg/a.py",))
+    items, omitted = pack([fc], {}, 20, src, {"file:pkg/a.py": [(0, len(data["pkg/a.py"]))]})
+    # The file is packed as a header (incomplete), but it is not a symbol: no notice.
+    assert unpacked_bodies([fc], items, omitted) == []
