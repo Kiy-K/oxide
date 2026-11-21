@@ -114,9 +114,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -261,9 +261,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -392,9 +392,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -512,9 +512,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -634,9 +634,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -673,8 +673,8 @@
     "span_recall@1024": 1.0,
     "line_recall@1024": 1.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.998047,
-    "gold_unit_share@1024": 0.277886,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.211144,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
@@ -729,13 +729,13 @@
     ]
    },
    "1024": {
-    "used": 1022,
+    "used": 1023,
     "within_budget": true,
     "deterministic": true,
-    "items": 5,
-    "header_entities": 5,
+    "items": 6,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 7,
+     "packing: budget": 9,
      "selection: container": 6,
      "selection: value N below floor": 6
     },
@@ -761,16 +761,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "9942e59fe16f7987e697346c8ee75e1026b333a6253505495ed6304adba3cf53",
    "routed": "76fda3087bd6082d40979d9dd58bcdd44e7fa6395d960f7da3d2c45704f48faf",
    "payload@256": "986d297b735528b8abc938c3b81444ca46c7a735f33df8ef4caa00871b00b658",
-   "payload@1024": "61028d57f22ed893fbc4e8714e22a55353c5a687526f0af6ba727dc36663425e",
+   "payload@1024": "fcb22ed2beae9bd86b59fc888835b0828d4510c4a27039dfb8e932d1f3a82fd9",
    "payload@4096": "a9d7a5a5b9a5e16ad8efe383baf239a672ec5e585b0b6df87c2540435d5722d0"
   },
   "outside": []
@@ -929,9 +929,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -1057,9 +1057,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -1402,9 +1402,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -1700,9 +1700,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2020,9 +2020,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2185,9 +2185,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2229,7 +2229,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 0.994873,
+    "utilization@4096": 0.993164,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -2259,7 +2259,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 0.994873,
+    "utilization@4096": 0.993164,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -2546,15 +2546,15 @@
     ]
    },
    "4096": {
-    "used": 4075,
+    "used": 4068,
     "within_budget": true,
     "deterministic": true,
     "items": 21,
-    "header_entities": 10,
+    "header_entities": 6,
     "omissions": {
-     "packing: budget": 3,
+     "packing: budget": 4,
      "selection: container": 1,
-     "selection: item cap N": 4,
+     "selection: item cap N": 3,
      "selection: value N below floor": 32
     },
     "degradations": [
@@ -2565,9 +2565,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2575,7 +2575,7 @@
    "routed": "e2a417b87035db3d51856cff245cd959edfa6a6be9ef6e7a0320a1c6cccc05dd",
    "payload@256": "9db5dea59aa90a5dbda340a77fb4ab068b126f39344e39dc1ac364a6590984bf",
    "payload@1024": "28738394d72116e9fd9c1b51f2ba4b786c991a179ffbadd800732b49a60cc2d0",
-   "payload@4096": "e9c81a93cdcffd9419d5879e2a7f6072b2b97e5fcdd530d151b06e1137ede8e7"
+   "payload@4096": "b633eec975bbd063e7919817f75364bf2a24102b302afb0e9915cd773243e094"
   },
   "outside": []
  },
@@ -2820,9 +2820,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -3391,9 +3391,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -3601,9 +3601,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -3641,7 +3641,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.977539,
+    "utilization@1024": 0.999023,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -3798,13 +3798,13 @@
     ]
    },
    "1024": {
-    "used": 1001,
+    "used": 1023,
     "within_budget": true,
     "deterministic": true,
-    "items": 8,
-    "header_entities": 4,
+    "items": 11,
+    "header_entities": 8,
     "omissions": {
-     "packing: budget": 39,
+     "packing: budget": 34,
      "selection: container": 2,
      "selection: value N below floor": 15
     },
@@ -3831,16 +3831,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "6f6a4736ba25e9ed775a0b7a739d025895820a8e23308d7c05303b55298e2ecb",
    "routed": "d2e8719ec5d08b1ab12a1ae6dd1a041a47e73392f0109829d269e218477f89af",
    "payload@256": "a5763ea4b11c0cca141176e2ce1c3277f234b6d90ec5999d0f134c9611dcbed0",
-   "payload@1024": "d918415f5574b78a40bf288b639bc005ac6c7353a6afdac624145e29357c36b0",
+   "payload@1024": "dc098b18100cc838a30998a9efba5856af6af46a0fb62934cd6af56738c34dad",
    "payload@4096": "2a15504175185d49de4298f9a4707ece10892ec6de662ae0705a144ed082b326"
   },
   "outside": []
@@ -3869,8 +3869,8 @@
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
-    "file_recall@1024": 0.0,
-    "utilization@1024": 0.972656,
+    "file_recall@1024": 0.25,
+    "utilization@1024": 0.996094,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -3899,8 +3899,8 @@
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
-    "file_recall@1024": 0.0,
-    "utilization@1024": 0.972656,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.996094,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -4197,13 +4197,13 @@
     ]
    },
    "1024": {
-    "used": 996,
+    "used": 1020,
     "within_budget": true,
     "deterministic": true,
-    "items": 6,
+    "items": 5,
     "header_entities": 3,
     "omissions": {
-     "packing: budget": 53,
+     "packing: budget": 54,
      "selection: container": 1,
      "selection: value N below floor": 3
     },
@@ -4230,16 +4230,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "ff8e76edf1102d4604dd982d9a221c0d7fb8a2e821964e484569be992433cd23",
    "routed": "08ce05f6d5501dd5a7490e0dd1c4ea8c22961077f6ed1fa8823d9c8cca2f4059",
    "payload@256": "b830569f0b1b4fa83706d4524e9e0c2b13047d1ffdf083f7dc13fcda27289178",
-   "payload@1024": "8ba02e2c3ffe4789c31b191d73233d05ab207b67156aab9c024bba49f8ad8e2e",
+   "payload@1024": "b97fe24491a3e919561e1d0740d433083221bf2f90dfe14893b02b9a53d2beac",
    "payload@4096": "e638d2b4ffd7712d851858f50b3aa79f3632633d772a83330af0bc7663163190"
   },
   "outside": [
@@ -4440,9 +4440,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -4671,9 +4671,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -4710,7 +4710,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.963867,
+    "utilization@1024": 0.986328,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -4740,7 +4740,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.963867,
+    "utilization@1024": 0.986328,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -4921,13 +4921,13 @@
     ]
    },
    "1024": {
-    "used": 987,
+    "used": 1010,
     "within_budget": true,
     "deterministic": true,
-    "items": 5,
-    "header_entities": 2,
+    "items": 8,
+    "header_entities": 4,
     "omissions": {
-     "packing: budget": 40,
+     "packing: budget": 37,
      "selection: container": 1,
      "selection: value N below floor": 17
     },
@@ -4954,16 +4954,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "1695de59ba75d5d137a3ae743c88cab7491a72b7d9484aaf15aa3893231f141a",
    "routed": "73e02e4fdbc736e18bc062db69a88719f5a8be504febc10e16e2b4934479e3f7",
    "payload@256": "58c4d8a7834f081fe28591d946bcb39d173cefff7be0e9ffbc56bd89c23c26eb",
-   "payload@1024": "262ff7046ac2d713bc67dc038e097c6a6cee291da42669bb23a0be08c8f1b0ea",
+   "payload@1024": "4294134fd2bea462208e2575ff029de7e1a9b533f92a6a4e93eaab91789db48b",
    "payload@4096": "0907ac80c200b0ce217fd0612a13c75e50308799ab834caf97a1a58749422831"
   },
   "outside": []
@@ -5208,9 +5208,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -5387,9 +5387,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -5734,9 +5734,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -5970,9 +5970,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -6014,7 +6014,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 0.996338,
+    "utilization@4096": 0.998535,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -6182,15 +6182,14 @@
     ]
    },
    "4096": {
-    "used": 4081,
+    "used": 4090,
     "within_budget": true,
     "deterministic": true,
-    "items": 18,
-    "header_entities": 8,
+    "items": 20,
+    "header_entities": 6,
     "omissions": {
-     "packing: budget": 10,
+     "packing: budget": 23,
      "selection: container": 2,
-     "selection: item cap N": 13,
      "selection: value N below floor": 15
     },
     "degradations": [
@@ -6201,9 +6200,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -6211,7 +6210,7 @@
    "routed": "3926936dd21216c5b08c125158e5df6865443a3869b603b70e45132bf9111db1",
    "payload@256": "a9a9255108b97abd4f3a1ff68b5e25c285c97c3146397868c062b4d528bd74d8",
    "payload@1024": "52f2d15519da084789a35b2ac9a5d10b770d94cb39adaeb63b9695b9ed497b98",
-   "payload@4096": "0b7f06989f2edaad2c81b45ebf678c4729ad6e7859d48172297e55060a72c329"
+   "payload@4096": "25022f9ead80d640f2b06dfbddda122899cdb9d5a6c85c03d9d99bf4ae531f1e"
   },
   "outside": []
  },
@@ -6328,9 +6327,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -6338,7 +6337,7 @@
    "routed": "fb9b5f378615311f12e87f9515cc74784c7949286f182d343873be82b261a459",
    "payload@256": "895aa31bf0ec95f80d4a6318bd6110872f14184cd7d1aa53e8995110b115c1c1",
    "payload@1024": "cb64e117075ab6a42ed795bce12bcd650091d97c6521111e185527b16d7c956b",
-   "payload@4096": "c577b7717636bf0f26b50a14e3a9479649a68e9f32f1d1605666f6e383eb94d6"
+   "payload@4096": "1782737fac7e9da642d9038a402b8ecff61bd4f6fa9b0b59bc1e4bd7f474e9c1"
   },
   "outside": [
    {
@@ -6512,9 +6511,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -6522,7 +6521,7 @@
    "routed": "12c21eea9d564f5543eb99e63572fe1fccfb598aaf89396332abd93610534b12",
    "payload@256": "cc94ef17068cb728186e59e24000600fce43683e6fff86d066981f1dd182654d",
    "payload@1024": "e0b94188e7f3c99623b2d6e6217d10d761f272b3befeaf22082b50e1845ea3a8",
-   "payload@4096": "21f038ba894e4732dc574e857e0ee217f6fb300beef836d549b38e2e5753ab19"
+   "payload@4096": "e3351aefd04bcf1fdc0cadcb3e251d91a91bc7268146552b8ff94e9a59ef4c86"
   },
   "outside": [
    {
@@ -6745,9 +6744,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -6924,9 +6923,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -7062,7 +7061,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.996094,
+    "utilization@1024": 0.998047,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -7124,10 +7123,10 @@
     ]
    },
    "1024": {
-    "used": 1020,
+    "used": 1022,
     "within_budget": true,
     "deterministic": true,
-    "items": 7,
+    "items": 8,
     "header_entities": 2,
     "omissions": {
      "packing: budget": 25,
@@ -7157,16 +7156,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "5f4834a4dcdd10df02cd1463c994b789f84d83179e144510d288165b6d9b6238",
    "routed": "bea29cc050b4a155249caf31b7838f9cfd91903e5eac060bb01d6c98da92e090",
    "payload@256": "9989501b66c815974a87689491f0bf1bebd7375fd9aa4d39823d9e81da4af8ee",
-   "payload@1024": "2a55aec55ae8639c1e5ab7ad6b5fe36b8a944070893bd7cab3d76cd336ae6183",
+   "payload@1024": "b930932847ac29d645c2804fa985515717ecdeddc4cde5026249022780df9fb1",
    "payload@4096": "79de9c4e25a5a72a0c458e5ebad259b4637f5ca95dbd1875af48eef6afe3b043"
   },
   "outside": [
@@ -7410,9 +7409,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -7600,9 +7599,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -7797,9 +7796,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -7900,7 +7899,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.99707,
+    "utilization@1024": 0.985352,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -7962,13 +7961,13 @@
     ]
    },
    "1024": {
-    "used": 1021,
+    "used": 1009,
     "within_budget": true,
     "deterministic": true,
-    "items": 6,
+    "items": 5,
     "header_entities": 3,
     "omissions": {
-     "packing: budget": 36,
+     "packing: budget": 35,
      "selection: container": 5,
      "selection: value N below floor": 17
     },
@@ -7995,16 +7994,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "57cd89496b2a7063df67da4f22e5905c7ecfbd7df0511b0b92d152d8a7ffe400",
    "routed": "4db39cf8bf3aa36b2144a9ec0769df364ae29fd132a29f42059c174ea6e7307b",
    "payload@256": "8db75f73bfaa3f9dd8e9978c21a5750d7120b5199102be38f1cdce666caa8407",
-   "payload@1024": "57efa6e47f5f220b7823e8d2dbdb5b9e27ae00906d1029ef612138e9c0579ae7",
+   "payload@1024": "316b7dcbe4d5f73f29826e295b1f2384bffcb0179d7cf1b5caa0f04dcb629a1b",
    "payload@4096": "9640708d134c535ff96c3a712564ae96146371d7dada5580c357d17d0689fe90"
   },
   "outside": [
@@ -8092,7 +8091,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.982422,
+    "utilization@1024": 0.987305,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -8201,13 +8200,13 @@
     ]
    },
    "1024": {
-    "used": 1006,
+    "used": 1011,
     "within_budget": true,
     "deterministic": true,
-    "items": 9,
-    "header_entities": 7,
+    "items": 4,
+    "header_entities": 2,
     "omissions": {
-     "packing: budget": 6,
+     "packing: budget": 11,
      "selection: container": 8,
      "selection: no module-level source": 1,
      "selection: value N below floor": 34
@@ -8235,17 +8234,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "e3cac2715e3f076d39160ebbe05b4fa79ce3956a9dfe888795f7418cde493909",
    "routed": "a3ec741a914cfb81a609636ebb81e089a3661007b3ffda352783b5d79fd74b39",
    "payload@256": "052cf2a3fa3387ae6a4d058ca7dad424af79fb1a02e15d4bad24460859d2214c",
-   "payload@1024": "f8882d1d26d5b47d067ab220a63dce8a61f8b1f81b82b6fd477c9bd917496b15",
-   "payload@4096": "f84efeabe7265a8ef86a9418d1168f4f9fe91d1b18a308f5fb4665465e5d04dd"
+   "payload@1024": "eaa773d2143709b91cb8018a246c284f8bea775bbca8dadd84c42bdf9d827a61",
+   "payload@4096": "a8c8acadc7c3a21b64c1076ec34b1c96c4484cd87b2fe6b9172fd7d6011e8a6a"
   },
   "outside": [
    {
@@ -8553,9 +8552,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -8563,7 +8562,7 @@
    "routed": "62ceb5ac823cba82e9d3440cae44c4623397334225edfa4cde8f77831506479f",
    "payload@256": "a83bdf0359e5be1e4c034ffc03a7cd49dea2ec31c8e4aa5f4db0fa332747daff",
    "payload@1024": "fe126ebd38226099e76ce9b7d111e033f993f93c318ed89ba606b5f220d44ae6",
-   "payload@4096": "ec1b47ab9d0c50acdda9aab50c5c2fea0e141e58b0fec3858e232f6feb7c135c"
+   "payload@4096": "9a4cf217b3496b321c212d8844938bdbb8bebd3b0934ac28d333fb128c83ba87"
   },
   "outside": [
    {
@@ -8910,9 +8909,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -9247,9 +9246,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -9257,7 +9256,7 @@
    "routed": "18e79e9a2fd5df87a31b7218858cdc0563cc8ef61558fd746f5ca4191d589c12",
    "payload@256": "e4b9e309b36971943f2ad9c74dcd16a138ff15d56056a746d52b595cb0c8898f",
    "payload@1024": "3ef4036c007c69950cda253ed7227f31dc8fc3645024e9685f036da11aeef545",
-   "payload@4096": "aa3e793ed58580bc86c00aa247c6a00ed82ed0d369d3725cc430c96ee5a5ac2c"
+   "payload@4096": "25cc4dfcf740dbc09677b133a52a530a29e6a811d5753277a5612ca2a709b6c4"
   },
   "outside": [
    {
@@ -9304,7 +9303,7 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.0,
-    "utilization@256": 0.875,
+    "utilization@256": 0.96875,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
@@ -9354,13 +9353,13 @@
   },
   "bundles": {
    "256": {
-    "used": 224,
+    "used": 248,
     "within_budget": true,
     "deterministic": true,
     "items": 3,
-    "header_entities": 4,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 34,
+     "packing: budget": 33,
      "packing: too large": 1,
      "selection: container": 6,
      "selection: value N below floor": 19
@@ -9403,15 +9402,15 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "19d6fe86952a59525d418474a9e5c742a62ec68e2b074fe4dd621204caf5d868",
    "routed": "1d341b10ea048f53138662aab50dea88c8418d4dc3df50c691290b50a24b5aa3",
-   "payload@256": "216be0e979408691e3f0c39af133d1c5b10b56ef934757e8dfd19299ba399a60",
+   "payload@256": "396231848a86d853116f9c357801df1fa03a075afc22b8b819b2ff19ae3121c3",
    "payload@1024": "b66dc23a0da577af93948ebd9e6a17b2d47bda2d4414829437a8dde53e64dd23",
    "payload@4096": "61ffd2d4356d158fa75fe24998342c765fdf9c4339410202a6479bf5b9bf22a6"
   },
@@ -9749,9 +9748,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -10068,9 +10067,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -10243,9 +10242,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -10566,9 +10565,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -10810,9 +10809,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -10820,7 +10819,7 @@
    "routed": "607eec650b671e324d148e273721e46e865e8adb4efa82610da515811c0977a8",
    "payload@256": "f079f3838040fff7e937277c5a087ce02d8a2526243aab044728948c40ec7c4e",
    "payload@1024": "6b83038499c0f85c769484d065f43897150253222a4f7c537472c36b088c9163",
-   "payload@4096": "ab94b8bce173558c4512e237a6cb19332445ff4521c5aef1011bc2ea51b85f50"
+   "payload@4096": "6fc8cb3b6ccf2d07ef4894b2ca80e7d239400aac125e0fd735e2a7bea0e613e0"
   },
   "outside": [
    {
@@ -11125,9 +11124,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -11279,9 +11278,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -11496,9 +11495,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -11665,9 +11664,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -11768,8 +11767,8 @@
     "span_recall@1024": 1.0,
     "line_recall@1024": 1.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.972656,
-    "gold_unit_share@1024": 0.560241,
+    "utilization@1024": 0.980469,
+    "gold_unit_share@1024": 0.555777,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
@@ -11826,13 +11825,13 @@
     ]
    },
    "1024": {
-    "used": 996,
+    "used": 1004,
     "within_budget": true,
     "deterministic": true,
-    "items": 4,
-    "header_entities": 4,
+    "items": 5,
+    "header_entities": 5,
     "omissions": {
-     "packing: budget": 19,
+     "packing: budget": 18,
      "selection: container": 6,
      "selection: value N below floor": 29
     },
@@ -11859,17 +11858,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "28bbd390e8245a31688873496afce0f7b28c5814d42b75b8cd6b2e01090cb32e",
    "routed": "8fccfaed321b4f7c9a0d47ba6af716d99560b1dbc50320e53b6a1cf168e53ddd",
    "payload@256": "66f990f29588534945d1674d56b5d1d8f42e17b1784bb2589d7593571270505c",
-   "payload@1024": "c3c77a723a4e68aa98658b121f03e530b038da5a9c95a539e524933b88e262b2",
-   "payload@4096": "9d344aab225f4a4b8f042c8fbee652398dc29b16d694b9b8a8d03cf041383c97"
+   "payload@1024": "547d127ad29a4822c33f0b5f4c34782ebc1c73bef901b187f6994c2f1d7dae88",
+   "payload@4096": "c3390528b7242b8e066694a9278500df9f7f4be84ebdd38314e5d312527d5b94"
   },
   "outside": [
    {
@@ -12044,9 +12043,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -12054,7 +12053,7 @@
    "routed": "0d09b1c4611afa07ee25b533306866c9331bb026e1563d3fe74e36bd5d551a17",
    "payload@256": "fab122bf40d29419db51c2e58a3d5aa0336e97a87fe098144188a89cb14f24ec",
    "payload@1024": "4806eb76af7f61b4314de531b3113ea626baccba8c0bb2531f331538c536e99a",
-   "payload@4096": "15cf75966b8892be5351b738fa7989d31c033c3ed9d7ad0c84536573809d195b"
+   "payload@4096": "5db9748d2c4d38cf2cc07fa7180dc29df73ed79743b4b796cd830dd78b3cff4d"
   },
   "outside": [
    {
@@ -12126,7 +12125,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.999023,
+    "utilization@1024": 0.979492,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -12156,7 +12155,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.999023,
+    "utilization@1024": 0.979492,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -12288,13 +12287,13 @@
     ]
    },
    "1024": {
-    "used": 1023,
+    "used": 1003,
     "within_budget": true,
     "deterministic": true,
-    "items": 9,
+    "items": 6,
     "header_entities": 5,
     "omissions": {
-     "packing: budget": 14,
+     "packing: budget": 19,
      "selection: container": 8,
      "selection: value N below floor": 29
     },
@@ -12321,16 +12320,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "e075f3d194ca2d9f9c2886d834f4424956b069ad1303d3541f350af9ba0f4496",
    "routed": "a874ece743404f0ecedd8b08497ddb6ca112b04d09bf2d6caae608a070651fe9",
    "payload@256": "229076bbb164c55f002f70e521bf5e6149da1f71cfde053c33927925912c7caa",
-   "payload@1024": "a6148d11c401684aebb2f9edeb7786ac6220aecbba04bb3b806fb310fb23603e",
+   "payload@1024": "0c1140ca08b44ee15384c1e92e2ababc399fdedfc055218eda4b3af81e871368",
    "payload@4096": "07d854740cc3a53666bbc9c077fcef379009c5713b742b92276ab64a2c2726ae"
   },
   "outside": [
@@ -12674,9 +12673,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -12954,9 +12953,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -13186,9 +13185,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -13462,9 +13461,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -13790,9 +13789,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -14057,9 +14056,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -14067,7 +14066,7 @@
    "routed": "57e575be436ed578ec322d2150f1cb34bc764dcfc07d249a436283a8109ca5c6",
    "payload@256": "b21989ca2093b3d965751b3f4a8683a1ce2fea24f08c3cb8f2f5459fd096f4ce",
    "payload@1024": "d11d8f1ecd3e48f344e4ffde2aa7a3f5adedcb6e98d86da04e2c968d320c9188",
-   "payload@4096": "14f64e503d9813e17dbd78ec7b02b54f01bb6d99956479176b3af332a4f43698"
+   "payload@4096": "e286f484c0d9fae7466d58a58a23d9ca532407d30314ddeddd14632b613fb3f2"
   },
   "outside": [
    {
@@ -14391,9 +14390,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -14491,8 +14490,8 @@
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
-    "file_recall@4096": 0.0,
-    "utilization@4096": 0.999268,
+    "file_recall@4096": 0.011765,
+    "utilization@4096": 0.995605,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -16896,15 +16895,15 @@
     ]
    },
    "4096": {
-    "used": 4093,
+    "used": 4078,
     "within_budget": true,
     "deterministic": true,
-    "items": 18,
-    "header_entities": 9,
+    "items": 19,
+    "header_entities": 10,
     "omissions": {
-     "packing: budget": 16,
+     "packing: budget": 9,
      "selection: container": 3,
-     "selection: item cap N": 4,
+     "selection: item cap N": 11,
      "selection: value N below floor": 17
     },
     "degradations": [
@@ -16917,9 +16916,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -16927,7 +16926,7 @@
    "routed": "087526bd828fa94eec88683d92c873a792e480d09a50b19908b5c6fdb1c20d1a",
    "payload@256": "f061e4c0cb5f139c85694e76d09ea28491c19f61d63687045e6d9058202a35cc",
    "payload@1024": "75891ed7469e136dc666e38454a37969e6d2174b6656ddbdf133333661b35567",
-   "payload@4096": "5c2f2919605926f4a514e5367f1b68d8a78b53ffb785211d78826ea95dd5ec2f"
+   "payload@4096": "8bf302929dd0297d8b8275825c46356a6849d52d2332dd133e96d5d9bd043bad"
   },
   "outside": [
    {
@@ -17360,9 +17359,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -17370,7 +17369,7 @@
    "routed": "f96836529c20f41ebecc43680693b6c1be2d85f4091a9abc04b574e2f2c5f30f",
    "payload@256": "ec3f4ac68d68e7a8226f580ceace277fa411ac452493c69311a5046fa236bb6a",
    "payload@1024": "e47718c11d50e6927292de1d10c4364b487851026dd4549fd74d2ab1f90e90ae",
-   "payload@4096": "d3f5bd1f54a8122f40947d5cde04d5494b0ee2b51ffb51b7d5abfa356f68b9c6"
+   "payload@4096": "9a1e6e72977364e057644eb3a490a9705f23e5de2e346b46e880f45ebc3180d6"
   },
   "outside": [
    {
@@ -17820,9 +17819,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -17988,9 +17987,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -18035,8 +18034,8 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.008097,
     "file_recall@1024": 0.1,
-    "utilization@1024": 0.993164,
-    "gold_unit_share@1024": 0.119961,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.119141,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.008097,
     "file_recall@4096": 0.1,
@@ -18433,13 +18432,13 @@
     ]
    },
    "1024": {
-    "used": 1017,
+    "used": 1024,
     "within_budget": true,
     "deterministic": true,
-    "items": 5,
-    "header_entities": 3,
+    "items": 8,
+    "header_entities": 4,
     "omissions": {
-     "packing: budget": 33,
+     "packing: budget": 30,
      "packing: too large": 1,
      "selection: container": 6,
      "selection: value N below floor": 18
@@ -18467,16 +18466,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "b1a2ce27aa53c98d43f68df8fb13db7726ed53ccfcc85846bb8e521ba54b2513",
    "routed": "7bff6e96e5a90eba8864376f0d5b54521d439a991e3c515041995ca5f582d16b",
    "payload@256": "0b6294bad38d9c449511899e63ab46602be2f48f07e1d439e05d921a85629006",
-   "payload@1024": "cf5844ec55946074db06847430ad870e382e484a801f22e3ed91f627bc737f5d",
+   "payload@1024": "3ab184f96cbac240f1d2d75051bd215047f420ab64d77de54ca21868d8c00f70",
    "payload@4096": "fb6a8918d557285559eba283a409281685b4f94dd7c7978690f9bb1c30b1a390"
   },
   "outside": [
@@ -18930,9 +18929,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -19122,9 +19121,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -19132,7 +19131,7 @@
    "routed": "7fe097b42db7bbdab39523e9b61699123030f7f38a5f7bf1efa03271f97068eb",
    "payload@256": "46864e9914869bfaced21f36b56ed6cb15d14f6dd80cd05e75358d1bb1a54bcc",
    "payload@1024": "a2c640493d4500ef0ced654ae5c51355f8cd627daae6669b2148094a33d0b2e9",
-   "payload@4096": "c5ff29f41b7f46593e70a03f78157cc4b3e7d96bbdd6eefeb1b8af8f4f8912d3"
+   "payload@4096": "e720b5bfa3fb70e0063cc66159febb048fad9643afdeabd08c734cdce0294be5"
   },
   "outside": [
    {
@@ -19178,12 +19177,12 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 1.0,
-    "utilization@256": 0.980469,
+    "utilization@256": 0.886719,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.979492,
+    "utilization@1024": 0.974609,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -19253,11 +19252,11 @@
   },
   "bundles": {
    "256": {
-    "used": 251,
+    "used": 227,
     "within_budget": true,
     "deterministic": true,
     "items": 3,
-    "header_entities": 0,
+    "header_entities": 1,
     "omissions": {
      "packing: budget": 30,
      "selection: container": 2,
@@ -19268,13 +19267,13 @@
     ]
    },
    "1024": {
-    "used": 1003,
+    "used": 998,
     "within_budget": true,
     "deterministic": true,
-    "items": 11,
-    "header_entities": 3,
+    "items": 9,
+    "header_entities": 4,
     "omissions": {
-     "packing: budget": 21,
+     "packing: budget": 23,
      "selection: container": 2,
      "selection: value N below floor": 29
     },
@@ -19301,16 +19300,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "c89598ee91ea759c5240248c8e85314582aad1884cb6c591627b20a4cda3591a",
    "routed": "1e50876ac2319774706298bb62562c8b7d2cb90182f1b154a80ddabf5de74eb2",
-   "payload@256": "89f8444a8a94d25e1d12264de94c396ddafd980808565f222e56404e02298298",
-   "payload@1024": "1e93a8d7b4e29075bd4794087e87c9340251a0753a72054621aeecdc08abd3c6",
+   "payload@256": "c25e0dbedb84acd6fd81521414670d8eda7c708c86b0b2ecb42283747a04abd0",
+   "payload@1024": "5692a39b02d17792184fb513235c1d8f5cc22fc7b37decb74680987452912451",
    "payload@4096": "ab4e16504e1ad846dd8a9ad2031e214228cd636e89b3a501391c7d6a0aa3abcd"
   },
   "outside": [
@@ -19578,9 +19577,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -19620,7 +19619,7 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.0,
-    "utilization@256": 0.90625,
+    "utilization@256": 0.957031,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
@@ -19630,7 +19629,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 0.998779,
+    "utilization@4096": 0.999023,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -19791,13 +19790,13 @@
   },
   "bundles": {
    "256": {
-    "used": 232,
+    "used": 245,
     "within_budget": true,
     "deterministic": true,
-    "items": 3,
-    "header_entities": 3,
+    "items": 2,
+    "header_entities": 1,
     "omissions": {
-     "packing: budget": 35,
+     "packing: budget": 37,
      "packing: too large": 4,
      "selection: container": 5,
      "selection: value N below floor": 16
@@ -19822,15 +19821,14 @@
     ]
    },
    "4096": {
-    "used": 4091,
+    "used": 4092,
     "within_budget": true,
     "deterministic": true,
     "items": 14,
-    "header_entities": 3,
+    "header_entities": 4,
     "omissions": {
-     "packing: budget": 12,
+     "packing: budget": 27,
      "selection: container": 5,
-     "selection: item cap N": 7,
      "selection: value N below floor": 16
     },
     "degradations": [
@@ -19841,17 +19839,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "da4c5c3f1036a598ec26467125c5e62b9965249cf8dab5b9bce2109b112c2953",
    "routed": "287cd89ce9efdf8ce5f2119048c44ba947534556079fa24a6c452be62d271d52",
-   "payload@256": "a5bdc36a079b29456e87f1fc5ffed07bc489534911df3ef429cc6e2ed2ce05ea",
+   "payload@256": "4d82f877a23731ec00757f6bfb67cb60f175f74b38ed8540fc8fdb413acf5e1c",
    "payload@1024": "5508986cff0dbe9dc26903aab1f2f9e214428e81b11b41dd68ede7747ad409fe",
-   "payload@4096": "5bca98e6bef41113eecb464986f08ae4856703091673dce34da8b11321cdaa5a"
+   "payload@4096": "a0707e41c2c3bca2e31d72859f473a8efe44f2233dc2381f71ca153e2c58c7d1"
   },
   "outside": [
    {
@@ -20032,9 +20030,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -20314,9 +20312,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -20472,9 +20470,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -20605,9 +20603,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -20850,9 +20848,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -20860,7 +20858,7 @@
    "routed": "f4bffcba05415d27c6775e2cf54d4e309c5342ed3d1a4059d8515965f9e9fbab",
    "payload@256": "27710f8c190d34e214ffe1838dc8890f021a918e06bf1abd967d7f4b7e16bdf0",
    "payload@1024": "afc7be6616c1ec334ee6f705dcca4dcaa3fa605cddfda4c28119762831b777f9",
-   "payload@4096": "14c1cff2ebffe6dd5636e15329d43598e38dc92af88ac9a0dfe375f6a0332c2b"
+   "payload@4096": "664ce84ddec87020b5d0a624139dbc51189f5a423719e2528208d4c0137e6e29"
   },
   "outside": [
    {
@@ -21158,9 +21156,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -21285,9 +21283,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -21442,9 +21440,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -21576,9 +21574,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -21618,8 +21616,8 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.002331,
     "file_recall@256": 0.5,
-    "utilization@256": 0.980469,
-    "gold_unit_share@256": 0.167331,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.165354,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.002331,
     "file_recall@1024": 0.5,
@@ -21738,13 +21736,13 @@
   },
   "bundles": {
    "256": {
-    "used": 251,
+    "used": 254,
     "within_budget": true,
     "deterministic": true,
-    "items": 5,
-    "header_entities": 4,
+    "items": 3,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 43,
+     "packing: budget": 44,
      "packing: too large": 1,
      "selection: container": 2,
      "selection: value N below floor": 13
@@ -21794,15 +21792,15 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "a455185380ec334a31d8262aba35c15391a366fe111e9fc33d4b2e1b1651d9ce",
    "routed": "8609b5820723f73418a48b4e29efc468e685f878a5a5f87abd131a028ff824e8",
-   "payload@256": "0e975e35587a06293bb6449719bfafaa34d0395a122630807b5d6d3374525323",
+   "payload@256": "a1b9e883c256582c2f9e15a9ed358ba2f404c2fecd7cf52c403f64785ff8148d",
    "payload@1024": "209db351521395715f031b5ae14a2c2e5799760a6ce88685c67396045358a247",
    "payload@4096": "4473cc48a71ea3669bf2db401c66fc190ef3c3ac0fbd9f33e1e5ba82cf5b1ff2"
   },
@@ -21846,7 +21844,7 @@
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 0.999512,
+    "utilization@4096": 0.999023,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -22085,13 +22083,13 @@
     ]
    },
    "4096": {
-    "used": 4094,
+    "used": 4092,
     "within_budget": true,
     "deterministic": true,
-    "items": 17,
-    "header_entities": 7,
+    "items": 18,
+    "header_entities": 5,
     "omissions": {
-     "packing: budget": 32,
+     "packing: budget": 33,
      "selection: container": 1,
      "selection: value N below floor": 8
     },
@@ -22103,9 +22101,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22113,7 +22111,7 @@
    "routed": "c5881ec74e6f3801b691feb37438b8cf8ac02972203b58a29f4187f3064c3277",
    "payload@256": "ca4195e4d58720512ffc964b9083ffc9e5350ce7217460097624893b62447c94",
    "payload@1024": "0071482f931162da4806b352b56de16489fb5ed63c4b6b435f562ba6b549007a",
-   "payload@4096": "310c41c61869d031b24093488ebb01c0471bca17a56b776226681cf2aa006fc5"
+   "payload@4096": "bd051191654ea7846bca58539acc16204613fe21ed1fe496b70ec85db56fa65f"
   },
   "outside": []
  },
@@ -22241,9 +22239,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22374,9 +22372,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22561,9 +22559,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22774,9 +22772,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -22784,7 +22782,7 @@
    "routed": "21f3ed66837e3b45bfae62b326a78bc43f57f54140e1f17b7ed00dbfb23aba1b",
    "payload@256": "a0b5dc3fa99f8b9387d0684fa8e3d99076c153614e8e2cdc1b043cdab4bd15cf",
    "payload@1024": "73a1d6c3cecee96a614b764854a350169f665750dfd4a1565714635669f71979",
-   "payload@4096": "e8ae15edd40ca532f3e4db1f58c7745716dcbdb0c1586d05419b37cb4c9c376a"
+   "payload@4096": "6feabc7d57a343f48a380c219e35581513e5f28c1c07c3c7a8f7c9028a679d68"
   },
   "outside": [
    {
@@ -22920,9 +22918,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -23102,9 +23100,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -23484,9 +23482,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -23660,9 +23658,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -23816,9 +23814,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {

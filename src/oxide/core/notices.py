@@ -29,6 +29,7 @@ def unpacked_bodies(
         c.entity.key: c.entity.source
         for c in pool
         if c.seeded
+        and c.entity.category == "symbol"
         and any(s.startswith("symbol:") for s in c.seeds)
         and c.entity.source is not None
     }

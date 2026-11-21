@@ -28,9 +28,9 @@ items: heldout unverified `line_recall@4096` 0.284→0.259, `file_recall@4096` 0
 all unverified `line_recall@4096` 0.292→0.270, `file_recall@4096` 0.776→0.724. The only
 test-path gold lost is `pydata__xarray-6599` (`xarray/tests/test_computation.py`,
 unverified): partial→missed @1024, complete→missed @4096 — the retry admits production
-bodies ahead of an unverified test span. `pytest-dev__pytest-10051` trades two complete
-verified gold spans for partial @4096 (the kept retry admits 15 more items);
-`pytest-dev__pytest-7571` gains four complete spans in exchange. 0 verified production
+bodies ahead of an unverified test span. `pytest-dev__pytest-10051` gains a verified span
+(logging.py \[345,350] missed→partial @1024); `pytest-dev__pytest-7571` gains four complete
+spans @4096 (three verified; two from missed, two from partial). 0 verified production
 regressions.
 
 Command: `uv run --locked python tests/python/contextbench.py run --out fixtures/eval/contextbench-py/baseline-v23`

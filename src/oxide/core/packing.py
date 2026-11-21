@@ -37,6 +37,9 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Protocol
 
+from oxide.core.regions import MAX_HEADER_LINES as MAX_HEADER_LINES
+from oxide.core.regions import header_end as header_end
+from oxide.core.regions import module_regions as module_regions
 from oxide.models import ContextItem, Entity, ItemEntity, Omission, SourceRef
 
 SELECTOR_VERSION = "oxide-select-greedy-v6"
@@ -45,7 +48,6 @@ UNITS_VERSION = "oxide-units-v1"
 GRAPH_NODES = 64
 MAX_ITEMS = 24
 INCLUDE_FLOOR = 0.4
-MAX_HEADER_LINES = 8
 TEST_WEIGHT = 0.5
 
 _WORDS = re.compile(r"\w+")
@@ -191,40 +193,6 @@ def ancestors(key: str) -> list[str]:
     return [f"{file}#{'.'.join(segments[:i])}" for i in range(1, len(segments))]
 
 
-def header_end(data: bytes, start: int, end: int, name: str) -> int | None:
-    """End of the header view: through the first line naming the entity, at most
-    ``MAX_HEADER_LINES`` (the first line when none does). None when not smaller."""
-    named = re.compile(rb"(?<![\w\x80-\xff])" + re.escape(name.encode()) + rb"(?![\w\x80-\xff])")
-    at, first = start, None
-    for line in data[start:end].splitlines(keepends=True)[:MAX_HEADER_LINES]:
-        at += len(line)
-        first = first or at
-        if named.search(line):
-            return at if at < end else None
-    return first if first is not None and first < end else None
-
-
-def module_regions(data: bytes, declarations: list[tuple[int, int]]) -> list[tuple[int, int]]:
-    """Byte ranges of a file's module-level source: maximal runs of whole lines that
-    no top-level declaration touches, from the first to the last non-blank line."""
-    spans = sorted(declarations)
-    regions: list[tuple[int, int]] = []
-    run: tuple[int, int] | None = None
-    at = d = 0
-    for line in data.split(b"\n"):
-        start, end = at, at + len(line)
-        at = end + 1
-        while d < len(spans) and spans[d][1] <= start:
-            d += 1
-        if d < len(spans) and spans[d][0] <= end:
-            if run is not None:
-                regions.append(run)
-            run = None
-        elif line.strip():
-            run = (run[0] if run else start, end)
-    return [*regions, run] if run is not None else regions
-
-
 @dataclass(frozen=True, slots=True)
 class _Piece:
     entity: Entity
@@ -324,6 +292,23 @@ class _Packer:
             return [_Piece(entity, source.start, source.end, reason)]
         end = header_end(self.data(source), source.start, source.end, entity.name)
         return [] if end is None else [_Piece(entity, source.start, end, reason)]
+
+
+def _union_units(packer: _Packer, ranges: list[tuple[SourceRef, int, int]]) -> int:
+    """Units of the union of source ranges (overlapping spans merged, no double count)."""
+    ranges = sorted(ranges, key=lambda r: (r[0].path, r[1], r[2]))
+    cur: SourceRef | None = None
+    start = end = total = 0
+    for ref, s, span_end in ranges:
+        if cur is None or ref.path != cur.path or s > end:
+            if cur is not None and end > start:
+                total += units(packer.data(cur)[start:end].decode("utf-8", "replace"))
+            cur, start, end = ref, s, span_end
+        else:
+            end = max(end, span_end)
+    if cur is not None and end > start:
+        total += units(packer.data(cur)[start:end].decode("utf-8", "replace"))
+    return total
 
 
 def pack(
@@ -427,17 +412,41 @@ def pack(
                     Omission(entity.key, "packing", "too large" if too_large else "budget")
                 )
         # Symptom: test evidence occupying body units while production candidates
-        # were dropped or left as headers. Occupation is item-level (the budget a
-        # test actually holds, a method beside its class header included); it drives
-        # whether to try a remedy. A header is presence, not content.
+        # were dropped or left as headers. Item-level occupation drives whether to
+        # try a remedy; a mixed item (test + production complete entities) splits
+        # its units by per-role covered-source union so test bytes are not hidden.
+        sources = {c.entity.key: c.entity.source for c in asked} | {
+            k: e.source for k, e in scopes.items()
+        }
         test_units = prod_units = 0
         for item in items:
             whole = [e for e in item.entities if e.complete]
-            if whole:
-                if all(roles.get(e.key, False) for e in whole):
+            if not whole:
+                continue
+            role_set = {roles.get(e.key, False) for e in whole}
+            if len(role_set) == 1:
+                if role_set.pop():
                     test_units += item.units
                 else:
                     prod_units += item.units
+            else:
+                per_role: dict[bool, list[tuple[SourceRef, int, int]]] = {True: [], False: []}
+                for ent in whole:
+                    if ent.key.startswith("file:"):
+                        continue
+                    src_ref = sources.get(ent.key)
+                    if (
+                        src_ref is not None
+                        and item.source.start <= src_ref.start
+                        and src_ref.end <= item.source.end
+                    ):
+                        per_role[roles.get(ent.key, False)].append(
+                            (src_ref, src_ref.start, src_ref.end)
+                        )
+                ru = {r: _union_units(packer, rng) for r, rng in per_role.items()}
+                total = sum(ru.values()) or 1
+                test_units += item.units * ru[True] // total
+                prod_units += item.units * ru[False] // total
         # Crowded out means the candidate's own body lost room: not a module-level
         # run (never "complete"), not a class header shown beside its packed method.
         lost = {o.key for o in omissions if o.stage == "packing"} | demoted
@@ -450,34 +459,19 @@ def pack(
         # the union of complete symbol source ranges, never module glue, headers, or
         # heading overhead. A class recovered whole by its merged methods counts too:
         # its ItemEntity is complete even though only header pieces were packed.
-        sources = {c.entity.key: c.entity.source for c in asked} | {
-            k: e.source for k, e in scopes.items()
-        }
         ranges: list[tuple[SourceRef, int, int]] = []
         for item in items:
-            for e in item.entities:
-                if not e.complete or e.key.startswith("file:") or roles.get(e.key, False):
+            for ent in item.entities:
+                if not ent.complete or ent.key.startswith("file:") or roles.get(ent.key, False):
                     continue
-                src_ref = sources.get(e.key)
+                src_ref = sources.get(ent.key)
                 if (
                     src_ref is not None
                     and item.source.start <= src_ref.start
                     and src_ref.end <= item.source.end
                 ):
                     ranges.append((src_ref, src_ref.start, src_ref.end))
-        prod_body = 0
-        ranges.sort(key=lambda r: (r[0].path, r[1], r[2]))
-        cur: SourceRef | None = None
-        start = end = 0
-        for ref, s, span_end in ranges:
-            if cur is None or ref.path != cur.path or s > end:
-                if cur is not None and end > start:
-                    prod_body += units(packer.data(cur)[start:end].decode("utf-8", "replace"))
-                cur, start, end = ref, s, span_end
-            else:
-                end = max(end, span_end)
-        if cur is not None and end > start:
-            prod_body += units(packer.data(cur)[start:end].decode("utf-8", "replace"))
+        prod_body = _union_units(packer, ranges)
         stats = {
             "test_units": test_units,
             "prod_units": prod_units,

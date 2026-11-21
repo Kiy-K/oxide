@@ -398,7 +398,7 @@ It serves one tool. `oxide_search`'s `mode` picks one API operation (table below
 
 | `mode` | Arguments (bounds) | Result |
 | --- | --- | --- |
-| `search` (default) | `query` (required, ≤ 2000 chars), `repository`, `limit` (0–100, default 20), `paths`, `symbols` (≤ 32 × ≤ 1024 chars) | `Repository.search`: the full `SearchResult` as structured content; the text is a compact JSON projection led by `entries_returned` and `more_available` (the lexical limit was hit or a symbol hint was capped), with per entry `key`, `rank`, `score`, `test` (and `seeds`), lexical state, hint lines and blast lines — locations, never source, and never digests |
+| `search` (default) | `query` (required, ≤ 2000 chars), `repository`, `limit` (0–100, default 20), `paths`, `symbols` (≤ 32 × ≤ 1024 chars) | `Repository.search`: the full `SearchResult` as structured content; the text is a compact JSON projection led by `entries_returned` and `more_available` (the lexical limit was hit or a symbol hint was capped), with per entry `key`, `rank`, `score`, `test` (and `seeds`), lexical state and detail (the reason when not `ran`), hint lines and blast lines — locations, never source, and never digests |
 | `context` | `query` (required), `repository`, `budget` (0–32768 units, default 2048), `paths`, `symbols` | `Repository.build_context`: `ContextBundle` as structured content; the text is a one-line summary, any degradations and hint issues, then `payload` |
 
 Arguments that do not apply to a mode are `invalid_argument` errors, never silently ignored:

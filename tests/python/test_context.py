@@ -272,7 +272,7 @@ def test_a_failing_judge_packs_exactly_the_default_when_the_retry_fires() -> Non
     assert omissions == plain_omissions
 
 
-def test_real_judgments_survive_the_crowding_retry() -> None:
+def test_real_judgments_survive_the_crowding_retry(monkeypatch: pytest.MonkeyPatch) -> None:
     big = "def t():\n" + "    x = 1\n" * 90
     small = "def p():\n" + "    y = 2\n" * 55
     t, td = _pooled("tests/test_p.py", "t", big, rank=1)
@@ -292,18 +292,27 @@ def test_real_judgments_survive_the_crowding_retry() -> None:
             return {c.entity.key: 0.85 for c in candidates}
 
     judge = Ranked()
+    weights: list[float] = []
+    real_value = value
+
+    def spy(c: Candidate, *, test_weight: float = 1.0) -> tuple[float, str]:
+        weights.append(test_weight)
+        return real_value(c, test_weight=test_weight)
+
+    monkeypatch.setattr("oxide.core.packing.value", spy)
     items, omitted = pack([t, p1, p2], {}, budget, lambda ref: data[ref.path], {}, judge)
     # The gate fires on this bundle (both productions are header-only), but a
     # judgment is a request: equal judged values pack equal bundles, the retry
     # gains nothing, and the test body keeps the budget it was judged onto.
     assert judge.calls == 1
+    assert 0.5 in weights  # the retry ran with the demotion weight
     packed = {e.key: e.complete for i in items for e in i.entities}
     assert packed[t.entity.key]  # an unjudged retry would have demoted this
     assert not packed[p1.entity.key] and not packed[p2.entity.key]  # presence only
     assert omitted == []
 
 
-def test_a_query_about_tests_keeps_its_test_evidence() -> None:
+def test_a_query_about_tests_keeps_its_test_evidence_with_ample_budget() -> None:
     t, td = _pooled("tests/test_p.py", "t", "def t():\n" + "    x = 1\n" * 90, rank=1)
     p, pd = _pooled("pkg/a.py", "p", "def p():\n" + "    y = 2\n" * 55, rank=2)
     data = {"tests/test_p.py": td, "pkg/a.py": pd}
@@ -600,11 +609,13 @@ def test_a_test_query_under_budget_pressure_keeps_its_test_body() -> None:
     assert omitted == [Omission(p.entity.key, "packing", "budget")]
 
 
-def test_a_class_recovered_by_its_methods_counts_as_production_body() -> None:
+def test_a_class_recovered_by_its_methods_counts_as_production_body(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # Devin (PR #78): when merged methods span a whole class, its ItemEntity is
-    # complete even though only header pieces were packed. The keep-check must
-    # credit the full class body, not just the method spans, or a retry that
-    # recovered the class can be wrongly discarded.
+    # complete even though only header pieces were packed. This covers the
+    # class-span accounting path: the retry ran (value spy) and the test entity
+    # is present incomplete, not omitted.
     prod = (
         "class C:\n    def m(self):\n"
         + "        x = 1\n" * 40
@@ -661,11 +672,89 @@ def test_a_class_recovered_by_its_methods_counts_as_production_body() -> None:
     nc = Candidate(n, 0, 3, False)
     scopes = {"symbol:pkg/a.py#C": c}
     probe, _ = pack([tc], {}, 1 << 20, src, {})
-    budget = sum(i.units for i in probe) + 40  # test body + class header, methods crowded
+    budget = sum(i.units for i in probe) + 60  # slack for the test header after demotion
+    weights: list[float] = []
+    real_value = value
+
+    def spy(candidate: Candidate, *, test_weight: float = 1.0) -> tuple[float, str]:
+        weights.append(test_weight)
+        return real_value(candidate, test_weight=test_weight)
+
+    monkeypatch.setattr("oxide.core.packing.value", spy)
     items, _omitted = pack([tc, mc, nc], scopes, budget, src, {})
+    assert 0.5 in weights  # the retry ran
     # The retry recovers both methods; their merged span covers C exactly, so C is
-    # complete and the production body is credited -- the test is demoted to a header.
+    # complete. The test entity is present as a header (incomplete), not omitted.
     complete = {e.key for i in items for e in i.entities if e.complete}
+    present = {e.key for i in items for e in i.entities}
     assert "symbol:pkg/a.py#C" in complete
     assert "symbol:pkg/a.py#C.m" in complete and "symbol:pkg/a.py#C.n" in complete
-    assert "symbol:tests/test_a.py#t" not in complete
+    assert "symbol:tests/test_a.py#t" in present and "symbol:tests/test_a.py#t" not in complete
+
+
+def test_a_mixed_item_splits_test_and_production_units() -> None:
+    # greptile/cubic (PR #78): a test function and a production function in the same
+    # file merge into one item. The symptom tally must split its units by role so
+    # test bytes are not hidden as production; the gate fires and the retry demotes
+    # the test, recovering the production body.
+    data = {
+        "pkg/mixed.py": (
+            "def test_helper():\n" + "    x = 1\n" * 60 + "\n\ndef prod():\n" + "    y = 2\n" * 20
+        ).encode()
+    }
+
+    def src(ref: SourceRef) -> bytes:
+        return data[ref.path]
+
+    t = Entity(
+        "symbol:pkg/mixed.py#test_helper",
+        "symbol",
+        "function",
+        "test_helper",
+        None,
+        SourceRef("pkg/mixed.py", 0, data["pkg/mixed.py"].index(b"\n\ndef prod"), "x"),
+        True,
+    )
+    p_start = data["pkg/mixed.py"].index(b"def prod")
+    p = Entity(
+        "symbol:pkg/mixed.py#prod",
+        "symbol",
+        "function",
+        "prod",
+        None,
+        SourceRef("pkg/mixed.py", p_start, len(data["pkg/mixed.py"]), "x"),
+        False,
+    )
+    tc = Candidate(t, 0, 1, False)
+    pc = Candidate(p, 0, 2, False)
+    # Budget fits the test body but not both: production is crowded out.
+    probe, _ = pack([tc], {}, 1 << 20, src, {})
+    budget = sum(i.units for i in probe) + 10
+    items, _omitted = pack([tc, pc], {}, budget, src, {})
+    # The retry demotes the test and recovers the production body.
+    complete = {e.key for i in items for e in i.entities if e.complete}
+    assert "symbol:pkg/mixed.py#prod" in complete
+    assert "symbol:pkg/mixed.py#test_helper" not in complete
+
+
+def test_unpacked_bodies_ignores_file_category_seeds() -> None:
+    # cubic (PR #78): a one-part symbol hint can resolve to a file key; the notice
+    # must not report a file candidate as a missing symbol body.
+    data = {"pkg/a.py": b"X = 1\n" * 50}
+
+    def src(ref: SourceRef) -> bytes:
+        return data[ref.path]
+
+    f = Entity(
+        "file:pkg/a.py",
+        "file",
+        "file",
+        "a.py",
+        None,
+        SourceRef("pkg/a.py", 0, len(data["pkg/a.py"]), "x"),
+        False,
+    )
+    fc = Candidate(f, 0, None, True, seeds=("symbol:pkg/a.py",))
+    items, omitted = pack([fc], {}, 20, src, {"file:pkg/a.py": [(0, len(data["pkg/a.py"]))]})
+    # The file is packed as a header (incomplete), but it is not a symbol: no notice.
+    assert unpacked_bodies([fc], items, omitted) == []
