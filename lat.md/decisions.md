@@ -314,7 +314,7 @@ The `TEST_WEIGHT = 0.5` applies to lexical and routed candidate values only when
 bundle leaves a production symbol without its own body (reduced on its turn or omitted for budget;
 file outlines and prerequisite headers do not count) while test evidence occupies more budget units
 than production, counted per item by complete entities so a method beside its class header still
-counts. The retry is kept only if it strictly increases production body bytes — the union of complete
+counts. The retry is kept only if it strictly increases production body units — the union of complete
 symbol source ranges, never `file:` module-level runs, incomplete headers, or rendering overhead — so
 glue merged beside an already-complete function never displaces a test.
 Down-weighting can never push a candidate below the admit floor, so
@@ -349,6 +349,6 @@ items: heldout unverified line@4096 0.284→0.259, file@4096 0.734→0.672; all 
 line@4096 0.292→0.270, file@4096 0.776→0.724. The only test-path gold lost is
 `pydata__xarray-6599` (`xarray/tests/test_computation.py`, unverified): partial→missed @1024,
 complete→missed @4096 — the retry admits production bodies ahead of an unverified test span.
-`pytest-dev__pytest-10051` trades two complete verified gold spans for partial @4096 (the kept
-retry admits 15 more items); `pytest-dev__pytest-7571` gains four complete spans in exchange.
+`pytest-dev__pytest-10051` gains a verified span (logging.py \[345,350] missed→partial @1024);
+`pytest-dev__pytest-7571` gains four complete spans @4096 (two verified, one unverified, one partial→complete).
 23 tasks changed, 0 verified production regressions.

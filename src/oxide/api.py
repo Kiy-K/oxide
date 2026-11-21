@@ -32,6 +32,7 @@ from oxide._status import repository_status as repository_status
 from oxide.capture import CaptureCache
 from oxide.core import lookup, navigation, ordering, packing, retrieval, routing, structural
 from oxide.core.blast import BLAST_ROOTS
+from oxide.core.notices import unpacked_bodies
 from oxide.models import (
     BlastRoot,
     Closed,
@@ -432,7 +433,7 @@ class Repository:
         incomplete = {f.path for f in view.files.values() if f.coverage != "complete"}
         used_paths = {c.entity.source.path for c in pool if c.entity.source is not None}
         degradations += [f"incomplete parse: {path}" for path in sorted(used_paths & incomplete)]
-        degradations += packing.unpacked_bodies(pool, items, omissions)
+        degradations += unpacked_bodies(pool, items, omissions)
         if judge is not None and judge.outcome not in (None, "judged"):
             degradations.append(f"judge {judge.identity} fell back: {judge.outcome}")
         summary = RouteSummary(

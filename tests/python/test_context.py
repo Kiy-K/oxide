@@ -11,13 +11,13 @@ import pytest
 from conftest import FIXTURE, write
 
 import oxide
+from oxide.core.notices import unpacked_bodies
 from oxide.core.packing import (
     Candidate,
     header_end,
     module_regions,
     pack,
     units,
-    unpacked_bodies,
     value,
 )
 from oxide.models import ContextItem, Entity, Omission, SourceRef
@@ -598,3 +598,74 @@ def test_a_test_query_under_budget_pressure_keeps_its_test_body() -> None:
     shown = {e.key: e.complete for i in items for e in i.entities}
     assert shown[t.entity.key]  # the query's test evidence survives the pressure
     assert omitted == [Omission(p.entity.key, "packing", "budget")]
+
+
+def test_a_class_recovered_by_its_methods_counts_as_production_body() -> None:
+    # Devin (PR #78): when merged methods span a whole class, its ItemEntity is
+    # complete even though only header pieces were packed. The keep-check must
+    # credit the full class body, not just the method spans, or a retry that
+    # recovered the class can be wrongly discarded.
+    prod = (
+        "class C:\n    def m(self):\n"
+        + "        x = 1\n" * 40
+        + "\n    def n(self):\n"
+        + "        y = 2\n" * 30
+    ).encode()  # no trailing newline: methods span the class exactly
+    test = ("def t():\n" + "    z = 3\n" * 70).encode()
+    data = {"pkg/a.py": prod, "tests/test_a.py": test}
+
+    def src(ref: SourceRef) -> bytes:
+        return data[ref.path]
+
+    c = Entity(
+        "symbol:pkg/a.py#C",
+        "symbol",
+        "class",
+        "C",
+        None,
+        SourceRef("pkg/a.py", 0, len(prod), "x"),
+        False,
+    )
+    m_start = prod.index(b"    def m")
+    m_end = prod.index(b"\n    def n")
+    n_start = prod.index(b"    def n")
+    m = Entity(
+        "symbol:pkg/a.py#C.m",
+        "symbol",
+        "method",
+        "m",
+        None,
+        SourceRef("pkg/a.py", m_start, m_end, "x"),
+        False,
+    )
+    n = Entity(
+        "symbol:pkg/a.py#C.n",
+        "symbol",
+        "method",
+        "n",
+        None,
+        SourceRef("pkg/a.py", n_start, len(prod), "x"),
+        False,
+    )
+    t = Entity(
+        "symbol:tests/test_a.py#t",
+        "symbol",
+        "function",
+        "t",
+        None,
+        SourceRef("tests/test_a.py", 0, len(test), "x"),
+        True,
+    )
+    tc = Candidate(t, 0, 1, False)
+    mc = Candidate(m, 0, 2, False)
+    nc = Candidate(n, 0, 3, False)
+    scopes = {"symbol:pkg/a.py#C": c}
+    probe, _ = pack([tc], {}, 1 << 20, src, {})
+    budget = sum(i.units for i in probe) + 40  # test body + class header, methods crowded
+    items, _omitted = pack([tc, mc, nc], scopes, budget, src, {})
+    # The retry recovers both methods; their merged span covers C exactly, so C is
+    # complete and the production body is credited -- the test is demoted to a header.
+    complete = {e.key for i in items for e in i.entities if e.complete}
+    assert "symbol:pkg/a.py#C" in complete
+    assert "symbol:pkg/a.py#C.m" in complete and "symbol:pkg/a.py#C.n" in complete
+    assert "symbol:tests/test_a.py#t" not in complete

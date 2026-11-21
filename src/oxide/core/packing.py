@@ -446,29 +446,36 @@ def pack(
             for c in asked
             if c.entity.category == "symbol" and c.entity.key in lost and not roles[c.entity.key]
         )
-        # Remedy: keep the retry only if it brings back more production BODY bytes,
-        # measured as the union of complete symbol source ranges -- never module glue
-        # rendered beside an already-complete function, headers, or heading overhead.
-        spans: dict[bool, list[tuple[SourceRef, int, int]]] = {True: [], False: []}
-        for p in pieces:
-            source = p.entity.source
-            if (
-                p.entity.category == "symbol"
-                and source is not None
-                and (p.start <= source.start and source.end <= p.end)
-            ):
-                spans[roles.get(p.entity.key, False)].append((source, source.start, source.end))
+        # Remedy: keep the retry only if it brings back more production BODY units --
+        # the union of complete symbol source ranges, never module glue, headers, or
+        # heading overhead. A class recovered whole by its merged methods counts too:
+        # its ItemEntity is complete even though only header pieces were packed.
+        sources = {c.entity.key: c.entity.source for c in asked} | {
+            k: e.source for k, e in scopes.items()
+        }
+        ranges: list[tuple[SourceRef, int, int]] = []
+        for item in items:
+            for e in item.entities:
+                if not e.complete or e.key.startswith("file:") or roles.get(e.key, False):
+                    continue
+                src_ref = sources.get(e.key)
+                if (
+                    src_ref is not None
+                    and item.source.start <= src_ref.start
+                    and src_ref.end <= item.source.end
+                ):
+                    ranges.append((src_ref, src_ref.start, src_ref.end))
         prod_body = 0
-        ranges = sorted(spans[False], key=lambda r: (r[0].path, r[1], r[2]))
+        ranges.sort(key=lambda r: (r[0].path, r[1], r[2]))
         cur: SourceRef | None = None
         start = end = 0
-        for ref, s, e in ranges:
+        for ref, s, span_end in ranges:
             if cur is None or ref.path != cur.path or s > end:
                 if cur is not None and end > start:
                     prod_body += units(packer.data(cur)[start:end].decode("utf-8", "replace"))
-                cur, start, end = ref, s, e
+                cur, start, end = ref, s, span_end
             else:
-                end = max(end, e)
+                end = max(end, span_end)
         if cur is not None and end > start:
             prod_body += units(packer.data(cur)[start:end].decode("utf-8", "replace"))
         stats = {
@@ -491,37 +498,3 @@ def pack(
         if retry[2]["prod_body"] > stats["prod_body"]:
             items, omissions = retry[0], retry[1]
     return items, omissions
-
-
-def unpacked_bodies(
-    pool: Sequence[Candidate],
-    items: Sequence[ContextItem],
-    omissions: Sequence[Omission],
-) -> list[str]:
-    """Degradation lines for symbol seeds whose source is absent from the payload
-    (issue #77: a named symbol silently packed as a header). A caller-named symbol
-    shown without its body, or left out by the budget, must be reported -- unless a
-    final item already contains its full source (e.g. its enclosing class packed
-    complete), in which case raising the budget would not add anything."""
-    wanted = {
-        c.entity.key: c.entity.source
-        for c in pool
-        if c.seeded
-        and any(s.startswith("symbol:") for s in c.seeds)
-        and c.entity.source is not None
-    }
-    missing = {
-        e.key for item in items for e in item.entities if e.key in wanted and not e.complete
-    } | {o.key for o in omissions if o.stage == "packing" and o.key in wanted}
-    covered = {
-        key
-        for key, source in wanted.items()
-        if any(
-            item.source.path == source.path
-            and item.source.digest == source.digest
-            and item.source.start <= source.start
-            and source.end <= item.source.end
-            for item in items
-        )
-    }
-    return [f"{key} packed without its body; raise the budget" for key in sorted(missing - covered)]
