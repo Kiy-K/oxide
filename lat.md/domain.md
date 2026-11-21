@@ -30,7 +30,7 @@ Lexical hits and structural seeds start TreeRouter and are never final output. A
 
 Candidates are routed entities; capsules are bounded evidence about one candidate; a bundle is the packed answer.
 
-The heuristic admits candidates by relevance value; greedy-v4 selects groups (item plus header) within budget; the `ContextBundle` carries provenance and reports what depends on its entry points (blast radius).
+The heuristic admits candidates by relevance value; greedy-v6 selects groups (item plus header) within budget, halving the value of test-role evidence only when it crowds production evidence out of the budget (never below the admit floor); the `ContextBundle` carries provenance and reports what depends on its entry points (blast radius).
 
 ## Derivation identity
 

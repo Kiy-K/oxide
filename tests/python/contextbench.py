@@ -45,7 +45,7 @@ from oxide.models import SourceRef
 
 REPO = Path(__file__).resolve().parents[2]
 EVAL = REPO / "fixtures" / "eval" / "contextbench-py"
-BASELINE = EVAL / "baseline-v21"
+BASELINE = EVAL / "baseline-v23"
 # The original annotations, as built for baseline-v1; never edited.
 TASKS = EVAL / "tasks.json"
 AUDIT = EVAL / "gold-audit.json"

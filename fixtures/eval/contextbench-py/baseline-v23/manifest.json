@@ -1,10 +1,10 @@
 {
- "baseline": "contextbench-py-v21",
- "protocol": "fixtures/eval/contextbench-py/baseline-v21/README.md",
+ "baseline": "contextbench-py-v23",
+ "protocol": "fixtures/eval/contextbench-py/baseline-v23/README.md",
  "scorer": "contextbench-py-scorer-v2",
  "tasks": "contextbench-py-tasks-v1 sha256 22af8803b18bdb149bdf98a617aca8f7586cc16edabf2c2d7da2e251ec7ed914",
  "audit": "contextbench-py-gold-audit-v1 sha256 d916d3e8c30a80805d27c5b94f6f92eb7b3be83b7e02317618c7127585e6b687",
- "oxide_source": "665e97f6c797e449fd4f65616e0f5032021a1922 +dirty",
+ "oxide_source": "e883f9358ed05bed8c8e5fee3b4511ef6dd3f096 +dirty",
  "budgets": [
   256,
   1024,
@@ -368,7 +368,7 @@
  "versions": {
   "retrieval": "oxide-retrieval-v2",
   "router": "oxide-router-bfs-v3",
-  "selector": "oxide-select-greedy-v4",
+  "selector": "oxide-select-greedy-v6",
   "payload": "oxide-payload-v4",
   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
   "units": "oxide-units-v1"

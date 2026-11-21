@@ -8,7 +8,7 @@ routing or packing must also pass the ContextBench gates.
 | Path | Read by |
 |---|---|
 | `structural-v1/` | `tests/python/test_baseline.py`: exact reproduction of the Rust structural baseline |
-| `contextbench-py/{tasks,gold-audit}.json`, `contextbench-py/baseline-v21/` | `tests/python/contextbench.py` (`TASKS`, `AUDIT`, `BASELINE`), in `verify` |
+| `contextbench-py/{tasks,gold-audit}.json`, `contextbench-py/baseline-v23/` | `tests/python/contextbench.py` (`TASKS`, `AUDIT`, `BASELINE`), in `verify` |
 | `contextbench-ts/{tasks,gold-audit}.json`, `contextbench-ts/baseline-v18/` | `tests/python/contextbench_ts.py`, `mise run contextbench-ts` |
 
 Path labels inside frozen files (`docs/phase-6/...`) are their original locations,

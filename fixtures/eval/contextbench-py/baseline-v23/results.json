@@ -114,9 +114,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -264,9 +264,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -294,11 +294,11 @@
     "entry_mrr": 0.5,
     "entry_file_recall": 1.0,
     "routed_coverage": 1.0,
-    "span_recall@256": 0.0,
-    "line_recall@256": 0.125,
+    "span_recall@256": 1.0,
+    "line_recall@256": 1.0,
     "file_recall@256": 1.0,
-    "utilization@256": 0.996094,
-    "gold_unit_share@256": 0.176471,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.703125,
     "span_recall@1024": 1.0,
     "line_recall@1024": 1.0,
     "file_recall@1024": 1.0,
@@ -326,13 +326,11 @@
     "entry_rank": 2,
     "routed": true,
     "packed": {
-     "256": "partial",
+     "256": "complete",
      "1024": "complete",
      "4096": "complete"
     },
-    "lost": {
-     "256": "budget: reduced view"
-    }
+    "lost": {}
    }
   ],
   "route": {
@@ -345,10 +343,10 @@
   },
   "bundles": {
    "256": {
-    "used": 255,
+    "used": 256,
     "within_budget": true,
     "deterministic": true,
-    "items": 4,
+    "items": 3,
     "header_entities": 3,
     "omissions": {
      "packing: budget": 13,
@@ -391,15 +389,15 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "7d5efcae56dd357e244a6c50c4adc875cff910686651ee320e1d951c46c03016",
    "routed": "1ea4eccf2263724a2f6e027beb2dfe3b44ff7f63fe6104ccb3dbf56811236351",
-   "payload@256": "cce544d7b34f2ef15ee5b26b18b1e1bcbe5c9c77a2472a4bf577372a099cede4",
+   "payload@256": "1f8f620d030fb3fbbd174962cd5e20baeebf124a7ddc60b939ce6a6c7efdd758",
    "payload@1024": "c878c71e676f3220bf4aebcb5344687e9dc5fbb9547ebea7b0a5babe8e1661cb",
    "payload@4096": "ced83be8feec39a02badfd08f9f44e8e075400a1bdfbfa30e25d1811602c52f6"
   }
@@ -519,9 +517,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -645,9 +643,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -791,9 +789,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -919,9 +917,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -1294,9 +1292,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -1327,17 +1325,17 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.0,
-    "utilization@256": 0.90625,
+    "utilization@256": 0.988281,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
-    "file_recall@1024": 0.0,
-    "utilization@1024": 0.994141,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.979492,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.819824,
+    "utilization@4096": 0.999512,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -1357,17 +1355,17 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.0,
-    "utilization@256": 0.90625,
+    "utilization@256": 0.988281,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
-    "file_recall@1024": 0.0,
-    "utilization@1024": 0.994141,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.979492,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.819824,
+    "utilization@4096": 0.999512,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -1452,7 +1450,7 @@
   },
   "bundles": {
    "256": {
-    "used": 232,
+    "used": 253,
     "within_budget": true,
     "deterministic": true,
     "items": 5,
@@ -1466,13 +1464,13 @@
     ]
    },
    "1024": {
-    "used": 1018,
+    "used": 1003,
     "within_budget": true,
     "deterministic": true,
     "items": 10,
-    "header_entities": 4,
+    "header_entities": 5,
     "omissions": {
-     "packing: budget": 23,
+     "packing: budget": 22,
      "selection: value N below floor": 31
     },
     "degradations": [
@@ -1480,13 +1478,14 @@
     ]
    },
    "4096": {
-    "used": 3358,
+    "used": 4094,
     "within_budget": true,
     "deterministic": true,
-    "items": 26,
-    "header_entities": 8,
+    "items": 20,
+    "header_entities": 6,
     "omissions": {
-     "selection: item cap N": 9,
+     "packing: budget": 5,
+     "selection: item cap N": 4,
      "selection: value N below floor": 31
     },
     "degradations": [
@@ -1497,17 +1496,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "11304f6cf98d23217a6a07979dacfb78d91d0ed16506cf891a21d23d15a9e72f",
    "routed": "9eef5bdd2d2e0ebf7d2930c6029bffd8b96855c3c8cf4a26c8146adb4ddaafb4",
-   "payload@256": "1f1a09c3ddd76cec6fae59063fd2a222d366a66e29d3572c657576b30034f9b9",
-   "payload@1024": "5b1e7de90a515c2bbb27685259fc0920d3033a303ed0634ef56bee4d49cba73e",
-   "payload@4096": "d352f2cc8cbcda643fde2e146e57dfb5a513024ce692d0a31cbd10fd2706e169"
+   "payload@256": "9e68b08b51b3f0df8e2794fce612bb9a7c8b1542d3ea2faf82b4c9672dc8bb1e",
+   "payload@1024": "3c66b71c2ed5b0db7027b337ade9c11c5206d61f9d849960554af2eecbdf6be7",
+   "payload@4096": "9aea305c0d3d59f2770ee3474ed324f3848f2dbdb193ca8b6bbe2805704d0a68"
   }
  },
  {
@@ -1678,9 +1677,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -1716,7 +1715,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 1.0,
+    "utilization@1024": 0.993164,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
@@ -1746,8 +1745,8 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.045455,
     "file_recall@1024": 1.0,
-    "utilization@1024": 1.0,
-    "gold_unit_share@1024": 0.042969,
+    "utilization@1024": 0.993164,
+    "gold_unit_share@1024": 0.043265,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
@@ -1870,13 +1869,13 @@
     ]
    },
    "1024": {
-    "used": 1024,
+    "used": 1017,
     "within_budget": true,
     "deterministic": true,
-    "items": 8,
+    "items": 11,
     "header_entities": 7,
     "omissions": {
-     "packing: budget": 38,
+     "packing: budget": 39,
      "packing: too large": 1,
      "selection: value N below floor": 9
     },
@@ -1903,16 +1902,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "a314af2fa5e345a7e21f0b6704acd370ce1c3d9260bfa4054636fb80b2db56dc",
    "routed": "00f3e865d1ce8c7a1414da3431854d4d25aef7ca0deb8f1dad4747498225b9d8",
    "payload@256": "2e02c4ede26f3aa3b7fd34257c2f39f20ca127d69978ef3ba1c4a03b7ad8ac01",
-   "payload@1024": "cb3bc5f9cfa48aad8a8b5aeae28162e48719db827f2853c4dd1cb00bde362d7a",
+   "payload@1024": "253f7ca7d5828dc6a37ebfee374c50e5cb5770dc44c5a0aae0372b89c53a4ab7",
    "payload@4096": "e4e319adfe166eac78b214e042d4aac2a322e3a8b31a8cbc6c31031e720a2745"
   }
  },
@@ -2150,9 +2149,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2364,9 +2363,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2540,9 +2539,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -2573,7 +2572,7 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.0,
-    "utilization@256": 0.914062,
+    "utilization@256": 0.925781,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
@@ -2738,13 +2737,13 @@
   },
   "bundles": {
    "256": {
-    "used": 234,
+    "used": 237,
     "within_budget": true,
     "deterministic": true,
-    "items": 4,
-    "header_entities": 2,
+    "items": 5,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 38,
+     "packing: budget": 37,
      "packing: too large": 1,
      "selection: container": 4,
      "selection: value N below floor": 17
@@ -2788,15 +2787,15 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "f7a4603368914cca22354adab5fabe9e9c1d9f3850ce6d067bae3ecc573eaf97",
    "routed": "78bea808c532e234d3ae44f64c254baa69f645a3b0a318cd29b29d917062aa1b",
-   "payload@256": "3ad98bc5799920e470b618fc2aa62bf58fd95adcadafc946920289ff66b836c0",
+   "payload@256": "9a67fc1790f3e378b04dd19df027689ecb23fac1a26cd1aca3db768c4678ab29",
    "payload@1024": "1631b82c8b0e7fa45c498273d5e8efa8d439ca955ff55d80f4ac62e4554aa04b",
    "payload@4096": "308a6dcc2f9a947a689783a5bb753370ba2c465e71150b7fb8e3afe42197b178"
   }
@@ -3008,9 +3007,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -3394,9 +3393,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -3686,9 +3685,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -3721,11 +3720,11 @@
     "file_recall@256": 0.0,
     "utilization@256": 0.945312,
     "gold_unit_share@256": 0.0,
-    "span_recall@1024": 0.0,
-    "line_recall@1024": 0.0,
+    "span_recall@1024": 0.25,
+    "line_recall@1024": 0.139706,
     "file_recall@1024": 0.5,
-    "utilization@1024": 1.0,
-    "gold_unit_share@1024": 0.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.332356,
     "span_recall@4096": 0.25,
     "line_recall@4096": 0.191176,
     "file_recall@4096": 0.5,
@@ -3749,7 +3748,7 @@
     "routed": true,
     "packed": {
      "256": "missed",
-     "1024": "missed",
+     "1024": "partial",
      "4096": "partial"
     },
     "lost": {
@@ -3772,12 +3771,11 @@
     "routed": true,
     "packed": {
      "256": "missed",
-     "1024": "missed",
+     "1024": "complete",
      "4096": "complete"
     },
     "lost": {
-     "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget"
+     "256": "budget: omitted, budget"
     }
    },
    {
@@ -3851,13 +3849,13 @@
     ]
    },
    "1024": {
-    "used": 1024,
+    "used": 1023,
     "within_budget": true,
     "deterministic": true,
-    "items": 3,
-    "header_entities": 2,
+    "items": 10,
+    "header_entities": 5,
     "omissions": {
-     "packing: budget": 52,
+     "packing: budget": 44,
      "selection: value N below floor": 9
     },
     "degradations": [
@@ -3882,16 +3880,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "fae02584250bcebd218c538596da5ba50c5bc7983601a3d7c0aecfee199aa2b5",
    "routed": "1318e6e42027b199b58030b13bdc9e808fad3fd15631ba457328bb69b3ec6d89",
    "payload@256": "a242842f0066e9461b3afc6ce13ead87123ef258cdb5e23ebc571ba838eb0911",
-   "payload@1024": "7cf844d5028f1ac99586a46b646c44005304989df1b3daf1d8baa7ba611c78cf",
+   "payload@1024": "4c90ca8c7af4e2c75fc38094343611c9ab4e32709de2e16fc27a64e26599f8b0",
    "payload@4096": "52b4696de4fff15e3b57f3adecccb5c4ae0d13264d051301c1578b3c2188a007"
   }
  },
@@ -4093,9 +4091,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -4136,8 +4134,8 @@
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.997803,
-    "gold_unit_share@4096": 0.099095
+    "utilization@4096": 0.993896,
+    "gold_unit_share@4096": 0.099484
    }
   },
   "unverified": {
@@ -4166,8 +4164,8 @@
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.997803,
-    "gold_unit_share@4096": 0.099095
+    "utilization@4096": 0.993896,
+    "gold_unit_share@4096": 0.099484
    }
   },
   "gold": [
@@ -4252,13 +4250,13 @@
     ]
    },
    "4096": {
-    "used": 4087,
+    "used": 4071,
     "within_budget": true,
     "deterministic": true,
-    "items": 19,
-    "header_entities": 8,
+    "items": 17,
+    "header_entities": 6,
     "omissions": {
-     "packing: budget": 37,
+     "packing: budget": 40,
      "selection: value N below floor": 10
     },
     "degradations": [
@@ -4269,9 +4267,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -4279,7 +4277,7 @@
    "routed": "511ab71717d99ae0d4569e4015ed253c2e58905e3c93903b2febfc390599ee11",
    "payload@256": "1d8ef56ce6f7931b9782ff464cfda0f8d3f72596d9a977fb419c215c66dd3858",
    "payload@1024": "7e97f489b10bcabff2df7c43deecf6f60747d9219ce1748a07ac7fc8cf8e810e",
-   "payload@4096": "6fa544f454278aa8dea5fe16072fba5bb4bfaf7b6778f9a069b97429fdb4750c"
+   "payload@4096": "1fcac89d36dbe21a74c5be330e7674698e01d9f46d97d19a63ac75a89c78c5b9"
   }
  },
  {
@@ -4307,7 +4305,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.995117,
+    "utilization@1024": 0.998047,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -4337,7 +4335,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.995117,
+    "utilization@1024": 0.998047,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -4648,13 +4646,13 @@
     ]
    },
    "1024": {
-    "used": 1019,
+    "used": 1022,
     "within_budget": true,
     "deterministic": true,
-    "items": 2,
-    "header_entities": 1,
+    "items": 5,
+    "header_entities": 2,
     "omissions": {
-     "packing: budget": 52,
+     "packing: budget": 47,
      "selection: value N below floor": 10
     },
     "degradations": [
@@ -4679,16 +4677,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "d7bcfc08f46eeab6bc13999d0fda55db147f7e3153dcae8886674a007e4a2dc8",
    "routed": "5c0c53ce4fc0790cfe94f96d45391d14cbc3f6ac2c21ca89a5042bf7c59f495e",
    "payload@256": "a9e6002b5d7cb7814200cb666b9e885bc7099aec1a81844cce444a4863d9acfe",
-   "payload@1024": "45c5b4716b201781e92b8acaa50009e0a3db541b22d62bf763ba0fb3e67e4891",
+   "payload@1024": "6d8e75ca25f75c46d27786f57f1619dcde3bd1dd18d52a3598a75214db7fc7d8",
    "payload@4096": "eb54d32e2f6b864d718003f76a403e0a0157b7933e14e289b48d514c1631734e"
   }
  },
@@ -4974,9 +4972,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -5006,8 +5004,8 @@
     "routed_coverage": 1.0,
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
-    "file_recall@256": 0.0,
-    "utilization@256": 0.902344,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.949219,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
@@ -5036,8 +5034,8 @@
     "routed_coverage": 1.0,
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
-    "file_recall@256": 0.0,
-    "utilization@256": 0.902344,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.949219,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
@@ -5109,13 +5107,13 @@
   },
   "bundles": {
    "256": {
-    "used": 231,
+    "used": 243,
     "within_budget": true,
     "deterministic": true,
-    "items": 2,
+    "items": 3,
     "header_entities": 1,
     "omissions": {
-     "packing: budget": 51,
+     "packing: budget": 50,
      "selection: value N below floor": 11
     },
     "degradations": [
@@ -5154,15 +5152,15 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "e093d27f6073627fb75d45591052b2f16f6e94003b3bb690fea09d06797b0af8",
    "routed": "eb3cc81967b850838d4831a9ce80cd8ff538ad5e2c904371dfa2ae476057ac8d",
-   "payload@256": "ad4f9932f61eb4c3c3de48131e5d16b8a487129826e791911d8f259484aa6ecc",
+   "payload@256": "8f636352868d28fd61babd5437ecd2783f47266113ee019a66f0bb882ef3929a",
    "payload@1024": "62decfd69dcb90606b4546e3cc4eb45b0720a0fdfeca987e806e1ecbde8da8ed",
    "payload@4096": "92a68631f756a2070970bae02ac3e5922dfffe8551e09874ca6db00a8f5b1b6f"
   }
@@ -5332,9 +5330,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -5370,12 +5368,12 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.5,
-    "utilization@1024": 0.993164,
+    "utilization@1024": 0.975586,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.5,
-    "utilization@4096": 0.999756,
+    "utilization@4096": 0.85791,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -5398,15 +5396,15 @@
     "utilization@256": 0.921875,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
-    "line_recall@1024": 0.012987,
-    "file_recall@1024": 1.0,
-    "utilization@1024": 0.993164,
-    "gold_unit_share@1024": 0.049164,
-    "span_recall@4096": 1.0,
-    "line_recall@4096": 1.0,
-    "file_recall@4096": 1.0,
-    "utilization@4096": 0.999756,
-    "gold_unit_share@4096": 0.360928
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.975586,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.85791,
+    "gold_unit_share@4096": 0.0
    }
   },
   "gold": [
@@ -5430,7 +5428,7 @@
     "lost": {
      "256": "budget: omitted, budget",
      "1024": "budget: omitted, budget",
-     "4096": "budget: omitted, budget"
+     "4096": "selection: item cap N"
     }
    },
    {
@@ -5453,7 +5451,7 @@
     "lost": {
      "256": "budget: omitted, budget",
      "1024": "budget: omitted, budget",
-     "4096": "budget: omitted, budget"
+     "4096": "selection: item cap N"
     }
    },
    {
@@ -5476,7 +5474,7 @@
     "lost": {
      "256": "budget: omitted, budget",
      "1024": "budget: omitted, budget",
-     "4096": "budget: omitted, budget"
+     "4096": "selection: item cap N"
     }
    },
    {
@@ -5516,12 +5514,13 @@
     "routed": true,
     "packed": {
      "256": "missed",
-     "1024": "partial",
-     "4096": "complete"
+     "1024": "missed",
+     "4096": "missed"
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: reduced view"
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
     }
    }
   ],
@@ -5549,13 +5548,13 @@
     ]
    },
    "1024": {
-    "used": 1017,
+    "used": 999,
     "within_budget": true,
     "deterministic": true,
-    "items": 11,
-    "header_entities": 7,
+    "items": 5,
+    "header_entities": 1,
     "omissions": {
-     "packing: budget": 45,
+     "packing: budget": 51,
      "selection: value N below floor": 8
     },
     "degradations": [
@@ -5563,13 +5562,13 @@
     ]
    },
    "4096": {
-    "used": 4095,
+    "used": 3514,
     "within_budget": true,
     "deterministic": true,
-    "items": 13,
-    "header_entities": 4,
+    "items": 18,
+    "header_entities": 6,
     "omissions": {
-     "packing: budget": 43,
+     "selection: item cap N": 32,
      "selection: value N below floor": 8
     },
     "degradations": [
@@ -5580,17 +5579,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "8ee6c8bde1a8796ca5c964f85d9cbd8ff50fc12e8ba70094ec61a9a88428c349",
    "routed": "fde51adc63823d204b7a868a857d755d75c90f122af914f0776de2d7523b9e47",
    "payload@256": "2b8e1163009d3652af6a5c6ce12bf1497fd5c6a859b700585bf2e65432ef5f8a",
-   "payload@1024": "212911bdae40a5032bb03e0b6efc74bd5def4f5dfc59b6f0f071abfeab6f146d",
-   "payload@4096": "7916743a7f6f57e4831264107d3a3e764337972c66e2dce69be1feac1e490ca4"
+   "payload@1024": "6b55971ae55ca1f7acd236132c3204e0ee46132b755d4e3fc585fb02cc6a984e",
+   "payload@4096": "7cd31c694e02a94c6732e44c4208c3984f96cbc78db7cc1b6a99008728cf4404"
   }
  },
  {
@@ -5777,9 +5776,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -5813,15 +5812,15 @@
     "utilization@256": 0.980469,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
-    "line_recall@1024": 0.002825,
-    "file_recall@1024": 0.5,
-    "utilization@1024": 0.994141,
-    "gold_unit_share@1024": 0.043222,
-    "span_recall@4096": 0.0,
-    "line_recall@4096": 0.002825,
-    "file_recall@4096": 0.5,
-    "utilization@4096": 0.995117,
-    "gold_unit_share@4096": 0.010795
+    "line_recall@1024": 0.00565,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.980469,
+    "gold_unit_share@1024": 0.078685,
+    "span_recall@4096": 0.125,
+    "line_recall@4096": 0.293785,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.993164,
+    "gold_unit_share@4096": 0.322271
    }
   },
   "unverified": null,
@@ -6001,13 +6000,12 @@
     "routed": true,
     "packed": {
      "256": "missed",
-     "1024": "missed",
-     "4096": "missed"
+     "1024": "partial",
+     "4096": "complete"
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget",
-     "4096": "budget: omitted, budget"
+     "1024": "budget: reduced view"
     }
    }
   ],
@@ -6035,13 +6033,13 @@
     ]
    },
    "1024": {
-    "used": 1018,
+    "used": 1004,
     "within_budget": true,
     "deterministic": true,
-    "items": 10,
-    "header_entities": 6,
+    "items": 14,
+    "header_entities": 10,
     "omissions": {
-     "packing: budget": 43,
+     "packing: budget": 40,
      "selection: value N below floor": 11
     },
     "degradations": [
@@ -6049,13 +6047,13 @@
     ]
    },
    "4096": {
-    "used": 4076,
+    "used": 4068,
     "within_budget": true,
     "deterministic": true,
-    "items": 14,
-    "header_entities": 6,
+    "items": 16,
+    "header_entities": 7,
     "omissions": {
-     "packing: budget": 39,
+     "packing: budget": 36,
      "selection: value N below floor": 11
     },
     "degradations": [
@@ -6066,17 +6064,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "2ad999d138e7847d93ba4ad534b03041e90665d4b66cb5d549cdf342fe87d38f",
    "routed": "3dc732adec18df3bd80e123afd3a21375db47ee6d8cae064d37631cc1414c8bd",
    "payload@256": "182890100e3388d59fa208c47b53abf2071d0711f45a08a0a4603d7428ef9f0f",
-   "payload@1024": "63c98c664c16a82f75730a2d44662e9778b2c29244d9a7fbf4f7f840c75574da",
-   "payload@4096": "9344269ee9c30300fc93d3a473c4e98f7ceb7532e49ce9496265cc06615fc084"
+   "payload@1024": "7e4f8eeb9248d2847f9ab5006a9f328237cf0e123138da5a639d1740bea170a9",
+   "payload@4096": "0bfd9f2d0463eff80f3651ec480100fafce9b93863b82312f2e23e1a73a4bd8a"
   }
  },
  {
@@ -6098,7 +6096,7 @@
     "routed_coverage": 0.875,
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
-    "file_recall@256": 0.5,
+    "file_recall@256": 1.0,
     "utilization@256": 0.992188,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
@@ -6312,10 +6310,10 @@
     "used": 254,
     "within_budget": true,
     "deterministic": true,
-    "items": 4,
-    "header_entities": 3,
+    "items": 6,
+    "header_entities": 5,
     "omissions": {
-     "packing: budget": 41,
+     "packing: budget": 39,
      "selection: value N below floor": 19
     },
     "degradations": [
@@ -6355,15 +6353,15 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "fdd801d2f82542219ec9b0219dcc1cfd5641e0812007fa53addc12492e8a1bc4",
    "routed": "c40af43d2582f17e7a04ee42f27dc37ec844f5890dea4ac27c11e3b467214381",
-   "payload@256": "9c1c6f6cf193fb59f80476793f7742d2558ab3fc0567bca4c6260fc0a6477946",
+   "payload@256": "bbefe5443ebc43691d94bdfc5a0a1e35cca8d8441193674ff0b5705e3eca03cd",
    "payload@1024": "4223168f99972b528e80f0dbbc6cac8d5f226fa0c2139a322c4f668a8f555a14",
    "payload@4096": "2304d3e04b39bee29159e8703e491934df23d0229e45c074ca1c9d31abae2f77"
   }
@@ -6570,10 +6568,10 @@
     "used": 1022,
     "within_budget": true,
     "deterministic": true,
-    "items": 1,
-    "header_entities": 0,
+    "items": 5,
+    "header_entities": 1,
     "omissions": {
-     "packing: budget": 54,
+     "packing: budget": 50,
      "selection: value N below floor": 8
     },
     "degradations": [
@@ -6598,16 +6596,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "ec9f1aa8f2c92d07bdcc452b7057b223b89f7e5512aed8214b6abf2032705001",
    "routed": "601a54447f073c8477318a73645e55835a2d571938490fb95b358d2926bdb289",
    "payload@256": "8739828cbe0546188a6e3c14a647f3454db078833667c4a7cca59128feebaa8f",
-   "payload@1024": "5af433faf70590e67b2a3b244f091e384e778a859f77d0dedc4df6ffe074b2f1",
+   "payload@1024": "84be9c954dde22b2a7119b4a060034480803a5a1049f88170e3af9206f21fdd6",
    "payload@4096": "81d60a3907e79c0fec953a307b50a7cb4c2028042e2079c39a4ca279583fb5ac"
   }
  },
@@ -6631,12 +6629,12 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 0.0,
-    "utilization@256": 0.921875,
+    "utilization@256": 0.96875,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
-    "file_recall@1024": 0.0,
-    "utilization@1024": 0.99707,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.993164,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -6660,13 +6658,13 @@
     "routed_coverage": 1.0,
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
-    "file_recall@256": 0.0,
-    "utilization@256": 0.921875,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.96875,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.99707,
+    "utilization@1024": 0.993164,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -6694,7 +6692,7 @@
      "4096": "missed"
     },
     "lost": {
-     "256": "budget: omitted, budget",
+     "256": "budget: reduced view",
      "1024": "budget: reduced view",
      "4096": "budget: reduced view"
     }
@@ -6802,13 +6800,13 @@
   },
   "bundles": {
    "256": {
-    "used": 236,
+    "used": 248,
     "within_budget": true,
     "deterministic": true,
-    "items": 3,
-    "header_entities": 2,
+    "items": 4,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 51,
+     "packing: budget": 50,
      "selection: value N below floor": 10
     },
     "degradations": [
@@ -6816,13 +6814,13 @@
     ]
    },
    "1024": {
-    "used": 1021,
+    "used": 1017,
     "within_budget": true,
     "deterministic": true,
-    "items": 8,
-    "header_entities": 6,
+    "items": 13,
+    "header_entities": 8,
     "omissions": {
-     "packing: budget": 46,
+     "packing: budget": 40,
      "selection: value N below floor": 10
     },
     "degradations": [
@@ -6847,16 +6845,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "e1a07bde957e5d28dcf7f652df4391cbb259bfcdaaee0b398c49d8fd2de2659a",
    "routed": "9574eb2011ac47105c7a66eeaff45a629d22048abff07c15cc0bb507efa51903",
-   "payload@256": "3bf2f5abf8dbfca269a7457fe8a7fcddeba161f817bb2e1e79a82725954a0a87",
-   "payload@1024": "4dd10f4dc668471dfe24e48586317ab9bf852962878b08e8acc4131f2eaffe48",
+   "payload@256": "ae8c774a54339f3ee2bcef0deff98b90cddfb6b77be5af1d9afc6205bf3de73d",
+   "payload@1024": "bdc6792738d327f8abc92935b3c5ac18b2b991d76bd6dd3f48ed3856d3c6250d",
    "payload@4096": "ea2848c7608151a30551efdfcb9a19720c14765e258cb6a053d521f98b72dcc8"
   }
  },
@@ -6885,7 +6883,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.5,
-    "utilization@1024": 0.993164,
+    "utilization@1024": 0.989258,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -6915,7 +6913,7 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.993164,
+    "utilization@1024": 0.989258,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
@@ -7088,13 +7086,13 @@
     ]
    },
    "1024": {
-    "used": 1017,
+    "used": 1013,
     "within_budget": true,
     "deterministic": true,
-    "items": 12,
-    "header_entities": 9,
+    "items": 4,
+    "header_entities": 2,
     "omissions": {
-     "packing: budget": 42,
+     "packing: budget": 48,
      "selection: value N below floor": 10
     },
     "degradations": [
@@ -7119,16 +7117,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "a7d07ecc1858e7175f95bf553d18e2c76a2ba81eeee415cdc6fa47cba51484a9",
    "routed": "5dae411cab39da08f676c8b34e68c82a3dbea3e14221059d658d56cd34015733",
    "payload@256": "fcef51324e1a900867bce40cb7ed73f56a882de703304ce341657db899de2bd2",
-   "payload@1024": "30838226bc25c93d544041288cf3fab98fcbda763413b9d9f7091569679af201",
+   "payload@1024": "c442c8fe7735e492bdbaa9918aaa1a23f52659c3e72203440268582ae09d02fd",
    "payload@4096": "870aa94c5905516c88c1068d090dc3196163e079ca7401c02d8b45c6a4fa76dc"
   }
  },
@@ -7155,10 +7153,10 @@
     "utilization@256": 0.882812,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
-    "line_recall@1024": 0.0,
+    "line_recall@1024": 0.052632,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.969727,
-    "gold_unit_share@1024": 0.0,
+    "utilization@1024": 0.981445,
+    "gold_unit_share@1024": 0.051741,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.315789,
     "file_recall@4096": 1.0,
@@ -7185,10 +7183,10 @@
     "utilization@256": 0.882812,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
-    "line_recall@1024": 0.172414,
+    "line_recall@1024": 0.206897,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.969727,
-    "gold_unit_share@1024": 0.133938,
+    "utilization@1024": 0.981445,
+    "gold_unit_share@1024": 0.18408,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.37931,
     "file_recall@4096": 1.0,
@@ -7262,7 +7260,7 @@
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget",
+     "1024": "budget: reduced view",
      "4096": "budget: reduced view"
     }
    },
@@ -7280,12 +7278,12 @@
     "routed": true,
     "packed": {
      "256": "missed",
-     "1024": "missed",
+     "1024": "partial",
      "4096": "partial"
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget",
+     "1024": "budget: reduced view",
      "4096": "budget: reduced view"
     }
    },
@@ -7383,11 +7381,11 @@
     ]
    },
    "1024": {
-    "used": 993,
+    "used": 1005,
     "within_budget": true,
     "deterministic": true,
-    "items": 12,
-    "header_entities": 6,
+    "items": 11,
+    "header_entities": 7,
     "omissions": {
      "packing: budget": 26,
      "selection: value N below floor": 26
@@ -7414,16 +7412,16 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "ab3fbd94cd5b4eadf40440bcca28dba6b0dd60158d181a15b301b252483a322f",
    "routed": "24057b63b41d39b56c962183bc164bacf689c4cd43497b6b31f436529f4e1336",
    "payload@256": "d34c26c98009d58c65e13bb731fee49b90c76b253df876cf83d20e7d979a627b",
-   "payload@1024": "2e7689472aefc1ecf34f78315540a6cffa163a775b316c274a3d36e2aee1b556",
+   "payload@1024": "ca85757bfa159b01218fb5b24923d983011c67cbb1e240b31904ef4fb649c399",
    "payload@4096": "6789c30bbbb6328cf858b624f6898b80d4a0a4f513f89e956ec9f68b81bcd5ab"
   }
  },
@@ -7450,15 +7448,15 @@
     "utilization@256": 0.992188,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
-    "line_recall@1024": 0.025974,
+    "line_recall@1024": 0.116883,
     "file_recall@1024": 1.0,
-    "utilization@1024": 1.0,
-    "gold_unit_share@1024": 0.074219,
-    "span_recall@4096": 0.0,
-    "line_recall@4096": 0.116883,
+    "utilization@1024": 0.994141,
+    "gold_unit_share@1024": 0.202358,
+    "span_recall@4096": 0.6,
+    "line_recall@4096": 0.662338,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.985352,
-    "gold_unit_share@4096": 0.051041
+    "utilization@4096": 0.952148,
+    "gold_unit_share@4096": 0.515385
    }
   },
   "unverified": {
@@ -7482,12 +7480,12 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 1.0,
-    "utilization@1024": 1.0,
+    "utilization@1024": 0.994141,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.985352,
+    "utilization@4096": 0.952148,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -7576,12 +7574,11 @@
     "packed": {
      "256": "missed",
      "1024": "partial",
-     "4096": "partial"
+     "4096": "complete"
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget",
-     "4096": "selection: item cap N"
+     "1024": "budget: omitted, budget"
     }
    },
    {
@@ -7599,12 +7596,11 @@
     "packed": {
      "256": "missed",
      "1024": "missed",
-     "4096": "missed"
+     "4096": "complete"
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget",
-     "4096": "selection: item cap N"
+     "1024": "budget: omitted, budget"
     }
    },
    {
@@ -7622,12 +7618,11 @@
     "packed": {
      "256": "missed",
      "1024": "missed",
-     "4096": "missed"
+     "4096": "complete"
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget",
-     "4096": "selection: item cap N"
+     "1024": "budget: omitted, budget"
     }
    },
    {
@@ -7678,13 +7673,13 @@
     ]
    },
    "1024": {
-    "used": 1024,
+    "used": 1018,
     "within_budget": true,
     "deterministic": true,
     "items": 10,
-    "header_entities": 4,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 35,
+     "packing: budget": 37,
      "selection: value N below floor": 17
     },
     "degradations": [
@@ -7692,11 +7687,11 @@
     ]
    },
    "4096": {
-    "used": 4036,
+    "used": 3900,
     "within_budget": true,
     "deterministic": true,
-    "items": 29,
-    "header_entities": 10,
+    "items": 12,
+    "header_entities": 4,
     "omissions": {
      "selection: item cap N": 23,
      "selection: value N below floor": 17
@@ -7709,17 +7704,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "06e5f2d1cf5ae2008fac2d19574f29896033b48415271c592e8cbad220d5abe5",
    "routed": "fa66f594b9599234f89a5fce275cb2d33c84b1348fec22a1b897673114cbb0ea",
    "payload@256": "fa87df8dffd89652e00a62f11a7cb80afa16c9c911e5592d113ad04c1a4737a6",
-   "payload@1024": "3cb533453c6e7c58ce7fcc6db5d3e46e21bc3156f3fc134079706b5f7c68f524",
-   "payload@4096": "cea396243303e2f8f2258562198c03334eb606dfc2a9409e380b974a52b995c1"
+   "payload@1024": "d50f42826374f58252bab077a9612c08b92175b6e9c3933c994ab8bcd396103e",
+   "payload@4096": "49b803132a7f57f20e53b25d9663260ee50f3746303609c8855c6483b5470b89"
   }
  },
  {
@@ -7746,13 +7741,13 @@
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
-    "file_recall@1024": 0.0,
-    "utilization@1024": 0.999023,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.998291,
+    "utilization@4096": 0.996582,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -7776,13 +7771,13 @@
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
-    "file_recall@1024": 0.0,
-    "utilization@1024": 0.999023,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.998291,
+    "utilization@4096": 0.996582,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -7881,13 +7876,13 @@
     ]
    },
    "1024": {
-    "used": 1023,
+    "used": 1021,
     "within_budget": true,
     "deterministic": true,
-    "items": 9,
-    "header_entities": 6,
+    "items": 13,
+    "header_entities": 9,
     "omissions": {
-     "packing: budget": 36,
+     "packing: budget": 31,
      "selection: value N below floor": 19
     },
     "degradations": [
@@ -7895,14 +7890,13 @@
     ]
    },
    "4096": {
-    "used": 4089,
+    "used": 4082,
     "within_budget": true,
     "deterministic": true,
-    "items": 27,
-    "header_entities": 11,
+    "items": 11,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 5,
-     "selection: item cap N": 16,
+     "packing: budget": 30,
      "selection: value N below floor": 19
     },
     "degradations": [
@@ -7913,17 +7907,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "5303de1fe7422dc02c5894c512442d4c8492f22c61a1bdda7c52766e09ae3b44",
    "routed": "98e333186735f63f1b61be1e5aa44ea698946f78c3063a17b88e6a307c4a7970",
    "payload@256": "17c09b1327116f0d4ecc4630b79f8176fe3304055ee84addecd7db12231f5058",
-   "payload@1024": "fc4162432f5553587c69f1e462e19a49eee212e9515941b85abbc66c308a4828",
-   "payload@4096": "79826f9da1b272f9ad31f9ea62ddbc1fe1b016b7a0309c91b54ef7ea57c5eec9"
+   "payload@1024": "3a22746592881f5a3e09f1c1e8ae7934d574547ea051d48e66bac4e2c8e19718",
+   "payload@4096": "d441cdc08ef566ac4a4eabe44243ce4a8d7fd86636a5b9a74c7e8fc6523de4a3"
   }
  },
  {
@@ -7946,18 +7940,18 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.014706,
     "file_recall@256": 1.0,
-    "utilization@256": 0.996094,
-    "gold_unit_share@256": 0.137255,
+    "utilization@256": 0.867188,
+    "gold_unit_share@256": 0.157658,
     "span_recall@1024": 0.333333,
     "line_recall@1024": 0.323529,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.995117,
-    "gold_unit_share@1024": 0.288518,
-    "span_recall@4096": 0.333333,
-    "line_recall@4096": 0.323529,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.307542,
+    "span_recall@4096": 0.666667,
+    "line_recall@4096": 0.573529,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.965088,
-    "gold_unit_share@4096": 0.077663
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.584717
    }
   },
   "unverified": null,
@@ -7977,12 +7971,11 @@
     "packed": {
      "256": "partial",
      "1024": "partial",
-     "4096": "partial"
+     "4096": "complete"
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget",
-     "4096": "selection: item cap N"
+     "1024": "budget: omitted, budget"
     }
    },
    {
@@ -8040,13 +8033,13 @@
   },
   "bundles": {
    "256": {
-    "used": 255,
+    "used": 222,
     "within_budget": true,
     "deterministic": true,
-    "items": 4,
-    "header_entities": 3,
+    "items": 5,
+    "header_entities": 4,
     "omissions": {
-     "packing: budget": 38,
+     "packing: budget": 37,
      "selection: container": 1,
      "selection: no module-level source": 1,
      "selection: value N below floor": 20
@@ -8056,13 +8049,13 @@
     ]
    },
    "1024": {
-    "used": 1019,
+    "used": 1021,
     "within_budget": true,
     "deterministic": true,
     "items": 8,
     "header_entities": 3,
     "omissions": {
-     "packing: budget": 33,
+     "packing: budget": 30,
      "selection: container": 1,
      "selection: no module-level source": 1,
      "selection: value N below floor": 20
@@ -8072,11 +8065,11 @@
     ]
    },
    "4096": {
-    "used": 3953,
+    "used": 4096,
     "within_budget": true,
     "deterministic": true,
-    "items": 24,
-    "header_entities": 6,
+    "items": 12,
+    "header_entities": 4,
     "omissions": {
      "selection: container": 1,
      "selection: item cap N": 18,
@@ -8091,17 +8084,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "27b286cdedb4e040f02d05ad083ed0998e61dbbf47103372a6dcc094b6e15a88",
    "routed": "576c0889651a870114f193e13c7094da511530a4d7406824e6ad2e1f9668af74",
-   "payload@256": "ed7893799f0aff393109c973c1508f23b873903dd2643b54a6c43a8a711c6973",
-   "payload@1024": "83dcf7da3267abb0285d0ba493cc13943848c0792788405460119dd73294a858",
-   "payload@4096": "c961e21cbec7b371c007a93b4d5b024dc8ac2581855034b3aa12b37753280c06"
+   "payload@256": "2d7543cba8147a916e6c5276934fdbf3d36b10bcaac005ee5f01360974384098",
+   "payload@1024": "6b3179dde5968a02b58859c01942fac7b0f16689fbc5e3b65245a830a3f0519c",
+   "payload@4096": "d81f6bfc463764389f7a4f38accee66102bbd89791636486f432bf48182ba41a"
   }
  },
  {
@@ -8244,9 +8237,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -8282,12 +8275,12 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.989258,
+    "utilization@1024": 0.988281,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 0.993164,
+    "utilization@4096": 0.995117,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -8312,12 +8305,12 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.5,
-    "utilization@1024": 0.989258,
+    "utilization@1024": 0.988281,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.5,
-    "utilization@4096": 0.993164,
+    "utilization@4096": 0.995117,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -8533,13 +8526,13 @@
     ]
    },
    "1024": {
-    "used": 1013,
+    "used": 1012,
     "within_budget": true,
     "deterministic": true,
-    "items": 5,
+    "items": 6,
     "header_entities": 3,
     "omissions": {
-     "packing: budget": 24,
+     "packing: budget": 22,
      "selection: container": 2,
      "selection: no module-level source": 1,
      "selection: value N below floor": 29
@@ -8549,11 +8542,11 @@
     ]
    },
    "4096": {
-    "used": 4068,
+    "used": 4076,
     "within_budget": true,
     "deterministic": true,
-    "items": 21,
-    "header_entities": 8,
+    "items": 20,
+    "header_entities": 6,
     "omissions": {
      "packing: budget": 1,
      "selection: container": 2,
@@ -8569,17 +8562,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "8c4ed0df5b830d3a69eea1dea1abd475f3d35f7d27f958e2fc9bd60bc32b8702",
    "routed": "7244a16a13fd7d536de9f212e7276a3cde735cd1d1cf4a47dfd3b4a32c7990f3",
    "payload@256": "304a8e3bb97c9d55e3fcc02691dbd6cd0f01fdffa3732cca08ac69e0ccf73937",
-   "payload@1024": "d116ae13222204a26e20424820de7929eb2b285bb79c4c703b16a94d31e6b587",
-   "payload@4096": "f8cf6b50ae02fe906d118bab4f86c25727a83d8a68540f9dedca6666923d8b65"
+   "payload@1024": "46839215731d93771964228c75cf006ff204cf597576ead6a4581ccec4b11844",
+   "payload@4096": "279949f18f33eebbd853ace6ace611ddffaff468813c2c8551bbe2dbc9b10f5e"
   }
  },
  {
@@ -8606,14 +8599,14 @@
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
-    "file_recall@1024": 0.0,
-    "utilization@1024": 0.991211,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.992188,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.5,
     "line_recall@4096": 0.411765,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.941895,
-    "gold_unit_share@4096": 0.083981
+    "utilization@4096": 0.994141,
+    "gold_unit_share@4096": 0.079568
    }
   },
   "unverified": {
@@ -8635,15 +8628,15 @@
     "utilization@256": 0.902344,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
-    "line_recall@1024": 0.0,
-    "file_recall@1024": 0.0,
-    "utilization@1024": 0.991211,
-    "gold_unit_share@1024": 0.0,
+    "line_recall@1024": 0.058824,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.992188,
+    "gold_unit_share@1024": 0.035433,
     "span_recall@4096": 1.0,
     "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.941895,
-    "gold_unit_share@4096": 0.083981
+    "utilization@4096": 0.994141,
+    "gold_unit_share@4096": 0.079568
    }
   },
   "gold": [
@@ -8661,12 +8654,12 @@
     "routed": true,
     "packed": {
      "256": "missed",
-     "1024": "missed",
+     "1024": "partial",
      "4096": "complete"
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget"
+     "1024": "budget: reduced view"
     }
    },
    {
@@ -8688,7 +8681,7 @@
     },
     "lost": {
      "256": "budget: omitted, budget",
-     "1024": "budget: omitted, budget"
+     "1024": "budget: reduced view"
     }
    },
    {
@@ -8711,7 +8704,7 @@
     "lost": {
      "256": "budget: omitted, budget",
      "1024": "budget: omitted, budget",
-     "4096": "selection: item cap N"
+     "4096": "budget: omitted, budget"
     }
    }
   ],
@@ -8739,13 +8732,13 @@
     ]
    },
    "1024": {
-    "used": 1015,
+    "used": 1016,
     "within_budget": true,
     "deterministic": true,
-    "items": 11,
-    "header_entities": 8,
+    "items": 10,
+    "header_entities": 5,
     "omissions": {
-     "packing: budget": 45,
+     "packing: budget": 47,
      "selection: value N below floor": 6
     },
     "degradations": [
@@ -8753,13 +8746,13 @@
     ]
    },
    "4096": {
-    "used": 3858,
+    "used": 4072,
     "within_budget": true,
     "deterministic": true,
-    "items": 29,
-    "header_entities": 13,
+    "items": 14,
+    "header_entities": 4,
     "omissions": {
-     "selection: item cap N": 34,
+     "packing: budget": 42,
      "selection: value N below floor": 6
     },
     "degradations": [
@@ -8770,17 +8763,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "e50ea1985ab37b2e708043d0ea733c1e6bf1aaf26ec55f4186f501da5c3155e4",
    "routed": "b5b09289fcd0d9692412420f9ff351de5dab9fa3ce63c9d876cafaad02932cb3",
    "payload@256": "9da999c4906709488b07096aa02b9a9c9d383dddf0c0cf898dd1e508d24baf40",
-   "payload@1024": "b1705a28eb8a3663969855e4e3dcbb5467678dbe645f05c67aeaae35001a4575",
-   "payload@4096": "24082d299ba975ae7d5e27a860dec602819bb4a469ae04db1a18edc165b0c111"
+   "payload@1024": "b60918c1ab3f863fd4f7cf3c73b136c4b14535b83980fa6984c9ddb231a373df",
+   "payload@4096": "1c83941651849cf86bfac020e0d600523ee24e796193e37471b6f8a0336593ec"
   }
  },
  {
@@ -9054,9 +9047,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -9090,15 +9083,15 @@
     "utilization@256": 0.960938,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
-    "line_recall@1024": 0.022727,
+    "line_recall@1024": 0.083333,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.999023,
-    "gold_unit_share@1024": 0.086999,
+    "utilization@1024": 0.996094,
+    "gold_unit_share@1024": 0.181373,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.083333,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.994141,
-    "gold_unit_share@4096": 0.045432
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.045166
    }
   },
   "unverified": null,
@@ -9169,7 +9162,7 @@
     "lost": {
      "256": "budget: omitted, budget",
      "1024": "budget: omitted, budget",
-     "4096": "selection: item cap N"
+     "4096": "budget: omitted, budget"
     }
    },
    {
@@ -9192,7 +9185,7 @@
     "lost": {
      "256": "budget: omitted, budget",
      "1024": "budget: omitted, budget",
-     "4096": "selection: item cap N"
+     "4096": "budget: omitted, budget"
     }
    },
    {
@@ -9313,13 +9306,13 @@
     ]
    },
    "1024": {
-    "used": 1023,
+    "used": 1020,
     "within_budget": true,
     "deterministic": true,
-    "items": 7,
-    "header_entities": 5,
+    "items": 13,
+    "header_entities": 8,
     "omissions": {
-     "packing: budget": 32,
+     "packing: budget": 27,
      "selection: container": 1,
      "selection: value N below floor": 23
     },
@@ -9328,14 +9321,14 @@
     ]
    },
    "4096": {
-    "used": 4072,
+    "used": 4096,
     "within_budget": true,
     "deterministic": true,
-    "items": 28,
-    "header_entities": 14,
+    "items": 14,
+    "header_entities": 7,
     "omissions": {
+     "packing: budget": 23,
      "selection: container": 1,
-     "selection: item cap N": 16,
      "selection: value N below floor": 23
     },
     "degradations": [
@@ -9346,17 +9339,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "d726f3556f5208f8032bed60c420ceec5fdbe475efd8d219eb6080e3fd8cb9c6",
    "routed": "65329b6a10e9b5fb148e3bdbc13b75bbc61243fe379ef203c4ed6ad0a4fb1631",
    "payload@256": "e06408dd0ba7c9b914a0b60fc23a40f19900b44ca8da8119848e4b2cd635f410",
-   "payload@1024": "5fe8aff5df524920ea739700f68bd1f95de12c884142446cb789da9c5d3ade99",
-   "payload@4096": "c6490180516195b4c49d2c03259fe1cacfd3d1532c6d31c53996ba56feb643f7"
+   "payload@1024": "b81a16dfe33fdae6e507bcfce78c34f376c8bf4b2104ef2c926b794d3dc18fd4",
+   "payload@4096": "a4be5b599346b7ab3bdbcfe6492eddb9cad372016f5e281d2a27f28b68ba9e19"
   }
  },
  {
@@ -9610,9 +9603,9 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
@@ -9648,12 +9641,12 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.989258,
+    "utilization@1024": 0.998047,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 0.998291,
+    "utilization@4096": 0.997803,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -9678,12 +9671,12 @@
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.0,
     "file_recall@1024": 0.0,
-    "utilization@1024": 0.989258,
+    "utilization@1024": 0.998047,
     "gold_unit_share@1024": 0.0,
     "span_recall@4096": 0.0,
     "line_recall@4096": 0.0,
     "file_recall@4096": 0.0,
-    "utilization@4096": 0.998291,
+    "utilization@4096": 0.997803,
     "gold_unit_share@4096": 0.0
    }
   },
@@ -9876,13 +9869,13 @@
     ]
    },
    "1024": {
-    "used": 1013,
+    "used": 1022,
     "within_budget": true,
     "deterministic": true,
-    "items": 9,
-    "header_entities": 5,
+    "items": 6,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 37,
+     "packing: budget": 41,
      "selection: container": 2,
      "selection: no module-level source": 2,
      "selection: value N below floor": 13
@@ -9892,15 +9885,14 @@
     ]
    },
    "4096": {
-    "used": 4089,
+    "used": 4087,
     "within_budget": true,
     "deterministic": true,
-    "items": 27,
-    "header_entities": 12,
+    "items": 17,
+    "header_entities": 6,
     "omissions": {
-     "packing: budget": 19,
+     "packing: budget": 32,
      "selection: container": 2,
-     "selection: item cap N": 4,
      "selection: no module-level source": 2,
      "selection: value N below floor": 13
     },
@@ -9912,17 +9904,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "11cc4547fa216cf16481f3c81cf2a677f55f5fd742cf74becec914c54f504a69",
    "routed": "83e58febe1183814e99ef27f2663b35a6f8f4b2314b1d5984b35827f3f14eeb5",
    "payload@256": "00374830fc85602b52617942a73d582a1b3b521bc5818120df9f7017d8e1305f",
-   "payload@1024": "88b36def5cb2ec6eb4e1ec61e41e311780ee9c93fceef1713a439dc072c2e962",
-   "payload@4096": "0da35e4210eb284cd65ad33d30a66ee7deb0e508e09d0a471bf90c21453059f5"
+   "payload@1024": "510d5016d3773dfe0e071d69d64969c1f253d0663de9073a8089eb968066fc15",
+   "payload@4096": "f02d449662d8bea5ae67748a0f0d5674816ba20ebaac7dcd87d356a018fc5ac4"
   }
  },
  {
@@ -9945,18 +9937,18 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.0,
     "file_recall@256": 1.0,
-    "utilization@256": 0.980469,
+    "utilization@256": 0.953125,
     "gold_unit_share@256": 0.0,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.25,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.990234,
-    "gold_unit_share@1024": 0.271203,
-    "span_recall@4096": 0.0,
-    "line_recall@4096": 0.25,
+    "utilization@1024": 0.996094,
+    "gold_unit_share@1024": 0.269608,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.895996,
-    "gold_unit_share@4096": 0.074932
+    "utilization@4096": 0.997314,
+    "gold_unit_share@4096": 0.476132
    }
   },
   "unverified": {
@@ -9975,18 +9967,18 @@
     "span_recall@256": 0.0,
     "line_recall@256": 0.029412,
     "file_recall@256": 1.0,
-    "utilization@256": 0.980469,
-    "gold_unit_share@256": 0.25498,
+    "utilization@256": 0.953125,
+    "gold_unit_share@256": 0.262295,
     "span_recall@1024": 0.0,
     "line_recall@1024": 0.411765,
     "file_recall@1024": 1.0,
-    "utilization@1024": 0.990234,
-    "gold_unit_share@1024": 0.271203,
-    "span_recall@4096": 0.0,
-    "line_recall@4096": 0.411765,
+    "utilization@1024": 0.996094,
+    "gold_unit_share@1024": 0.269608,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
     "file_recall@4096": 1.0,
-    "utilization@4096": 0.895996,
-    "gold_unit_share@4096": 0.074932
+    "utilization@4096": 0.997314,
+    "gold_unit_share@4096": 0.476132
    }
   },
   "gold": [
@@ -10005,12 +9997,11 @@
     "packed": {
      "256": "missed",
      "1024": "missed",
-     "4096": "missed"
+     "4096": "complete"
     },
     "lost": {
      "256": "selection: value N below floor",
-     "1024": "selection: value N below floor",
-     "4096": "selection: value N below floor"
+     "1024": "selection: value N below floor"
     }
    },
    {
@@ -10028,12 +10019,11 @@
     "packed": {
      "256": "missed",
      "1024": "missed",
-     "4096": "missed"
+     "4096": "complete"
     },
     "lost": {
      "256": "selection: value N below floor",
-     "1024": "selection: value N below floor",
-     "4096": "selection: value N below floor"
+     "1024": "selection: value N below floor"
     }
    },
    {
@@ -10051,12 +10041,11 @@
     "packed": {
      "256": "partial",
      "1024": "partial",
-     "4096": "partial"
+     "4096": "complete"
     },
     "lost": {
      "256": "selection: value N below floor",
-     "1024": "selection: value N below floor",
-     "4096": "selection: value N below floor"
+     "1024": "selection: value N below floor"
     }
    },
    {
@@ -10074,12 +10063,11 @@
     "packed": {
      "256": "missed",
      "1024": "partial",
-     "4096": "partial"
+     "4096": "complete"
     },
     "lost": {
      "256": "selection: value N below floor",
-     "1024": "selection: value N below floor",
-     "4096": "selection: value N below floor"
+     "1024": "selection: value N below floor"
     }
    }
   ],
@@ -10093,11 +10081,11 @@
   },
   "bundles": {
    "256": {
-    "used": 251,
+    "used": 244,
     "within_budget": true,
     "deterministic": true,
-    "items": 5,
-    "header_entities": 4,
+    "items": 4,
+    "header_entities": 3,
     "omissions": {
      "packing: budget": 25,
      "selection: container": 3,
@@ -10109,13 +10097,13 @@
     ]
    },
    "1024": {
-    "used": 1014,
+    "used": 1020,
     "within_budget": true,
     "deterministic": true,
-    "items": 8,
-    "header_entities": 2,
+    "items": 10,
+    "header_entities": 3,
     "omissions": {
-     "packing: budget": 21,
+     "packing: budget": 19,
      "selection: container": 3,
      "selection: no module-level source": 2,
      "selection: value N below floor": 29
@@ -10125,14 +10113,14 @@
     ]
    },
    "4096": {
-    "used": 3670,
+    "used": 4085,
     "within_budget": true,
     "deterministic": true,
-    "items": 21,
-    "header_entities": 6,
+    "items": 13,
+    "header_entities": 4,
     "omissions": {
+     "packing: budget": 10,
      "selection: container": 3,
-     "selection: item cap N": 6,
      "selection: no module-level source": 2,
      "selection: value N below floor": 29
     },
@@ -10144,17 +10132,17 @@
   "versions": {
    "retrieval": "oxide-retrieval-v2",
    "router": "oxide-router-bfs-v3",
-   "selector": "oxide-select-greedy-v4",
+   "selector": "oxide-select-greedy-v6",
    "payload": "oxide-payload-v4",
-   "derivation": "sha256:ff500e5a17f84a946c89fa85fb46cb0950da7fb38af8f4899f5bc4ad3823a0b9",
+   "derivation": "sha256:e71d99ef80779e4f03e504f44f36cd225fa9d30c679f76001e778e39d9b809cb",
    "units": "oxide-units-v1"
   },
   "compat": {
    "entries": "29f50f8e2a4f5c2a24469b55873e84f927ee45f21b0355d907bd4a83da640db0",
    "routed": "dc9bb65db6ec414fb6112c12da38e540f2504da3f0f1b0551d251ee68ac087ec",
-   "payload@256": "5ff7436b3f1a789f38caa68ae372bee2d29896331691b120b56bb5084aff0206",
-   "payload@1024": "33132b768ed5ac0609fa30aa75816932222d915bc20da83e00a99e38bd9e3ef4",
-   "payload@4096": "72f7f051fa50d278df0ed72a97abce4f930a5df87bc74c382c6c20465dd23fae"
+   "payload@256": "65e2b5d19c3d92028cc0af3561458d28b7386417727470925a929fc54695722b",
+   "payload@1024": "9e3ef1a158dc276fb88e1cdbba3d7b2ee80d1ac08fc3c0624f80a091f997fdc3",
+   "payload@4096": "c62fb89e57f94f6d794ab0327a3b574378fb0b9a85251427be95aee1423eee85"
   }
  }
 ]

@@ -39,21 +39,38 @@ from typing import Protocol
 
 from oxide.models import ContextItem, Entity, ItemEntity, Omission, SourceRef
 
-SELECTOR_VERSION = "oxide-select-greedy-v4"
+SELECTOR_VERSION = "oxide-select-greedy-v6"
 PAYLOAD_VERSION = "oxide-payload-v4"
 UNITS_VERSION = "oxide-units-v1"
 GRAPH_NODES = 64
 MAX_ITEMS = 24
 INCLUDE_FLOOR = 0.4
 MAX_HEADER_LINES = 8
+TEST_WEIGHT = 0.5
 
 _WORDS = re.compile(r"\w+")
 _SYMBOLS = re.compile(r"[^\w\s]")
+_TEST_DIR = frozenset(("test", "tests", "__tests__", "testing"))
+_TEST_FILE = re.compile(
+    r"(?:^test_[^/]*\.py$|^conftest\.py$|_test\.(?:py|go)$|\.(?:test|spec)\.[cm]?[jt]sx?$)"
+)
 
 
 def units(text: str) -> int:
     words = sum((len(w) + 3) // 4 for w in _WORDS.findall(text))
     return words + text.count("\n") + len(_SYMBOLS.findall(text))
+
+
+def test_role(entity: Entity) -> bool:
+    """Test evidence: the derived facet, or a test-file location (helpers and
+    fixtures the facet does not flag). Language file conventions, like the facet."""
+    if entity.test:
+        return True
+    source = entity.source
+    if source is None:
+        return False
+    parts = source.path.split("/")
+    return bool(set(parts[:-1]) & _TEST_DIR) or bool(_TEST_FILE.search(parts[-1]))
 
 
 @dataclass(frozen=True, slots=True)
@@ -69,19 +86,28 @@ class Candidate:
     origins: tuple[str, ...] = ()  # how routing reached it (``routing.Routed.origins``)
 
 
-def value(c: Candidate) -> tuple[float, str]:
+def value(c: Candidate, *, test_weight: float = 1.0) -> tuple[float, str]:
     """Heuristic relevance and its basis; a model judgment would replace only this.
     A file's module-level view is evidence when retrieval found the file itself; a
     file reached only by routing (a scope, an importer, the root fallback) is valued
-    as the container it is, like modules and the repository."""
+    as the container it is, like modules and the repository. ``test_weight`` (1.0
+    unless production evidence exists) down-weights test candidates; an explicit
+    seed is a request, never down-weighted."""
     routed_file = c.entity.category == "file" and not c.seeded and c.rank is None
     if c.entity.category not in ("symbol", "file") or routed_file:
         return 0.2, "container"
     if c.seeded:
         return 0.9, "structural seed"
+    weight = test_weight if test_role(c.entity) else 1.0
     if c.rank is not None:
-        return max(0.5, 0.85 - 0.025 * (c.rank - 1)), f"lexical rank {c.rank}"
-    return (0.45 if c.depth == 1 else 0.3), f"routed depth {c.depth}"
+        base, basis = max(0.5, 0.85 - 0.025 * (c.rank - 1)), f"lexical rank {c.rank}"
+    else:
+        base, basis = (0.45 if c.depth == 1 else 0.3), f"routed depth {c.depth}"
+    score = base * weight
+    if base >= INCLUDE_FLOOR:
+        # Down-weighting admits but never suppresses: an admitted test stays admitted.
+        score = max(score, INCLUDE_FLOOR)
+    return score, basis + (f", test weight {weight}" if weight != 1.0 else "")
 
 
 class DecisionProvider(Protocol):
@@ -107,24 +133,40 @@ class Replay:
         return {k: v for k, v in self.judgments.items() if k in keys}
 
 
-def judged(
+def _reply(
     provider: DecisionProvider, candidates: Sequence[Candidate]
-) -> dict[str, tuple[float, str]]:
-    """Value and basis per candidate: a valid judgment, else the heuristic with why."""
-    values = {c.entity.key: value(c) for c in candidates}
-    name = provider.identity
+) -> tuple[Mapping[str, float | None] | None, str | None]:
+    """One provider call: its mapping, or the reason it failed."""
+    keys = {c.entity.key for c in candidates}
     try:
         found = provider.judge(tuple(candidates))
-        failure = None if isinstance(found, Mapping) else "returned no mapping"
-        if failure is None and not found.keys() <= values.keys():
-            failure = "judged an unknown candidate"
+        if not isinstance(found, Mapping):
+            return None, "returned no mapping"
+        if not found.keys() <= keys:
+            return None, "judged an unknown candidate"
+        return found, None
     except Exception as error:  # any provider failure leaves the deterministic path
-        failure = f"failed ({type(error).__name__})"
+        return None, f"failed ({type(error).__name__})"
+
+
+def judged(
+    provider: DecisionProvider,
+    candidates: Sequence[Candidate],
+    *,
+    test_weight: float = 1.0,
+    reply: tuple[Mapping[str, float | None] | None, str | None] | None = None,
+) -> dict[str, tuple[float, str]]:
+    """Value and basis per candidate: a valid judgment, else the heuristic with why.
+    ``reply`` is the result of the single provider call (ADR-0009: asked once);
+    heuristic fallbacks — failure, abstain, missing — take ``test_weight``."""
+    values = {c.entity.key: value(c, test_weight=test_weight) for c in candidates}
+    name = provider.identity
+    found, failure = reply if reply is not None else _reply(provider, candidates)
     if failure is not None:
         return {k: (score, f"{basis}, {name} {failure}") for k, (score, basis) in values.items()}
     out = {}
     for key, (score, basis) in values.items():
-        got = found.get(key, ...)
+        got = found.get(key, ...) if found is not None else ...
         if got is ...:
             out[key] = (score, f"{basis}, {name} missing")
         elif got is None:
@@ -294,12 +336,16 @@ def pack(
 ) -> tuple[list[ContextItem], list[Omission]]:
     """``pool`` in graph order (entry points first); ``scopes`` holds every enclosing
     declaration of a pool symbol; ``declarations`` the top-level declaration byte
-    ranges of every parsed Python file in the pool; ``judge`` an optional provider,
-    asked once about the candidates that have a source and are not containers.
-    Returns packed items and every omission."""
+    ranges of every parsed Python file in the pool; ``judge`` an optional provider.
+    Issue #77: a query about production code must not watch tests fill its budget.
+    Pack once at equal values; retry with test evidence down-weighted only when that
+    pack shows the symptom -- test bodies holding more units than production
+    bodies while production symbols lost their own bodies to the budget -- and
+    keep the retry only when it visibly brings production back. A judgment
+    replaces the heuristic, so it is never re-weighted; fallback values
+    (failure, abstain, missing) are heuristic and follow the weight. The
+    provider is still called exactly once (ADR-0009)."""
     packer = _Packer(budget, source, declarations)
-    omissions: list[Omission] = []
-    scored = []
 
     def container(c: Candidate) -> bool:
         category = c.entity.category
@@ -307,54 +353,120 @@ def pack(
             category == "file" and c.entity.key not in declarations
         )
 
-    asked = [c for c in pool if not container(c) and c.entity.source is not None]
-    values = judged(judge, asked) if judge is not None and asked else {}
-    for position, candidate in enumerate(pool):
-        key = candidate.entity.key
-        score, basis = values.get(key) or value(candidate)
-        if container(candidate):
-            omissions.append(Omission(key, "selection", "container"))
-        elif candidate.entity.source is None:
-            omissions.append(Omission(key, "selection", "no source"))
-        elif score < INCLUDE_FLOOR:
-            why = f"value {score:.2f} below floor" + (f", {basis}" if key in values else "")
-            omissions.append(Omission(key, "selection", why))
-        elif not packer.view(candidate.entity, False, ""):
-            omissions.append(Omission(key, "selection", "no module-level source"))
-        else:
-            basis += ", hinted path" if candidate.hinted else ""
-            scored.append(
-                (not candidate.hinted, -score, position, candidate, f"value {score:.2f}, {basis}")
-            )
-    pieces: list[_Piece] = []
-    items: list[ContextItem] = []
-    planned = 0
-    for *_, candidate, reason in sorted(scored, key=lambda s: s[:3]):
-        entity = candidate.entity
-        if planned >= MAX_ITEMS:
-            omissions.append(Omission(entity.key, "selection", f"item cap {MAX_ITEMS}"))
-            continue
-        shown = {p.entity.key for p in pieces}
-        prerequisites: list[_Piece] = []
-        for outer in ancestors(entity.key):
-            if outer not in shown and outer in scopes:
-                header = packer.view(scopes[outer], True, f"header of {display(entity.key)}")
-                prerequisites += header or packer.view(scopes[outer], False, "prerequisite")
-        outline = candidate.hinted and entity.category == "file"
-        for reduced in (True,) if outline and packer.view(entity, True, "") else (False, True):
-            view = packer.view(entity, reduced, reason + (", header view" if reduced else ""))
-            fitted = packer.fits([*pieces, *prerequisites, *view]) if view else None
-            if fitted is not None:
-                pieces += [*prerequisites, *view]
-                items = fitted
-                planned += 1
-                break
-        else:
-            smallest = packer.view(entity, True, "") or packer.view(entity, False, "")
-            assert smallest
-            alone = packer.render([*prerequisites, *smallest])
-            too_large = alone is None or sum(i.units for i in alone) > budget
-            omissions.append(
-                Omission(entity.key, "packing", "too large" if too_large else "budget")
-            )
+    asked = [
+        c for c in pool if not container(c) and c.entity.source is not None
+    ]  # ADR-0009: the judge is asked about packable candidates only
+    roles = {c.entity.key: test_role(c.entity) for c in asked}
+    roles |= {k: test_role(e) for k, e in scopes.items()}  # a test class header is test role too
+    reply = _reply(judge, asked) if judge is not None and asked else None
+
+    def pass_(weight: float) -> tuple[list[ContextItem], list[Omission], dict[str, int]]:
+        omissions: list[Omission] = []
+        scored = []
+        values = (
+            judged(judge, asked, test_weight=weight, reply=reply)
+            if judge is not None and reply is not None
+            else {}
+        )  # mypy: reply is only set with a judge
+        for position, candidate in enumerate(pool):
+            key = candidate.entity.key
+            score, basis = values.get(key) or value(candidate, test_weight=weight)
+            if container(candidate):
+                omissions.append(Omission(key, "selection", "container"))
+            elif candidate.entity.source is None:
+                omissions.append(Omission(key, "selection", "no source"))
+            elif score < INCLUDE_FLOOR:
+                why = f"value {score:.2f} below floor" + (f", {basis}" if key in values else "")
+                omissions.append(Omission(key, "selection", why))
+            elif not packer.view(candidate.entity, False, ""):
+                omissions.append(Omission(key, "selection", "no module-level source"))
+            else:
+                basis += ", hinted path" if candidate.hinted else ""
+                scored.append(
+                    (
+                        not candidate.hinted,
+                        -score,
+                        candidate.entity.category == "file",
+                        position,
+                        candidate,
+                        f"value {score:.2f}, {basis}",
+                    )
+                )
+        pieces: list[_Piece] = []
+        items: list[ContextItem] = []
+        planned = 0
+        demoted: set[str] = set()
+        for *_, candidate, reason in sorted(scored, key=lambda s: s[:4]):
+            entity = candidate.entity
+            if planned >= MAX_ITEMS:
+                omissions.append(Omission(entity.key, "selection", f"item cap {MAX_ITEMS}"))
+                continue
+            shown = {p.entity.key for p in pieces}
+            prerequisites: list[_Piece] = []
+            for outer in ancestors(entity.key):
+                if outer not in shown and outer in scopes:
+                    header = packer.view(scopes[outer], True, f"header of {display(entity.key)}")
+                    prerequisites += header or packer.view(scopes[outer], False, "prerequisite")
+            outline = candidate.hinted and entity.category == "file"
+            for reduced in (True,) if outline and packer.view(entity, True, "") else (False, True):
+                view = packer.view(entity, reduced, reason + (", header view" if reduced else ""))
+                fitted = packer.fits([*pieces, *prerequisites, *view]) if view else None
+                if fitted is not None:
+                    if reduced and entity.category == "symbol":
+                        demoted.add(entity.key)  # lost its own body to the budget
+                    pieces += [*prerequisites, *view]
+                    items = fitted
+                    planned += 1
+                    break
+            else:
+                smallest = packer.view(entity, True, "") or packer.view(entity, False, "")
+                assert smallest
+                alone = packer.render([*prerequisites, *smallest])
+                too_large = alone is None or sum(i.units for i in alone) > budget
+                omissions.append(
+                    Omission(entity.key, "packing", "too large" if too_large else "budget")
+                )
+        bodies = {True: 0, False: 0}
+        for item in items:  # a header is presence, not content: bodies only
+            whole = [e for e in item.entities if e.complete]
+            if whole:
+                bodies[all(roles.get(e.key, False) for e in whole)] += item.units
+        # Crowded out means the candidate's own body lost room: not a module-level
+        # run (never "complete"), not a class header shown beside its packed method.
+        lost = {o.key for o in omissions if o.stage == "packing"} | demoted
+        prod_short = sum(
+            1
+            for c in asked
+            if c.entity.category == "symbol" and c.entity.key in lost and not roles[c.entity.key]
+        )
+        stats = {"test_units": bodies[True], "prod_units": bodies[False], "prod_short": prod_short}
+        return items, omissions, stats
+
+    items, omissions, stats = pass_(1.0)
+    # Symptom first, remedy second: test evidence holding body units while
+    # production candidates were dropped or left as headers. Keep a retry only if
+    # it brings more production bodies back; queries about tests never trip the gate.
+    # A judged run retries on the same cached reply: real judgments keep their value,
+    # heuristic fallbacks follow the weight, so a fallback still packs the default.
+    if stats["prod_short"] and stats["test_units"] > stats["prod_units"]:
+        retry = pass_(TEST_WEIGHT)
+        if retry[2]["prod_units"] > stats["prod_units"]:
+            items, omissions = retry[0], retry[1]
     return items, omissions
+
+
+def unpacked_bodies(
+    pool: Sequence[Candidate],
+    items: Sequence[ContextItem],
+    omissions: Sequence[Omission],
+) -> list[str]:
+    """Degradation lines for symbol seeds that lost their body (issue #77: a named
+    symbol silently packed as a header). A caller-named symbol shown without its
+    body, or left out by the budget, must be reported, not passed off as source."""
+    wanted = {
+        c.entity.key for c in pool if c.seeded and any(s.startswith("symbol:") for s in c.seeds)
+    }
+    headered = {
+        e.key for item in items for e in item.entities if e.key in wanted and not e.complete
+    } | {o.key for o in omissions if o.stage == "packing" and o.key in wanted}
+    return [f"{key} packed without its body; raise the budget" for key in sorted(headered)]
