@@ -2,6 +2,31 @@
 
 Release notes for the `oxide-agent` package. The import package and the command are `oxide`.
 
+## 0.2.1 - 2026-11-21
+
+Packing and MCP search fixes for issue #77: test evidence no longer crowds production
+code out of context bundles.
+
+- Context packing down-weights test evidence only when it crowds production symbols out
+  of the budget: a second pass demotes lexical/routed test values (never seeded or hinted
+  candidates) and is kept only when it strictly increases complete production source.
+  Queries about tests keep their test evidence.
+- A named symbol packed without its body is reported in `ContextBundle.degradations`
+  ("packed without its body; raise the budget") instead of silently appearing header-only.
+  Symbols already covered by a packed enclosing scope are not reported.
+- Candidates in a hinted file pack before other candidates; the hinted file contributes
+  its header view.
+- `oxide impact` and the API accept any name `inspect` resolves uniquely (e.g.
+  `resolve_redirects`); an unknown or ambiguous name is an argument error naming the
+  disambiguating tool.
+- MCP `oxide_search` text is a compact projection (keys, ranks, scores, seeds, lexical
+  state and reason, hints, blast); structured content is unchanged and it remains one
+  tool. Unavailable lexical search reports its reason in the text as well.
+- Search ranking (BM25) is unchanged; existing indexes stay compatible — no re-index
+  needed.
+- ContextBench baselines re-frozen with the new selector: Python `baseline-v23`
+  (0 verified production regressions), TypeScript `baseline-v19` (0 gated regressions).
+
 ## 0.2.0 - 2026-11-20
 
 - `oxide status` summarizes the published index and unchecked worktree freshness; use
