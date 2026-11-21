@@ -151,6 +151,22 @@ async def test_search_and_context_return_structured_evidence(indexed: Path) -> N
     assert "### oxidepy/retry.py:" in payload
 
 
+async def test_search_summary_keeps_the_lexical_unavailable_reason(
+    indexed: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # CORE-005: an unavailable lexical channel must carry its reason (run `oxide
+    # setup`), not just the state -- text-only MCP clients read the compact summary.
+    monkeypatch.setenv("OXIDE_FTS_EXTENSION", str(tmp_path / "absent.lbug_extension"))
+    async with Client(server([str(indexed)])) as client:
+        found = await call(client, "oxide_search", query="RetryPolicy", symbols=["RetryPolicy"])
+    assert not found.is_error
+    assert found.structured_content["lexical"]["state"] == "unavailable"
+    summary = json.loads(text(found))
+    assert summary["lexical"]["state"] == "unavailable"
+    assert summary["lexical"]["detail"] == found.structured_content["lexical"]["detail"]
+    assert summary["lexical"]["detail"]  # the reason survives the projection
+
+
 async def test_a_full_read_pool_is_a_retryable_tool_error_not_damage(
     indexed: Path, monkeypatch: pytest.MonkeyPatch, private_data: Path
 ) -> None:

@@ -312,9 +312,11 @@ PROMOTE `oxide-select-greedy-v6` (issue #77): test-role evidence loses value onl
 
 The `TEST_WEIGHT = 0.5` applies to lexical and routed candidate values only when the first packed
 bundle leaves a production symbol without its own body (reduced on its turn or omitted for budget;
-file outlines and prerequisite headers do not count) while test bodies occupy more budget units
-than production bodies, counted by complete entities so a method beside its class header still
-counts, and is kept only if the retry strictly increases production units.
+file outlines and prerequisite headers do not count) while test evidence occupies more budget units
+than production, counted per item by complete entities so a method beside its class header still
+counts. The retry is kept only if it strictly increases production body bytes — the union of complete
+symbol source ranges, never `file:` module-level runs, incomplete headers, or rendering overhead — so
+glue merged beside an already-complete function never displaces a test.
 Down-weighting can never push a candidate below the admit floor, so
 test-only queries keep their test evidence.
 
@@ -326,10 +328,21 @@ span@4096 0.169→0.240, line@4096 0.233→0.297, file@256 0.270→0.322, file@1
 A flat existence gate (weight whenever both roles are admitted) REJECTED: dev span@1024
 0.508→0.441, demoting test gold out of `py-related-test-gives-up`.
 On requests, `log every redirect hop…` at 1024: the original repro packed ~600 units of test
-bodies with `resolve_redirects` absent; under v6 production dominates (940 prod vs 79 test
-units) so the gate stays off there — the repro is fixed by hint-priority packing
-`resolve_redirects` first, not by the gate. Its 1,379-u body cannot fit 1,024 and is
-reported via `unpacked_bodies`, not silent.
+bodies with `resolve_redirects` absent. Under v6 the exact command below packs 10 items using
+1011/1024 units with **0 test items**; `resolve_redirects` is present as a header and its body is
+reported, not silent: `symbol:src/requests/sessions.py#SessionRedirectMixin.resolve_redirects
+packed without its body; raise the budget`.
+
+Reproduce (requests @ `611c6162cbc4ac2020a2f91c7cfa4f3abf9bbb60`; index first, then context with a
+private data dir):
+
+```sh
+oxide index <requests-root> --data-dir <private-data-dir>
+oxide context <requests-root> \
+  "log every redirect hop and where each one goes" \
+  --symbol resolve_redirects --file src/requests/sessions.py \
+  --budget 1024 --data-dir <private-data-dir> --json
+```
 
 Unverified splits (not gated) fall at 4096 where the kept retry spreads budget over more
 items: heldout unverified line@4096 0.284→0.259, file@4096 0.734→0.672; all unverified

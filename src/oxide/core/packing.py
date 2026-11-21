@@ -426,11 +426,18 @@ def pack(
                 omissions.append(
                     Omission(entity.key, "packing", "too large" if too_large else "budget")
                 )
-        bodies = {True: 0, False: 0}
-        for item in items:  # a header is presence, not content: bodies only
+        # Symptom: test evidence occupying body units while production candidates
+        # were dropped or left as headers. Occupation is item-level (the budget a
+        # test actually holds, a method beside its class header included); it drives
+        # whether to try a remedy. A header is presence, not content.
+        test_units = prod_units = 0
+        for item in items:
             whole = [e for e in item.entities if e.complete]
             if whole:
-                bodies[all(roles.get(e.key, False) for e in whole)] += item.units
+                if all(roles.get(e.key, False) for e in whole):
+                    test_units += item.units
+                else:
+                    prod_units += item.units
         # Crowded out means the candidate's own body lost room: not a module-level
         # run (never "complete"), not a class header shown beside its packed method.
         lost = {o.key for o in omissions if o.stage == "packing"} | demoted
@@ -439,18 +446,49 @@ def pack(
             for c in asked
             if c.entity.category == "symbol" and c.entity.key in lost and not roles[c.entity.key]
         )
-        stats = {"test_units": bodies[True], "prod_units": bodies[False], "prod_short": prod_short}
+        # Remedy: keep the retry only if it brings back more production BODY bytes,
+        # measured as the union of complete symbol source ranges -- never module glue
+        # rendered beside an already-complete function, headers, or heading overhead.
+        spans: dict[bool, list[tuple[SourceRef, int, int]]] = {True: [], False: []}
+        for p in pieces:
+            source = p.entity.source
+            if (
+                p.entity.category == "symbol"
+                and source is not None
+                and (p.start <= source.start and source.end <= p.end)
+            ):
+                spans[roles.get(p.entity.key, False)].append((source, source.start, source.end))
+        prod_body = 0
+        ranges = sorted(spans[False], key=lambda r: (r[0].path, r[1], r[2]))
+        cur: SourceRef | None = None
+        start = end = 0
+        for ref, s, e in ranges:
+            if cur is None or ref.path != cur.path or s > end:
+                if cur is not None and end > start:
+                    prod_body += units(packer.data(cur)[start:end].decode("utf-8", "replace"))
+                cur, start, end = ref, s, e
+            else:
+                end = max(end, e)
+        if cur is not None and end > start:
+            prod_body += units(packer.data(cur)[start:end].decode("utf-8", "replace"))
+        stats = {
+            "test_units": test_units,
+            "prod_units": prod_units,
+            "prod_short": prod_short,
+            "prod_body": prod_body,
+        }
         return items, omissions, stats
 
     items, omissions, stats = pass_(1.0)
-    # Symptom first, remedy second: test evidence holding body units while
-    # production candidates were dropped or left as headers. Keep a retry only if
-    # it brings more production bodies back; queries about tests never trip the gate.
-    # A judged run retries on the same cached reply: real judgments keep their value,
-    # heuristic fallbacks follow the weight, so a fallback still packs the default.
+    # Symptom first, remedy second: test evidence holding budget units while
+    # production candidates were dropped or left as headers trips a retry. The retry
+    # is kept only if it recovers more production BODY bytes (span union), so glue
+    # rendered beside an already-complete function never wins. Queries about tests
+    # never trip the gate. A judged run retries on the same cached reply: real
+    # judgments keep their value, heuristic fallbacks follow the weight.
     if stats["prod_short"] and stats["test_units"] > stats["prod_units"]:
         retry = pass_(TEST_WEIGHT)
-        if retry[2]["prod_units"] > stats["prod_units"]:
+        if retry[2]["prod_body"] > stats["prod_body"]:
             items, omissions = retry[0], retry[1]
     return items, omissions
 
@@ -460,13 +498,30 @@ def unpacked_bodies(
     items: Sequence[ContextItem],
     omissions: Sequence[Omission],
 ) -> list[str]:
-    """Degradation lines for symbol seeds that lost their body (issue #77: a named
-    symbol silently packed as a header). A caller-named symbol shown without its
-    body, or left out by the budget, must be reported, not passed off as source."""
+    """Degradation lines for symbol seeds whose source is absent from the payload
+    (issue #77: a named symbol silently packed as a header). A caller-named symbol
+    shown without its body, or left out by the budget, must be reported -- unless a
+    final item already contains its full source (e.g. its enclosing class packed
+    complete), in which case raising the budget would not add anything."""
     wanted = {
-        c.entity.key for c in pool if c.seeded and any(s.startswith("symbol:") for s in c.seeds)
+        c.entity.key: c.entity.source
+        for c in pool
+        if c.seeded
+        and any(s.startswith("symbol:") for s in c.seeds)
+        and c.entity.source is not None
     }
-    headered = {
+    missing = {
         e.key for item in items for e in item.entities if e.key in wanted and not e.complete
     } | {o.key for o in omissions if o.stage == "packing" and o.key in wanted}
-    return [f"{key} packed without its body; raise the budget" for key in sorted(headered)]
+    covered = {
+        key
+        for key, source in wanted.items()
+        if any(
+            item.source.path == source.path
+            and item.source.digest == source.digest
+            and item.source.start <= source.start
+            and source.end <= item.source.end
+            for item in items
+        )
+    }
+    return [f"{key} packed without its body; raise the budget" for key in sorted(missing - covered)]

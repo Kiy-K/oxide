@@ -131,6 +131,7 @@ def _search_summary(found: SearchResult, more: bool) -> dict[str, object]:
         "entries": entries,
         "lexical": {
             "state": found.lexical.state,
+            "detail": found.lexical.detail,
             "returned": found.lexical.returned,
             "truncated": found.lexical.truncated,
         },
