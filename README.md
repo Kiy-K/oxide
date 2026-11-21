@@ -8,7 +8,7 @@ Retrieval needs no embeddings, no model calls and no network. It combines BM25 o
 
 ## Status
 
-0.2.0 is the current stable release. Python, TypeScript/TSX, JavaScript/JSX, Go, Rust, Java, C#, C and C++ have parser slices ([TypeScript](https://github.com/Kiy-K/oxide/blob/main/docs/typescript.md), [JavaScript](https://github.com/Kiy-K/oxide/blob/main/docs/javascript.md), [Go](https://github.com/Kiy-K/oxide/blob/main/docs/go.md), [Rust](https://github.com/Kiy-K/oxide/blob/main/docs/rust.md), [Java](https://github.com/Kiy-K/oxide/blob/main/docs/java.md), [C#](https://github.com/Kiy-K/oxide/blob/main/docs/csharp.md), [C](https://github.com/Kiy-K/oxide/blob/main/docs/c.md), [C++](https://github.com/Kiy-K/oxide/blob/main/docs/cpp.md)). Other files are kept as unsupported file evidence.
+0.2.1 is the current stable release. Python, TypeScript/TSX, JavaScript/JSX, Go, Rust, Java, C#, C and C++ have parser slices ([TypeScript](https://github.com/Kiy-K/oxide/blob/main/docs/typescript.md), [JavaScript](https://github.com/Kiy-K/oxide/blob/main/docs/javascript.md), [Go](https://github.com/Kiy-K/oxide/blob/main/docs/go.md), [Rust](https://github.com/Kiy-K/oxide/blob/main/docs/rust.md), [Java](https://github.com/Kiy-K/oxide/blob/main/docs/java.md), [C#](https://github.com/Kiy-K/oxide/blob/main/docs/csharp.md), [C](https://github.com/Kiy-K/oxide/blob/main/docs/c.md), [C++](https://github.com/Kiy-K/oxide/blob/main/docs/cpp.md)). Other files are kept as unsupported file evidence.
 
 Upgrading from 0.1.1? Read the [changelog](https://github.com/Kiy-K/oxide/blob/main/CHANGELOG.md) first. It lists the breaking changes and what to do about each.
 
